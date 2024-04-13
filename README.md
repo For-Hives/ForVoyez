@@ -1,7 +1,9 @@
 # ForHives tech base stack - Template 🐝
+
 A boiler plate with a complete stack : next, tailwind, bruno, renovate, husky, eslint, prettier, github ci, caprover, docker
 
 #### _dev_
+
 ```
 git clone
 -> add .env file
@@ -13,6 +15,7 @@ npm run build
 ```
 
 ## Tech stack 💻
+
 That is the list of technologies that ForHives use.
 
 > **Front**
@@ -26,6 +29,7 @@ That is the list of technologies that ForHives use.
 > > - [Husky](https://typicode.github.io/husky/#/)
 
 > **CSS possibilities**
+>
 > > - [Next UI](https://nextui.org/) -> more speed, more efficient, if you don't want to build custom component, and just use a component library
 > > - [Shadncn](https://ui.shadcn.com/) -> if you want to build custom component, and get much control
 > > - [Catalyst](https://catalyst.tailwindui.com/docs) -> tailwindui components (official tailwind source)
@@ -37,17 +41,19 @@ That is the list of technologies that ForHives use.
 > > - [Renovate](https://www.mend.io/renovate/)
 
 > **State management**
+>
 > > - [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
 
 > **API Call (postman alternative)**
-> > - [Bruno](https://github.com/usebruno/bruno) (or postman // insomnia, bruno is usefull to build a versionning system about your api calls') 
-
+>
+> > - [Bruno](https://github.com/usebruno/bruno) (or postman // insomnia, bruno is usefull to build a versionning system about your api calls')
 
 ## Todo list 📝
+
 - [ ] Change the name of the project
 - [ ] Change the name of the project in the package.json
 - [ ] Change the name of the project in the README.md
-- [ ] Follow the first guide for GitHub CI 
+- [ ] Follow the first guide for GitHub CI
 - [ ] Follow the second guide for CapRover install & config
 - [ ] Change the app/layout.js
   - [ ] Change the font
@@ -62,16 +68,14 @@ That is the list of technologies that ForHives use.
 - [ ] lets go to dev your project !
 
 ## Other options
+
 - [ ] Add bruno if you need to call an API and you don't want to use postman (and share the confs)
 - [ ] Add a state management if you need it (zustand is a good one)
 - [ ] Add Auth if you need it (next-auth is a good one)
 - [ ] Add a CMS if you need it (strapi/pocketbase are good ones)
 - [ ] Add Zod if you need to control the form states more efficiently and take control about the call from an API
 
-
 ### Any real project example ??
-> https://github.com/For-Hives/formenu  
-> https://github.com/For-Hives/my-makeup
-> https://github.com/CinquinAndy/mariage-mae
-> https://github.com/CinquinAndy/PortefolioV6
 
+> https://github.com/For-Hives/formenu  
+> https://github.com/For-Hives/my-makeup > https://github.com/CinquinAndy/mariage-mae > https://github.com/CinquinAndy/PortefolioV6
