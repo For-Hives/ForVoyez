@@ -1,89 +1,91 @@
-@import "~@flaticon/flaticon-uicons/css/all/all";
+@import '~@flaticon/flaticon-uicons/css/all/all';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-    box-sizing: border-box;
-    list-style: none;
-    text-decoration: none;
-    transition: opacity,
-    z-index,
-    color ease-in-out 0.3s;
+	box-sizing: border-box;
+	list-style: none;
+	text-decoration: none;
+	transition:
+		opacity,
+		z-index,
+		color ease-in-out 0.3s;
 }
 
 body {
-    box-sizing: border-box;
-    display: inline-block;
-    width: 100vw;
-    max-width: 100vw;
-    clear: both;
-    overflow-x: hidden;
+	box-sizing: border-box;
+	display: inline-block;
+	width: 100vw;
+	max-width: 100vw;
+	clear: both;
+	overflow-x: hidden;
 }
 
 html {
-    overflow-x: hidden;
-    max-width: 100vw;
-    scroll-behavior: smooth;
-}
-
-a {
-    text-decoration: underline;
+	overflow-x: hidden;
+	max-width: 100vw;
+	scroll-behavior: smooth;
 }
 
 button {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 @media screen and (min-width: 768px) {
-    ::-webkit-scrollbar {
-        -webkit-appearance: none;
-        width: 7px;
-        height: 4px;
-    }
+	::-webkit-scrollbar {
+		-webkit-appearance: none;
+		width: 7px;
+		height: 4px;
+	}
 }
 
 @media screen and (min-width: 768px) {
-    ::-webkit-scrollbar-thumb {
-        border-radius: 2rem;
-        background-color: #19191e4d;
-        -webkit-box-shadow: 0 0 1px hsl(0deg 0% 100% / 50%);
-    }
+	::-webkit-scrollbar-thumb {
+		border-radius: 2rem;
+		background-color: #19191e4d;
+		-webkit-box-shadow: 0 0 1px hsl(0deg 0% 100% / 50%);
+	}
 }
 
 /* custom property group for tailwind */
 @layer base {
-    * {
-        /*fixme change the base font here (and in the layout.js in  /app) */
-        @apply font-kanit;
-    }
+	* {
+		/*fixme change the base font here (and in the layout.js in  /app) */
+		@apply font-kanit;
+	}
 
-    h1, h2, h3, h4, h5, h6 {
-        /*fixme change the title font here (and in the layout.js in  /app) */
-        @apply font-playpen_sans;
-    }
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		/*fixme change the title font here (and in the layout.js in  /app) */
+		@apply font-playpen_sans;
+	}
 
-    h1 {
-        @apply text-sm font-semibold sm:text-2xl;
-    }
+	h1 {
+		@apply text-sm font-semibold sm:text-2xl;
+	}
 
-    h2 {
-        @apply text-xs font-light sm:text-xl;
-    }
+	h2 {
+		@apply text-xs font-light sm:text-xl;
+	}
 
-    h3 {
-        @apply sm:text-lg;
-    }
+	h3 {
+		@apply sm:text-lg;
+	}
 
-    h4 {
-        @apply text-base;
-    }
+	h4 {
+		@apply text-base;
+	}
 }
 
 @layer components {
-    /* exemple of component css */
-    .icon {
-        @apply flex h-[20px] w-[20px] items-center justify-center text-white transition-all;
-    }
+	/* exemple of component css */
+	.icon {
+		@apply flex h-[20px] w-[20px] items-center justify-center text-white transition-all;
+	}
 }

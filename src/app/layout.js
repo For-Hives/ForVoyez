@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
 				lang={'en'}
 			>
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
-				{children}
+					{children}
 				</body>
 			</html>
 		</ClerkProvider>
