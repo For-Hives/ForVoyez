@@ -1,7 +1,6 @@
 import '@/styles/globals.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-import WrapNextUiProvider from '@/providers/WrapNextUiProvider'
 import { Kanit, Playpen_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
@@ -44,7 +43,7 @@ export default function RootLayout({ children }) {
 				lang={'en'}
 			>
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
-					<WrapNextUiProvider>{children}</WrapNextUiProvider>
+				{children}
 				</body>
 			</html>
 		</ClerkProvider>
