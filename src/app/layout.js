@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import WrapNextUiProvider from '@/providers/WrapNextUiProvider'
 import { Kanit, Playpen_Sans } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
 
 // fixme replace that with your chosen font
 const kanit = Kanit({
@@ -37,10 +38,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<html className={`${kanit.variable} ${playpen_sans.variable}`}>
-			<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
-				<WrapNextUiProvider>{children}</WrapNextUiProvider>
-			</body>
-		</html>
+		<ClerkProvider>
+			<html
+				className={`${kanit.variable} ${playpen_sans.variable}`}
+				lang={'en'}
+			>
+				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
+					<WrapNextUiProvider>{children}</WrapNextUiProvider>
+				</body>
+			</html>
+		</ClerkProvider>
 	)
 }
