@@ -70,7 +70,10 @@ export default function Navbar() {
                         <SignedIn>
                             {/* Mount the UserButton component */}
                             <li>
-                                <UserButton/>
+                                <UserButton
+                                    userProfileMode={"navigation"}
+                                    userProfileUrl={"/profile"}
+                                />
                             </li>
                         </SignedIn>
                         <SignedOut>
