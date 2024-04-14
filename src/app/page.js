@@ -1,135 +1,242 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+'use client'
+import { useState } from 'react'
+import { Dialog } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-// fixme change the landing page
+const navigation = [
+	{ name: 'Product', href: '#' },
+	{ name: 'Features', href: '#' },
+	{ name: 'Marketplace', href: '#' },
+	{ name: 'Company', href: '#' },
+]
+
 export default function Home() {
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
 	return (
-		<>
-			<meta charSet="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<title>Track Your Social Media Analytics Easier Than Ever.</title>
-			<meta name="robots" content="index, follow" />
-			<meta
-				name="googlebot"
-				content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
-			/>
-			<meta
-				name="bingbot"
-				content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
-			/>
-			<meta property="og:site_name" content="ForVoyez" />
-			<link rel="icon" type="image/x-icon" href="/favicon.png" />
-			<meta
-				name="description"
-				content="Generate the meta-description for all your images through ou API. Embed the power of SEO in your images."
-			/>
-			<meta
-				property="og:title"
-				content="An API to Generate the meta-description for all your images."
-			/>
-			<meta
-				property="og:description"
-				content="Generate the meta-description for all your images through ou API. Embed the power of SEO in your images."
-			/>
-			<meta property="og:type" content="website" />
-
-			<link rel="preconnect" href="https://fonts.googleapis.com" />
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-			<link
-				rel="stylesheet"
-				href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"
-				className="wtd-font"
-			/>
-			<link
-				rel="stylesheet"
-				href="https://fonts.googleapis.com/css2?family=Unbounded"
-				className="wtd-font"
-			/>
-
-			{/*--------------------------------------------------------- WEBSITE -----------------------------------------------------------------------------------------------*/}
-
-			<div id="__nuxt">
-				<div>
-					<Navbar />
-
-					{/* --------------- MAIN ----------------------------------------------------------------------------------------------------------------------------------*/}
-					<main>
-						{/*[*/}
-						<div className="p-16">
-							<header className="container mx-auto">
-								<div className="flex h-full w-full flex-col items-center justify-center gap-4">
-									<h1 className="text-5xl font-bold text-gray-900">
-										Generate meta-description for all your images.
-									</h1>
-									<h2 className="text-xl font-semibold text-gray-900">
-										Unlock the power of SEO in your images with our API.
-									</h2>
-									<div className="flex justify-center">
-										<Link
-											className="rounded-full bg-gray-800 px-10 py-6 text-lg font-semibold uppercase text-white"
-											href="https://app.pallyy.com/register"
-											data-type="primary"
+		<div className="bg-white">
+			<header className="absolute inset-x-0 top-0 z-50">
+				<nav
+					className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+					aria-label="Global"
+				>
+					<div className="flex lg:flex-1">
+						<a href="#" className="-m-1.5 p-1.5">
+							<span className="sr-only">ForVoyez</span>
+							<img
+								className="h-8 w-auto"
+								src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+								alt=""
+							/>
+						</a>
+					</div>
+					<div className="flex lg:hidden">
+						<button
+							type="button"
+							className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+							onClick={() => setMobileMenuOpen(true)}
+						>
+							<span className="sr-only">Open main menu</span>
+							<Bars3Icon className="h-6 w-6" aria-hidden="true" />
+						</button>
+					</div>
+					<div className="hidden lg:flex lg:gap-x-12">
+						{navigation.map(item => (
+							<a
+								key={item.name}
+								href={item.href}
+								className="text-sm font-semibold leading-6 text-gray-900"
+							>
+								{item.name}
+							</a>
+						))}
+					</div>
+					<div className="hidden lg:flex lg:flex-1 lg:justify-end">
+						<a
+							href="#"
+							className="text-sm font-semibold leading-6 text-gray-900"
+						>
+							Log in <span aria-hidden="true">&rarr;</span>
+						</a>
+					</div>
+				</nav>
+				<Dialog
+					as="div"
+					className="lg:hidden"
+					open={mobileMenuOpen}
+					onClose={setMobileMenuOpen}
+				>
+					<div className="fixed inset-0 z-50" />
+					<Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+						<div className="flex items-center justify-between">
+							<a href="#" className="-m-1.5 p-1.5">
+								<span className="sr-only">Your Company</span>
+								<img
+									className="h-8 w-auto"
+									src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+									alt=""
+								/>
+							</a>
+							<button
+								type="button"
+								className="-m-2.5 rounded-md p-2.5 text-gray-700"
+								onClick={() => setMobileMenuOpen(false)}
+							>
+								<span className="sr-only">Close menu</span>
+								<XMarkIcon className="h-6 w-6" aria-hidden="true" />
+							</button>
+						</div>
+						<div className="mt-6 flow-root">
+							<div className="-my-6 divide-y divide-gray-500/10">
+								<div className="space-y-2 py-6">
+									{navigation.map(item => (
+										<a
+											key={item.name}
+											href={item.href}
+											className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 										>
-											Get started for free
-										</Link>
+											{item.name}
+										</a>
+									))}
+								</div>
+								<div className="py-6">
+									<a
+										href="#"
+										className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+									>
+										Log in
+									</a>
+								</div>
+							</div>
+						</div>
+					</Dialog.Panel>
+				</Dialog>
+			</header>
+			<main>
+				<div className="relative isolate">
+					<svg
+						className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+						aria-hidden="true"
+					>
+						<defs>
+							<pattern
+								id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84"
+								width={200}
+								height={200}
+								x="50%"
+								y={-1}
+								patternUnits="userSpaceOnUse"
+							>
+								<path d="M.5 200V.5H200" fill="none" />
+							</pattern>
+						</defs>
+						<svg x="50%" y={-1} className="overflow-visible fill-gray-50">
+							<path
+								d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z"
+								strokeWidth={0}
+							/>
+						</svg>
+						<rect
+							width="100%"
+							height="100%"
+							strokeWidth={0}
+							fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
+						/>
+					</svg>
+					<div
+						className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
+						aria-hidden="true"
+					>
+						<div
+							className="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
+							style={{
+								clipPath:
+									'polygon(63.1% 29.5%, 100% 17.1%, 76.6% 3%, 48.4% 0%, 44.6% 4.7%, 54.5% 25.3%, 59.8% 49%, 55.2% 57.8%, 44.4% 57.2%, 27.8% 47.9%, 35.1% 81.5%, 0% 97.7%, 39.2% 100%, 35.2% 81.4%, 97.2% 52.8%, 63.1% 29.5%)',
+							}}
+						/>
+					</div>
+					<div className="overflow-hidden">
+						<div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+							<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+								<div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
+									<h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+										We’re changing the way people connect.
+									</h1>
+									<p className="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
+										Cupidatat minim id magna ipsum sint dolor qui. Sunt sit in
+										quis cupidatat mollit aute velit. Et labore commodo nulla
+										aliqua proident mollit ullamco exercitation tempor. Sint
+										aliqua anim nulla sunt mollit id pariatur in voluptate
+										cillum.
+									</p>
+									<div className="mt-10 flex items-center gap-x-6">
+										<a
+											href="#"
+											className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+										>
+											Get started
+										</a>
+										<a
+											href="#"
+											className="text-sm font-semibold leading-6 text-gray-900"
+										>
+											Live demo <span aria-hidden="true">→</span>
+										</a>
 									</div>
-									<div className="">
-										<p className="usedby__title">
-											Trusted daily by growing brands and agencies around the
-											world including:
-										</p>
-										<div className="mt-4 flex items-center justify-center gap-16">
+								</div>
+								<div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
+									<div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+										<div className="relative">
 											<img
-												className="used-by-logo anytimefitness"
-												alt="Used by Anytime Fitness logo"
-												width={58}
-												height={58}
-												src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/250px-Google_2015_logo.svg.png"
-												sizes="110px"
+												src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&h=528&q=80"
+												alt=""
+												className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
 											/>
-											<img
-												className="used-by-logo mantra"
-												alt="Used by Mantra logo"
-												width={58}
-												height={66}
-												src="https://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Discord_Logo_sans_texte.svg/1818px-Discord_Logo_sans_texte.svg.png"
-												sizes="110px"
-											/>
-											<img
-												className="used-by-logo lj-hooker"
-												alt="Used by LJ Hooker logo"
-												width={58}
-												height={50}
-												src="https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/220px-Wikipedia-logo-v2.svg.png"
-												sizes="110px"
-											/>
+											<div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
 										</div>
 									</div>
-									<picture>
-										<source
-											media="(max-width: 768px)"
-											width={1000}
-											height={1000}
-											srcSet="https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.pnghttps://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=200 200w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=228 228w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=260 260w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=296 296w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=338 338w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=385 385w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=439 439w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=500 500w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=571 571w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=650 650w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=741 741w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=845 845w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=964 964w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1098 1098w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1252 1252w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1428 1428w"
-										/>
-										<img
-											src="https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?w=400"
-											srcSet="https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.pnghttps://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=200 200w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=228 228w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=260 260w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=296 296w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=338 338w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=385 385w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=439 439w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=500 500w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=571 571w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=650 650w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=741 741w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=845 845w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=964 964w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1098 1098w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1252 1252w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1428 1428w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=1600 1600w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=2000 2000w, https://images.prismic.io/smi-blog/263c3482-1ebd-4c6b-9faf-29980cfb7af2_analytics.png?auto=compress,format&w=2400 2400w"
-											sizes="(min-width: 1600px) 80vw, (min-width: 1300px) 90vw, calc(100vw - 40px)"
-											height={652}
-											width={1000}
-											alt="Track Your Social Media Analytics Easier Than Ever."
-											className="hero__image"
-										/>
-									</picture>
+									<div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
+										<div className="relative">
+											<img
+												src="https://images.unsplash.com/photo-1485217988980-11786ced9454?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&h=528&q=80"
+												alt=""
+												className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
+											/>
+											<div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+										</div>
+										<div className="relative">
+											<img
+												src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-x=.4&w=396&h=528&q=80"
+												alt=""
+												className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
+											/>
+											<div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+										</div>
+									</div>
+									<div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
+										<div className="relative">
+											<img
+												src="https://images.unsplash.com/photo-1670272504528-790c24957dda?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=left&w=400&h=528&q=80"
+												alt=""
+												className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
+											/>
+											<div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+										</div>
+										<div className="relative">
+											<img
+												src="https://images.unsplash.com/photo-1670272505284-8faba1c31f7d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&h=528&q=80"
+												alt=""
+												className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
+											/>
+											<div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+										</div>
+									</div>
 								</div>
-							</header>
+							</div>
 						</div>
-						{/*]*/}
-					</main>
+					</div>
 				</div>
-			</div>
-		</>
+			</main>
+		</div>
 	)
 }
