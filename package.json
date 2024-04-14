@@ -12,18 +12,9 @@
 		"prepare": "husky"
 	},
 	"lint-staged": {
-		"*.js": [
-			"prettier --write",
-			"git add"
-		],
-		"*.json": [
-			"prettier --write",
-			"git add"
-		],
-		"*.css": [
-			"prettier --write",
-			"git add"
-		]
+		"*.js": "prettier --write",
+		"*.json": "prettier --write",
+		"*.css": "prettier --write"
 	},
 	"dependencies": {
 		"@clerk/nextjs": "^4.29.12",
