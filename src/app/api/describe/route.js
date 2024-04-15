@@ -28,6 +28,15 @@ export async function POST(request) {
 		// todo : validate schema
 
 		const base64Image = await blobToBase64(file)
+
+		// check if its local dev
+		if (process.env.NODE_ENV === 'development') {
+			return new Response(JSON.stringify({ base64Image }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			})
+		}
+
 		const descriptionResult = await getImageDescription(base64Image, schema)
 
 		return new Response(JSON.stringify(descriptionResult), {
