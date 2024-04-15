@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export default function NotFound() {
 	return (
-		<html className={'overflow-hidden'}>
+		<html className={'overflow-hidden'} lang={'en'}>
 			<body>
 				<main className="relative isolate z-30 min-h-screen">
 					{/* darken */}
