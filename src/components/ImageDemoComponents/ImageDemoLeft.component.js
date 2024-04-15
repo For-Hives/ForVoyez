@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function ImageDemoLeft() {
+export function ImageDemoLeftComponent() {
 	return (
 		<div className="relative">
 			<Image

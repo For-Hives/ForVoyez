@@ -1,4 +1,4 @@
-export function ImageDemoRightBottom() {
+export function ImageDemoRightBottomComponent() {
 	return (
 		<div className="relative">
 			<img
