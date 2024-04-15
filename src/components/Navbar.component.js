@@ -12,7 +12,7 @@ const navigation = [
 	{ name: 'Contact', href: '/contact' },
 ]
 
-export function Nav() {
+export function NavbarComponent() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	return (
 		<header className="absolute inset-x-0 top-0 z-50">

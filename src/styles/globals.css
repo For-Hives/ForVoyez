@@ -78,10 +78,3 @@ html {
 		@apply text-base;
 	}
 }
-
-@layer components {
-	/* exemple of component css */
-	.icon {
-		@apply flex h-[20px] w-[20px] items-center justify-center text-white transition-all;
-	}
-}
