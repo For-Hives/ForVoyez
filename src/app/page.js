@@ -1,11 +1,11 @@
 'use client'
 import Link from 'next/link'
-import { Nav } from '@/app/nav'
+import { NavbarComponent } from '@/components/Navbar.component'
 
 export default function Home() {
 	return (
 		<div className="bg-white">
-			<Nav />
+			<NavbarComponent />
 			<main>
 				<div className="relative isolate">
 					<svg
