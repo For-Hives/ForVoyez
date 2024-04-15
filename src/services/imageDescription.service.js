@@ -1,70 +1,47 @@
-export async function getImageDescription(imageUrl) {
-	const openai = new OpenAI({
-		apiKey: process.env.OPENAI_API_KEY,
-		dangerouslyAllowBrowser: true,
-	})
+import OpenAI from 'openai'
 
+// Configure OpenAI client with environment-specific API key.
+const openai = new OpenAI({
+	apiKey: process.env.OPENAI_API_KEY,
+})
+
+// Convert blob to Base64 string.
+export async function blobToBase64(blob) {
 	try {
-		let imageData
+		const buffer = await blob.arrayBuffer()
+		const bytes = new Uint8Array(buffer)
+		return Buffer.from(bytes).toString('base64')
+	} catch (error) {
+		throw new Error('Conversion to Base64 failed')
+	}
+}
 
-		// Check if the image URL is readable by ChatGPT
-		if (
-			imageUrl.startsWith('https://') &&
-			!imageUrl.startsWith('https://localhost')
-		) {
-			// If the URL is readable, use it directly
-			imageData = {
-				type: 'image_url',
-				image_url: imageUrl,
-			}
-		} else {
-			// If the URL is not readable, download the image and send it in the request body
-			// Prepend 'http://localhost:1337' to the image URL if it starts with '/'
-			const fullImageUrl = imageUrl.startsWith('/')
-				? `http://localhost:1337${imageUrl}`
-				: imageUrl
-
-			const response = await fetch(fullImageUrl)
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`)
-			}
-
-			const blob = await response.blob()
-
-			// Encode the image blob as base64
-			const base64Image = await this.blobToBase64(blob)
-
-			imageData = {
-				type: 'image_url',
-				image_url: `data:image/png;base64,${base64Image}`,
-			}
-		}
-
-		// Get the image description using the OpenAI API
-		const response = await openai.chat.completions.create({
+// Get image description from OpenAI based on Base64 encoded image.
+export async function getImageDescription(base64Image, schema) {
+	try {
+		const vision = await openai.chat.completions.create({
 			model: 'gpt-4-vision-preview',
 			messages: [
 				{
 					role: 'user',
 					content: [
+						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${schema.context ? `The additional context for the image is: ${schema.context}.` : ''}`,
 						{
-							type: 'text',
-							text: "What's in this image? Make it simple, I just want the context and an idea (think about alt text).",
+							type: 'image_url',
+							image_url: `data:image/png;base64,${base64Image}`,
 						},
-						imageData,
 					],
 				},
 			],
 		})
 
 		// Generate alt text, caption, and title for the image
-		const completion = await openai.chat.completions.create({
+		const seoResponse = await openai.chat.completions.create({
 			model: 'gpt-3.5-turbo-0125',
 			messages: [
 				{
 					role: 'user',
-					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${response.choices[0].message.content}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
+					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${vision.choices[0].message.content}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
 				},
 			],
 			max_tokens: 750,
@@ -72,19 +49,9 @@ export async function getImageDescription(imageUrl) {
 			stop: null,
 		})
 
-		// Parse the generated JSON data and return it
-		const generatedData = JSON.parse(
-			completion.choices[0].message.content.trim() || '{}'
-		)
-		return generatedData
+		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
-		throw new Error('Failed to process image')
+		console.error('Failed to get image description:', error)
+		throw new Error('OpenAI service failure')
 	}
-}
-
-export async function blobToBase64(blob) {
-	const buffer = await blob.arrayBuffer()
-	const bytes = new Uint8Array(buffer)
-	const base64 = Buffer.from(bytes).toString('base64')
-	return base64
 }
