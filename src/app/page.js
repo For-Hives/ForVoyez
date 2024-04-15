@@ -1,14 +1,34 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { NavbarComponent } from '@/components/Navbar.component'
 import { ImageDemoLeftComponent } from '@/components/ImageDemoComponents/ImageDemoLeft.component'
 import { ImageDemoMidTopComponent } from '@/components/ImageDemoComponents/ImageDemoMidTop.component'
 import { ImageDemoMidBottomComponent } from '@/components/ImageDemoComponents/ImageDemoMidBottom.component'
 import { ImageDemoRightTopComponent } from '@/components/ImageDemoComponents/ImageDemoRightTop.component'
 import { ImageDemoRightBottomComponent } from '@/components/ImageDemoComponents/ImageDemoRightBottom.component'
-import Image from 'next/image'
+import { useEffect } from 'react'
 
 export default function Home() {
+	useEffect(() => {
+		let animateButton = function (e) {
+			e.preventDefault
+			//reset animation
+			e.target.classList.remove('animate')
+
+			e.target.classList.add('animate')
+			setTimeout(function () {
+				e.target.classList.remove('animate')
+			}, 700)
+		}
+
+		let bubblyButtons = document.getElementsByClassName('bubbly-button')
+
+		for (var i = 0; i < bubblyButtons.length; i++) {
+			bubblyButtons[i].addEventListener('click', animateButton, false)
+		}
+	}, [])
+
 	return (
 		<div className="bg-white">
 			<NavbarComponent />
@@ -93,14 +113,24 @@ export default function Home() {
 											'absolute left-0 top-0 flex h-full w-full items-center justify-center'
 										}
 									>
-										<div className={'relative h-full w-full'}>
-											<div className={'cursor-animation'}>
-												<Image
-													src={'/cursor.svg'}
-													width={35}
-													height={35}
-													alt={'cursor'}
-												/>
+										<div className={'cursor-animation'}>
+											<div>
+												<div className={'relative'}>
+													<button className={'bubbly-button'}>&nbsp;</button>
+													<div
+														className={
+															'pointer-events-none absolute left-1/2 top-1/2 transform ' +
+															'-translate-x-1/2 -translate-y-1/2'
+														}
+													>
+														<Image
+															src={'/cursor.svg'}
+															width={35}
+															height={35}
+															alt={'cursor'}
+														/>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
