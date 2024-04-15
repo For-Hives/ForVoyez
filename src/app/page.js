@@ -1,11 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { NavbarComponent } from '@/components/Navbar.component'
-import { ImageDemoLeft } from '@/app/imageDemoLeft'
-import { ImageDemoMidTop } from '@/app/imageDemoMidTop'
-import { ImageDemoMidBottom } from '@/app/imageDemoMidBottom'
-import { ImageDemoRightTop } from '@/app/imageDemoRightTop'
-import { ImageDemoRightBottom } from '@/app/imageDemoRightBottom'
+import { ImageDemoLeftComponent } from '@/components/ImageDemoComponents/ImageDemoLeft.component'
+import { ImageDemoMidTopComponent } from '@/components/ImageDemoComponents/ImageDemoMidTop.component'
+import { ImageDemoMidBottomComponent } from '@/components/ImageDemoComponents/ImageDemoMidBottom.component'
+import { ImageDemoRightTopComponent } from '@/components/ImageDemoComponents/ImageDemoRightTop.component'
+import { ImageDemoRightBottomComponent } from '@/components/ImageDemoComponents/ImageDemoRightBottom.component'
 
 export default function Home() {
 	return (
@@ -77,15 +77,15 @@ export default function Home() {
 								</div>
 								<div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
 									<div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-										<ImageDemoLeft />
+										<ImageDemoLeftComponent />
 									</div>
 									<div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
-										<ImageDemoMidTop />
-										<ImageDemoMidBottom />
+										<ImageDemoMidTopComponent />
+										<ImageDemoMidBottomComponent />
 									</div>
 									<div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
-										<ImageDemoRightTop />
-										<ImageDemoRightBottom />
+										<ImageDemoRightTopComponent />
+										<ImageDemoRightBottomComponent />
 									</div>
 								</div>
 							</div>
