@@ -5,8 +5,12 @@ export function ImageDemoRightBottomComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				text={
-					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				title={'Sylvan Serenity'}
+				alt={
+					'A tranquil forest scene with a crystal-clear stream flowing through a lush green landscape. Sunlight filters through the tall trees, casting dappled shadows on the forest floor. A variety of plants and wildlife can be seen thriving in their natural habitat.'
+				}
+				caption={
+					'Escape to the serenity of nature and be embraced by the peaceful beauty of this enchanting forest.'
 				}
 			/>
 			<Image

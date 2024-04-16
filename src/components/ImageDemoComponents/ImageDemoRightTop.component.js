@@ -5,8 +5,12 @@ export function ImageDemoRightTopComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				text={
-					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				title={"Whiskered Wonder: A Kitten's Gaze"}
+				alt={
+					'Close-up of a kitten with striking, wide eyes and patterned fur, peering curiously'
+				}
+				caption={
+					"Captivated by curiosity, this kitten's gaze pierces through the lens, inviting a moment of connection."
 				}
 			/>
 			<Image
