@@ -8,6 +8,13 @@ const openai = new OpenAI({
 // Convert blob to Base64 string.
 export async function blobToBase64(blob) {
 	try {
+		// todo : check image size
+		// todo : check image type
+		// todo : check image dimensions
+		// todo : check image quality
+		// todo : check image format
+		// todo : check image orientation
+
 		const buffer = await blob.arrayBuffer()
 		const bytes = new Uint8Array(buffer)
 		return Buffer.from(bytes).toString('base64')
