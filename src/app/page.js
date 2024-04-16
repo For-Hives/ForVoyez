@@ -104,7 +104,8 @@ export default function Home() {
 									<div className="mt-10 flex items-center gap-x-6">
 										<Link
 											href="#"
-											className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+											className="rounded-md bg-[#ff6545] px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-[#f0423f]
+											 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f0423f]"
 										>
 											Get started
 										</Link>
@@ -124,13 +125,13 @@ export default function Home() {
 									</div>
 									<div
 										className={
-											'absolute left-0 top-0 flex h-full w-full items-center justify-center'
+											'container-animation absolute left-0 top-0 flex h-full w-full items-center justify-center'
 										}
 									>
 										<div className={'relative h-full w-full'}>
 											<div
 												className={
-													'cursor cursor-animation pointer-events-none pointer-events-none absolute'
+													'cursor cursor-animation pointer-events-none absolute'
 												}
 											>
 												<Image

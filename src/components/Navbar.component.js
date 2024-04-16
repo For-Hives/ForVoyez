@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Dialog } from '@headlessui/react'
 import { useState } from 'react'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 
 const navigation = [
 	{ name: 'Home', href: '/' },
@@ -54,12 +55,17 @@ export function NavbarComponent() {
 					))}
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
-					<Link
-						href="#"
-						className="text-sm font-semibold leading-6 text-gray-900"
-					>
-						Log in <span aria-hidden="true">&rarr;</span>
-					</Link>
+					<SignedIn>
+						{/* Mount the UserButton component */}
+						<UserButton
+							userProfileMode={'navigation'}
+							userProfileUrl={'/profile'}
+						/>
+					</SignedIn>
+					<SignedOut>
+						{/* Signed out users get sign in button */}
+						<SignInButton className="decoration-none" />
+					</SignedOut>
 				</div>
 			</nav>
 			<Dialog
