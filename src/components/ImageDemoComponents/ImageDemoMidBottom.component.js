@@ -1,8 +1,14 @@
 import Image from 'next/image'
+import { GlassmorphismComponent } from '@/components/ImageDemoComponents/Glassmorphism.component'
 
 export function ImageDemoMidBottomComponent() {
 	return (
 		<div className="relative">
+			<GlassmorphismComponent
+				text={
+					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				}
+			/>
 			<Image
 				src="/images/minimalist_interior_modern_living_room.webp"
 				alt="Image of an abstract expressionist painting, demo of the generated alt text API"
