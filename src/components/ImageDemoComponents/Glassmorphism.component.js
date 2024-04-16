@@ -12,7 +12,7 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 		<div
 			className={
 				'shadow-[0 4px 30px rgba(0, 0, 0, 0.1)] glassmorphism-animation absolute left-0 top-0 h-full w-full rounded-lg bg-white/75 backdrop-blur-lg ' +
-				'z-50 border border-white/75'
+				'z-50 border border-white/75 hover:opacity-0'
 			}
 		>
 			<div
