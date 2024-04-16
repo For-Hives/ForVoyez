@@ -108,6 +108,11 @@ html {
 
 /* 1280px -> +px */
 @media screen and (min-width: 1280px) {
+	.glassmorphism-animation {
+		animation: glassmorphism 0.5s forwards ease-in;
+		animation-delay: 3.5s;
+		opacity: 0;
+	}
 	/* cursor */
 	.cursor-animation {
 		display: block;
@@ -162,6 +167,15 @@ html {
 		}
 		100% {
 			transform: scale(1);
+		}
+	}
+
+	@keyframes glassmorphism {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
 		}
 	}
 }
