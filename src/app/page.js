@@ -7,9 +7,10 @@ import { ImageDemoMidTopComponent } from '@/components/ImageDemoComponents/Image
 import { ImageDemoMidBottomComponent } from '@/components/ImageDemoComponents/ImageDemoMidBottom.component'
 import { ImageDemoRightTopComponent } from '@/components/ImageDemoComponents/ImageDemoRightTop.component'
 import { ImageDemoRightBottomComponent } from '@/components/ImageDemoComponents/ImageDemoRightBottom.component'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
+	const [textInButton, setTextInButton] = useState('Generate Now!')
 	useEffect(() => {
 		let animateButton = function (e) {
 			e.preventDefault
@@ -32,6 +33,14 @@ export default function Home() {
 		setTimeout(() => {
 			bubblyButtons[0].click()
 		}, 2800)
+
+		setTimeout(() => {
+			setTextInButton('Analyse...')
+		}, 2800)
+
+		setTimeout(() => {
+			setTextInButton('Done !')
+		}, 7000)
 	}, [])
 
 	return (
@@ -139,7 +148,7 @@ export default function Home() {
 																'bubbly-button font-bold text-slate-950'
 															}
 														>
-															Analyse
+															{textInButton}
 														</button>
 													</div>
 												</div>
