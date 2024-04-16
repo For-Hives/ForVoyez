@@ -112,7 +112,7 @@ html {
 	.cursor-animation {
 		display: block;
 		position: absolute;
-		animation: cursor 5s forwards ease-in-out;
+		animation: cursor-move 3s forwards ease-in-out;
 		scale: 1.02;
 		offset-path: path(
 			'M0,0c.6,48.66,9.17,458.79,181.09,520.1,39.97,14.25,124.01,22.22,149.68-23.15,20.07-35.47,4.65-103.86-31.41-116.46-33.77-11.8-78.35,27.9-87.54,68.72-12.01,53.35,37.25,104.97,65.49,134.55,114.53,119.99,155.69,115.28,261.69,106.04'
@@ -121,7 +121,7 @@ html {
 
 	.cursor-animation img {
 		transform: scale(1);
-		animation: cursor-scale 5s forwards ease-in-out;
+		animation: cursor-scale 3.5s forwards linear;
 	}
 
 	/* position cursor on image :
@@ -141,12 +141,27 @@ html {
         bottom: 35%;
         left: 85%;
     */
-	@keyframes cursor {
+	@keyframes cursor-move {
 		0% {
 			offset-distance: 0;
 		}
 		100% {
 			offset-distance: 100%;
+		}
+	}
+
+	@keyframes cursor-scale {
+		0% {
+			transform: scale(1);
+		}
+		90% {
+			transform: scale(1);
+		}
+		95% {
+			transform: scale(1.4);
+		}
+		100% {
+			transform: scale(1);
 		}
 	}
 }
