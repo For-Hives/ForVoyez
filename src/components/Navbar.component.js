@@ -60,6 +60,8 @@ export function NavbarComponent() {
 						<UserButton
 							userProfileMode={'navigation'}
 							userProfileUrl={'/profile'}
+							afterSignOutUrl={'/'}
+							signInUrl={'/sign-in'}
 						/>
 					</SignedIn>
 					<SignedOut>

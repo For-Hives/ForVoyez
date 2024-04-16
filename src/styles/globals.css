@@ -81,13 +81,6 @@ html {
 
 /**************************************** CURSOR ANIMATION ****************************************/
 /* media queries, for normal, sm, lg, and xl */
-
-.glassmorphism-animation {
-	animation: glassmorphism 0.5s forwards ease-in;
-	animation-delay: 3.5s;
-	opacity: 0;
-}
-
 .container-animation {
 	transform: translateY(-600px);
 }
@@ -128,15 +121,6 @@ html {
 	}
 	100% {
 		transform: scale(1);
-	}
-}
-
-@keyframes glassmorphism {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
 	}
 }
 
