@@ -31,7 +31,7 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 							`\n\t"title":"${truncateText(title, 50)}",\n\n\t"alternativeText": "${truncateText(alt, 125)}",\n\n\t"caption":"${truncateText(caption, 75)}"\n`,
 						]}
 						repeat={0}
-						speed={70}
+						speed={90}
 						cursor={false}
 					/>
 				</div>
