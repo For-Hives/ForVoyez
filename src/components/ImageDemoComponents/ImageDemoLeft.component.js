@@ -5,8 +5,12 @@ export function ImageDemoLeftComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				text={
-					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				title={'Whirlwind of Emotions'}
+				alt={
+					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion, inviting the viewer to interpret its meaning.'
+				}
+				caption={
+					'Immerse yourself in a whirlwind of emotions with this vibrant and captivating abstract expressionist painting.'
 				}
 			/>
 			<Image
