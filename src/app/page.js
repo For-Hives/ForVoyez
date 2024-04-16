@@ -27,6 +27,11 @@ export default function Home() {
 		for (var i = 0; i < bubblyButtons.length; i++) {
 			bubblyButtons[i].addEventListener('click', animateButton, false)
 		}
+
+		// 	after 3.1s, trigger the click event on the button
+		setTimeout(() => {
+			bubblyButtons[0].click()
+		}, 2800)
 	}, [])
 
 	return (
