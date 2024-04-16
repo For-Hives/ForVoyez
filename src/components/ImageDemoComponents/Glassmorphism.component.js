@@ -26,6 +26,7 @@ export function GlassmorphismComponent({ text }) {
 							"caption":"..."`,
 						]}
 						repeat={0}
+						speed={80}
 					/>
 				</div>
 				<p>{`}`}</p>
