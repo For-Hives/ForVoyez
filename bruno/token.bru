@@ -1,0 +1,16 @@
+meta {
+  name: token
+  type: http
+  seq: 3
+}
+
+get {
+  url: 127.1:3000/api/token
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  image: @file(C:\Users\breva\Sync\Media\WEB\0_2.webp)
+  schema: {"context": "a dancer with a strange face"}
+}
