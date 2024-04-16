@@ -5,8 +5,12 @@ export function ImageDemoMidBottomComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				text={
-					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				title={'Minimalist Elegance'}
+				alt={
+					'A minimalist interior design of a modern living room. The space features clean lines, neutral colors, and an open floor plan. Large windows allow plenty of natural light, and a few carefully chosen accent pieces add visual interest.'
+				}
+				caption={
+					'A minimalist interior design of a modern living room. The space features clean lines, neutral colors, and an open floor plan. Large windows allow plenty of natural light, and a few carefully chosen accent pieces add visual interest.'
 				}
 			/>
 			<Image
