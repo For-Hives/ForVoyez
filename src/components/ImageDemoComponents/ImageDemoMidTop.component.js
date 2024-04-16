@@ -5,8 +5,12 @@ export function ImageDemoMidTopComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				text={
-					'An abstract expressionist painting with bold, sweeping brushstrokes and vibrant colors. The artwork conveys a sense of movement and emotion...'
+				title={'The City of Tomorrow'}
+				alt={
+					'A futuristic city with towering skyscrapers, sleek flying vehicles, and holographic billboards. The streets are illuminated by neon lights, and advanced robots assist humans in their daily lives.'
+				}
+				caption={
+					'Step into the city of tomorrow, where technology and humanity intertwine in a breathtaking urban landscape.'
 				}
 			/>
 			<Image
