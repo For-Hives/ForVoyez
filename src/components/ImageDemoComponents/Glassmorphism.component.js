@@ -1,6 +1,13 @@
 import { TypeAnimation } from 'react-type-animation'
 
 export function GlassmorphismComponent({ title, alt, caption }) {
+	function truncateText(text, maxLength) {
+		if (text.length > maxLength) {
+			return text.substring(0, maxLength - 3) + '...'
+		}
+		return text
+	}
+
 	return (
 		<div
 			className={
@@ -10,22 +17,25 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 		>
 			<div
 				className={
-					'pointer-events-none flex h-full w-full scale-[90%] flex-col items-start text-sm leading-4'
+					'pointer-events-none flex h-full w-full scale-[90%] flex-col items-start text-xs leading-4'
 				}
 			>
-				<div className={'flex flex-grow items-center'}>
+				<p>{`{`}</p>
+				<div className={'flex flex-grow items-start'}>
 					<TypeAnimation
 						style={{
 							whiteSpace: 'pre-wrap',
 						}}
 						sequence={[
 							3500,
-							`{\n\n\t"title":"${title}",\n\n\t"alternativeText": "${alt}",\n\n\n\t"caption":"${caption}"\n\n}`,
+							`\n\t"title":"${truncateText(title, 50)}",\n\n\t"alternativeText": "${truncateText(alt, 125)}",\n\n\t"caption":"${truncateText(caption, 75)}"\n`,
 						]}
 						repeat={0}
-						speed={80}
+						speed={70}
+						cursor={false}
 					/>
 				</div>
+				<p>{`}`}</p>
 			</div>
 		</div>
 	)
