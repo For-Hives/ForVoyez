@@ -1,6 +1,6 @@
 import { TypeAnimation } from 'react-type-animation'
 
-export function GlassmorphismComponent({ text }) {
+export function GlassmorphismComponent({ title, alt, caption }) {
 	return (
 		<div
 			className={
@@ -10,26 +10,22 @@ export function GlassmorphismComponent({ text }) {
 		>
 			<div
 				className={
-					'pointer-events-none flex h-full w-full scale-[90%] flex-col items-start text-sm'
+					'pointer-events-none flex h-full w-full scale-[90%] flex-col items-start text-sm leading-4'
 				}
 			>
-				<p>{`{`}</p>
 				<div className={'flex flex-grow items-center'}>
 					<TypeAnimation
 						style={{
-							whiteSpace: 'pre-line',
+							whiteSpace: 'pre-wrap',
 						}}
 						sequence={[
-							`
-							"title":"..."
-							"alternativeText": "${text}"
-							"caption":"..."`,
+							3500,
+							`{\n\n\t"title":"${title}",\n\n\t"alternativeText": "${alt}",\n\n\n\t"caption":"${caption}"\n\n}`,
 						]}
 						repeat={0}
 						speed={80}
 					/>
 				</div>
-				<p>{`}`}</p>
 			</div>
 		</div>
 	)
