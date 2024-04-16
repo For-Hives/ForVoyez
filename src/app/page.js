@@ -113,22 +113,29 @@ export default function Home() {
 											'absolute left-0 top-0 flex h-full w-full items-center justify-center'
 										}
 									>
-										<div className={'cursor-animation'}>
-											<div>
-												<div className={'relative'}>
-													<button className={'bubbly-button'}>&nbsp;</button>
-													<div
-														className={
-															'pointer-events-none absolute left-1/2 top-1/2 transform ' +
-															'-translate-x-1/2 -translate-y-1/2'
-														}
-													>
-														<Image
-															src={'/cursor.svg'}
-															width={35}
-															height={35}
-															alt={'cursor'}
-														/>
+										<div className={'relative h-full w-full'}>
+											<div
+												className={
+													'cursor cursor-animation pointer-events-none pointer-events-none absolute'
+												}
+											>
+												<Image
+													src={'/cursor.svg'}
+													width={35}
+													height={35}
+													alt={'cursor'}
+												/>
+											</div>
+											<div className={'absolute bottom-0 right-0'}>
+												<div>
+													<div className={'relative'}>
+														<button
+															className={
+																'bubbly-button font-bold text-slate-950'
+															}
+														>
+															Analyse
+														</button>
 													</div>
 												</div>
 											</div>
