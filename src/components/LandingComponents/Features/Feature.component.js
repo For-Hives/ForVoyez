@@ -1,15 +1,14 @@
+'use client'
+import RiveComponent from '@rive-app/react-canvas'
 import {
-	ArrowPathIcon,
-	CloudArrowUpIcon,
-	EyeIcon,
-	FingerPrintIcon,
-	LockClosedIcon,
 	ClockIcon,
+	EyeIcon,
+	FolderOpenIcon,
+	MagnifyingGlassIcon,
 	PuzzlePieceIcon,
 	SparklesIcon,
-	MagnifyingGlassIcon,
-	FolderOpenIcon,
 } from '@heroicons/react/20/solid'
+import { useEffect, useState } from 'react'
 
 const features = [
 	{
@@ -50,6 +49,12 @@ const features = [
 ]
 
 export function FeatureComponent() {
+	const [isRiveLoaded, setIsRiveLoaded] = useState(false)
+
+	useEffect(() => {
+		setIsRiveLoaded(true)
+	}, [])
+
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -69,15 +74,22 @@ export function FeatureComponent() {
 			</div>
 			<div className="relative overflow-hidden pt-16">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
-					<img
-						src="/path/to/your/app-screenshot.png"
-						alt="App screenshot"
-						className="mb-[-12%] rounded-xl shadow-2xl ring-1 ring-gray-900/10"
-						width={2432}
-						height={1442}
-					/>
+					{isRiveLoaded && (
+						// <Rive
+						// 	src="./animation_features/landing_art_forvoyez.riv"
+						// 	className="mb-[-12%] rounded-xl shadow-2xl ring-1 ring-gray-900/10"
+						// 	width={2432}
+						// 	height={1442}
+						// />
+						<RiveComponent
+							src="/animation_features/landing_art_forvoyez.riv"
+							className="h-full min-h-[50vh] w-full min-w-[5vw]"
+							autoPlay={true}
+							stateMachines={'State Machine 1'}
+						/>
+					)}
 					<div className="relative" aria-hidden="true">
-						<div className="absolute -inset-x-20 bottom-0 bg-gradient-to-t from-white pt-[7%]" />
+						<div className="absolute -inset-x-20 bottom-0 pt-[7%]" />
 					</div>
 				</div>
 			</div>
