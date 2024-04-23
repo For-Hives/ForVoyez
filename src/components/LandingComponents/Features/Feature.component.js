@@ -83,7 +83,7 @@ export function FeatureComponent() {
 						// />
 						<RiveComponent
 							src="/animation_features/landing_art_forvoyez.riv"
-							className="h-full min-h-[50vh] w-full min-w-[5vw]"
+							className="h-full min-h-[500px] w-full min-w-[5vw]"
 							autoPlay={true}
 							stateMachines={'State Machine 1'}
 						/>
