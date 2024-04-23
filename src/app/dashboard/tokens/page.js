@@ -3,8 +3,9 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import TokenCreate from '@/components/tokens/TokenCreate'
-import { auth } from '@clerk/nextjs'
 import TokenList from '@/components/tokens/TokenList'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function TokenPage() {
 	const [tokens, setTokens] = useState([])
@@ -13,12 +14,12 @@ export default function TokenPage() {
 	const [modalAction, setModalAction] = useState(() => () => {})
 
 	const showToast = message => {
-		alert(message) // Replace with a toast notification library if available
+		toast.info(message)
 	}
 
 	const handleModal = action => {
 		setIsModalOpen(true)
-		setModalContent('Are you sure you want to delete this token?')
+		setModalContent('Êtes-vous sûr de vouloir supprimer ce token ?')
 		setModalAction(() => action)
 	}
 
@@ -26,29 +27,32 @@ export default function TokenPage() {
 		const updatedTokens = tokens.filter((_, i) => i !== index)
 		setTokens(updatedTokens)
 		setIsModalOpen(false)
+		showToast('Token supprimé avec succès')
 	}
 
 	return (
 		<>
 			<div className="p-8">
-				<h1 className="mb-4 text-xl font-bold">Token Management</h1>
-				<div className="flex flex-wrap">
+				<h1 className="mb-8 text-xl font-bold text-gray-800">Manage Tokens</h1>
+				<div className="mb-8">
 					<TokenList tokens={tokens} setTokens={setTokens} />
 				</div>
-				<TokenCreate tokens={tokens} setTokens={setTokens} />
+				<div className="mb-8">
+					<TokenCreate tokens={tokens} setTokens={setTokens} />
+				</div>
 				{isModalOpen && (
 					<div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-						<div className="bg-white p-8">
-							<p>{modalContent}</p>
+						<div className="rounded-lg bg-white p-8 shadow-lg">
+							<p className="mb-4">{modalContent}</p>
 							<button
 								onClick={modalAction}
-								className="mr-4 rounded bg-green-500 px-4 py-2 text-white"
+								className="mr-4 rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
 							>
 								Yes
 							</button>
 							<button
 								onClick={() => setIsModalOpen(false)}
-								className="rounded bg-red-500 px-4 py-2 text-white"
+								className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
 							>
 								No
 							</button>

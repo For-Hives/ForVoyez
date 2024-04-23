@@ -1,23 +1,34 @@
-import { auth } from '@clerk/nextjs'
 import { useState } from 'react'
 import { createToken } from '@/components/tokens/TokensCRUD'
-// import toastify
-
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
+import JwtModal from '@/components/tokens/JwtModal'
 
 export default function TokenCreate({ tokens, setTokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
 	const [newTokenExpiry, setNewTokenExpiry] = useState('')
+	const [jwtModalOpen, setJwtModalOpen] = useState(false)
+	const [jwtToken, setJwtToken] = useState('')
 
 	const showToast = message => {
-		// use tostify for the alert
-		toast('Wow so easy!')
+		toast(message, {
+			position: 'top-right',
+			autoClose: 3000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+		})
+	}
+
+	const showJwtModal = jwt => {
+		setJwtToken(jwt)
+		setJwtModalOpen(true)
 	}
 
 	async function create() {
 		if (!newTokenExpiry || new Date(newTokenExpiry) < new Date()) {
-			// todo : penser a check que la date d'expiration est bien utiliser
-			showToast('Please provide a valid expiry date in the future.')
+			showToast('Please provide a valid future expiry date.')
 			return
 		}
 
@@ -27,38 +38,45 @@ export default function TokenCreate({ tokens, setTokens }) {
 			expiredAt: new Date(newTokenExpiry).toISOString(),
 		}
 
-		console.log(newToken)
-
-		const result = await createToken(newToken)
-		console.table(result)
-
-		setTokens([...tokens, newToken])
-		setNewTokenName('')
-		setNewTokenExpiry('')
-		showToast('Token created successfully!')
+		try {
+			const result = await createToken(newToken)
+			if (result.jwt) {
+				showJwtModal(result.jwt)
+			}
+			setTokens([...tokens, { ...newToken, id: result.id }]) // Assume response contains id.
+			setNewTokenName('')
+			setNewTokenExpiry('')
+			showToast('Token successfully created.')
+		} catch (error) {
+			showToast('Error creating token.')
+		}
 	}
 
 	return (
-		<div className="mb-4">
+		<div className="mb-4 flex items-center justify-center rounded-lg bg-white p-4 shadow">
 			<input
 				type="text"
-				placeholder="New token name"
+				placeholder="Token Name"
 				value={newTokenName}
 				onChange={e => setNewTokenName(e.target.value)}
-				className="mr-2 border p-2"
+				className="mb-4 mr-2 w-full rounded border p-2"
 			/>
 			<input
 				type="date"
 				value={newTokenExpiry}
 				onChange={e => setNewTokenExpiry(e.target.value)}
-				className="mr-2 border p-2"
+				className="mb-4 mr-2 w-full rounded border p-2"
 			/>
 			<button
 				onClick={create}
-				className="rounded bg-blue-500 px-4 py-2 text-white"
+				className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
 			>
 				Create Token
 			</button>
+
+			{jwtModalOpen && (
+				<JwtModal jwtToken={jwtToken} setJwtModalOpen={setJwtModalOpen} />
+			)}
 		</div>
 	)
 }

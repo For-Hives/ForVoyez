@@ -15,8 +15,11 @@ export default function WelcomePage() {
 		<>
 			<div className="p-8">
 				<h1 className="mb-4 text-xl font-bold">embark here</h1>
-				<Link href="/dashboard/tokens">tokens</Link>
-				<Link href="/dashboard/plans">plans</Link>
+
+				<div className="flex flex-col">
+					<Link href="/dashboard/tokens">tokens</Link>
+					<Link href="/dashboard/plans">plans</Link>
+				</div>
 			</div>
 		</>
 	)
