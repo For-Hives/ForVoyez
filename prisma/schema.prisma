@@ -11,7 +11,7 @@ datasource db {
 // should have : uuid, user link, created at, expired at, name (optional)
 model Token {
   id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [clerkId])
   userId    String
   createdAt DateTime @default(now())
   expiredAt DateTime
@@ -22,8 +22,7 @@ model Token {
 // a table to store the user information
 // should have a link to the Clerk user id, the remaning api credits, other fields will be added later
 model User {
-  id        String   @id @default(uuid())
-  clerkId   String
+  clerkId   String   @id
   credits   Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -35,7 +34,7 @@ model User {
 // should have: user link, used at, used credits (how many credits the user used in this request), wich api the user used, and with with token
 model Usage {
   id      String   @id @default(uuid())
-  user    User     @relation(fields: [userId], references: [id])
+  user    User     @relation(fields: [userId], references: [clerkId])
   userId  String
   usedAt  DateTime @default(now())
   used    Int
