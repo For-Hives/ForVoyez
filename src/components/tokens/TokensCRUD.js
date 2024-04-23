@@ -2,6 +2,7 @@
 
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/services/prisma.service'
+import { generateJwt } from '@/services/jwt.service'
 
 export async function createToken(token) {
 	'use server'
@@ -14,13 +15,18 @@ export async function createToken(token) {
 
 	console.log(userId)
 
+	let jwt = await generateJwt({
+		userId: userId,
+		createdAt: token.createdAt,
+		expiredAt: token.expiredAt,
+		name: token.name,
+	})
+
 	// todo : verfier que la table user a bien ete initialiser
-
-	console.log(token)
-
 	const result = await prisma.token.create({
 		data: {
 			userId: userId,
+			jwt: jwt,
 			createdAt: token.createdAt,
 			expiredAt: token.expiredAt,
 			name: token.name,

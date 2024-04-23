@@ -30,6 +30,7 @@ export default function TokenCreate({ tokens, setTokens }) {
 		console.log(newToken)
 
 		const result = await createToken(newToken)
+		console.table(result)
 
 		setTokens([...tokens, newToken])
 		setNewTokenName('')
