@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
 import TokenCreate from '@/components/tokens/TokenCreate'
 import { auth } from '@clerk/nextjs'
 
@@ -30,7 +29,6 @@ export default function TokenPage() {
 
 	return (
 		<>
-			<Navbar />
 			<div className="p-8">
 				<h1 className="mb-4 text-xl font-bold">Token Management</h1>
 				<div className="flex flex-wrap">
