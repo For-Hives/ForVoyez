@@ -1,8 +1,14 @@
 import {
 	ArrowPathIcon,
 	CloudArrowUpIcon,
+	EyeIcon,
 	FingerPrintIcon,
 	LockClosedIcon,
+	ClockIcon,
+	PuzzlePieceIcon,
+	SparklesIcon,
+	MagnifyingGlassIcon,
+	FolderOpenIcon,
 } from '@heroicons/react/20/solid'
 
 const features = [
@@ -10,24 +16,36 @@ const features = [
 		name: 'Say goodbye to tedious metadata input tasks',
 		description:
 			'With our AI-powered tool, you can automate the generation of SEO-optimized alt texts, titles, and captions. No more wasting time manually inputting metadata - let our AI handle it while you focus on what matters most.',
-		icon: CloudArrowUpIcon,
+		icon: SparklesIcon,
 	},
 	{
 		name: 'Seamless integration in minutes',
 		description: `Our well-documented RESTful API allows for seamless integration with your existing applications and workflows. With just a few lines of code, you can start generating optimized image metadata effortlessly. Take advantage of our API's flexibility and ease of use to streamline your development process.`,
-		icon: LockClosedIcon,
+		icon: PuzzlePieceIcon,
 	},
 	{
 		name: 'Boost your search engine visibility',
 		description:
 			'Gain a competitive edge with our SEO-optimized image metadata. Our tool ensures your alt texts, titles, and captions are optimized for search engines, helping you improve your rankings, drive more organic traffic, and increase user engagement. See the difference optimized images can make for your online visibility.',
-		icon: ArrowPathIcon,
+		icon: MagnifyingGlassIcon,
 	},
 	{
 		name: 'Large-scale metadata in no time',
 		description:
 			'Whether you have dozens, hundreds, or thousands of images, our tool can handle the job. Take advantage of our powerful batch processing capability to generate metadata for entire image libraries in no time. With scalable infrastructure and top-notch performance, we cater to the needs of developers and businesses of all sizes.',
-		icon: FingerPrintIcon,
+		icon: FolderOpenIcon,
+	},
+	{
+		name: 'Create Images Accessible to Everyone',
+		description:
+			'By generating accurate alt texts and captions for your images, our tool helps you make your content accessible to a wider audience, including those using screen readers or assistive technologies. Improve the experience for all users and demonstrate your commitment to digital inclusivity.',
+		icon: EyeIcon,
+	},
+	{
+		name: 'Free Up Your Time for What Really Counts',
+		description:
+			'By automating image metadata creation, our tool allows you to save valuable time and free up resources that would otherwise be spent on tedious tasks. Focus on creating quality content, innovating, and growing your business, while letting our API handle the technical details.',
+		icon: ClockIcon,
 	},
 ]
 
@@ -73,7 +91,8 @@ export function FeatureComponent() {
 									aria-hidden="true"
 								/>
 								{feature.name}
-							</dt>{' '}
+							</dt>
+							<br />
 							<dd className="inline">{feature.description}</dd>
 						</div>
 					))}
