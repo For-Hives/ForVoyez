@@ -5,8 +5,6 @@ import { prisma } from '@/services/prisma.service'
 import { generateJwt } from '@/services/jwt.service'
 
 export async function createToken(token) {
-	'use server'
-
 	const { userId } = auth()
 
 	if (!userId) {
@@ -32,6 +30,24 @@ export async function createToken(token) {
 			name: token.name,
 		},
 	})
+
+	return result
+}
+
+export async function getAllToken() {
+	const { userId } = auth()
+
+	if (!userId) {
+		throw new Error('You must be logged to view a token')
+	}
+
+	const result = await prisma.token.findMany({
+		where: {
+			userId: userId,
+		},
+	})
+
+	console.log('views all token ', result)
 
 	return result
 }
