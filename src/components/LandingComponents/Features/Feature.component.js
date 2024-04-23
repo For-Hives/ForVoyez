@@ -75,12 +75,6 @@ export function FeatureComponent() {
 			<div className="relative overflow-hidden pt-16">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					{isRiveLoaded && (
-						// <Rive
-						// 	src="./animation_features/landing_art_forvoyez.riv"
-						// 	className="mb-[-12%] rounded-xl shadow-2xl ring-1 ring-gray-900/10"
-						// 	width={2432}
-						// 	height={1442}
-						// />
 						<RiveComponent
 							src="/animation_features/landing_art_forvoyez.riv"
 							className="h-full min-h-[500px] w-full min-w-[5vw]"
