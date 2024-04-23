@@ -8,6 +8,10 @@ const nextConfig = {
 				protocol: 'https',
 				hostname: '**.andy-cinquin.fr',
 			},
+			{
+				protocol: 'https',
+				hostname: 'lemonsqueezy.imgix.net',
+			},
 		],
 	},
 }
