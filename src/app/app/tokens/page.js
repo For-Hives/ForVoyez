@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import TokenCreate from '@/components/tokens/TokenCreate'
 import { auth } from '@clerk/nextjs'
+import TokenList from '@/components/tokens/TokenList'
 
 export default function TokenPage() {
 	const [tokens, setTokens] = useState([])
@@ -32,20 +33,7 @@ export default function TokenPage() {
 			<div className="p-8">
 				<h1 className="mb-4 text-xl font-bold">Token Management</h1>
 				<div className="flex flex-wrap">
-					{tokens &&
-						tokens.map((token, index) => (
-							<div key={index} className="mb-2 mr-2 flex flex-col border p-4">
-								<p>Name: {token.name}</p>
-								<p>Created at: {token.createdAt}</p>
-								<p>Expires at: {token.expiredAt}</p>
-								<button
-									onClick={() => handleModal(() => deleteToken(index))}
-									className="mt-2 rounded bg-red-500 px-4 py-2 text-white"
-								>
-									Delete
-								</button>
-							</div>
-						))}
+					<TokenList tokens={tokens} setTokens={setTokens} />
 				</div>
 				<TokenCreate tokens={tokens} setTokens={setTokens} />
 				{isModalOpen && (
