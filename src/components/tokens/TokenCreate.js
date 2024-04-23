@@ -1,10 +1,18 @@
 import { auth } from '@clerk/nextjs'
 import { useState } from 'react'
 import { createToken } from '@/components/tokens/TokensCRUD'
+// import toastify
+
+import { ToastContainer, toast } from 'react-toastify'
 
 export default function TokenCreate({ tokens, setTokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
 	const [newTokenExpiry, setNewTokenExpiry] = useState('')
+
+	const showToast = message => {
+		// use tostify for the alert
+		toast('Wow so easy!')
+	}
 
 	async function create() {
 		if (!newTokenExpiry || new Date(newTokenExpiry) < new Date()) {
