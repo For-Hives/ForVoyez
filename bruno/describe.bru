@@ -7,7 +7,11 @@ meta {
 post {
   url: 127.1:3000/api/describe
   body: multipartForm
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJ1c2VyXzJmNVB2ck9FVVpKNmdHMk0ycFNsYmk4SEhNaCIsImNyZWF0ZWRBdCI6IjIwMjQtMDQtMjNUMTM6NTg6MjMuMDEzWiIsImV4cGlyZWRBdCI6IjIwMjQtMDQtMjVUMDA6MDA6MDAuMDAwWiIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzEzODgwNzAzLCJpc3MiOiJGb3JWb3lleiIsImF1ZCI6IkZvclZveWV6IiwiZXhwIjoxNzEzOTY3MTAzfQ.QLwYIIgVlsSBzPGdustq0N9sd6oc_FuUoHORYn7OW00
 }
 
 body:multipart-form {
