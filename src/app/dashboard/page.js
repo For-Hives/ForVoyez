@@ -15,7 +15,7 @@ export default function WelcomePage() {
 		<>
 			<div className="p-8">
 				<h1 className="mb-4 text-xl font-bold">embark here</h1>
-				<Link href="/app/tokens">tokens</Link>
+				<Link href="/dashboard/tokens">tokens</Link>
 			</div>
 		</>
 	)
