@@ -66,7 +66,10 @@ export function NavbarComponent() {
 					</SignedIn>
 					<SignedOut>
 						{/* Signed out users get sign in button */}
-						<SignInButton className="decoration-none" />
+						<SignInButton
+							className="decoration-none"
+							signInFallbackRedirectUrl={'/app'}
+						/>
 					</SignedOut>
 				</div>
 			</nav>
