@@ -116,12 +116,19 @@ export function NavbarComponent() {
 								))}
 							</div>
 							<div className="py-6">
-								<Link
-									href="#"
-									className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-								>
-									Log in
-								</Link>
+								<SignedIn>
+									{/* Mount the UserButton component */}
+									<UserButton
+										userProfileMode={'navigation'}
+										userProfileUrl={'/profile'}
+										afterSignOutUrl={'/'}
+										signInUrl={'/sign-in'}
+									/>
+								</SignedIn>
+								<SignedOut>
+									{/* Signed out users get sign in button */}
+									<SignInButton className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" />
+								</SignedOut>
 							</div>
 						</div>
 					</div>
