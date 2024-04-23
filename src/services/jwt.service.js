@@ -24,18 +24,18 @@ export async function generateJwt(payload) {
 
 export async function verifyJwt(jwt) {
 	// extract token from request
-	const token = jwt.header('Authorization').replace('Bearer ', '')
+	const token = jwt.replace('Bearer ', '')
 	try {
 		// verify token
 		const { payload, protectedHeader } = await jwtVerify(token, secretKey, {
-			issuer: process.env.JWT_ISSUER, // issuer
-			audience: process.env.JWT_AUDIENCE, // audience
+			issuer: 'ForVoyez', // issuer
+			audience: 'ForVoyez', // audience
 		})
-		// log values to console
-		console.log(payload)
-		console.log(protectedHeader)
+
+		return payload
 	} catch (e) {
-		// token verification failed
-		console.log('Token is invalid')
+		console.log(e)
+
+		throw new Error('Token is invalid')
 	}
 }
