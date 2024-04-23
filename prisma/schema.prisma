@@ -13,6 +13,7 @@ model Token {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [clerkId])
   userId    String
+  jwt       String
   createdAt DateTime @default(now())
   expiredAt DateTime
   name      String?
