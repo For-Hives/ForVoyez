@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { GlassmorphismComponent } from '@/components/ImageDemoComponents/Glassmorphism.component'
+import { GlassmorphismComponent } from '@/components/LandingComponents/Hero/ImageDemoComponents/Glassmorphism.component'
 
 export function ImageDemoMidTopComponent() {
 	return (
