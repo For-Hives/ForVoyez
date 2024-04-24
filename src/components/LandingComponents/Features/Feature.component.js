@@ -57,7 +57,7 @@ export function FeatureComponent() {
 	}, [])
 
 	return (
-		<div className="overflow-hidden py-24 sm:py-32">
+		<div className="overflow-hidden py-[70rem] sm:py-32">
 			<div className="relative mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 					<div className="lg:pr-8 lg:pt-4">
@@ -95,14 +95,13 @@ export function FeatureComponent() {
 					{isRiveLoaded && (
 						<RiveComponent
 							src="/animation_features/landing_art_forvoyez.riv"
-							className="sticky top-[50%] h-full w-full translate-y-[-50%]"
+							className="h-full w-full"
 							autoPlay={true}
 							stateMachines={'State Machine 1'}
 						/>
 					)}
 				</div>
 			</div>
-			<section className={'h-[500vh] w-screen'}></section>
 		</div>
 	)
 }
