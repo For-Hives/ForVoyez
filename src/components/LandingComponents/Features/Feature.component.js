@@ -8,6 +8,7 @@ import {
 	SparklesIcon,
 } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
+import { RiveComponent } from '@rive-app/react-canvas'
 
 const features = [
 	{
@@ -56,9 +57,9 @@ export function FeatureComponent() {
 	}, [])
 
 	return (
-		<div className="relative overflow-hidden bg-white py-24 sm:py-32">
+		<div className="overflow-hidden bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+				<div className="relative mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 					<div className="lg:pr-8 lg:pt-4">
 						<div className="lg:max-w-lg">
 							<h2 className="text-base font-semibold leading-7 text-[#ff6545]">
@@ -89,17 +90,14 @@ export function FeatureComponent() {
 							</dl>
 						</div>
 					</div>
-					<div className="sticky top-[50%]">
-						<h1 className={''}>pouet</h1>
-						{/*{isRiveLoaded && (*/}
-						{/*	<RiveComponent*/}
-						{/*		src="/animation_features/landing_art_forvoyez.riv"*/}
-						{/*		className="h-screen max-h-[100vh] w-full sm:min-h-[60vh]"*/}
-						{/*		autoPlay={true}*/}
-						{/*		stateMachines={'State Machine 1'}*/}
-						{/*	/>*/}
-						{/*)}*/}
-					</div>
+					{isRiveLoaded && (
+						<RiveComponent
+							src="/animation_features/landing_art_forvoyez.riv"
+							className="h-screen max-h-[100vh] w-full sm:min-h-[60vh]"
+							autoPlay={true}
+							stateMachines={'State Machine 1'}
+						/>
+					)}
 				</div>
 			</div>
 			<section className={'h-[500vh] w-screen'}></section>
