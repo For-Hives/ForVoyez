@@ -1,5 +1,4 @@
 'use client'
-import RiveComponent from '@rive-app/react-canvas'
 import {
 	ClockIcon,
 	EyeIcon,
@@ -57,7 +56,7 @@ export function FeatureComponent() {
 	}, [])
 
 	return (
-		<div className="overflow-hidden bg-white py-24 sm:py-32">
+		<div className="relative overflow-hidden bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 					<div className="lg:pr-8 lg:pt-4">
@@ -90,22 +89,20 @@ export function FeatureComponent() {
 							</dl>
 						</div>
 					</div>
-					{isRiveLoaded && (
-						<div
-							className={
-								'flex w-[48rem] max-w-none items-center justify-center rounded-xl sm:w-[57rem] md:-ml-4 lg:-ml-0'
-							}
-						>
-							<RiveComponent
-								src="/animation_features/landing_art_forvoyez.riv"
-								className="min-h-[50vh] w-full sm:min-h-[60vh]"
-								autoPlay={true}
-								stateMachines={'State Machine 1'}
-							/>
-						</div>
-					)}
+					<div className="sticky top-[50%]">
+						<h1 className={''}>pouet</h1>
+						{/*{isRiveLoaded && (*/}
+						{/*	<RiveComponent*/}
+						{/*		src="/animation_features/landing_art_forvoyez.riv"*/}
+						{/*		className="h-screen max-h-[100vh] w-full sm:min-h-[60vh]"*/}
+						{/*		autoPlay={true}*/}
+						{/*		stateMachines={'State Machine 1'}*/}
+						{/*	/>*/}
+						{/*)}*/}
+					</div>
 				</div>
 			</div>
+			<section className={'h-[500vh] w-screen'}></section>
 		</div>
 	)
 }
