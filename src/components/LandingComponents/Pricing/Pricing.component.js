@@ -5,34 +5,33 @@ import { CheckIcon } from '@heroicons/react/20/solid'
 
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
-	{ value: 'enterprise', label: 'Enterprise', priceSuffix: '/custom' },
+	{ value: 'annually', label: 'Annually', priceSuffix: '/year' },
 ]
 const tiers = [
 	{
-		name: 'Developer',
-		id: 'tier-developer',
+		name: 'Starter',
+		id: 'tier-starter',
 		href: '#',
-		price: { monthly: '$49', enterprise: 'Custom' },
+		price: { monthly: '2.99€', annually: '29.90€' },
 		description: 'Perfect for individual developers and small projects.',
 		features: [
-			'1000 requests/month',
+			'100 credits/month',
 			'Basic metadata generation',
 			'Community support',
 		],
 		mostPopular: false,
 	},
 	{
-		name: 'Team',
-		id: 'tier-team',
+		name: 'Pro',
+		id: 'tier-pro',
 		href: '#',
-		price: { monthly: '90€', enterprise: 'Custom' },
-		description:
-			'Better suited for growing teams and medium-sized applications.',
+		price: { monthly: '$149', annually: '$1490' },
+		description: 'Best for growing teams and medium-sized applications.',
 		features: [
-			'10,000 requests/month',
+			'10,000 credits/month',
 			'Advanced metadata generation',
 			'Priority support',
-			'All above features',
+			'Dedicated account manager',
 		],
 		mostPopular: true,
 	},
@@ -40,11 +39,11 @@ const tiers = [
 		name: 'Enterprise',
 		id: 'tier-enterprise',
 		href: '#',
-		price: { usage: 'Custom', monthly: 'Custom', enterprise: 'Custom' },
+		price: { monthly: 'Custom', annually: 'Custom' },
 		description:
 			'Tailored for large-scale deployments and complex requirements.',
 		features: [
-			'Unlimited requests',
+			'Unlimited credits',
 			'Advanced metadata generation',
 			'24/7 dedicated support',
 			'Custom SLAs',
@@ -70,18 +69,18 @@ export function PricingComponent() {
 						Pricing
 					</h2>
 					<p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-						Flexible plans for developers and&nbsp;teams
+						Flexible plans for all your needs
 					</p>
 				</div>
 				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-					Choose the plan that fits your needs and scale as your application
-					grows. Start with a free trial and upgrade anytime.
+					Choose the right plan for your usage and scale as your needs grow.
+					Switch plans or cancel anytime.
 				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
 						value={frequency}
 						onChange={setFrequency}
-						className="grid grid-cols-3 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-gray-200"
+						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-gray-200"
 					>
 						<RadioGroup.Label className="sr-only">
 							Payment frequency
@@ -150,7 +149,7 @@ export function PricingComponent() {
 									'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6545]'
 								)}
 							>
-								{tier.name === 'Developer' ? 'Start free trial' : 'Get started'}
+								{tier.name === 'Starter' ? 'Get started' : 'Upgrade'}
 							</a>
 							<ul
 								role="list"
