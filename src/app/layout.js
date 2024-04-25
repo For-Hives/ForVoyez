@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { Kanit, Playpen_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-import { ToastContainer } from 'react-toastify'
 
 // fixme replace that with your chosen font
 const kanit = Kanit({
@@ -43,8 +42,6 @@ export default function RootLayout({ children }) {
 				className={`${kanit.variable} ${playpen_sans.variable}`}
 				lang={'en'}
 			>
-				<ToastContainer closeOnClick />
-
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
 					{children}
 				</body>

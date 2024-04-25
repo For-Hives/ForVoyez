@@ -15,12 +15,14 @@ export function CtaComponent() {
 					with our easy-to-use API.
 				</p>
 				<div className="mt-10 flex items-center justify-center gap-x-6">
+					{/* FIXME replace that with the correct link */}
 					<Link
 						href="#"
 						className="rounded-md bg-[#ff6545] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6545]"
 					>
 						Generate Metadata Now
 					</Link>
+					{/* FIXME replace that with the correct link */}
 					<Link
 						href="#"
 						className="text-sm font-semibold leading-6 text-gray-900"
