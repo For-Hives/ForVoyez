@@ -1,6 +1,6 @@
 import { NavbarComponent } from '@/components/Navbar.component'
 import { FooterComponent } from '@/components/Footer.component'
-import { ContactComponent } from '@/components/Contact.components/contactComponent'
+import { ContactComponent } from '@/components/ContactComponents/Contact.component'
 
 export default function Home() {
 	return (
