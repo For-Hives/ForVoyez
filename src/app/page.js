@@ -2,6 +2,7 @@ import { NavbarComponent } from '@/components/Navbar.component'
 import { HeroComponent } from '@/components/LandingComponents/Hero/Hero.component'
 import { FeatureComponent } from '@/components/LandingComponents/Features/Feature.component'
 import { PricingComponent } from '@/components/LandingComponents/Pricing/Pricing.component'
+import { CtaComponent } from '@/components/LandingComponents/Cta/Cta.component'
 
 export default function Home() {
 	return (
@@ -11,6 +12,7 @@ export default function Home() {
 				<HeroComponent />
 				<FeatureComponent />
 				<PricingComponent />
+				<CtaComponent />
 			</main>
 		</div>
 	)
