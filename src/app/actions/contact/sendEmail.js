@@ -18,10 +18,11 @@ export async function sendEmail(data) {
 		message,
 	} = data
 
+	// FIXME change the email address to the correct one
 	try {
 		await mg.messages.create(process.env.MAILGUN_DOMAIN, {
 			from: 'ForVoyez <noreply@forvoyez.fr>',
-			to: 'contact@forvoyez.fr',
+			to: 'contact@andy-cinquin.fr',
 			subject: `New contact message - ${subject}`,
 			text: `
         Prénom: ${firstName}
