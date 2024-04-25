@@ -20,7 +20,7 @@ body {
 	width: 100vw;
 	max-width: 100vw;
 	clear: both;
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
 }
 
 html {
@@ -336,4 +336,32 @@ html {
 			0 0,
 			0 0;
 	}
+}
+
+/* ----------------------------------- */
+.sticky-demo .sticky-demo-container {
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-start;
+	border: 2px dashed rgba(114, 186, 94, 0.35);
+	height: 400px;
+	background: rgba(114, 186, 94, 0.05);
+	overflow: visible;
+	margin: 16px;
+}
+
+.sticky-demo .sticky-demo-shark-1 {
+	position: sticky;
+	top: 0;
+}
+
+.sticky-demo .sticky-demo-shark-2 {
+	position: sticky;
+	top: 4rem;
+}
+
+.sticky-demo .sticky-demo-shark-3 {
+	position: sticky;
+	bottom: 1rem;
+	align-self: flex-end;
 }
