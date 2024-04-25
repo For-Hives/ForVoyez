@@ -34,11 +34,9 @@ export function ContactComponent() {
 	})
 
 	async function onSubmit(data) {
-		const formData = new FormData()
-		Object.entries(data).forEach(([key, value]) => {
-			formData.append(key, value)
-		})
-		const response = await sendEmail(formData)
+		console.log(data)
+		const response = await sendEmail(data)
+		console.log(response)
 
 		if (response.success) {
 			toast('Message sent successfully!', {
@@ -47,7 +45,7 @@ export function ContactComponent() {
 				toastId: 'toast-success',
 			})
 		} else {
-			toast('An error occurred, please try again later', {
+			toast(`An error occurred: ${response.details}`, {
 				type: 'error',
 				icon: '⛔',
 				toastId: 'toast-alert',
