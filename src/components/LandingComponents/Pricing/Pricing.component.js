@@ -12,28 +12,30 @@ const tiers = [
 		name: 'Starter',
 		id: 'tier-starter',
 		href: '#',
-		price: { monthly: '2.99€', annually: '29.90€' },
-		description: 'Perfect for individual developers and small projects.',
+		price: { monthly: '€2.99', annually: '€29.90' },
+		description: 'Ideal for small projects, independents and personal use.',
 		features: [
 			'100 credits/month',
 			'Basic metadata generation',
 			'Community support',
 		],
 		mostPopular: false,
+		buttonText: 'Start Generating',
 	},
 	{
-		name: 'Pro',
-		id: 'tier-pro',
+		name: 'Growth',
+		id: 'tier-growth',
 		href: '#',
-		price: { monthly: '$149', annually: '$1490' },
-		description: 'Best for growing teams and medium-sized applications.',
+		price: { monthly: '€29.99', annually: '€299.90' },
+		description: 'Perfect for growing businesses and advanced users.',
 		features: [
-			'10,000 credits/month',
+			'1,000 credits/month',
 			'Advanced metadata generation',
 			'Priority support',
-			'Dedicated account manager',
+			'Bulk processing',
 		],
 		mostPopular: true,
+		buttonText: 'Unlock Growth Features',
 	},
 	{
 		name: 'Enterprise',
@@ -51,6 +53,7 @@ const tiers = [
 			'On-premise option',
 		],
 		mostPopular: false,
+		buttonText: 'Contact Sales',
 	},
 ]
 
@@ -69,12 +72,12 @@ export function PricingComponent() {
 						Pricing
 					</h2>
 					<p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-						Flexible plans for all your needs
+						Plans for every stage of your growth
 					</p>
 				</div>
 				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-					Choose the right plan for your usage and scale as your needs grow.
-					Switch plans or cancel anytime.
+					Choose the plan that fits your needs and scale as your usage grows.
+					Upgrade, downgrade, or cancel anytime.
 				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
@@ -149,7 +152,7 @@ export function PricingComponent() {
 									'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6545]'
 								)}
 							>
-								{tier.name === 'Starter' ? 'Get started' : 'Upgrade'}
+								{tier.buttonText}
 							</a>
 							<ul
 								role="list"
