@@ -1,12 +1,15 @@
 'use client'
 
-import { listProducts } from '@/services/lemonsqueezy.service'
+import { getCheckoutURL, listProducts } from '@/services/lemonsqueezy.service'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
+// import {redirect} from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function PlansPage() {
+	const router = useRouter()
+
 	const [products, setProducts] = useState([])
 
 	useEffect(() => {
@@ -15,32 +18,48 @@ export default function PlansPage() {
 
 	console.table(products)
 
+	async function subscribe(variantId) {
+		try {
+			const url = await getCheckoutURL(variantId)
+			await router.push(url)
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	return (
 		<>
 			<h1>Plans </h1>
 
 			{products &&
-				products.map((product, index) => (
-					<div key={index} className="mb-2 mr-2 flex flex-col border p-4">
-						<p>Name: {product.attributes.name}</p>
-						<p>Descriptions: {product.attributes.description}</p>
-						<p>Created at: {product.attributes.created_at.toString()}</p>
-						<Image
-							alt={product.attributes.description}
-							src={product.attributes.large_thumb_url}
-							width={250}
-							height={250}
-						/>
-						<p>Price : {product.attributes.price_formatted}</p>
-						<p>test mode ? : {product.attributes.test_mode}</p>
-						<Link
-							href={product.attributes.buy_now_url}
-							className="mt-2 rounded bg-red-500 px-4 py-2 text-white"
-						>
-							Buy Now
-						</Link>
-					</div>
-				))}
+				products.map((product, index) => {
+					return (
+						<div key={index} className="mb-2 mr-2 flex flex-col border p-4">
+							<p>Name: {product.attributes.name}</p>
+							<p>Descriptions: {product.attributes.description}</p>
+							<p>Created at: {product.attributes.created_at.toString()}</p>
+							<Image
+								alt={product.attributes.description}
+								src={product.attributes.large_thumb_url}
+								width={250}
+								height={250}
+							/>
+							<p>Price : {product.attributes.price_formatted}</p>
+							<p>test mode ? : {product.attributes.test_mode}</p>
+
+							{/* todo : verifier si il a pas deja souscris */}
+
+							<button
+								className="mt-2 rounded bg-red-500 px-4 py-2 text-white"
+								onClick={async () => {
+									subscribe(product.relationships.variants.data[0].id)
+								}}
+							>
+								buy
+							</button>
+						</div>
+					)
+				})}
 
 			{/*{*/}
 			{/*    "store_id": 84282,*/}
