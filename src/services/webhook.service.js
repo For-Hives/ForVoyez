@@ -1,0 +1,146 @@
+// model WebhookEvent {
+//     id              Int      @id
+//     createdAt       DateTime @default(now())
+//     eventName       String
+//     processed       Boolean  @default(false)
+//     body            String
+//     userId          String
+//     processingError String?
+//
+//         users User @relation(fields: [userId], references: [clerkId])
+// }
+
+// {
+//     meta: {
+//         test_mode: true,
+//             event_name: 'subscription_payment_success',
+//             custom_data: { user_id: 'user_2fbQY8pEL1xMjNPUKkf7dgB4iIX' },
+//         webhook_id: '031c38ce-a855-48f0-a461-13738db4faba'
+//     },
+//     data: {
+//         type: 'subscription-invoices',
+//             id: '906649',
+//             attributes: {
+//             store_id: 84282,
+//                 subscription_id: 352649,
+//                 customer_id: 2724989,
+//                 user_name: 'bebou bebooo',
+//                 user_email: 'breval2000@live.fr',
+//                 billing_reason: 'initial',
+//                 card_brand: 'visa',
+//                 card_last_four: '4242',
+//                 currency: 'EUR',
+//                 currency_rate: '1.07351195',
+//                 status: 'paid',
+//                 status_formatted: 'Paid',
+//                 refunded: false,
+//                 refunded_at: null,
+//                 subtotal: 1000,
+//                 discount_total: 0,
+//                 tax: 167,
+//                 tax_inclusive: true,
+//                 total: 1000,
+//                 subtotal_usd: 1074,
+//                 discount_total_usd: 0,
+//                 tax_usd: 179,
+//                 total_usd: 1074,
+//                 subtotal_formatted: '€10.00',
+//                 discount_total_formatted: '€0.00',
+//                 tax_formatted: '€1.67',
+//                 total_formatted: '€10.00',
+//                 urls: [Object],
+//                 created_at: '2024-04-25T17:53:26.000000Z',
+//                 updated_at: '2024-04-25T17:53:31.000000Z',
+//                 test_mode: true
+//         },
+//         relationships: { store: [Object], subscription: [Object], customer: [Object] },
+//         links: {
+//             self: 'https://api.lemonsqueezy.com/v1/subscription-invoices/906649'
+//         }
+//     }
+// }
+
+// methode to save webhooks in the database with prisma
+import { prisma } from '@/services/prisma.service'
+
+export async function saveWebhooks(webhooks) {
+	// save the webhooks in the database
+	const webhook = await prisma.webhookEvent.create({
+		data: {
+			eventName: webhooks.meta.event_name,
+			body: JSON.stringify(webhooks),
+			userId: webhooks.meta.custom_data.user_id,
+			customerId: webhooks.data.attributes.customer_id,
+		},
+	})
+
+	console.log('webhook saved', webhook)
+
+	return webhook.id
+}
+
+// methode to process the webhooks #id
+export async function processWebhook(id) {
+	// get the webhook by id
+	const webhook = await prisma.webhookEvent.findUnique({
+		where: {
+			id: id,
+		},
+	})
+
+	// todo : check if the webhook is already processed
+	if (!webhook) {
+		return
+	}
+	// process the webhook
+
+	// switch
+	switch (webhook.eventName) {
+		case 'order_created':
+			console.log('order_created')
+			break
+		case 'subscription_created':
+			console.log('Subscription created')
+			break
+		case 'subscription_payment_success':
+			console.log('subscription_payment_success')
+			processSubscriptionPaymentSuccess(webhook)
+			break
+		case 'subscription_updated':
+			console.log('subscription_updated')
+			break
+	}
+
+	// if the webhook is processed, update the webhook
+	if (webhook) {
+		prisma.webhookEvent.update({
+			where: {
+				id: id,
+			},
+			data: {
+				processed: true,
+			},
+		})
+	}
+}
+
+// private function to process the webhook "subscription_payment_success", to add credits to the user
+async function processSubscriptionPaymentSuccess(webhook) {
+	// get the user by clerkId
+	const user = await prisma.user.findUnique({
+		where: {
+			clerkId: webhook.userId,
+		},
+	})
+
+	// update the user credits and customer id
+	await prisma.user.update({
+		where: {
+			clerkId: user.clerkId,
+		},
+		data: {
+			credits: user.credits + 10, // todo : add the number of credits from the subscription plan
+			customerId: webhook.customerId,
+		},
+	})
+}

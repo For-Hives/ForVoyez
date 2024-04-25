@@ -2,6 +2,7 @@ import { NextApiResponse, NextApiRequest } from 'next'
 import { nodejsWebHookHandler } from 'lemonsqueezy-webhooks'
 import { headers } from 'next/headers'
 import { createHmac, timingSafeEqual } from 'crypto'
+import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
 const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
@@ -29,27 +30,11 @@ export async function POST(request) {
 			})
 		}
 
-		// extract payload from request
-		const payload = JSON.parse(rawBody)
 		// Process the webhook payload
+		const webhookId = await saveWebhooks(JSON.parse(rawBody))
 
-		console.log(payload)
-
-		// switch
-		switch (payload.meta.event_name) {
-			case 'order_created':
-				console.log('order_created')
-				break
-			case 'subscription_created':
-				console.log('Subscription created')
-				break
-			case 'subscription_payment_success':
-				console.log('subscription_payment_success')
-				break
-			case 'subscription_updated':
-				console.log('subscription_updated')
-				break
-		}
+		// non blocking process
+		processWebhook(webhookId)
 	} catch (error) {
 		console.log(error)
 		return new Response(`Webhook error: ${error.message}`, {
