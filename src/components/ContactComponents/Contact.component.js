@@ -34,9 +34,7 @@ export function ContactComponent() {
 	})
 
 	async function onSubmit(data) {
-		console.log(data)
 		const response = await sendEmail(data)
-		console.log(response)
 
 		if (response.success) {
 			toast('Message sent successfully!', {

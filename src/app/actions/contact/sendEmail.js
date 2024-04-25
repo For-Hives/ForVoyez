@@ -18,8 +18,6 @@ export async function sendEmail(data) {
 		message,
 	} = data
 
-	console.log()
-
 	try {
 		await mg.messages.create(process.env.MAILGUN_DOMAIN, {
 			from: 'ForVoyez <noreply@forvoyez.fr>',
@@ -36,15 +34,15 @@ export async function sendEmail(data) {
         ${message}`,
 		})
 
-		console.log('Email sent')
 		return { success: true, status: 200 }
 	} catch (error) {
-		console.error('Error sending email:', error)
 		return {
 			success: false,
 			error: error.message,
 			status: error.status,
-			details: error.details,
+			details:
+				'An error occurred while sending the email. Please try again later. If the problem persists, please contact the website administrator. ' +
+				'(through contact@forvoyez.fr)',
 		}
 	}
 }
