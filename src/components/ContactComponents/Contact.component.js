@@ -4,6 +4,7 @@ import {
 	PhoneIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { sendEmail } from '@/app/actions/contact/sendEmail'
 
 export function ContactComponent() {
 	return (
@@ -101,7 +102,7 @@ export function ContactComponent() {
 					</div>
 				</div>
 				<form
-					action="#"
+					action={sendEmail}
 					method="POST"
 					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
 				>
