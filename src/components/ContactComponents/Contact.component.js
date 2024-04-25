@@ -53,7 +53,7 @@ export function ContactComponent() {
 	return (
 		<div className="relative isolate bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
-				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-40">
+				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
 					<div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
 						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gradient-to-r from-white to-transparent lg:w-1/2">
 							<svg
@@ -147,7 +147,7 @@ export function ContactComponent() {
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					method="POST"
-					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-40"
+					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
 				>
 					<div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
 						<div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -326,19 +326,22 @@ export function ContactComponent() {
 								</div>
 							</div>
 						</div>
-						<p className={'w-full text-right'}>
-							<span className="w-full text-sm text-gray-600">
-								Fields marked with an asterisk (*) are required.
-							</span>
-							<br />
-						</p>
-						<p className={'mt-2 text-right'}>
-							<span className={'text-sm text-gray-600'}>
-								By submitting this form, you agree that we may use the provided
-								contact information to respond to your inquiry.
-							</span>
-						</p>
-						<div className="mt-8 flex justify-end">
+						<div className={'flex flex-col'}>
+							<p className={'w-full text-right'}>
+								<span className="w-full text-xs text-gray-600">
+									Fields marked with an asterisk (*) are required.
+								</span>
+								<br />
+							</p>
+							<p className={'mt-2 text-right'}>
+								<span className={'text-xs italic text-gray-600'}>
+									By submitting this form, you agree that we may use the
+									provided contact information to respond to your inquiry.
+								</span>
+							</p>
+						</div>
+
+						<div className="mt-2 flex justify-end">
 							<button
 								type="submit"
 								className="rounded-md bg-[#ff6545] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6545]"
