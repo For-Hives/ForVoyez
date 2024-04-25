@@ -1,3 +1,4 @@
+'use client'
 import {
 	BuildingOffice2Icon,
 	EnvelopeIcon,
@@ -5,8 +6,52 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { sendEmail } from '@/app/actions/contact/sendEmail'
+import { toast } from 'react-toastify'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+
+const schema = yup.object().shape({
+	'first-name': yup.string().required('First name is required'),
+	'last-name': yup.string().required('Last name is required'),
+	company: yup.string(),
+	email: yup.string().email('Invalid email').required('Email is required'),
+	'phone-number': yup.string(),
+	subject: yup.string().required('Subject is required'),
+	message: yup.string().required('Message is required'),
+})
 
 export function ContactComponent() {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		resolver: yupResolver(schema),
+	})
+
+	async function onSubmit(data) {
+		const formData = new FormData()
+		Object.entries(data).forEach(([key, value]) => {
+			formData.append(key, value)
+		})
+		const response = await sendEmail(formData)
+
+		if (response.success) {
+			toast('Message sent successfully!', {
+				type: 'success',
+				icon: '🚀',
+				toastId: 'toast-success',
+			})
+		} else {
+			toast('An error occurred, please try again later', {
+				type: 'error',
+				icon: '⛔',
+				toastId: 'toast-alert',
+			})
+		}
+	}
+
 	return (
 		<div className="relative isolate bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
@@ -102,7 +147,7 @@ export function ContactComponent() {
 					</div>
 				</div>
 				<form
-					action={sendEmail}
+					onSubmit={handleSubmit(onSubmit)}
 					method="POST"
 					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
 				>
@@ -121,8 +166,16 @@ export function ContactComponent() {
 										name="first-name"
 										id="first-name"
 										autoComplete="given-name"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors['first-name'] ? 'ring-red-500' : ''
+										}`}
+										{...register('first-name')}
 									/>
+									{errors['first-name'] && (
+										<span className="text-sm text-red-500">
+											{errors['first-name'].message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div>
