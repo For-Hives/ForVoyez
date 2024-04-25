@@ -7,14 +7,18 @@ const mg = mailgun.client({
 	key: process.env.MAILGUN_API_KEY,
 })
 
-export async function sendEmail(formData) {
-	const firstName = formData.get('first-name')
-	const lastName = formData.get('last-name')
-	const company = formData.get('company')
-	const email = formData.get('email')
-	const phone = formData.get('phone-number')
-	const subject = formData.get('subject')
-	const message = formData.get('message')
+export async function sendEmail(data) {
+	const {
+		'first-name': firstName,
+		'last-name': lastName,
+		company,
+		email,
+		'phone-number': phone,
+		subject,
+		message,
+	} = data
+
+	console.log()
 
 	try {
 		await mg.messages.create(process.env.MAILGUN_DOMAIN, {
@@ -22,19 +26,25 @@ export async function sendEmail(formData) {
 			to: 'contact@forvoyez.fr',
 			subject: `New contact message - ${subject}`,
 			text: `
-				Prénom: ${firstName}
-				Nom: ${lastName}
-				Entreprise: ${company}
-				Email: ${email}
-				Téléphone: ${phone}
-				
-				Message:
-				${message}`,
+        Prénom: ${firstName}
+        Nom: ${lastName}
+        Entreprise: ${company}
+        Email: ${email}
+        Téléphone: ${phone}
+        
+        Message:
+        ${message}`,
 		})
 
-		return { success: true }
+		console.log('Email sent')
+		return { success: true, status: 200 }
 	} catch (error) {
 		console.error('Error sending email:', error)
-		return { success: false }
+		return {
+			success: false,
+			error: error.message,
+			status: error.status,
+			details: error.details,
+		}
 	}
 }
