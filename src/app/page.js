@@ -3,6 +3,7 @@ import { HeroComponent } from '@/components/LandingComponents/Hero/Hero.componen
 import { FeatureComponent } from '@/components/LandingComponents/Features/Feature.component'
 import { PricingComponent } from '@/components/LandingComponents/Pricing/Pricing.component'
 import { CtaComponent } from '@/components/LandingComponents/Cta/Cta.component'
+import { FooterComponent } from '@/components/Footer.component'
 
 export default function Home() {
 	return (
@@ -14,6 +15,7 @@ export default function Home() {
 				<PricingComponent />
 				<CtaComponent />
 			</main>
+			<FooterComponent></FooterComponent>
 		</div>
 	)
 }
