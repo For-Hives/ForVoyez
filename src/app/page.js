@@ -15,7 +15,7 @@ export default function Home() {
 				<PricingComponent />
 				<CtaComponent />
 			</main>
-			<FooterComponent></FooterComponent>
+			<FooterComponent />
 		</div>
 	)
 }
