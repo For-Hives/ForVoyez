@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/20/solid'
+import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -18,24 +19,29 @@ const tiers = [
 			'100 credits/month',
 			'Basic metadata generation',
 			'Community support',
+			'Accept classic image formats, (JPEG, PNG, WEBP)',
+			'Full HD image support, (up to 1080p)',
 		],
 		mostPopular: false,
-		buttonText: 'Start Generating',
+		buttonText: 'Subscribe',
 	},
 	{
 		name: 'Growth',
 		id: 'tier-growth',
 		href: '#',
-		price: { monthly: '€29.99', annually: '€299.90' },
+		price: { monthly: '€24.90', annually: '€249.00' },
 		description: 'Perfect for growing businesses and advanced users.',
 		features: [
+			'All Starter features',
 			'1,000 credits/month',
 			'Advanced metadata generation',
 			'Priority support',
 			'Bulk processing',
+			'Accept modern image formats, (AVIF, HEIC, JPEG-XR, JPEG 2000)',
+			'Ultra HD image support, (up to 4K)',
 		],
 		mostPopular: true,
-		buttonText: 'Unlock Growth Features',
+		buttonText: 'Subscribe',
 	},
 	{
 		name: 'Enterprise',
@@ -45,15 +51,18 @@ const tiers = [
 		description:
 			'Tailored for large-scale deployments and complex requirements.',
 		features: [
+			'All Growth features',
 			'Unlimited credits',
 			'Advanced metadata generation',
 			'24/7 dedicated support',
 			'Custom SLAs',
 			'Volume discounts',
-			'On-premise option',
+			'Access to beta features',
+			'Access to playground',
+			'Accept all* image formats',
 		],
 		mostPopular: false,
-		buttonText: 'Contact Sales',
+		buttonText: 'Subscribe',
 	},
 ]
 
@@ -63,6 +72,16 @@ function classNames(...classes) {
 
 export function PricingComponent() {
 	const [frequency, setFrequency] = useState(frequencies[0])
+	const [isAnnually, setIsAnnually] = useState(false)
+
+	useEffect(() => {
+		// when the frequency change, and it's 'annually', then, swap the flag to true
+		if (frequency.value === 'annually') {
+			setIsAnnually(true)
+		} else {
+			setIsAnnually(false)
+		}
+	}, [frequency])
 
 	return (
 		<div className="bg-white py-24 sm:py-32">
@@ -95,11 +114,22 @@ export function PricingComponent() {
 								className={({ checked }) =>
 									classNames(
 										checked ? 'bg-[#ff6545] text-white' : 'text-gray-500',
-										'cursor-pointer rounded-full px-2.5 py-1'
+										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
 							>
-								<span>{option.label}</span>
+								<div className={'transition-none'}>
+									<span className={'transition-none'}>{option.label}</span>
+									<div
+										className={`${
+											option.value === 'annually' ? 'block' : 'hidden'
+										} absolute
+										-right-4 -top-5 rounded-full 
+										border border-[#ff6545] bg-white/80 p-1 px-1.5 text-xs text-[#ff6545] backdrop-blur-[2px] transition-none`}
+									>
+										20% off
+									</div>
+								</div>
 							</RadioGroup.Option>
 						))}
 					</RadioGroup>
@@ -142,7 +172,8 @@ export function PricingComponent() {
 									{frequency.priceSuffix}
 								</span>
 							</p>
-							<a
+							<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
+							<Link
 								href={tier.href}
 								aria-describedby={tier.id}
 								className={classNames(
@@ -153,11 +184,28 @@ export function PricingComponent() {
 								)}
 							>
 								{tier.buttonText}
-							</a>
-							<ul
-								role="list"
-								className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
-							>
+							</Link>
+							<div className={'mt-2 flex h-[18px] items-center'}>
+								{isAnnually ? (
+									<span className="text-xs text-gray-500">
+										(20% off compared to monthly)
+									</span>
+								) : (
+									<button
+										className={'m-0 flex gap-1 p-0'}
+										onClick={() => setFrequency(frequencies[1])}
+									>
+										<span className="text-xs text-gray-500">
+											(save 20% compared with annual billing)
+										</span>
+										<div className={'flex h-full items-center'}>
+											{/*	Link icon*/}
+											<ArrowUpRightIcon className={'h-3 w-3 text-gray-600'} />
+										</div>
+									</button>
+								)}
+							</div>
+							<ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
 								{tier.features.map(feature => (
 									<li key={feature} className="flex gap-x-3">
 										<CheckIcon
