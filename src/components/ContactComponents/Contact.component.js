@@ -335,32 +335,14 @@ export function ContactComponent() {
 							<span className="w-full text-sm text-gray-600">
 								Fields marked with an asterisk (*) are required.
 							</span>
+							<br />
 						</p>
-						<div className="mt-8">
-							<div className="flex items-center justify-end">
-								<input
-									id="terms"
-									name="terms"
-									type="checkbox"
-									className="h-4 w-4 rounded border-gray-300 text-[#ff6545] focus:ring-[#ff6545]/30"
-									{...register('terms', {
-										required: 'You must agree to the terms and conditions',
-									})}
-								/>
-								<label
-									htmlFor="terms"
-									className="ml-2 block text-right text-sm text-gray-900"
-								>
-									By submitting this form, you agree that we may use the
-									provided contact information to respond to your inquiry.
-								</label>
-							</div>
-							{errors.terms && (
-								<span className="text-sm text-red-500">
-									{errors.terms.message}
-								</span>
-							)}
-						</div>
+						<p className={'mt-2 text-right'}>
+							<span className={'text-sm text-gray-600'}>
+								By submitting this form, you agree that we may use the provided
+								contact information to respond to your inquiry.
+							</span>
+						</p>
 						<div className="mt-8 flex justify-end">
 							<button
 								type="submit"
