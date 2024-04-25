@@ -57,8 +57,8 @@ export function FeatureComponent() {
 	}, [])
 
 	return (
-		<div className="overflow-hidden py-[70rem] sm:py-32">
-			<div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+		<div className="py-[70rem] sm:py-32">
+			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 					<div className="lg:pr-8 lg:pt-4">
 						<div className="lg:max-w-lg">
@@ -91,7 +91,7 @@ export function FeatureComponent() {
 						</div>
 					</div>
 				</div>
-				<div className="absolute right-0 top-0 h-screen w-1/2 overflow-hidden">
+				<div className="absolute right-0 top-0 h-screen w-1/2">
 					{isRiveLoaded && (
 						<RiveComponent
 							src="/animation_features/landing_art_forvoyez.riv"
@@ -100,6 +100,85 @@ export function FeatureComponent() {
 							stateMachines={'State Machine 1'}
 						/>
 					)}
+				</div>
+			</div>
+			{/*	<section className={'relative flex h-[100vh] w-full bg-red-500 px-2'}>*/}
+			{/*		<div className={'flex w-1/2 flex-col gap-4 bg-blue-500 p-2'}>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*			<p>*/}
+			{/*				Lorem ipsum dolor sit amet, consectetur adipisicing elit.*/}
+			{/*				Accusantium assumenda blanditiis culpa, eligendi esse id ipsa ipsam*/}
+			{/*				laborum magnam minima molestiae odio porro quasi quidem sequi sunt*/}
+			{/*				tenetur veritatis vitae.*/}
+			{/*			</p>*/}
+			{/*		</div>*/}
+			{/*		<div*/}
+			{/*			className={*/}
+			{/*				'sticky bottom-[50px] flex h-10 w-1/2 items-end bg-green-500 p-2'*/}
+			{/*			}*/}
+			{/*		>*/}
+			{/*			<p>here</p>*/}
+			{/*		</div>*/}
+			{/*	</section>*/}
+			<div className="sticky-demo">
+				<div className="sticky-demo-container">
+					<div className="sticky-demo-item sticky-demo-shark-1">
+						<img
+							src="https://assets.digitalocean.com/labs/sammy/Sammy_punk.png"
+							width="100"
+							alt="Sammy the Shark with a punk theme."
+						/>
+					</div>
+					<div className="sticky-demo-item sticky-demo-shark-2">
+						<img
+							src="https://assets.digitalocean.com/labs/sammy/Sammy_pony.png"
+							width="100"
+							alt="Sammy the Shark with a magical pony theme."
+						/>
+					</div>
+					<div className="sticky-demo-item sticky-demo-shark-3">
+						<img
+							src="https://assets.digitalocean.com/labs/sammy/Sammy_stickers_SET03.png"
+							width="100"
+							alt="Sammy the Shark with a dinosaur theme."
+						/>
+					</div>
+					<div className="sticky-demo-item sticky-demo-shark-4">
+						<img
+							src="https://assets.digitalocean.com/labs/sammy/Sammy_stickers_SET01.png"
+							width="100"
+							alt="Sammy the Shark with a steampunk theme."
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
