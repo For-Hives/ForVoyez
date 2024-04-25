@@ -4,7 +4,7 @@ import { FeatureComponent } from '@/components/LandingComponents/Features/Featur
 
 export default function Home() {
 	return (
-		<div className="bg-white">
+		<div className="min-h-[700vh] bg-white">
 			<NavbarComponent />
 			<main>
 				<HeroComponent />
