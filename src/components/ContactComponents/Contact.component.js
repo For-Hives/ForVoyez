@@ -17,7 +17,7 @@ const schema = yup.object().shape({
 	company: yup.string(),
 	email: yup.string().email('Invalid email').required('Email is required'),
 	'phone-number': yup.string(),
-	subject: yup.string().required('Subject is required'),
+	subject: yup.string(),
 	message: yup.string().required('Message is required'),
 })
 
@@ -55,7 +55,7 @@ export function ContactComponent() {
 	return (
 		<div className="relative isolate bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
-				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
+				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-40">
 					<div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
 						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gradient-to-r from-white to-transparent lg:w-1/2">
 							<svg
@@ -149,16 +149,16 @@ export function ContactComponent() {
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					method="POST"
-					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
+					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-40"
 				>
 					<div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
-						<div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
 							<div>
 								<label
 									htmlFor="first-name"
 									className="block text-sm font-semibold leading-6 text-gray-900"
 								>
-									First name
+									First name *
 								</label>
 								<div className="mt-2.5">
 									<input
@@ -183,7 +183,7 @@ export function ContactComponent() {
 									htmlFor="last-name"
 									className="block text-sm font-semibold leading-6 text-gray-900"
 								>
-									Last name
+									Last name *
 								</label>
 								<div className="mt-2.5">
 									<input
@@ -191,8 +191,16 @@ export function ContactComponent() {
 										name="last-name"
 										id="last-name"
 										autoComplete="family-name"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors['last-name'] ? 'ring-red-500' : ''
+										}`}
+										{...register('last-name')}
 									/>
+									{errors['last-name'] && (
+										<span className="text-sm text-red-500">
+											{errors['last-name'].message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
@@ -208,8 +216,16 @@ export function ContactComponent() {
 										name="company"
 										id="company"
 										autoComplete="organization"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors.company ? 'ring-red-500' : ''
+										}`}
+										{...register('company')}
 									/>
+									{errors.company && (
+										<span className="text-sm text-red-500">
+											{errors.company.message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
@@ -217,7 +233,7 @@ export function ContactComponent() {
 									htmlFor="email"
 									className="block text-sm font-semibold leading-6 text-gray-900"
 								>
-									Email
+									Email *
 								</label>
 								<div className="mt-2.5">
 									<input
@@ -225,8 +241,16 @@ export function ContactComponent() {
 										name="email"
 										id="email"
 										autoComplete="email"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors.email ? 'ring-red-500' : ''
+										}`}
+										{...register('email')}
 									/>
+									{errors.email && (
+										<span className="text-sm text-red-500">
+											{errors.email.message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
@@ -242,8 +266,16 @@ export function ContactComponent() {
 										name="phone-number"
 										id="phone-number"
 										autoComplete="tel"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors['phone-number'] ? 'ring-red-500' : ''
+										}`}
+										{...register('phone-number')}
 									/>
+									{errors['phone-number'] && (
+										<span className="text-sm text-red-500">
+											{errors['phone-number'].message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
@@ -258,8 +290,16 @@ export function ContactComponent() {
 										type="text"
 										name="subject"
 										id="subject"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors.subject ? 'ring-red-500' : ''
+										}`}
+										{...register('subject')}
 									/>
+									{errors.subject && (
+										<span className="text-sm text-red-500">
+											{errors.subject.message}
+										</span>
+									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
@@ -267,19 +307,32 @@ export function ContactComponent() {
 									htmlFor="message"
 									className="block text-sm font-semibold leading-6 text-gray-900"
 								>
-									Message
+									Message *
 								</label>
 								<div className="mt-2.5">
 									<textarea
 										name="message"
 										id="message"
 										rows={4}
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545] sm:text-sm sm:leading-6"
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+											errors.message ? 'ring-red-500' : ''
+										}`}
 										defaultValue={''}
+										{...register('message')}
 									/>
+									{errors.message && (
+										<span className="text-sm text-red-500">
+											{errors.message.message}
+										</span>
+									)}
 								</div>
 							</div>
 						</div>
+						<p className={'w-full text-right'}>
+							<span className="w-full text-sm text-gray-600">
+								Fields marked with an asterisk (*) are required.
+							</span>
+						</p>
 						<div className="mt-8 flex justify-end">
 							<button
 								type="submit"
