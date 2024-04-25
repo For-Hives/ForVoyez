@@ -29,6 +29,7 @@ export function ContactComponent() {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm({
 		resolver: yupResolver(schema),
 	})
@@ -42,6 +43,7 @@ export function ContactComponent() {
 				icon: '🚀',
 				toastId: 'toast-success',
 			})
+			reset()
 		} else {
 			toast(`An error occurred: ${response.details}`, {
 				type: 'error',

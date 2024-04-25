@@ -9,7 +9,6 @@ export default function Home() {
 			<NavbarComponent />
 			<main>
 				<ToastContainer closeOnClick />
-
 				<ContactComponent />
 			</main>
 			<FooterComponent />
