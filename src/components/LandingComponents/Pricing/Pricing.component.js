@@ -196,7 +196,7 @@ export function PricingComponent() {
 										onClick={() => setFrequency(frequencies[1])}
 									>
 										<span className="text-xs text-gray-500">
-											(save 20% compared with annual billing)
+											(save 20% with annual billing)
 										</span>
 										<div className={'flex h-full items-center'}>
 											{/*	Link icon*/}
