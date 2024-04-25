@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+// FIXME replace the href social links with the correct ones
 const navigation = {
 	main: [
 		{ name: 'Home', href: '/' },
