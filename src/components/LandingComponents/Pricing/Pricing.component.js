@@ -62,7 +62,7 @@ const tiers = [
 			'Accept all* image formats',
 		],
 		mostPopular: false,
-		buttonText: 'Subscribe',
+		buttonText: 'Contact us',
 	},
 ]
 
