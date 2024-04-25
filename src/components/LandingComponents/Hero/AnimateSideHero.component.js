@@ -28,17 +28,24 @@ export function AnimateSideHeroComponent() {
 		}
 
 		// 	after 3.1s, trigger the click event on the button
-		setTimeout(() => {
+		const timeout1 = setTimeout(() => {
 			bubblyButtons[0].click()
 		}, 2800)
 
-		setTimeout(() => {
+		const timeout2 = setTimeout(() => {
 			setTextInButton('Analyse...')
 		}, 2800)
 
-		setTimeout(() => {
+		const timeout3 = setTimeout(() => {
 			setTextInButton('Done !')
 		}, 7000)
+
+		// Cleanup function pour annuler les timeouts lorsque le composant est démonté
+		return () => {
+			clearTimeout(timeout1)
+			clearTimeout(timeout2)
+			clearTimeout(timeout3)
+		}
 	}, [])
 
 	return (
