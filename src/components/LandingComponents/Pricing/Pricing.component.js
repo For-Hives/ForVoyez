@@ -127,7 +127,7 @@ export function PricingComponent() {
 										-right-4 -top-5 rounded-full 
 										border border-[#ff6545] bg-white/80 p-1 px-1.5 text-xs text-[#ff6545] backdrop-blur-[2px] transition-none`}
 									>
-										20% off
+										Save 20%
 									</div>
 								</div>
 							</RadioGroup.Option>
@@ -188,7 +188,8 @@ export function PricingComponent() {
 							<div className={'mt-2 flex h-[18px] items-center'}>
 								{isAnnually ? (
 									<span className="text-xs text-gray-500">
-										(20% off compared to monthly)
+										<span className={'font-bold'}>20% cheaper</span> than
+										monthly
 									</span>
 								) : (
 									<button
@@ -196,7 +197,9 @@ export function PricingComponent() {
 										onClick={() => setFrequency(frequencies[1])}
 									>
 										<span className="text-xs text-gray-500">
-											(save 20% with annual billing)
+											Get <span className={'font-bold'}>20% off</span> with
+											an&nbsp;<span className={'font-bold'}>annual</span>
+											&nbsp;subscription
 										</span>
 										<div className={'flex h-full items-center'}>
 											{/*	Link icon*/}
