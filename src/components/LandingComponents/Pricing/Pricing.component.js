@@ -4,6 +4,7 @@ import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 
+// FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
 	{ value: 'annually', label: 'Annually', priceSuffix: '/year' },
@@ -12,6 +13,7 @@ const tiers = [
 	{
 		name: 'Starter',
 		id: 'tier-starter',
+		// FIXME replace the href with the correct one
 		href: '#',
 		price: { monthly: '€2.99', annually: '€29.90' },
 		description: 'Ideal for small projects, independents and personal use.',
@@ -28,6 +30,7 @@ const tiers = [
 	{
 		name: 'Growth',
 		id: 'tier-growth',
+		// FIXME replace the href with the correct one
 		href: '#',
 		price: { monthly: '€24.90', annually: '€249.00' },
 		description: 'Perfect for growing businesses and advanced users.',
@@ -46,6 +49,7 @@ const tiers = [
 	{
 		name: 'Enterprise',
 		id: 'tier-enterprise',
+		// FIXME replace the href with the correct one
 		href: '#',
 		price: { monthly: 'Custom', annually: 'Custom' },
 		description:
@@ -86,7 +90,7 @@ export function PricingComponent() {
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto max-w-4xl text-center">
+				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
 					<h2 className="text-base font-semibold leading-7 text-[#ff6545]">
 						Pricing
 					</h2>
