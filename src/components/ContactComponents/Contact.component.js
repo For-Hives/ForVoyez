@@ -19,9 +19,6 @@ const schema = yup.object().shape({
 	'phone-number': yup.string(),
 	subject: yup.string(),
 	message: yup.string().required('Message is required'),
-	terms: yup
-		.boolean()
-		.oneOf([true], 'You must agree to the terms and conditions'),
 })
 
 export function ContactComponent() {
