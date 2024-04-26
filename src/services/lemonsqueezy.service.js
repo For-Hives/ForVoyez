@@ -23,8 +23,41 @@ export async function listProducts() {
 		include: ['variants'],
 	})
 
+	// todo : sync with database
+
 	if (statusCode === 200) {
 		console.log(data.data[0].relationships.variants.data)
+		// todo : save variant in database
+		return data.data
+	} else {
+		throw new Error(error)
+	}
+}
+
+// get all products variants named "variation"
+export async function listVariants(productID) {
+	await initLemonSqueezy()
+
+	const { statusCode, error, data } = await ls.listVariants({
+		filter: { productId: productID },
+	})
+
+	// todo : sync with database
+
+	if (statusCode === 200) {
+		return data.data
+	} else {
+		console.log(error)
+		throw new Error(error)
+	}
+}
+
+export async function listPrice(variantID) {
+	const { statusCode, error, data } = await ls.listPrices({
+		filter: { variantId: variantID },
+	})
+
+	if (statusCode === 200) {
 		return data.data
 	} else {
 		throw new Error(error)
@@ -57,8 +90,7 @@ export async function getCheckoutURL(variantId, embed = false) {
 			},
 		},
 		productOptions: {
-			enabledVariants: [variantId],
-			// redirectUrl: `${process.env.NEXT_PUBLIC_URL}/dashboard/billing/`,
+			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/dashboard/billing/`,
 			receiptButtonText: 'Go to Dashboard',
 		},
 	})
