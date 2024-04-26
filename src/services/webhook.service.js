@@ -104,7 +104,7 @@ export async function processWebhook(id) {
 			break
 		case 'subscription_payment_success':
 			console.log('subscription_payment_success')
-			processSubscriptionPaymentSuccess(webhook)
+			await processSubscriptionPaymentSuccess(webhook)
 			break
 		case 'subscription_updated':
 			console.log('subscription_updated')
