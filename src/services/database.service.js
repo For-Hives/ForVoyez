@@ -1,16 +1,10 @@
 'use server'
 import {
-	listPrice,
 	listProducts,
 	listVariants,
+	listPrice,
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
-
-//
-// Modèle Plan
-//
-// Plus clair, et évite les problèmes potentiels de gestion des erreurs et de performance liés à l'utilisation de `map` pour des opérations asynchrones.
-//
 
 export async function syncPlans() {
 	console.log('Synchronisation des plans')
@@ -31,28 +25,38 @@ export async function syncPlans() {
 
 				for (const price of prices) {
 					console.log('Traitement du prix :', price)
-
-					let plan = {
+					let planData = {
 						productId: product.id,
-						productName: product.attributes.name,
 						variantId: variant.id,
 						name: variant.attributes.name,
 						description: variant.attributes.description,
 						price: price.attributes.unit_price,
-						unit: price.attributes.unit,
-						isUsageBased: false,
-						interval: price.attributes.interval,
-						intervalCount: price.attributes.interval_count,
-						trialInterval: price.attributes.trial_interval,
-						trialIntervalCount: price.attributes.trial_interval_count,
-						sort: 0,
+						credits: price.attributes.package_size || 0,
+						billingCycle: price.attributes.renewal_interval_unit || 'NA',
+						category: price.attributes.category,
+						pricingScheme: price.attributes.scheme,
+						setupFeeEnabled: price.attributes.setup_fee_enabled || false,
+						setupFee: price.attributes.setup_fee,
+						packageSize: price.attributes.package_size,
+						tiers: JSON.stringify(price.attributes.tiers),
+						renewalIntervalUnit: price.attributes.renewal_interval_unit,
+						renewalIntervalCount: price.attributes.renewal_interval_quantity,
+						trialIntervalUnit: price.attributes.trial_interval_unit,
+						trialIntervalCount: price.attributes.trial_interval_quantity,
 					}
 
 					try {
-						const createdPlan = await prisma.plan.create({ data: plan })
-						console.log('Plan créé :', createdPlan)
+						const createdPlan = await prisma.plan.upsert({
+							where: { variantId: variant.id },
+							update: planData,
+							create: planData,
+						})
+						console.log('Plan créé ou mis à jour :', createdPlan)
 					} catch (e) {
-						console.error('Erreur lors de la création du plan :', e)
+						console.error(
+							'Erreur lors de la création ou de la mise à jour du plan :',
+							e
+						)
 					}
 				}
 			}
@@ -60,4 +64,8 @@ export async function syncPlans() {
 	} catch (e) {
 		console.error('Erreur dans la synchronisation des plans :', e)
 	}
+}
+
+export async function getPlans() {
+	return prisma.plan.findMany()
 }
