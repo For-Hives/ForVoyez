@@ -1,11 +1,16 @@
 'use client'
 
-import { getCheckoutURL, listProducts } from '@/services/lemonsqueezy.service'
+import {
+	getAllProductsVariants,
+	getCheckoutURL,
+	listProducts,
+} from '@/services/lemonsqueezy.service'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 // import {redirect} from 'next/navigation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { syncPlans } from '@/services/database.service'
 
 export default function PlansPage() {
 	const router = useRouter()
@@ -20,8 +25,9 @@ export default function PlansPage() {
 
 	async function subscribe(variantId) {
 		try {
-			const url = await getCheckoutURL(variantId)
-			await router.push(url)
+			syncPlans().then(r => console.log(r))
+			// const url = await getCheckoutURL(variantId)
+			// await router.push(url)
 		} catch (e) {
 			console.log(e)
 		}
