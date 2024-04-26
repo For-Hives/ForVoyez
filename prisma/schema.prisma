@@ -49,12 +49,13 @@ model Usage {
 
 model Plan {
   id                 Int            @id @default(autoincrement())
-  productId          Int
+  productId          String
   productName        String?
-  variantId          Int            @unique
+  variantId          String
   name               String
   description        String?
-  price              String
+  price              Int
+  unit               Int            @default(1)
   isUsageBased       Boolean        @default(false)
   interval           String?
   intervalCount      Int?
