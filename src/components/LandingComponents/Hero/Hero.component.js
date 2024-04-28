@@ -61,7 +61,7 @@ export function HeroComponent() {
 								{/* FIXME replace that with the correct link */}
 								<Link
 									href="#"
-									className="rounded-md bg-[#ff6545] px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-[#f0423f]
+									className="rounded-md bg-forvoyez-orange-500 px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-[#f0423f]
 											 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f0423f]"
 								>
 									Get started

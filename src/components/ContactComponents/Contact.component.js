@@ -97,7 +97,7 @@ export function ContactComponent() {
 								<dt className="flex-none">
 									<span className="sr-only">Address</span>
 									<BuildingOffice2Icon
-										className="h-7 w-6 text-[#ff6545]"
+										className="h-7 w-6 text-forvoyez-orange-500"
 										aria-hidden="true"
 									/>
 								</dt>
@@ -111,7 +111,7 @@ export function ContactComponent() {
 								<dt className="flex-none">
 									<span className="sr-only">Telephone</span>
 									<PhoneIcon
-										className="h-7 w-6 text-[#ff6545]"
+										className="h-7 w-6 text-forvoyez-orange-500"
 										aria-hidden="true"
 									/>
 								</dt>
@@ -128,7 +128,7 @@ export function ContactComponent() {
 								<dt className="flex-none">
 									<span className="sr-only">Email</span>
 									<EnvelopeIcon
-										className="h-7 w-6 text-[#ff6545]"
+										className="h-7 w-6 text-forvoyez-orange-500"
 										aria-hidden="true"
 									/>
 								</dt>
@@ -164,7 +164,7 @@ export function ContactComponent() {
 										name="first-name"
 										id="first-name"
 										autoComplete="given-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['first-name'] ? 'ring-red-500' : ''
 										}`}
 										{...register('first-name')}
@@ -189,7 +189,7 @@ export function ContactComponent() {
 										name="last-name"
 										id="last-name"
 										autoComplete="family-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['last-name'] ? 'ring-red-500' : ''
 										}`}
 										{...register('last-name')}
@@ -214,7 +214,7 @@ export function ContactComponent() {
 										name="company"
 										id="company"
 										autoComplete="organization"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.company ? 'ring-red-500' : ''
 										}`}
 										{...register('company')}
@@ -239,7 +239,7 @@ export function ContactComponent() {
 										name="email"
 										id="email"
 										autoComplete="email"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.email ? 'ring-red-500' : ''
 										}`}
 										{...register('email')}
@@ -264,7 +264,7 @@ export function ContactComponent() {
 										name="phone-number"
 										id="phone-number"
 										autoComplete="tel"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['phone-number'] ? 'ring-red-500' : ''
 										}`}
 										{...register('phone-number')}
@@ -288,7 +288,7 @@ export function ContactComponent() {
 										type="text"
 										name="subject"
 										id="subject"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.subject ? 'ring-red-500' : ''
 										}`}
 										{...register('subject')}
@@ -312,7 +312,7 @@ export function ContactComponent() {
 										name="message"
 										id="message"
 										rows={4}
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#ff6545]/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez-orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.message ? 'ring-red-500' : ''
 										}`}
 										defaultValue={''}
@@ -344,7 +344,7 @@ export function ContactComponent() {
 						<div className="mt-2 flex justify-end">
 							<button
 								type="submit"
-								className="rounded-md bg-[#ff6545] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6545]"
+								className="rounded-md bg-forvoyez-orange-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez-orange-500"
 							>
 								Send message
 							</button>
