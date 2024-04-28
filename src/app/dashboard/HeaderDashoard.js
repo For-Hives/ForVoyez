@@ -10,12 +10,16 @@ import {
 	useMobileNavigationStore,
 } from '@/app/dashboard/MobileNavigationDashboard'
 
-function TopLevelNavItem({ href, children }) {
+function TopLevelNavItem({ href, children, className }) {
 	return (
 		<li>
 			<Link
 				href={href}
-				className="text-sm leading-5 text-slate-600 transition hover:text-slate-900"
+				className={
+					'text-sm leading-5 text-slate-600 transition hover:text-slate-900' +
+					' ' +
+					className
+				}
 			>
 				{children}
 			</Link>
@@ -51,7 +55,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			<div
 				className={clsx(
 					'absolute inset-x-0 top-full h-px transition',
-					(isInsideMobileNavigation || !mobileNavIsOpen) && 'bg-slate-900/7.5'
+					(isInsideMobileNavigation || !mobileNavIsOpen) && 'bg-slate-900/10'
 				)}
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
@@ -67,9 +71,16 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 					/>
 				</Link>
 			</div>
+			<div />
 			<div className="flex items-center gap-5">
 				<nav className="hidden md:block">
-					<ul role="list" className="flex items-center gap-8">
+					<ul role="list" className="flex items-center gap-8 ">
+						<TopLevelNavItem
+							className={'!text-forvoyez_orange-500'}
+							href="/dashboard"
+						>
+							→ Dashboard
+						</TopLevelNavItem>
 						<TopLevelNavItem href="https://forvoyez.fr">
 							Website
 						</TopLevelNavItem>
