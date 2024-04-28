@@ -1,48 +1,22 @@
-'use client' // Error components must be Client Components
-
-import Image from 'next/image'
+import { HeroPatternDashboard } from '@/app/dashboard/HeroPatternDashboard'
+import Link from 'next/link'
 
 export default function NotFound() {
 	return (
-		<html className={'overflow-hidden'} lang={'en'}>
-			<body>
-				<main className="relative isolate z-30 min-h-screen">
-					{/* darken */}
-					<div
-						className={'absolute left-0 top-0 -z-10 h-full w-full bg-black'}
-					/>
-					<Image
-						src="/error_background.png"
-						alt="error"
-						fill={true}
-						sizes={'75vw'}
-						quality={75}
-						className="absolute inset-0 -z-10 h-full w-full object-cover object-left opacity-50"
-					/>
-					<div className="z-30 mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
-						<p className="text-base font-semibold italic leading-8 text-white">
-							404 not found
-						</p>
-						<h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
-							Vous êtes perdu ?
-						</h1>
-						<p className="mt-4 text-base text-white shadow-lg sm:mt-6">
-							{`Désolé, la page que vous cherchez n'existe pas.`}
-						</p>
-						<div className="mt-10 flex justify-center">
-							<a
-								className="text-sm font-semibold leading-7 text-white"
-								href={'/'}
-							>
-								<span aria-hidden="true" className={'text-white'}>
-									&larr;
-								</span>{' '}
-								{`Revenir à l'accueil`}
-							</a>
-						</div>
-					</div>
-				</main>
-			</body>
-		</html>
+		<>
+			<HeroPatternDashboard />
+			<div className="mx-auto flex h-full max-w-xl flex-col items-center justify-center py-16 text-center">
+				<p className="text-sm font-semibold text-slate-900">404</p>
+				<h1 className="mt-2 text-2xl font-bold text-slate-900">
+					Page not found
+				</h1>
+				<p className="mt-2 text-base text-slate-600">
+					Sorry, we couldn’t find the page you’re looking for.
+				</p>
+				<Link href="/" arrow="right" className="mt-8">
+					Back to docs
+				</Link>
+			</div>
+		</>
 	)
 }
