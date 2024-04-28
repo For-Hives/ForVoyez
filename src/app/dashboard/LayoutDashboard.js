@@ -44,9 +44,11 @@ export function LayoutDashboard({ children }) {
 								userProfileUrl="/profile"
 								afterSignOutUrl="/"
 							/>
-							<span className="text-sm font-medium text-gray-900">
-								{user.firstName} {user.lastName}
-							</span>
+							<Link href="/profile" className={'h-full w-full'}>
+								<span className="text-sm font-medium text-gray-900">
+									{user.firstName} {user.lastName}
+								</span>
+							</Link>
 						</div>
 					)}
 				</div>
