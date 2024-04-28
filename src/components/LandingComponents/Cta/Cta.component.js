@@ -18,7 +18,7 @@ export function CtaComponent() {
 					{/* FIXME replace that with the correct link */}
 					<Link
 						href="#"
-						className="rounded-md bg-forvoyez-orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez-orange-500"
+						className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500"
 					>
 						Generate Metadata Now
 					</Link>

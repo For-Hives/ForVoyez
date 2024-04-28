@@ -19,7 +19,7 @@ module.exports = {
 				playpen_sans: 'var(--font-playpen_sans)',
 			},
 			colors: {
-				'forvoyez-orange': {
+				forvoyez_orange: {
 					50: '#fff3f1',
 					100: '#ffe5df',
 					200: '#ffcfc5',
