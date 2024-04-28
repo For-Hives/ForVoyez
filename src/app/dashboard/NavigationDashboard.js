@@ -9,6 +9,7 @@ import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 import { useIsInsideMobileNavigation } from '@/app/dashboard/MobileNavigationDashboard'
 import { useSectionStore } from '@/app/dashboard/SectionProviderDashboard'
 import { remToPx } from '@/app/dashboard/RemToPxDashboard'
+import { UserButton } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current
@@ -73,7 +74,7 @@ function ActivePageMarker({ group, pathname }) {
 	return (
 		<motion.div
 			layout
-			className="absolute left-2 h-6 w-px bg-forvoyez_orange-500"
+			className="bg-forvoyez_orange-500 absolute left-2 h-6 w-px"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1, transition: { delay: 0.2 } }}
 			exit={{ opacity: 0 }}
@@ -150,16 +151,18 @@ export const dashboardNavigation = [
 
 export function NavigationDashboard(props) {
 	return (
-		<nav {...props}>
-			<ul role="list">
-				{dashboardNavigation.map((group, groupIndex) => (
-					<NavigationGroup
-						key={group.title}
-						group={group}
-						className={groupIndex === 0 ? 'md:mt-0' : ''}
-					/>
-				))}
-			</ul>
-		</nav>
+		<div className={'flex flex-col'}>
+			<nav {...props}>
+				<ul role="list">
+					{dashboardNavigation.map((group, groupIndex) => (
+						<NavigationGroup
+							key={group.title}
+							group={group}
+							className={groupIndex === 0 ? 'md:mt-0' : ''}
+						/>
+					))}
+				</ul>
+			</nav>
+		</div>
 	)
 }
