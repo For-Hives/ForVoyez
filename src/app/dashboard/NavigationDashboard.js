@@ -128,29 +128,23 @@ function NavigationGroup({ group, className }) {
 
 export const dashboardNavigation = [
 	{
-		title: 'Getting Started',
+		title: 'General',
 		links: [
-			{ title: 'Introduction', href: '/docs' },
-			{ title: 'Quickstart', href: '/docs/quickstart' },
-			{ title: 'Authentication', href: '/docs/authentication' },
+			{ title: 'Documentation', href: '/docs' },
+			{ title: 'Playground', href: '/playground' },
 		],
 	},
 	{
-		title: 'API Reference',
+		title: 'Account',
 		links: [
-			{ title: 'Images', href: '/docs/images' },
-			{ title: 'Usage', href: '/docs/usage' },
-			{ title: 'Errors', href: '/docs/errors' },
-			{ title: 'Webhooks', href: '/docs/webhooks' },
+			{ title: 'API Keys', href: '/account/api-keys' },
+			{ title: 'Usage', href: '/account/usage' },
+			{ title: 'Plans', href: '/account/plans' },
 		],
 	},
 	{
-		title: 'Guides',
-		links: [
-			{ title: 'AI-Powered Alt Text', href: '/docs/guides/alt-text' },
-			{ title: 'Generating Image Metadata', href: '/docs/guides/metadata' },
-			{ title: 'Optimizing Images for SEO', href: '/docs/guides/seo' },
-		],
+		title: 'Support',
+		links: [{ title: 'Help', href: '/support' }],
 	},
 ]
 
