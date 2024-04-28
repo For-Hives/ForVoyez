@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { HeaderDashboard } from '@/app/dashboard/HeaderDashoard'
 import { NavigationDashboard } from '@/app/dashboard/NavigationDashboard'
 
-export function Layout({ children }) {
+export function LayoutDashboard({ children }) {
 	let pathname = usePathname()
 
 	return (
