@@ -7,31 +7,48 @@ import { motion } from 'framer-motion'
 
 import { HeaderDashboard } from '@/app/dashboard/HeaderDashoard'
 import { NavigationDashboard } from '@/app/dashboard/NavigationDashboard'
+import { UserButton, useUser } from '@clerk/nextjs'
 
 export function LayoutDashboard({ children }) {
 	let pathname = usePathname()
+	const { user } = useUser()
 
 	return (
 		<div className="h-full lg:ml-72 xl:ml-80">
 			<motion.header
 				layoutScroll
-				className="contents lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex"
+				className="contents h-full lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex lg:gap-4"
 			>
-				<div className="contents lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
-					<div className="hidden lg:flex">
-						<Link href="/" aria-label="Home">
-							<span className="sr-only">ForVoyez</span>
-							<Image
-								className="h-8 w-auto"
-								src="/logo/logo.webp"
-								alt="logo ForVoyez"
-								width={80}
-								height={80}
-							/>
-						</Link>
+				<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
+					<div className={'flex flex-col gap-8'}>
+						<div className="hidden lg:flex">
+							<Link href="/" aria-label="Home">
+								<span className="sr-only">ForVoyez</span>
+								<Image
+									className="h-8 w-auto"
+									src="/logo/logo.webp"
+									alt="logo ForVoyez"
+									width={80}
+									height={80}
+								/>
+							</Link>
+						</div>
+						<HeaderDashboard />
+						<NavigationDashboard className="hidden h-full lg:block" />
 					</div>
-					<HeaderDashboard />
-					<NavigationDashboard className="hidden lg:mt-10 lg:block" />
+					{user && (
+						<div className={'flex items-center gap-2'}>
+							<UserButton
+								appearance="ghost"
+								userProfileMode="navigation"
+								userProfileUrl="/profile"
+								afterSignOutUrl="/"
+							/>
+							<span className="text-sm font-medium text-gray-900">
+								{user.firstName} {user.lastName}
+							</span>
+						</div>
+					)}
 				</div>
 			</motion.header>
 			<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
