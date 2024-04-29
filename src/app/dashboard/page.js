@@ -13,34 +13,30 @@ export default function WelcomePage() {
 			<h1 className="text-3xl">Welcome to the ForVoyez Developer Platform</h1>
 			<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 				<div className="group relative">
-					<div className="mt-4 flex justify-between">
+					<Link href={'#'} className="mt-4 flex justify-between no-underline">
 						<div>
 							<h3 className="text-sm text-gray-700">
-								<Link href="#">
-									<span aria-hidden="true" className="absolute inset-0" />
-									Start with the Basics
-								</Link>
+								<span aria-hidden="true" className="absolute inset-0" />
+								Start with the Basics
 							</h3>
 							<p className="mt-1 text-sm text-gray-500">
 								Online tools and resources to get you started.
 							</p>
 						</div>
-					</div>
+					</Link>
 				</div>
 				<div className="group relative">
-					<div className="mt-4 flex justify-between">
+					<Link href={'#'} className="mt-4 flex justify-between no-underline">
 						<div>
 							<h3 className="text-sm text-gray-700">
-								<Link href="#">
-									<span aria-hidden="true" className="absolute inset-0" />
-									Documentation
-								</Link>
+								<span aria-hidden="true" className="absolute inset-0" />
+								Documentation
 							</h3>
 							<p className="mt-1 text-sm text-gray-500">
 								Discover our features and API reference.
 							</p>
 						</div>
-					</div>
+					</Link>
 				</div>
 			</div>
 			<div className="mt-12">
@@ -49,64 +45,56 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 					<div className="group relative">
-						<div className="mt-4 flex justify-between bg-red-500">
+						<Link href={'#'} className="mt-4 flex justify-between no-underline">
 							<div>
 								<h3 className="text-sm text-gray-700">
-									<Link href="#">
-										<span aria-hidden="true" className="absolute inset-0" />
-										Playground
-									</Link>
+									<span aria-hidden="true" className="absolute inset-0" />
+									Playground
 								</h3>
 								<p className="mt-1 text-sm text-gray-500">
 									Explore and test our API endpoints.
 								</p>
 							</div>
-						</div>
+						</Link>
 					</div>
 					<div className="group relative">
-						<div className="mt-4 flex justify-between">
+						<Link href={'#'} className="mt-4 flex justify-between no-underline">
 							<div>
 								<h3 className="text-sm text-gray-700">
-									<Link href="#">
-										<span aria-hidden="true" className="absolute inset-0" />
-										API Keys
-									</Link>
+									<span aria-hidden="true" className="absolute inset-0" />
+									API Keys
 								</h3>
 								<p className="mt-1 text-sm text-gray-500">
 									Manage your API keys and authentication.
 								</p>
 							</div>
-						</div>
+						</Link>
 					</div>
 					<div className="group relative">
-						<div className="mt-4 flex justify-between">
+						<Link href={'#'} className="mt-4 flex justify-between no-underline">
 							<div>
 								<h3 className="text-sm text-gray-700">
-									<Link href="#">
-										<span aria-hidden="true" className="absolute inset-0" />
-										Usage
-									</Link>
+									<span aria-hidden="true" className="absolute inset-0" />
+									Usage
 								</h3>
 								<p className="mt-1 text-sm text-gray-500">
 									Track your API usage and limits.
 								</p>
 							</div>
-						</div>
+						</Link>
 					</div>
 					<div className="group relative">
-						<div className="mt-4 flex justify-between">
+						<Link href={'#'} className="mt-4 flex justify-between no-underline">
 							<div>
 								<h3 className="text-sm text-gray-700">
-									<Link href="#">
-										<span aria-hidden="true" className="absolute inset-0" />
-										Plans
-									</Link>
+									<span aria-hidden="true" className="absolute inset-0" />
+									Plans
 								</h3>
 								<p className="mt-1 text-sm text-gray-500">
 									Upgrade or change your subscription plan.
 								</p>
 							</div>
-						</div>
+						</Link>
 					</div>
 				</div>
 			</div>
