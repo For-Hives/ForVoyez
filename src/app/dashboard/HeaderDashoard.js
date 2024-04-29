@@ -9,23 +9,7 @@ import {
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
 } from '@/app/dashboard/MobileNavigationDashboard'
-
-function TopLevelNavItem({ href, children, className }) {
-	return (
-		<li>
-			<Link
-				href={href}
-				className={
-					'text-sm leading-5 text-slate-600 transition hover:text-slate-900' +
-					' ' +
-					className
-				}
-			>
-				{children}
-			</Link>
-		</li>
-	)
-}
+import { TopLevelNavItemDashboard } from '@/app/dashboard/TopLevelNavItemDashboard'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },
@@ -75,17 +59,21 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			<div className="flex items-center gap-5">
 				<nav className="hidden md:block">
 					<ul role="list" className="flex items-center gap-8 ">
-						<TopLevelNavItem
+						<TopLevelNavItemDashboard
 							className={'!text-forvoyez_orange-500'}
 							href="/dashboard"
 						>
 							→ Dashboard
-						</TopLevelNavItem>
-						<TopLevelNavItem href="https://forvoyez.fr">
+						</TopLevelNavItemDashboard>
+						<TopLevelNavItemDashboard href="https://forvoyez.fr">
 							Website
-						</TopLevelNavItem>
-						<TopLevelNavItem href="/docs">Documentation</TopLevelNavItem>
-						<TopLevelNavItem href="/profile">Profile</TopLevelNavItem>
+						</TopLevelNavItemDashboard>
+						<TopLevelNavItemDashboard href="/docs">
+							Documentation
+						</TopLevelNavItemDashboard>
+						<TopLevelNavItemDashboard href="/profile">
+							Profile
+						</TopLevelNavItemDashboard>
 					</ul>
 				</nav>
 			</div>
