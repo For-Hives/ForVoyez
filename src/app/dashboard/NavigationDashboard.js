@@ -10,6 +10,7 @@ import { useIsInsideMobileNavigation } from '@/app/dashboard/MobileNavigationDas
 import { useSectionStore } from '@/app/dashboard/SectionProviderDashboard'
 import { remToPx } from '@/app/dashboard/RemToPxDashboard'
 import { UserButton } from '@clerk/nextjs'
+import { TopLevelNavItemDashboard } from '@/app/dashboard/TopLevelNavItemDashboard'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current
@@ -153,6 +154,21 @@ export function NavigationDashboard(props) {
 	return (
 		<nav {...props}>
 			<ul role="list">
+				<TopLevelNavItemDashboard
+					className={'!text-forvoyez_orange-500'}
+					href="/dashboard"
+				>
+					→ Dashboard
+				</TopLevelNavItemDashboard>
+				<TopLevelNavItemDashboard href="https://forvoyez.fr">
+					Website
+				</TopLevelNavItemDashboard>
+				<TopLevelNavItemDashboard href="/docs">
+					Documentation
+				</TopLevelNavItemDashboard>
+				<TopLevelNavItemDashboard href="/profile">
+					Profile
+				</TopLevelNavItemDashboard>
 				{dashboardNavigation.map((group, groupIndex) => (
 					<NavigationGroup
 						key={group.title}
