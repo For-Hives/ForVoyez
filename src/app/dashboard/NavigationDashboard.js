@@ -9,8 +9,8 @@ import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 import { useIsInsideMobileNavigation } from '@/app/dashboard/MobileNavigationDashboard'
 import { useSectionStore } from '@/app/dashboard/SectionProviderDashboard'
 import { remToPx } from '@/app/dashboard/RemToPxDashboard'
-import { UserButton } from '@clerk/nextjs'
 import { TopLevelNavItemDashboard } from '@/app/dashboard/TopLevelNavItemDashboard'
+import { UserButton, useUser } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current
@@ -60,7 +60,7 @@ function VisibleSectionHighlight({ group, pathname }) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1, transition: { delay: 0.2 } }}
 			exit={{ opacity: 0 }}
-			className="bg-slate-800/2.5 absolute inset-x-0 top-0 will-change-transform"
+			className="absolute inset-x-0 top-0 bg-slate-800/2.5 will-change-transform"
 			style={{ borderRadius: 8, height, top }}
 		/>
 	)
@@ -151,24 +151,32 @@ export const dashboardNavigation = [
 ]
 
 export function NavigationDashboard(props) {
+	const { user } = useUser()
+
 	return (
 		<nav {...props}>
 			<ul role="list">
-				<TopLevelNavItemDashboard
-					className={'!text-forvoyez_orange-500'}
-					href="/dashboard"
-				>
-					→ Dashboard
-				</TopLevelNavItemDashboard>
-				<TopLevelNavItemDashboard href="https://forvoyez.fr">
-					Website
-				</TopLevelNavItemDashboard>
-				<TopLevelNavItemDashboard href="/docs">
-					Documentation
-				</TopLevelNavItemDashboard>
-				<TopLevelNavItemDashboard href="/profile">
-					Profile
-				</TopLevelNavItemDashboard>
+				<div className={'flex flex-col gap-2 lg:hidden'}>
+					<TopLevelNavItemDashboard
+						className={'!text-forvoyez_orange-500 lg:hidden'}
+						href="/dashboard"
+					>
+						→ Dashboard
+					</TopLevelNavItemDashboard>
+					<TopLevelNavItemDashboard
+						href="https://forvoyez.fr"
+						className={'lg:hidden'}
+					>
+						Website
+					</TopLevelNavItemDashboard>
+					<TopLevelNavItemDashboard href="/docs" className={'lg:hidden'}>
+						Documentation
+					</TopLevelNavItemDashboard>
+					<TopLevelNavItemDashboard href="/profile" className={'lg:hidden'}>
+						Profile
+					</TopLevelNavItemDashboard>
+				</div>
+
 				{dashboardNavigation.map((group, groupIndex) => (
 					<NavigationGroup
 						key={group.title}
@@ -176,6 +184,23 @@ export function NavigationDashboard(props) {
 						className={groupIndex === 0 ? 'md:mt-0' : ''}
 					/>
 				))}
+				{user && (
+					<div className={'mt-6'}>
+						<div className={'flex items-center gap-2 lg:hidden'}>
+							<UserButton
+								appearance="ghost"
+								userProfileMode="navigation"
+								userProfileUrl="/profile"
+								afterSignOutUrl="/"
+							/>
+							<Link href="/profile" className={'h-full w-full'}>
+								<span className="text-sm font-medium text-gray-900">
+									{user.firstName} {user.lastName}
+								</span>
+							</Link>
+						</div>
+					</div>
+				)}
 			</ul>
 		</nav>
 	)
