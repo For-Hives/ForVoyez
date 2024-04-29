@@ -10,7 +10,7 @@ export default function WelcomePage() {
 
 	return (
 		<>
-			<h1 className="">Welcome to the ForVoyez Developer Platform</h1>
+			<h1 className="text-3xl">Welcome to the ForVoyez Developer Platform</h1>
 			<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 				<div className="group relative">
 					<div className="mt-4 flex justify-between">
@@ -49,7 +49,7 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 					<div className="group relative">
-						<div className="mt-4 flex justify-between">
+						<div className="mt-4 flex justify-between bg-red-500">
 							<div>
 								<h3 className="text-sm text-gray-700">
 									<Link href="#">
