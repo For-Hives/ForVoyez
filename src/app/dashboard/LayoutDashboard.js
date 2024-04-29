@@ -20,7 +20,7 @@ export function LayoutDashboard({ children }) {
 				className="contents h-full lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex lg:gap-4"
 			>
 				<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
-					<div className={'flex flex-col gap-8'}>
+					<div className={'flex flex-col'}>
 						<div className="hidden lg:flex">
 							<Link href="/" aria-label="Home">
 								<span className="sr-only">ForVoyez</span>
@@ -34,7 +34,7 @@ export function LayoutDashboard({ children }) {
 							</Link>
 						</div>
 						<HeaderDashboard />
-						<NavigationDashboard className="hidden h-full lg:block" />
+						<NavigationDashboard className="hidden h-full lg:mt-10 lg:block" />
 					</div>
 					{user && (
 						<div className={'flex items-center gap-2'}>

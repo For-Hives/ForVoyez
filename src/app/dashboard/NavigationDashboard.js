@@ -74,7 +74,7 @@ function ActivePageMarker({ group, pathname }) {
 	return (
 		<motion.div
 			layout
-			className="bg-forvoyez_orange-500 absolute left-2 h-6 w-px"
+			className="absolute left-2 h-6 w-px bg-forvoyez_orange-500"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1, transition: { delay: 0.2 } }}
 			exit={{ opacity: 0 }}
@@ -151,18 +151,16 @@ export const dashboardNavigation = [
 
 export function NavigationDashboard(props) {
 	return (
-		<div className={'flex flex-col'}>
-			<nav {...props}>
-				<ul role="list">
-					{dashboardNavigation.map((group, groupIndex) => (
-						<NavigationGroup
-							key={group.title}
-							group={group}
-							className={groupIndex === 0 ? 'md:mt-0' : ''}
-						/>
-					))}
-				</ul>
-			</nav>
-		</div>
+		<nav {...props}>
+			<ul role="list">
+				{dashboardNavigation.map((group, groupIndex) => (
+					<NavigationGroup
+						key={group.title}
+						group={group}
+						className={groupIndex === 0 ? 'md:mt-0' : ''}
+					/>
+				))}
+			</ul>
+		</nav>
 	)
 }
