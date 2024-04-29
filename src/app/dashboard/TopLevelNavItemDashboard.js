@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export function TopLevelNavItem({ href, children, className }) {
+export function TopLevelNavItemDashboard({ href, children, className }) {
 	return (
 		<li>
 			<Link
