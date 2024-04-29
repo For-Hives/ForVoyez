@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { HeaderDashboard } from '@/app/dashboard/HeaderDashoard'
 import { NavigationDashboard } from '@/app/dashboard/NavigationDashboard'
 import { UserButton, useUser } from '@clerk/nextjs'
+import { HeroPatternDashboard } from '@/app/dashboard/HeroPatternDashboard'
 
 export function LayoutDashboard({ children }) {
 	let pathname = usePathname()
@@ -55,128 +56,10 @@ export function LayoutDashboard({ children }) {
 			</motion.header>
 			<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
 				<main className="flex-auto">
-					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-						<div className="py-12">
-							<h1 className="text-4xl font-bold tracking-tight text-gray-900">
-								Welcome to the ForVoyez Developer Platform
-							</h1>
-							<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-								<div className="group relative">
-									<div className="mt-4 flex justify-between">
-										<div>
-											<h3 className="text-sm text-gray-700">
-												<Link href="#">
-													<span
-														aria-hidden="true"
-														className="absolute inset-0"
-													/>
-													Start with the Basics
-												</Link>
-											</h3>
-											<p className="mt-1 text-sm text-gray-500">
-												Online tools and resources to get you started.
-											</p>
-										</div>
-									</div>
-								</div>
-								<div className="group relative">
-									<div className="mt-4 flex justify-between">
-										<div>
-											<h3 className="text-sm text-gray-700">
-												<Link href="#">
-													<span
-														aria-hidden="true"
-														className="absolute inset-0"
-													/>
-													Documentation
-												</Link>
-											</h3>
-											<p className="mt-1 text-sm text-gray-500">
-												Discover our features and API reference.
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="mt-12">
-								<h2 className="text-2xl font-bold tracking-tight text-gray-900">
-									Configuration
-								</h2>
-								<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-									<div className="group relative">
-										<div className="mt-4 flex justify-between">
-											<div>
-												<h3 className="text-sm text-gray-700">
-													<Link href="#">
-														<span
-															aria-hidden="true"
-															className="absolute inset-0"
-														/>
-														Playground
-													</Link>
-												</h3>
-												<p className="mt-1 text-sm text-gray-500">
-													Explore and test our API endpoints.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div className="group relative">
-										<div className="mt-4 flex justify-between">
-											<div>
-												<h3 className="text-sm text-gray-700">
-													<Link href="#">
-														<span
-															aria-hidden="true"
-															className="absolute inset-0"
-														/>
-														API Keys
-													</Link>
-												</h3>
-												<p className="mt-1 text-sm text-gray-500">
-													Manage your API keys and authentication.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div className="group relative">
-										<div className="mt-4 flex justify-between">
-											<div>
-												<h3 className="text-sm text-gray-700">
-													<Link href="#">
-														<span
-															aria-hidden="true"
-															className="absolute inset-0"
-														/>
-														Usage
-													</Link>
-												</h3>
-												<p className="mt-1 text-sm text-gray-500">
-													Track your API usage and limits.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div className="group relative">
-										<div className="mt-4 flex justify-between">
-											<div>
-												<h3 className="text-sm text-gray-700">
-													<Link href="#">
-														<span
-															aria-hidden="true"
-															className="absolute inset-0"
-														/>
-														Plans
-													</Link>
-												</h3>
-												<p className="mt-1 text-sm text-gray-500">
-													Upgrade or change your subscription plan.
-												</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+					<HeroPatternDashboard />
+					<div className="flex h-full flex-col pb-10 pt-16">
+						<div className={'prose z-20 mx-auto max-w-5xl flex-auto'}>
+							{children}
 						</div>
 					</div>
 				</main>
