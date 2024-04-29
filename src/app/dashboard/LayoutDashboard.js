@@ -38,7 +38,7 @@ export function LayoutDashboard({ children }) {
 						<NavigationDashboard className="hidden h-full lg:mt-10 lg:block" />
 					</div>
 					{user && (
-						<div className={'flex items-center gap-2'}>
+						<div className={'hidden items-center gap-2 lg:flex'}>
 							<UserButton
 								appearance="ghost"
 								userProfileMode="navigation"
