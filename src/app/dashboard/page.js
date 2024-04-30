@@ -1,7 +1,96 @@
 'use client'
 import { useEffect } from 'react'
-import Link from 'next/link'
 import { createUser } from '@/components/dashboard/createUser'
+import {
+	BookOpenIcon,
+	ChartBarIcon,
+	CodeBracketIcon,
+	CreditCardIcon,
+	KeyIcon,
+	QuestionMarkCircleIcon,
+} from '@heroicons/react/24/outline'
+import { ResourceCard } from '@/app/dashboard/ResourceCard'
+
+const mainResources = [
+	{
+		href: '/docs',
+		name: 'Documentation',
+		description: 'Discover our features and API reference.',
+		icon: BookOpenIcon,
+		pattern: {
+			y: 16,
+			squares: [
+				[0, 1],
+				[1, 3],
+			],
+		},
+	},
+	{
+		href: '/playground',
+		name: 'Playground',
+		description: 'Explore and test our API endpoints.',
+		icon: CodeBracketIcon,
+		pattern: {
+			y: -6,
+			squares: [
+				[-1, 2],
+				[1, 3],
+			],
+		},
+	},
+]
+
+const configResources = [
+	{
+		href: '/account/api-keys',
+		name: 'API Keys',
+		description: 'Manage your API keys and authentication.',
+		icon: KeyIcon,
+		pattern: {
+			y: 32,
+			squares: [
+				[0, 2],
+				[1, 4],
+			],
+		},
+	},
+	{
+		href: '/account/usage',
+		name: 'Usage',
+		description: 'Track your API usage and limits.',
+		icon: ChartBarIcon,
+		pattern: {
+			y: 22,
+			squares: [[0, 1]],
+		},
+	},
+	{
+		href: '/account/plans',
+		name: 'Plans',
+		description: 'Upgrade or change your subscription plan.',
+		icon: CreditCardIcon,
+		pattern: {
+			y: 16,
+			squares: [
+				[0, 1],
+				[1, 3],
+			],
+		},
+	},
+	{
+		href: '/support',
+		name: 'Help & Support',
+		description: 'Get help and support from our team.',
+		icon: QuestionMarkCircleIcon,
+		pattern: {
+			y: -6,
+			squares: [
+				[-1, 2],
+				[1, 3],
+			],
+		},
+	},
+]
 
 export default function WelcomePage() {
 	useEffect(() => {
@@ -10,102 +99,29 @@ export default function WelcomePage() {
 
 	return (
 		<>
-			<h1 className="text-3xl">Welcome to the ForVoyez Developer Platform</h1>
-			<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-				<div className="group relative">
-					<Link href={'#'} className="mt-4 flex justify-between no-underline">
-						<div>
-							<h3 className="text-sm text-gray-700">
-								<span aria-hidden="true" className="absolute inset-0" />
-								Start with the Basics
-							</h3>
-							<p className="mt-1 text-sm text-gray-500">
-								Online tools and resources to get you started.
-							</p>
-						</div>
-					</Link>
-				</div>
-				<div className="group relative">
-					<Link href={'#'} className="mt-4 flex justify-between no-underline">
-						<div>
-							<h3 className="text-sm text-gray-700">
-								<span aria-hidden="true" className="absolute inset-0" />
-								Documentation
-							</h3>
-							<p className="mt-1 text-sm text-gray-500">
-								Discover our features and API reference.
-							</p>
-						</div>
-					</Link>
+			<h1 className="mb-8 text-3xl font-bold">
+				Welcome to the ForVoyez Developer Platform
+			</h1>
+			<div className="mt-12">
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900">
+					Start with the Basics
+				</h2>
+				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-2">
+					{mainResources.map(resource => (
+						<ResourceCard key={resource.href} resource={resource} />
+					))}
 				</div>
 			</div>
 			<div className="mt-12">
-				<h2 className="text-2xl font-bold tracking-tight text-gray-900">
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900">
 					Configuration
 				</h2>
-				<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-					<div className="group relative">
-						<Link href={'#'} className="mt-4 flex justify-between no-underline">
-							<div>
-								<h3 className="text-sm text-gray-700">
-									<span aria-hidden="true" className="absolute inset-0" />
-									Playground
-								</h3>
-								<p className="mt-1 text-sm text-gray-500">
-									Explore and test our API endpoints.
-								</p>
-							</div>
-						</Link>
-					</div>
-					<div className="group relative">
-						<Link href={'#'} className="mt-4 flex justify-between no-underline">
-							<div>
-								<h3 className="text-sm text-gray-700">
-									<span aria-hidden="true" className="absolute inset-0" />
-									API Keys
-								</h3>
-								<p className="mt-1 text-sm text-gray-500">
-									Manage your API keys and authentication.
-								</p>
-							</div>
-						</Link>
-					</div>
-					<div className="group relative">
-						<Link href={'#'} className="mt-4 flex justify-between no-underline">
-							<div>
-								<h3 className="text-sm text-gray-700">
-									<span aria-hidden="true" className="absolute inset-0" />
-									Usage
-								</h3>
-								<p className="mt-1 text-sm text-gray-500">
-									Track your API usage and limits.
-								</p>
-							</div>
-						</Link>
-					</div>
-					<div className="group relative">
-						<Link href={'#'} className="mt-4 flex justify-between no-underline">
-							<div>
-								<h3 className="text-sm text-gray-700">
-									<span aria-hidden="true" className="absolute inset-0" />
-									Plans
-								</h3>
-								<p className="mt-1 text-sm text-gray-500">
-									Upgrade or change your subscription plan.
-								</p>
-							</div>
-						</Link>
-					</div>
+				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
+					{configResources.map(resource => (
+						<ResourceCard key={resource.href} resource={resource} />
+					))}
 				</div>
 			</div>
-			{/*<div className="p-8">*/}
-			{/*	<h1 className="mb-4 text-xl font-bold">embark here</h1>*/}
-
-			{/*	<div className="flex flex-col">*/}
-			{/*		<Link href="/dashboard/tokens">tokens</Link>*/}
-			{/*		<Link href="/dashboard/plans">plans</Link>*/}
-			{/*	</div>*/}
-			{/*</div>*/}
 		</>
 	)
 }
