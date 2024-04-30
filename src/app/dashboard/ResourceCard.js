@@ -6,7 +6,7 @@ import { GridPatternDashboard } from '@/app/dashboard/GridPatternDashboard'
 function ResourceIcon({ icon: Icon }) {
 	return (
 		<div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900/5 ring-1 ring-slate-900/25 backdrop-blur-[2px] transition duration-300 group-hover:bg-white/50 group-hover:ring-forvoyez_orange-500/25">
-			<Icon className="h-5 w-5 fill-slate-500/10 stroke-slate-500 transition-colors duration-300 group-hover:stroke-forvoyez_orange-500" />
+			<Icon className="h-5 w-5 fill-slate-500/10 stroke-slate-500 transition-colors duration-300 group-hover:fill-forvoyez_orange-500/10 group-hover:stroke-forvoyez_orange-500" />
 		</div>
 	)
 }
