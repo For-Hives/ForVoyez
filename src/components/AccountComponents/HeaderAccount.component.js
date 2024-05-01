@@ -5,11 +5,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 
 import Image from 'next/image'
 import {
-	MobileNavigationDashboardComponent,
+	MobileNavigationAccountComponent,
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
-} from '@/components/DashboardComponents/MobileNavigationDashboard.component'
-import { TopLevelNavItemDashboardComponent } from '@/components/DashboardComponents/TopLevelNavItemDashboard.component'
+} from '@/components/AccountComponents/MobileNavigationAccount.component'
+import { TopLevelNavItemAccountComponent } from '@/components/AccountComponents/TopLevelNavItemAccount.component'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },
@@ -43,7 +43,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 				)}
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
-				<MobileNavigationDashboardComponent />
+				<MobileNavigationAccountComponent />
 				<Link href="/" aria-label="Home">
 					<span className="sr-only">ForVoyez</span>
 					<Image
@@ -59,21 +59,21 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			<div className="flex items-center gap-5">
 				<nav className="hidden md:block">
 					<ul role="list" className="flex items-center gap-8 ">
-						<TopLevelNavItemDashboardComponent
+						<TopLevelNavItemAccountComponent
 							className={'!text-forvoyez_orange-500'}
 							href="/dashboard"
 						>
 							→ Dashboard
-						</TopLevelNavItemDashboardComponent>
-						<TopLevelNavItemDashboardComponent href="/">
+						</TopLevelNavItemAccountComponent>
+						<TopLevelNavItemAccountComponent href="/">
 							Website
-						</TopLevelNavItemDashboardComponent>
-						<TopLevelNavItemDashboardComponent href="/docs">
+						</TopLevelNavItemAccountComponent>
+						<TopLevelNavItemAccountComponent href="/docs">
 							Documentation
-						</TopLevelNavItemDashboardComponent>
-						<TopLevelNavItemDashboardComponent href="/profile">
+						</TopLevelNavItemAccountComponent>
+						<TopLevelNavItemAccountComponent href="/profile">
 							Profile
-						</TopLevelNavItemDashboardComponent>
+						</TopLevelNavItemAccountComponent>
 					</ul>
 				</nav>
 			</div>

@@ -1,10 +1,10 @@
-import { HeroPatternDashboardComponent } from '@/components/DashboardComponents/HeroPatternDashboard.component'
+import { HeroPatternAccountComponent } from '@/components/AccountComponents/HeroPatternAccount.component'
 import Link from 'next/link'
 
 export default function NotFound() {
 	return (
 		<>
-			<HeroPatternDashboardComponent />
+			<HeroPatternAccountComponent />
 			<div className="mx-auto flex h-screen max-w-xl flex-col items-center justify-center py-16 text-center">
 				<p className="text-sm font-semibold text-slate-900">404</p>
 				<h1 className="mt-2 text-2xl font-bold text-slate-900">
@@ -13,7 +13,7 @@ export default function NotFound() {
 				<p className="mt-2 text-base text-slate-600">
 					Sorry, we couldn’t find the page you’re looking for.
 				</p>
-				<Link href="/dashboard" arrow="right" className="mt-8">
+				<Link href="/account" arrow="right" className="mt-8">
 					Back to docs
 				</Link>
 			</div>

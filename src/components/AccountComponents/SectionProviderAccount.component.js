@@ -8,7 +8,7 @@ import {
 	useState,
 } from 'react'
 import { createStore, useStore } from 'zustand'
-import { remToPx } from '@/components/DashboardComponents/RemToPxDashboard.component'
+import { remToPx } from '@/components/AccountComponents/RemToPxAccount.component'
 
 function createSectionStore(sections) {
 	return createStore()(set => ({
@@ -101,7 +101,7 @@ const SectionStoreContext = createContext(null)
 const useIsomorphicLayoutEffect =
 	typeof window === 'undefined' ? useEffect : useLayoutEffect
 
-export function SectionProviderDashboardComponent({ sections, children }) {
+export function SectionProviderAccountComponent({ sections, children }) {
 	let [sectionStore] = useState(() => createSectionStore(sections))
 
 	useVisibleSections(sectionStore)

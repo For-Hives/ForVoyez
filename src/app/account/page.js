@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { createUser } from '@/components/DashboardComponents/createUser'
+import { createUser } from '@/components/AccountComponents/createUser'
 import {
 	BookOpenIcon,
 	ChartBarIcon,
@@ -9,7 +9,7 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { ResourceCardComponent } from '@/components/DashboardComponents/ResourceCard.component'
+import { ResourceCardAccountComponent } from '@/components/AccountComponents/ResourceCardAccount.component'
 
 const mainResources = [
 	{
@@ -108,7 +108,10 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-2">
 					{mainResources.map(resource => (
-						<ResourceCardComponent key={resource.href} resource={resource} />
+						<ResourceCardAccountComponent
+							key={resource.href}
+							resource={resource}
+						/>
 					))}
 				</div>
 			</div>
@@ -118,7 +121,10 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
 					{configResources.map(resource => (
-						<ResourceCardComponent key={resource.href} resource={resource} />
+						<ResourceCardAccountComponent
+							key={resource.href}
+							resource={resource}
+						/>
 					))}
 				</div>
 			</div>

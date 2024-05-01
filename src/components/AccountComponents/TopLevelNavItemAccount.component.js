@@ -1,10 +1,6 @@
 import Link from 'next/link'
 
-export function TopLevelNavItemDashboardComponent({
-	href,
-	children,
-	className,
-}) {
+export function TopLevelNavItemAccountComponent({ href, children, className }) {
 	return (
 		<li>
 			<Link

@@ -4,12 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-import { HeaderDashboard } from '@/components/DashboardComponents/HeaderDashoard.component'
-import { NavigationDashboardComponent } from '@/components/DashboardComponents/NavigationDashboard.component'
+import { HeaderDashboard } from '@/components/AccountComponents/HeaderAccount.component'
+import { NavigationAccountComponent } from '@/components/AccountComponents/NavigationAccount.component'
 import { UserButton, useUser } from '@clerk/nextjs'
-import { HeroPatternDashboardComponent } from '@/components/DashboardComponents/HeroPatternDashboard.component'
+import { HeroPatternAccountComponent } from '@/components/AccountComponents/HeroPatternAccount.component'
 
-export function LayoutDashboardComponent({ children }) {
+export function LayoutAccountComponent({ children }) {
 	const { user } = useUser()
 
 	return (
@@ -33,7 +33,7 @@ export function LayoutDashboardComponent({ children }) {
 							</Link>
 						</div>
 						<HeaderDashboard />
-						<NavigationDashboardComponent className="hidden h-full lg:mt-10 lg:block" />
+						<NavigationAccountComponent className="hidden h-full lg:mt-10 lg:block" />
 					</div>
 					{user && (
 						<div className={'hidden items-center gap-2 lg:flex'}>
@@ -54,7 +54,7 @@ export function LayoutDashboardComponent({ children }) {
 			</motion.header>
 			<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
 				<main className="flex-auto">
-					<HeroPatternDashboardComponent />
+					<HeroPatternAccountComponent />
 					<div className="flex h-full flex-col pb-10 pt-16">
 						<div className={'prose z-20 mx-auto max-w-5xl flex-auto'}>
 							{children}
