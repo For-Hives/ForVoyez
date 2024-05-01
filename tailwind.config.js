@@ -7,8 +7,8 @@ module.exports = {
 	],
 	safelist: [
 		{
-			// fixme replace kanit, playpen_sans etc with your chosen font
-			pattern: /font-(kanit|playpen_sans)/,
+			// fixme replace sourcesans, jost etc with your chosen font
+			pattern: /font-(sourcesans|jost)/,
 		},
 	],
 	theme: {
@@ -30,9 +30,9 @@ module.exports = {
 		},
 		extend: {
 			fontFamily: {
-				// fixme replace kanit, playpen_sans etc with your chosen font
-				kanit: 'var(--font-kanit)',
-				playpen_sans: 'var(--font-playpen_sans)',
+				// fixme replace sourcesans, jost etc with your chosen font
+				sourcesans: 'var(--font-sourcesans)',
+				jost: 'var(--font-jost)',
 			},
 			colors: {
 				forvoyez_orange: {

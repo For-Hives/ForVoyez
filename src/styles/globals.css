@@ -49,7 +49,7 @@ html {
 @layer base {
 	* {
 		/*fixme change the base font here (and in the layout.js in  /app) */
-		@apply font-kanit;
+		@apply font-sourcesans;
 	}
 
 	h1,
@@ -59,7 +59,7 @@ html {
 	h5,
 	h6 {
 		/*fixme change the title font here (and in the layout.js in  /app) */
-		@apply font-playpen_sans;
+		@apply font-jost;
 	}
 
 	h1 {

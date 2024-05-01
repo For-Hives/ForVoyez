@@ -1,36 +1,31 @@
 import '@/styles/globals.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { Kanit, Playpen_Sans } from 'next/font/google'
+import { Jost, Source_Sans_3 } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
-// fixme replace that with your chosen font
-const kanit = Kanit({
-	weight: ['100', '300', '400', '700', '900'],
+const sourcesans = Source_Sans_3({
+	weight: ['300', '400', '700', '900'],
 	subsets: ['latin'],
-	variable: '--font-kanit',
+	variable: '--font-sourcesans',
 	style: ['normal', 'italic'],
 })
 
-// fixme replace that with your chosen font
-const playpen_sans = Playpen_Sans({
+const jost = Jost({
 	weight: ['200', '300', '400', '500', '600', '700', '800'],
 	subsets: ['latin'],
-	variable: '--font-playpen_sans',
+	variable: '--font-jost',
 	style: ['normal'],
 })
 
 export const metadata = {
 	title: 'Here is the forhives template',
 	description: 'Here is the forhives template',
-	// fixme replace that with your own url
-	metadataBase: new URL('http://localhost:8080'),
+	metadataBase: new URL('https://forvoyez.com/'),
 	alternates: {
 		canonical: '/',
 		languages: {
-			// fixme replace that with your own url
-			'fr-FR': 'http://localhost:8080',
-			'en-US': 'http://localhost:8080',
+			'en-US': 'https://forvoyez.com/',
 		},
 	},
 }
@@ -38,10 +33,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<ClerkProvider>
-			<html
-				className={`${kanit.variable} ${playpen_sans.variable}`}
-				lang={'en'}
-			>
+			<html className={`${sourcesans.variable} ${jost.variable}`} lang={'en'}>
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
 					{children}
 				</body>
