@@ -1,6 +1,6 @@
 import { useId } from 'react'
 
-export function GridPatternDashboard({
+export function GridPatternDashboardComponent({
 	width,
 	height,
 	x,

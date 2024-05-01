@@ -1,10 +1,10 @@
-import { HeroPatternDashboard } from '@/app/dashboard/HeroPatternDashboard'
+import { HeroPatternDashboardComponent } from '@/components/DashboardComponents/HeroPatternDashboard.component'
 import Link from 'next/link'
 
 export default function NotFound() {
 	return (
 		<>
-			<HeroPatternDashboard />
+			<HeroPatternDashboardComponent />
 			<div className="mx-auto flex h-screen max-w-xl flex-col items-center justify-center py-16 text-center">
 				<p className="text-sm font-semibold text-slate-900">404</p>
 				<h1 className="mt-2 text-2xl font-bold text-slate-900">

@@ -5,12 +5,12 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 
-import { HeaderDashboard } from '@/app/dashboard/HeaderDashoard'
-import { NavigationDashboard } from '@/app/dashboard/NavigationDashboard'
+import { HeaderDashboard } from '@/components/DashboardComponents/HeaderDashoard.component'
+import { NavigationDashboardComponent } from '@/components/DashboardComponents/NavigationDashboard.component'
 import { UserButton, useUser } from '@clerk/nextjs'
-import { HeroPatternDashboard } from '@/app/dashboard/HeroPatternDashboard'
+import { HeroPatternDashboardComponent } from '@/components/DashboardComponents/HeroPatternDashboard.component'
 
-export function LayoutDashboard({ children }) {
+export function LayoutDashboardComponent({ children }) {
 	let pathname = usePathname()
 	const { user } = useUser()
 
@@ -23,7 +23,7 @@ export function LayoutDashboard({ children }) {
 				<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
 					<div className={'flex flex-col'}>
 						<div className="hidden lg:flex">
-							<Link href="/" aria-label="Home">
+							<Link href="/public" aria-label="Home">
 								<span className="sr-only">ForVoyez</span>
 								<Image
 									className="h-8 w-auto"
@@ -35,7 +35,7 @@ export function LayoutDashboard({ children }) {
 							</Link>
 						</div>
 						<HeaderDashboard />
-						<NavigationDashboard className="hidden h-full lg:mt-10 lg:block" />
+						<NavigationDashboardComponent className="hidden h-full lg:mt-10 lg:block" />
 					</div>
 					{user && (
 						<div className={'hidden items-center gap-2 lg:flex'}>
@@ -56,7 +56,7 @@ export function LayoutDashboard({ children }) {
 			</motion.header>
 			<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
 				<main className="flex-auto">
-					<HeroPatternDashboard />
+					<HeroPatternDashboardComponent />
 					<div className="flex h-full flex-col pb-10 pt-16">
 						<div className={'prose z-20 mx-auto max-w-5xl flex-auto'}>
 							{children}

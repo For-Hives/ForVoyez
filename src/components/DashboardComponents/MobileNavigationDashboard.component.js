@@ -13,8 +13,8 @@ import { Dialog, Transition } from '@headlessui/react'
 import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
-import { HeaderDashboard } from '@/app/dashboard/HeaderDashoard'
-import { NavigationDashboard } from '@/app/dashboard/NavigationDashboard'
+import { HeaderDashboard } from '@/components/DashboardComponents/HeaderDashoard.component'
+import { NavigationDashboardComponent } from '@/components/DashboardComponents/NavigationDashboard.component'
 
 function MenuIcon(props) {
 	return (
@@ -116,9 +116,9 @@ function MobileNavigationDialog({ isOpen, close }) {
 					>
 						<motion.div
 							layoutScroll
-							className="ring-slate-900/7.5 fixed bottom-0 left-0 top-14 w-full overflow-y-auto bg-white px-4 pb-4 pt-6 shadow-lg shadow-slate-900/10 ring-1 min-[416px]:max-w-sm sm:px-6 sm:pb-10"
+							className="fixed bottom-0 left-0 top-14 w-full overflow-y-auto bg-white px-4 pb-4 pt-6 shadow-lg shadow-slate-900/10 ring-1 ring-slate-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10"
 						>
-							<NavigationDashboard />
+							<NavigationDashboardComponent />
 						</motion.div>
 					</Transition.Child>
 				</Dialog.Panel>
@@ -138,7 +138,7 @@ export const useMobileNavigationStore = create()(set => ({
 	toggle: () => set(state => ({ isOpen: !state.isOpen })),
 }))
 
-export function MobileNavigationDashboard() {
+export function MobileNavigationDashboardComponent() {
 	let isInsideMobileNavigation = useIsInsideMobileNavigation()
 	let { isOpen, toggle, close } = useMobileNavigationStore()
 	let ToggleIcon = isOpen ? XIcon : MenuIcon

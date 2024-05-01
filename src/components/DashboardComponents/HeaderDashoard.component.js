@@ -5,11 +5,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 
 import Image from 'next/image'
 import {
-	MobileNavigationDashboard,
+	MobileNavigationDashboardComponent,
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
-} from '@/app/dashboard/MobileNavigationDashboard'
-import { TopLevelNavItemDashboard } from '@/app/dashboard/TopLevelNavItemDashboard'
+} from '@/components/DashboardComponents/MobileNavigationDashboard.component'
+import { TopLevelNavItemDashboardComponent } from '@/components/DashboardComponents/TopLevelNavItemDashboard.component'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },
@@ -43,8 +43,8 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 				)}
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
-				<MobileNavigationDashboard />
-				<Link href="/" aria-label="Home">
+				<MobileNavigationDashboardComponent />
+				<Link href="/public" aria-label="Home">
 					<span className="sr-only">ForVoyez</span>
 					<Image
 						className="h-8 w-auto"
@@ -59,21 +59,21 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			<div className="flex items-center gap-5">
 				<nav className="hidden md:block">
 					<ul role="list" className="flex items-center gap-8 ">
-						<TopLevelNavItemDashboard
+						<TopLevelNavItemDashboardComponent
 							className={'!text-forvoyez_orange-500'}
 							href="/dashboard"
 						>
 							→ Dashboard
-						</TopLevelNavItemDashboard>
-						<TopLevelNavItemDashboard href="https://forvoyez.fr">
+						</TopLevelNavItemDashboardComponent>
+						<TopLevelNavItemDashboardComponent href="https://forvoyez.fr">
 							Website
-						</TopLevelNavItemDashboard>
-						<TopLevelNavItemDashboard href="/docs">
+						</TopLevelNavItemDashboardComponent>
+						<TopLevelNavItemDashboardComponent href="/docs">
 							Documentation
-						</TopLevelNavItemDashboard>
-						<TopLevelNavItemDashboard href="/profile">
+						</TopLevelNavItemDashboardComponent>
+						<TopLevelNavItemDashboardComponent href="/profile">
 							Profile
-						</TopLevelNavItemDashboard>
+						</TopLevelNavItemDashboardComponent>
 					</ul>
 				</nav>
 			</div>

@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 
-import { useIsInsideMobileNavigation } from '@/app/dashboard/MobileNavigationDashboard'
-import { useSectionStore } from '@/app/dashboard/SectionProviderDashboard'
-import { remToPx } from '@/app/dashboard/RemToPxDashboard'
-import { TopLevelNavItemDashboard } from '@/app/dashboard/TopLevelNavItemDashboard'
+import { useIsInsideMobileNavigation } from '@/components/DashboardComponents/MobileNavigationDashboard.component'
+import { useSectionStore } from '@/components/DashboardComponents/SectionProviderDashboard.component'
+import { remToPx } from '@/components/DashboardComponents/RemToPxDashboard.component'
+import { TopLevelNavItemDashboardComponent } from '@/components/DashboardComponents/TopLevelNavItemDashboard.component'
 import { UserButton, useUser } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {
@@ -150,31 +150,37 @@ export const dashboardNavigation = [
 	},
 ]
 
-export function NavigationDashboard(props) {
+export function NavigationDashboardComponent(props) {
 	const { user } = useUser()
 
 	return (
 		<nav {...props}>
 			<ul role="list">
 				<div className={'flex flex-col gap-2 lg:hidden'}>
-					<TopLevelNavItemDashboard
+					<TopLevelNavItemDashboardComponent
 						className={'!text-forvoyez_orange-500 lg:hidden'}
 						href="/dashboard"
 					>
 						→ Dashboard
-					</TopLevelNavItemDashboard>
-					<TopLevelNavItemDashboard
+					</TopLevelNavItemDashboardComponent>
+					<TopLevelNavItemDashboardComponent
 						href="https://forvoyez.fr"
 						className={'lg:hidden'}
 					>
 						Website
-					</TopLevelNavItemDashboard>
-					<TopLevelNavItemDashboard href="/docs" className={'lg:hidden'}>
+					</TopLevelNavItemDashboardComponent>
+					<TopLevelNavItemDashboardComponent
+						href="/docs"
+						className={'lg:hidden'}
+					>
 						Documentation
-					</TopLevelNavItemDashboard>
-					<TopLevelNavItemDashboard href="/profile" className={'lg:hidden'}>
+					</TopLevelNavItemDashboardComponent>
+					<TopLevelNavItemDashboardComponent
+						href="/profile"
+						className={'lg:hidden'}
+					>
 						Profile
-					</TopLevelNavItemDashboard>
+					</TopLevelNavItemDashboardComponent>
 				</div>
 
 				{dashboardNavigation.map((group, groupIndex) => (
