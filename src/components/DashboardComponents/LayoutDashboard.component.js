@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 
 import { HeaderDashboard } from '@/components/DashboardComponents/HeaderDashoard.component'
@@ -11,7 +10,6 @@ import { UserButton, useUser } from '@clerk/nextjs'
 import { HeroPatternDashboardComponent } from '@/components/DashboardComponents/HeroPatternDashboard.component'
 
 export function LayoutDashboardComponent({ children }) {
-	let pathname = usePathname()
 	const { user } = useUser()
 
 	return (
@@ -23,7 +21,7 @@ export function LayoutDashboardComponent({ children }) {
 				<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
 					<div className={'flex flex-col'}>
 						<div className="hidden lg:flex">
-							<Link href="/public" aria-label="Home">
+							<Link href="/" aria-label="Home">
 								<span className="sr-only">ForVoyez</span>
 								<Image
 									className="h-8 w-auto"

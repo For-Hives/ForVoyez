@@ -58,7 +58,6 @@ export function HeroComponent() {
 								workflow with our powerful API.
 							</p>
 							<div className="mt-10 flex items-center gap-x-6">
-								{/* FIXME replace that with the correct link */}
 								<Link
 									href="/dashboard"
 									className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-forvoyez_orange-600

@@ -163,10 +163,7 @@ export function NavigationDashboardComponent(props) {
 					>
 						→ Dashboard
 					</TopLevelNavItemDashboardComponent>
-					<TopLevelNavItemDashboardComponent
-						href="https://forvoyez.fr"
-						className={'lg:hidden'}
-					>
+					<TopLevelNavItemDashboardComponent href="/" className={'lg:hidden'}>
 						Website
 					</TopLevelNavItemDashboardComponent>
 					<TopLevelNavItemDashboardComponent

@@ -21,7 +21,7 @@ export async function sendEmail(data) {
 	// FIXME change the email address to the correct one
 	try {
 		await mg.messages.create(process.env.MAILGUN_DOMAIN, {
-			from: 'ForVoyez <noreply@forvoyez.fr>',
+			from: 'ForVoyez <noreply@forvoyez.com>',
 			to: 'contact@andy-cinquin.fr',
 			subject: `New contact message - ${subject}`,
 			text: `
@@ -43,7 +43,7 @@ export async function sendEmail(data) {
 			status: error.status,
 			details:
 				'An error occurred while sending the email. Please try again later. If the problem persists, please contact the website administrator. ' +
-				'(through contact@forvoyez.fr)',
+				'(through contact@forvoyez.com)',
 		}
 	}
 }

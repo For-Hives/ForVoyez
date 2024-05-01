@@ -44,7 +44,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
 				<MobileNavigationDashboardComponent />
-				<Link href="/public" aria-label="Home">
+				<Link href="/" aria-label="Home">
 					<span className="sr-only">ForVoyez</span>
 					<Image
 						className="h-8 w-auto"
@@ -65,7 +65,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 						>
 							→ Dashboard
 						</TopLevelNavItemDashboardComponent>
-						<TopLevelNavItemDashboardComponent href="https://forvoyez.fr">
+						<TopLevelNavItemDashboardComponent href="/">
 							Website
 						</TopLevelNavItemDashboardComponent>
 						<TopLevelNavItemDashboardComponent href="/docs">

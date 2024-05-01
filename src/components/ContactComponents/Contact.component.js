@@ -135,9 +135,9 @@ export function ContactComponent() {
 								<dd className={'font-bold'}>
 									<Link
 										className="hover:text-[#e05d45] hover:underline"
-										href="mailto:contact@forvoyez.fr"
+										href="mailto:contact@forvoyez.com"
 									>
-										contact@forvoyez.fr
+										contact@forvoyez.com
 									</Link>
 								</dd>
 							</div>
