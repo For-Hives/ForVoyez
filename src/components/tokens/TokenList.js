@@ -1,11 +1,6 @@
-import { auth } from '@clerk/nextjs'
-import { useEffect, useState } from 'react'
-import {
-	createToken,
-	getAllToken,
-	deleteToken,
-} from '@/components/tokens/TokensCRUD'
-import { ToastContainer, toast } from 'react-toastify'
+import { useEffect } from 'react'
+import { getAllToken } from '@/components/tokens/TokensCRUD'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function TokenList({ tokens, setTokens }) {
@@ -13,13 +8,13 @@ export default function TokenList({ tokens, setTokens }) {
 		getAllToken().then(setTokens)
 	}, [])
 
-	const handleDelete = async id => {
-		if (confirm('Are you sure you want to delete this token?')) {
-			await deleteToken(id)
-			setTokens(tokens.filter(token => token.id !== id))
-			toast.success('Token deleted successfully')
-		}
-	}
+	// const handleDelete = async id => {
+	// 	if (confirm('Are you sure you want to delete this token?')) {
+	// 		await deleteToken(id)
+	// 		setTokens(tokens.filter(token => token.id !== id))
+	// 		toast.success('Token deleted successfully')
+	// 	}
+	// }
 
 	return (
 		<>
