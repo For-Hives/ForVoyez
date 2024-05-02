@@ -139,7 +139,7 @@ export const dashboardNavigation = [
 	{
 		title: 'Account',
 		links: [
-			{ title: 'API Keys', href: '/account/api-keys' },
+			{ title: 'API Keys', href: '/account/tokens' },
 			{ title: 'Usage', href: '/account/usage' },
 			{ title: 'Plans', href: '/account/plans' },
 		],

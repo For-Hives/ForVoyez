@@ -42,7 +42,7 @@ const mainResources = [
 
 const configResources = [
 	{
-		href: '/account/api-keys',
+		href: '/account/tokens',
 		name: 'API Keys',
 		description: 'Manage your API keys and authentication.',
 		icon: KeyIcon,
