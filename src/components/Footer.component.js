@@ -99,7 +99,7 @@ export function FooterComponent() {
 					<div key={item.name} className="pb-6">
 						<Link
 							href={item.href}
-							className="text-sm leading-6 text-gray-600 hover:text-forvoyez_orange-500"
+							className="text-sm leading-6 text-slate-600 hover:text-forvoyez_orange-500"
 						>
 							{item.name}
 						</Link>
@@ -111,14 +111,14 @@ export function FooterComponent() {
 					<Link
 						key={item.name}
 						href={item.href}
-						className="text-gray-400 hover:text-forvoyez_orange-500"
+						className="text-slate-400 hover:text-forvoyez_orange-500"
 					>
 						<span className="sr-only">{item.name}</span>
 						<item.icon className="h-6 w-6" aria-hidden="true" />
 					</Link>
 				))}
 			</div>
-			<p className="mt-10 text-center text-xs leading-5 text-gray-500">
+			<p className="mt-10 text-center text-xs leading-5 text-slate-500">
 				&copy; {new Date().getFullYear()} ForVoyez. All rights reserved.
 			</p>
 		</footer>

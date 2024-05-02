@@ -4,12 +4,12 @@ export function CtaComponent() {
 	return (
 		<div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
 			<div className="mx-auto max-w-2xl text-center">
-				<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+				<h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
 					Boost your SEO with AI-powered image metadata.
 					<br />
 					Start optimizing your images today!
 				</h2>
-				<p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600">
+				<p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-slate-600">
 					Automatically generate SEO-friendly alt texts, titles, and captions
 					for your images. Save time and improve your search engine rankings
 					with our easy-to-use API.
@@ -25,7 +25,7 @@ export function CtaComponent() {
 					{/* FIXME replace that with the correct link */}
 					<Link
 						href="#"
-						className="text-sm font-semibold leading-6 text-gray-900"
+						className="text-sm font-semibold leading-6 text-slate-900"
 					>
 						Learn more <span aria-hidden="true">→</span>
 					</Link>
