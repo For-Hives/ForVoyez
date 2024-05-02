@@ -8,7 +8,7 @@ export default function Home() {
 		<div className="bg-white">
 			<NavbarComponent />
 			<main>
-				<ToastContainer closeOnClick />
+				<ToastContainer closeOnClick className={'z-50'} />
 				<ContactComponent />
 			</main>
 			<FooterComponent />
