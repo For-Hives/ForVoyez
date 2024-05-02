@@ -18,48 +18,6 @@ export default function TokenList({ tokens, setTokens }) {
 
 	return (
 		<>
-			<ToastContainer position="top-right" autoClose={3000} />
-			{/*<div className="relative overflow-x-auto shadow-md sm:rounded-lg">*/}
-			{/*	<table className="w-full text-left text-sm text-slate-500">*/}
-			{/*		<thead className="bg-slate-50 text-xs uppercase text-slate-700">*/}
-			{/*			<tr>*/}
-			{/*				<th scope="col" className="px-6 py-3">*/}
-			{/*					Token Name*/}
-			{/*				</th>*/}
-			{/*				<th scope="col" className="px-6 py-3">*/}
-			{/*					Created At*/}
-			{/*				</th>*/}
-			{/*				<th scope="col" className="px-6 py-3">*/}
-			{/*					Expired At*/}
-			{/*				</th>*/}
-			{/*				<th scope="col" className="px-6 py-3">*/}
-			{/*					Actions*/}
-			{/*				</th>*/}
-			{/*			</tr>*/}
-			{/*		</thead>*/}
-			{/*		<tbody>*/}
-			{/*			{tokens &&*/}
-			{/*				tokens.map((token, index) => (*/}
-			{/*					<tr*/}
-			{/*						key={token.id}*/}
-			{/*						className="border-b bg-white hover:bg-slate-50"*/}
-			{/*					>*/}
-			{/*						<td className="px-6 py-4">{token.name}</td>*/}
-			{/*						<td className="px-6 py-4">{token.createdAt.toString()}</td>*/}
-			{/*						<td className="px-6 py-4">{token.expiredAt.toString()}</td>*/}
-			{/*						<td className="px-6 py-4">*/}
-			{/*							<button*/}
-			{/*								onClick={() => handleDelete(token.id)}*/}
-			{/*								className="rounded-lg bg-red-500 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-red-700"*/}
-			{/*							>*/}
-			{/*								Delete*/}
-			{/*							</button>*/}
-			{/*						</td>*/}
-			{/*					</tr>*/}
-			{/*				))}*/}
-			{/*		</tbody>*/}
-			{/*	</table>*/}
-			{/*</div>*/}
 			<div className="w-full">
 				<div className="sm:flex sm:items-center">
 					<div className="sm:flex-auto">
@@ -77,68 +35,72 @@ export default function TokenList({ tokens, setTokens }) {
 						</button>
 					</div>
 				</div>
-				<div className="mt-8 flow-root">
-					<div className="">
-						<div className="flex min-w-full rounded-xl align-middle sm:px-6 lg:px-8">
-							<div className="rounded-xl shadow-xl ring-1 ring-black ring-opacity-5">
-								<table className="m-0 min-w-full divide-y divide-slate-300 rounded-xl">
+				<div className="min-w-7xl mt-8 flex max-w-7xl items-center justify-center shadow-sm">
+					<div className={'min-w-7xl w-full max-w-7xl overflow-x-auto'}>
+						<div className="align-middle">
+							<div className="ring-1 ring-black ring-opacity-5">
+								<table className="m-0 divide-y divide-slate-300">
 									<thead className="bg-slate-50">
 										<tr>
 											<th
 												scope="col"
-												className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+												className="w-7/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
 											>
-												Name
+												Token name
 											</th>
 											<th
 												scope="col"
-												className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+												className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 											>
-												Title
+												Created at
 											</th>
 											<th
 												scope="col"
-												className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+												className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 											>
-												Email
+												Expired at
 											</th>
 											<th
 												scope="col"
-												className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+												className="relative w-1/12 py-3.5 pl-3 pr-4 sm:pr-6"
 											>
-												Role
-											</th>
-											<th
-												scope="col"
-												className="relative py-3.5 pl-3 pr-4 sm:pr-6"
-											>
-												<span className="sr-only">Edit</span>
+												<span className="sr-only">Actions</span>
 											</th>
 										</tr>
 									</thead>
-									<tbody className="divide-y divide-slate-200 bg-white">
-										<tr>
-											<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
-												Lindsay Walton
-											</td>
-											<td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
-												Front-end Developer
-											</td>
-											<td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
-												lindsay.walton@example.com
-											</td>
-											<td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
-												Member
-											</td>
-											<td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-												<a
-													href="#"
-													className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
-												>
-													Edit<span className="sr-only">, Lindsay Walton</span>
-												</a>
-											</td>
-										</tr>
+									<tbody className="w-full divide-y divide-slate-200 bg-white">
+										{
+											// map over tokens and display them in a table
+											tokens && tokens.length > 0 ? (
+												tokens.map((token, index) => (
+													<tr key={index}>
+														<td className="overflow-x-visible whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+															{
+																// display token name, and truncate if too long
+																token.name
+															}
+														</td>
+														<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+															{
+																// display token expiration date
+																token.expiredAt
+															}
+														</td>
+														<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
+															<button className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900">
+																Delete
+															</button>
+														</td>
+													</tr>
+												))
+											) : (
+												<tr>
+													<td className="py-4 pl-4 pr-3 text-sm font-medium italic text-slate-900 sm:pl-6">
+														No tokens found, create one, and it will appear here
+													</td>
+												</tr>
+											)
+										}
 									</tbody>
 								</table>
 							</div>
