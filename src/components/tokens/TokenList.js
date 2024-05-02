@@ -26,7 +26,7 @@ export default function TokenList({ tokens, setTokens }) {
 		<div className="w-full">
 			<TokenModal
 				isOpen={isModalOpen}
-				onClose={closeModal}
+				closeModal={closeModal}
 				tokens={tokens}
 				setTokens={setTokens}
 			/>
