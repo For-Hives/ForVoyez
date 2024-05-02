@@ -1,9 +1,15 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getAllToken } from '@/app/actions/tokens/TokensCRUD'
 import 'react-toastify/dist/ReactToastify.css'
+import TokenModal from '@/components/tokens/TokenModal'
 
 export default function TokenList({ tokens, setTokens }) {
+	const [isModalOpen, setIsModalOpen] = useState(false)
+
+	const openModal = () => setIsModalOpen(true)
+	const closeModal = () => setIsModalOpen(false)
+
 	useEffect(() => {
 		getAllToken().then(setTokens)
 	}, [])
@@ -18,6 +24,12 @@ export default function TokenList({ tokens, setTokens }) {
 
 	return (
 		<div className="w-full">
+			<TokenModal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				tokens={tokens}
+				setTokens={setTokens}
+			/>
 			<div className="sm:flex sm:items-center">
 				<div className="sm:flex-auto">
 					<p className="mt-2 text-sm text-slate-700">
@@ -28,6 +40,7 @@ export default function TokenList({ tokens, setTokens }) {
 				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 					<button
 						type="button"
+						onClick={openModal}
 						className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
 					>
 						Add token
