@@ -29,6 +29,12 @@ html {
 	scroll-behavior: smooth;
 }
 
+.Toastify__toast-container,
+.Toastify,
+.Toastify__toast {
+	z-index: 9999 !important;
+}
+
 @media screen and (min-width: 768px) {
 	::-webkit-scrollbar {
 		-webkit-appearance: none;
