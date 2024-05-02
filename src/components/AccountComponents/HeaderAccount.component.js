@@ -61,7 +61,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 					<ul role="list" className="flex items-center gap-8 ">
 						<TopLevelNavItemAccountComponent
 							className={'!text-forvoyez_orange-500'}
-							href="/dashboard"
+							href="/account"
 						>
 							→ Dashboard
 						</TopLevelNavItemAccountComponent>

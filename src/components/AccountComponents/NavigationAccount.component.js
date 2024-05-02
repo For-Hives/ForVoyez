@@ -159,7 +159,7 @@ export function NavigationAccountComponent(props) {
 				<div className={'flex flex-col gap-2 lg:hidden'}>
 					<TopLevelNavItemAccountComponent
 						className={'!text-forvoyez_orange-500 lg:hidden'}
-						href="/dashboard"
+						href="/account"
 					>
 						→ Dashboard
 					</TopLevelNavItemAccountComponent>
