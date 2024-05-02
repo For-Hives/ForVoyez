@@ -194,7 +194,7 @@ export function NavigationAccountComponent(props) {
 								afterSignOutUrl="/"
 							/>
 							<Link href="/profile" className={'h-full w-full'}>
-								<span className="text-sm font-medium text-gray-900">
+								<span className="text-sm font-medium text-slate-900">
 									{user.firstName} {user.lastName}
 								</span>
 							</Link>
