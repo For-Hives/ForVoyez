@@ -98,7 +98,7 @@ export default function WelcomePage() {
 	}, [])
 
 	return (
-		<>
+		<div className={'prose mx-auto max-w-5xl flex-auto'}>
 			<h1 className="mb-8 text-3xl font-bold">
 				Welcome to the ForVoyez Developer Platform
 			</h1>
@@ -128,6 +128,6 @@ export default function WelcomePage() {
 					))}
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }

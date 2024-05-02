@@ -60,7 +60,7 @@ export default function TokenList({ tokens, setTokens }) {
 			{/*		</tbody>*/}
 			{/*	</table>*/}
 			{/*</div>*/}
-			<div className="">
+			<div className="w-full">
 				<div className="sm:flex sm:items-center">
 					<div className="sm:flex-auto">
 						<p className="mt-2 text-sm text-slate-700">

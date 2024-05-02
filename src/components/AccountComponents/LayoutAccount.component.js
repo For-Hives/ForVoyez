@@ -58,9 +58,7 @@ export function LayoutAccountComponent({ children }) {
 					<main className="flex-auto">
 						<HeroPatternAccountComponent />
 						<div className="flex h-full flex-col pb-10 pt-16">
-							<div className={'prose z-20 mx-auto max-w-5xl flex-auto'}>
-								{children}
-							</div>
+							<div className={'z-20'}>{children}</div>
 						</div>
 					</main>
 				</div>
