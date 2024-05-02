@@ -5,7 +5,7 @@ export function HeroComponent() {
 	return (
 		<section className="relative isolate">
 			<svg
-				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
 				aria-hidden="true"
 			>
 				<defs>
@@ -20,7 +20,7 @@ export function HeroComponent() {
 						<path d="M.5 200V.5H200" fill="none" />
 					</pattern>
 				</defs>
-				<svg x="50%" y={-1} className="overflow-visible fill-gray-50">
+				<svg x="50%" y={-1} className="overflow-visible fill-slate-50">
 					<path
 						d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z"
 						strokeWidth={0}
@@ -49,10 +49,10 @@ export function HeroComponent() {
 				<div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
 					<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 						<div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-							<h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+							<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
 								Generate Image Alt Text and Meta Descriptions in Seconds.
 							</h1>
-							<p className="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
+							<p className="mt-6 text-lg leading-8 text-slate-600 sm:max-w-md lg:max-w-none">
 								Our AI-powered API makes it easy for developers to optimize
 								images for SEO. Save time, boost SEO, and streamline your
 								workflow with our powerful API.
