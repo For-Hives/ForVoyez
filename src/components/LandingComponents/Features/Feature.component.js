@@ -65,18 +65,18 @@ export function FeatureComponent() {
 							<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
 								AI-Powered Image Metadata
 							</h2>
-							<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+							<p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
 								Optimize Your Images Effortlessly
 							</p>
-							<p className="mt-6 text-lg leading-8 text-gray-600">
+							<p className="mt-6 text-lg leading-8 text-slate-600">
 								Our AI-powered tool simplifies the process of generating
 								SEO-optimized image metadata, saving you time and effort while
 								boosting your online visibility.
 							</p>
-							<dl className="mt-16 max-w-xl space-y-12 text-base leading-7 text-gray-600 lg:max-w-none">
+							<dl className="mt-16 max-w-xl space-y-12 text-base leading-7 text-slate-600 lg:max-w-none">
 								{features.map(feature => (
 									<div key={feature.name} className="relative pl-9">
-										<dt className="inline font-semibold text-gray-900">
+										<dt className="inline font-semibold text-slate-900">
 											<feature.icon
 												className="absolute left-1 top-1 h-5 w-5 text-forvoyez_orange-500"
 												aria-hidden="true"
