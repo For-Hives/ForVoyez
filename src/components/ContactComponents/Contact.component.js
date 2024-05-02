@@ -57,7 +57,7 @@ export function ContactComponent() {
 					<div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
 						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gradient-to-r from-white to-transparent lg:w-1/2">
 							<svg
-								className="absolute inset-0 h-full w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+								className="absolute inset-0 h-full w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
 								aria-hidden="true"
 							>
 								<defs>
@@ -73,7 +73,7 @@ export function ContactComponent() {
 									</pattern>
 								</defs>
 								<rect width="100%" height="100%" strokeWidth={0} fill="white" />
-								<svg x="100%" y={-1} className="overflow-visible fill-gray-50">
+								<svg x="100%" y={-1} className="overflow-visible fill-slate-50">
 									<path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
 								</svg>
 								<rect
@@ -84,15 +84,15 @@ export function ContactComponent() {
 								/>
 							</svg>
 						</div>
-						<h2 className="text-3xl font-bold tracking-tight text-gray-900">
+						<h2 className="text-3xl font-bold tracking-tight text-slate-900">
 							Get in touch
 						</h2>
-						<p className="mt-6 text-lg leading-8 text-gray-600">
+						<p className="mt-6 text-lg leading-8 text-slate-600">
 							{`We'd love to hear from you! If you have any questions, feedback,
 							or inquiries, please don't hesitate to reach out to us. Our team
 							is dedicated to providing you with the best possible support.`}
 						</p>
-						<dl className="mt-10 space-y-4 text-base leading-7 text-gray-600">
+						<dl className="mt-10 space-y-4 text-base leading-7 text-slate-600">
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Address</span>
@@ -154,7 +154,7 @@ export function ContactComponent() {
 							<div>
 								<label
 									htmlFor="first-name"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									First name *
 								</label>
@@ -164,7 +164,7 @@ export function ContactComponent() {
 										name="first-name"
 										id="first-name"
 										autoComplete="given-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['first-name'] ? 'ring-red-500' : ''
 										}`}
 										{...register('first-name')}
@@ -179,7 +179,7 @@ export function ContactComponent() {
 							<div>
 								<label
 									htmlFor="last-name"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Last name *
 								</label>
@@ -189,7 +189,7 @@ export function ContactComponent() {
 										name="last-name"
 										id="last-name"
 										autoComplete="family-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['last-name'] ? 'ring-red-500' : ''
 										}`}
 										{...register('last-name')}
@@ -204,7 +204,7 @@ export function ContactComponent() {
 							<div className="sm:col-span-2">
 								<label
 									htmlFor="company"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Company
 								</label>
@@ -214,7 +214,7 @@ export function ContactComponent() {
 										name="company"
 										id="company"
 										autoComplete="organization"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.company ? 'ring-red-500' : ''
 										}`}
 										{...register('company')}
@@ -229,7 +229,7 @@ export function ContactComponent() {
 							<div className="sm:col-span-2">
 								<label
 									htmlFor="email"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Email *
 								</label>
@@ -239,7 +239,7 @@ export function ContactComponent() {
 										name="email"
 										id="email"
 										autoComplete="email"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.email ? 'ring-red-500' : ''
 										}`}
 										{...register('email')}
@@ -254,7 +254,7 @@ export function ContactComponent() {
 							<div className="sm:col-span-2">
 								<label
 									htmlFor="phone-number"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Phone number
 								</label>
@@ -264,7 +264,7 @@ export function ContactComponent() {
 										name="phone-number"
 										id="phone-number"
 										autoComplete="tel"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors['phone-number'] ? 'ring-red-500' : ''
 										}`}
 										{...register('phone-number')}
@@ -279,7 +279,7 @@ export function ContactComponent() {
 							<div className="sm:col-span-2">
 								<label
 									htmlFor="subject"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Subject
 								</label>
@@ -288,7 +288,7 @@ export function ContactComponent() {
 										type="text"
 										name="subject"
 										id="subject"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.subject ? 'ring-red-500' : ''
 										}`}
 										{...register('subject')}
@@ -303,7 +303,7 @@ export function ContactComponent() {
 							<div className="sm:col-span-2">
 								<label
 									htmlFor="message"
-									className="block text-sm font-semibold leading-6 text-gray-900"
+									className="block text-sm font-semibold leading-6 text-slate-900"
 								>
 									Message *
 								</label>
@@ -312,7 +312,7 @@ export function ContactComponent() {
 										name="message"
 										id="message"
 										rows={4}
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
 											errors.message ? 'ring-red-500' : ''
 										}`}
 										defaultValue={''}
@@ -328,13 +328,13 @@ export function ContactComponent() {
 						</div>
 						<div className={'flex flex-col'}>
 							<p className={'w-full text-right'}>
-								<span className="w-full text-xs text-gray-600">
+								<span className="w-full text-xs text-slate-600">
 									Fields marked with an asterisk (*) are required.
 								</span>
 								<br />
 							</p>
 							<p className={'mt-2 text-right'}>
-								<span className={'text-xs italic text-gray-600'}>
+								<span className={'text-xs italic text-slate-600'}>
 									By submitting this form, you agree that we may use the
 									provided contact information to respond to your inquiry.
 								</span>
