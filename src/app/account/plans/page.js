@@ -47,12 +47,12 @@ export default function PlansPage() {
 						/>
 						<div className="px-6 py-4">
 							<div className="mb-2 text-xl font-bold">{plan.name}</div>
-							<p className="text-base text-gray-700">
+							<p className="text-base text-slate-700">
 								{plan.description || 'No description available.'}
 							</p>
 						</div>
 						<div className="px-6 pb-2 pt-4">
-							<span className="mb-2 mr-2 inline-block rounded-full bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700">
+							<span className="mb-2 mr-2 inline-block rounded-full bg-slate-200 px-3 py-1 text-sm font-semibold text-slate-700">
 								Price: €{plan.price / 100}/month
 							</span>
 							<button

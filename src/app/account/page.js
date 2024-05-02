@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { createUser } from '@/components/AccountComponents/createUser'
+import { createUser } from '@/app/actions/account/createUser'
 import {
 	BookOpenIcon,
 	ChartBarIcon,
@@ -103,7 +103,7 @@ export default function WelcomePage() {
 				Welcome to the ForVoyez Developer Platform
 			</h1>
 			<div className="mt-12">
-				<h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900">
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">
 					Start with the Basics
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-2">
@@ -116,7 +116,7 @@ export default function WelcomePage() {
 				</div>
 			</div>
 			<div className="mt-12">
-				<h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900">
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">
 					Configuration
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">

@@ -29,8 +29,8 @@ export default function TokenPage() {
 	// }
 
 	return (
-		<div className="p-8">
-			<h1 className="mb-8 text-xl font-bold text-gray-800">Manage Tokens</h1>
+		<div className="">
+			<h1 className=" text-xl font-bold text-slate-800">Manage Tokens</h1>
 			<div className="mb-8">
 				<TokenList tokens={tokens} setTokens={setTokens} />
 			</div>
@@ -38,7 +38,7 @@ export default function TokenPage() {
 				<TokenCreate tokens={tokens} setTokens={setTokens} />
 			</div>
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+				<div className="fixed inset-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
 					<div className="rounded-lg bg-white p-8 shadow-lg">
 						<p className="mb-4">{modalContent}</p>
 						<button
