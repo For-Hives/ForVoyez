@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createToken } from '@/components/tokens/TokensCRUD'
+import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
 import JwtModal from '@/components/tokens/JwtModal'
 
@@ -18,6 +18,7 @@ export default function TokenCreate({ tokens, setTokens }) {
 			pauseOnHover: true,
 			draggable: true,
 			progress: undefined,
+			zIndex: 9999,
 		})
 	}
 
