@@ -1,4 +1,3 @@
-'use client'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,6 +24,11 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 		resolver: yupResolver(schema),
 	})
 
+	const copyToClipboard = token => {
+		navigator.clipboard.writeText(token)
+		toast.success('Token has been copied to clipboard')
+	}
+
 	async function onSubmit(data) {
 		try {
 			const newToken = {
@@ -34,10 +38,8 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 			}
 
 			const result = await createToken(newToken)
-			setTokens([...tokens, { ...newToken, id: result.id }])
-			toast.success('Token created successfully')
+			setTokens([...tokens, { ...newToken, id: result.id, jwt: result.jwt }])
 			reset()
-			closeModal()
 		} catch (error) {
 			toast.error('Failed to create token')
 		}
@@ -150,6 +152,38 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 										</button>
 									</div>
 								</form>
+								{tokens[tokens.length - 1]?.jwt && (
+									<div className="mt-4">
+										<h3 className="text-lg font-semibold">Your New Token</h3>
+										<div className="relative mt-2 w-full">
+											<pre className="overflow-x-auto rounded bg-slate-100 p-2 text-sm text-slate-800">
+												<code>{tokens[tokens.length - 1].jwt}</code>
+											</pre>
+											<button
+												onClick={() =>
+													copyToClipboard(tokens[tokens.length - 1].jwt)
+												}
+												className="absolute right-1 top-1 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+												title="Copy token"
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth={2}
+													className="h-6 w-6"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M8 5H5a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-3M15 2h6v6m-3-3v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9z"
+													/>
+												</svg>
+											</button>
+										</div>
+									</div>
+								)}
 							</Dialog.Panel>
 						</Transition.Child>
 					</div>
