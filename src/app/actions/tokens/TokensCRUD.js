@@ -4,11 +4,17 @@ import { auth } from '@clerk/nextjs'
 import { prisma } from '@/services/prisma.service'
 import { generateJwt } from '@/services/jwt.service'
 
+function truncateToken(token) {
+	if (!token) return ''
+	// 	slice, and return the first 5 characters of the token string, then append '...', terminating the string with the 5 last characters.
+	return token.slice(0, 5) + '-...-' + token.slice(-5)
+}
+
 export async function createToken(token) {
 	const { userId } = auth()
 
 	if (!userId) {
-		throw new Error('You must be logged to create a token')
+		throw new Error('You must be logged in to create a token')
 	}
 
 	console.log(userId)
@@ -20,7 +26,6 @@ export async function createToken(token) {
 		name: token.name,
 	})
 
-	// todo : verfier que la table user a bien ete initialiser
 	const result = await prisma.token.create({
 		data: {
 			userId: userId,
@@ -31,14 +36,14 @@ export async function createToken(token) {
 		},
 	})
 
-	return result
+	return { ...result, jwt }
 }
 
 export async function getAllToken() {
 	const { userId } = auth()
 
 	if (!userId) {
-		throw new Error('You must be logged to view a token')
+		throw new Error('You must be logged in to view tokens')
 	}
 
 	const result = await prisma.token.findMany({
@@ -47,9 +52,12 @@ export async function getAllToken() {
 		},
 	})
 
-	console.log('views all token ', result)
+	console.log('views all tokens', result)
 
-	return result
+	return result.map(token => ({
+		...token,
+		jwt: truncateToken(token.jwt),
+	}))
 }
 
 export async function deleteToken(tokenId) {
@@ -59,7 +67,6 @@ export async function deleteToken(tokenId) {
 		throw new Error('You must be logged in to delete a token')
 	}
 
-	// Check if the user owns the token
 	const token = await prisma.token.findUnique({
 		where: {
 			id: tokenId,

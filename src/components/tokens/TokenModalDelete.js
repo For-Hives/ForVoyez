@@ -7,17 +7,9 @@ export default function TokenModalDelete({
 	token,
 	onConfirm,
 }) {
-	const truncateToken = token => {
-		if (!token) return ''
-		const parts = token.split('.')
-		if (parts.length !== 3) return token
-		const payload = JSON.parse(atob(parts[1]))
-		return `${payload.sub.slice(0, 4)}...${payload.sub.slice(-4)}`
-	}
-
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-10" onClose={closeModal}>
+			<Dialog as="div" className="relative z-50" onClose={closeModal}>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"
@@ -62,9 +54,7 @@ export default function TokenModalDelete({
 
 								<div className="mt-4">
 									<p className="text-sm font-medium text-gray-900">Token:</p>
-									<p className="text-sm text-gray-500">
-										{truncateToken(token?.jwt)}
-									</p>
+									<p className="text-sm text-gray-500">{token?.jwt}</p>
 								</div>
 
 								<div className="mt-4 flex justify-end space-x-2">

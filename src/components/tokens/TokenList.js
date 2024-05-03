@@ -4,6 +4,7 @@ import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
 import 'react-toastify/dist/ReactToastify.css'
 import TokenModal from '@/components/tokens/TokenModal'
 import { toast } from 'react-toastify'
+import TokenModalDelete from '@/components/tokens/TokenModalDelete'
 
 export default function TokenList({ tokens, setTokens }) {
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -49,7 +50,7 @@ export default function TokenList({ tokens, setTokens }) {
 				tokens={tokens}
 				setTokens={setTokens}
 			/>
-			<ConfirmDeleteModal
+			<TokenModalDelete
 				isOpen={deleteModalOpen}
 				closeModal={closeDeleteModal}
 				token={tokenToDelete}
