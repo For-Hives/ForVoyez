@@ -1,10 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 
 const schema = yup.object().shape({
 	name: yup.string().required('Name is required'),
@@ -24,9 +25,14 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 		resolver: yupResolver(schema),
 	})
 
+	const [isCopied, setIsCopied] = useState(false)
+	const [tokenToDisplayInClipBoardField, setTokenToDisplayInClipBoardField] =
+		useState('')
+
 	const copyToClipboard = token => {
 		navigator.clipboard.writeText(token)
-		toast.success('Token has been copied to clipboard')
+		setIsCopied(true)
+		setTimeout(() => setIsCopied(false), 1500)
 	}
 
 	async function onSubmit(data) {
@@ -44,6 +50,15 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 			toast.error('Failed to create token')
 		}
 	}
+
+	useEffect(() => {
+		if (
+			tokens[tokens.length - 1]?.jwt &&
+			tokens[tokens.length - 1].jwt.length > 15
+		) {
+			setTokenToDisplayInClipBoardField(tokens[tokens.length - 1].jwt)
+		}
+	}, [tokens])
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
@@ -136,54 +151,88 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 										</div>
 									</div>
 
+									<div className={'mt-4'}>
+										{tokenToDisplayInClipBoardField &&
+											tokenToDisplayInClipBoardField.length > 15 && (
+												<div className="mt-4">
+													<label
+														htmlFor="token"
+														className="block text-sm font-medium leading-6 text-gray-900"
+													>
+														Your New Token
+													</label>
+													<div className="mt-2 flex rounded-md shadow-sm">
+														<div className="relative flex flex-grow items-stretch focus-within:z-10">
+															<input
+																type="text"
+																name="token"
+																id="token"
+																className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+																value={tokenToDisplayInClipBoardField}
+																readOnly
+															/>
+														</div>
+														<button
+															type="button"
+															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+															onClick={() =>
+																copyToClipboard(tokenToDisplayInClipBoardField)
+															}
+														>
+															{isCopied ? (
+																<CheckIcon
+																	className="-ml-0.5 h-5 w-5 text-green-400"
+																	aria-hidden="true"
+																/>
+															) : (
+																<ClipboardIcon
+																	className="-ml-0.5 h-5 w-5 text-gray-400"
+																	aria-hidden="true"
+																/>
+															)}
+															{isCopied ? 'Copied!' : 'Copy'}
+														</button>
+													</div>
+												</div>
+											)}
+									</div>
 									<div className="mt-4 flex justify-end space-x-2">
-										<button
-											type="button"
-											className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-											onClick={closeModal}
-										>
-											Cancel
-										</button>
-										<button
-											type="submit"
-											className="inline-flex justify-center rounded-md border border-transparent bg-forvoyez_orange-100 px-4 py-2 text-sm font-medium text-forvoyez_orange-900 hover:bg-forvoyez_orange-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-forvoyez_orange-500 focus-visible:ring-offset-2"
-										>
-											Create Token
-										</button>
+										{!(tokenToDisplayInClipBoardField.length > 15) && (
+											<>
+												<button
+													type="button"
+													className="inline-flex justify-center rounded-md border border-transparent bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+													onClick={closeModal}
+												>
+													Cancel
+												</button>
+												<button
+													type="submit"
+													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+												>
+													Create Token
+												</button>
+											</>
+										)}
+										{tokenToDisplayInClipBoardField &&
+											tokenToDisplayInClipBoardField.length > 15 && (
+												<button
+													type={'button'}
+													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+													onClick={() => {
+														setTokenToDisplayInClipBoardField(
+															tokens[tokens.length - 1].jwt.slice(0, 5) +
+																'-...-' +
+																tokens[tokens.length - 1].jwt.slice(-5)
+														)
+														closeModal()
+													}}
+												>
+													I copied it
+												</button>
+											)}
 									</div>
 								</form>
-								{tokens[tokens.length - 1]?.jwt && (
-									<div className="mt-4">
-										<h3 className="text-lg font-semibold">Your New Token</h3>
-										<div className="relative mt-2 w-full">
-											<pre className="overflow-x-auto rounded bg-slate-100 p-2 text-sm text-slate-800">
-												<code>{tokens[tokens.length - 1].jwt}</code>
-											</pre>
-											<button
-												onClick={() =>
-													copyToClipboard(tokens[tokens.length - 1].jwt)
-												}
-												className="absolute right-1 top-1 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
-												title="Copy token"
-											>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													strokeWidth={2}
-													className="h-6 w-6"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														d="M8 5H5a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-3M15 2h6v6m-3-3v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9z"
-													/>
-												</svg>
-											</button>
-										</div>
-									</div>
-								)}
 							</Dialog.Panel>
 						</Transition.Child>
 					</div>
