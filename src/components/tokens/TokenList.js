@@ -82,25 +82,31 @@ export default function TokenList({ tokens, setTokens }) {
 									<tr>
 										<th
 											scope="col"
-											className="w-5/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
 										>
 											Token name
 										</th>
 										<th
 											scope="col"
-											className="w-3/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+										>
+											Token value
+										</th>
+										<th
+											scope="col"
+											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 										>
 											Created at
 										</th>
 										<th
 											scope="col"
-											className="w-3/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 										>
 											Expired at
 										</th>
 										<th
 											scope="col"
-											className="relative w-1/12 py-3.5 pl-3 pr-4 sm:pr-6"
+											className="relative w-2/12 py-3.5 pl-3 pr-4 sm:pr-6"
 										>
 											<span className="sr-only">Actions</span>
 										</th>
@@ -117,6 +123,9 @@ export default function TokenList({ tokens, setTokens }) {
 															// display token name, and truncate if too long
 															token.name
 														}
+													</td>
+													<td className="overflow-x-visible whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+														{token.jwt}
 													</td>
 													<td className="whitespace-nowrap py-4 text-sm font-medium text-slate-900">
 														{
