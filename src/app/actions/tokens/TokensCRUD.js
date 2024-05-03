@@ -51,3 +51,30 @@ export async function getAllToken() {
 
 	return result
 }
+
+export async function deleteToken(tokenId) {
+	const { userId } = auth()
+
+	if (!userId) {
+		throw new Error('You must be logged in to delete a token')
+	}
+
+	// Check if the user owns the token
+	const token = await prisma.token.findUnique({
+		where: {
+			id: tokenId,
+		},
+	})
+
+	if (!token || token.userId !== userId) {
+		throw new Error('You do not have permission to delete this token')
+	}
+
+	const result = await prisma.token.delete({
+		where: {
+			id: tokenId,
+		},
+	})
+
+	return result
+}
