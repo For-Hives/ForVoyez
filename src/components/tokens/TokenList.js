@@ -56,19 +56,19 @@ export default function TokenList({ tokens, setTokens }) {
 									<tr>
 										<th
 											scope="col"
-											className="w-7/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											className="w-5/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
 										>
 											Token name
 										</th>
 										<th
 											scope="col"
-											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											className="w-3/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 										>
 											Created at
 										</th>
 										<th
 											scope="col"
-											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											className="w-3/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
 										>
 											Expired at
 										</th>
@@ -92,10 +92,38 @@ export default function TokenList({ tokens, setTokens }) {
 															token.name
 														}
 													</td>
-													<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+													<td className="whitespace-nowrap py-4 text-sm font-medium text-slate-900">
 														{
-															// display token expiration date
-															token.expiredAt
+															// display token creation date, and time, format it too
+															new Date(token.createdAt).toLocaleString(
+																'en-US',
+																{
+																	month: 'short',
+																	day: 'numeric',
+																	year: 'numeric',
+																	hour: 'numeric',
+																	minute: 'numeric',
+																	second: 'numeric',
+																	hour12: true,
+																}
+															)
+														}
+													</td>
+													<td className="whitespace-nowrap py-4 text-sm font-medium text-slate-900">
+														{
+															// display token expiration date, and format it
+															new Date(token.expiredAt).toLocaleString(
+																'en-US',
+																{
+																	month: 'short',
+																	day: 'numeric',
+																	year: 'numeric',
+																	hour: 'numeric',
+																	minute: 'numeric',
+																	second: 'numeric',
+																	hour12: true,
+																}
+															)
 														}
 													</td>
 													<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
