@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
-import TokenNewlyCreated from '@/components/tokens/TokenNewlyCreated'
+import JwtModal from '@/components/tokens/JwtModal'
 
 export default function TokenCreate({ tokens, setTokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
@@ -22,11 +22,6 @@ export default function TokenCreate({ tokens, setTokens }) {
 		})
 	}
 
-	const showJwtModal = jwt => {
-		setJwtToken(jwt)
-		setJwtModalOpen(true)
-	}
-
 	async function create() {
 		if (!newTokenExpiry || new Date(newTokenExpiry) < new Date()) {
 			showToast('Please provide a valid future expiry date.')
@@ -44,7 +39,8 @@ export default function TokenCreate({ tokens, setTokens }) {
 			setTokens([...tokens, { ...newToken, id: result.id, jwt: result.jwt }])
 			setNewTokenName('')
 			setNewTokenExpiry('')
-			showJwtModal(result.jwt)
+			setJwtToken(result.jwt)
+			setJwtModalOpen(true)
 			showToast('Token successfully created.')
 		} catch (error) {
 			showToast('Error creating token.')
@@ -74,11 +70,7 @@ export default function TokenCreate({ tokens, setTokens }) {
 			</button>
 
 			{jwtModalOpen && (
-				<TokenNewlyCreated
-					isOpen={jwtModalOpen}
-					closeModal={() => setJwtModalOpen(false)}
-					token={jwtToken}
-				/>
+				<JwtModal jwtToken={jwtToken} setJwtModalOpen={setJwtModalOpen} />
 			)}
 		</div>
 	)
