@@ -1,8 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { getAllToken } from '@/app/actions/tokens/TokensCRUD'
+import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
 import 'react-toastify/dist/ReactToastify.css'
 import TokenModal from '@/components/tokens/TokenModal'
+import { toast } from 'react-toastify'
 
 export default function TokenList({ tokens, setTokens }) {
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -10,17 +11,35 @@ export default function TokenList({ tokens, setTokens }) {
 	const openModal = () => setIsModalOpen(true)
 	const closeModal = () => setIsModalOpen(false)
 
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+	const [tokenToDelete, setTokenToDelete] = useState(null)
+
+	const openDeleteModal = token => {
+		setTokenToDelete(token)
+		setDeleteModalOpen(true)
+	}
+
+	const closeDeleteModal = () => {
+		setTokenToDelete(null)
+		setDeleteModalOpen(false)
+	}
+
+	const handleDelete = () => {
+		deleteToken(tokenToDelete.id)
+			.then(() => {
+				setTokens(tokens.filter(token => token.id !== tokenToDelete.id))
+				toast.success('Token deleted successfully')
+				closeDeleteModal()
+			})
+			.catch(error => {
+				toast.error('Error deleting token: ' + error.message)
+				closeDeleteModal()
+			})
+	}
+
 	useEffect(() => {
 		getAllToken().then(setTokens)
 	}, [])
-
-	// const handleDelete = async id => {
-	// 	if (confirm('Are you sure you want to delete this token?')) {
-	// 		await deleteToken(id)
-	// 		setTokens(tokens.filter(token => token.id !== id))
-	// 		toast.success('Token deleted successfully')
-	// 	}
-	// }
 
 	return (
 		<div className="w-full">
@@ -29,6 +48,12 @@ export default function TokenList({ tokens, setTokens }) {
 				closeModal={closeModal}
 				tokens={tokens}
 				setTokens={setTokens}
+			/>
+			<ConfirmDeleteModal
+				isOpen={deleteModalOpen}
+				closeModal={closeDeleteModal}
+				token={tokenToDelete}
+				onConfirm={handleDelete}
 			/>
 			<div className="sm:flex sm:items-center">
 				<div className="sm:flex-auto">
@@ -127,7 +152,10 @@ export default function TokenList({ tokens, setTokens }) {
 														}
 													</td>
 													<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
-														<button className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900">
+														<button
+															onClick={() => openDeleteModal(token)}
+															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
+														>
 															Delete
 														</button>
 													</td>
