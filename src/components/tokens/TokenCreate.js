@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
-import JwtModal from '@/components/tokens/JwtModal'
+import TokenNewlyCreated from '@/components/tokens/TokenNewlyCreated'
 
 export default function TokenCreate({ tokens, setTokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
@@ -41,12 +41,10 @@ export default function TokenCreate({ tokens, setTokens }) {
 
 		try {
 			const result = await createToken(newToken)
-			if (result.jwt) {
-				showJwtModal(result.jwt)
-			}
-			setTokens([...tokens, { ...newToken, id: result.id }]) // Assume response contains id.
+			setTokens([...tokens, { ...newToken, id: result.id, jwt: result.jwt }])
 			setNewTokenName('')
 			setNewTokenExpiry('')
+			showJwtModal(result.jwt)
 			showToast('Token successfully created.')
 		} catch (error) {
 			showToast('Error creating token.')
@@ -76,7 +74,11 @@ export default function TokenCreate({ tokens, setTokens }) {
 			</button>
 
 			{jwtModalOpen && (
-				<JwtModal jwtToken={jwtToken} setJwtModalOpen={setJwtModalOpen} />
+				<TokenNewlyCreated
+					isOpen={jwtModalOpen}
+					closeModal={() => setJwtModalOpen(false)}
+					token={jwtToken}
+				/>
 			)}
 		</div>
 	)
