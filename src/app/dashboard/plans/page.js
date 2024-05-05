@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getCheckoutURL } from '@/services/lemonsqueezy.service'
+import { PricingComponent } from '@/components/LandingComponents/Pricing/Pricing.component'
 
 export default function PlansPage() {
 	const router = useRouter()
@@ -94,6 +95,8 @@ export default function PlansPage() {
 					)
 				})}
 			</div>
+
+			<PricingComponent />
 		</>
 	)
 }

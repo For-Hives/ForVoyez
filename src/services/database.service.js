@@ -142,27 +142,21 @@ export async function syncPlans() {
 			console.log('not subscription')
 
 			// model Plan {
-			// 	id                   Int            @id @default(autoincrement())
-			// 	productId            String
-			// 	variantId            String         @unique
-			// 	variantEnabled       Boolean        @default(true)
-			// 	name                 String
-			// 	description          String?
-			// 		price                Int // Prix de base en centimes pour une unité
-			// 	credits              Int            @default(0)
-			// 	billingCycle         String // "monthly" or "annually"
-			// 	category             String // "subscription", "one_time", etc.
-			// 	pricingScheme        String // "standard", "package", "graduated", "volume"
-			// 	setupFeeEnabled      Boolean        @default(false)
-			// 	setupFee             Int? // Frais d'installation en centimes
-			// 		packageSize          Int? // Nombre d'unités incluses dans le package
-			// 			tiers                String? // Informations sur les paliers pour la tarification graduée ou volumétrique
-			// 				renewalIntervalUnit  String? // Unité de temps pour le renouvellement de l'abonnement
-			// 					renewalIntervalCount Int? // Quantité de l'unité de temps entre les facturations
-			// 						trialIntervalUnit    String? // Unité de temps pour l'essai gratuit
-			// 							trialIntervalCount   Int? // Quantité de l'unité de temps pour l'essai
-			// 								createdAt            DateTime       @default(now())
-			// 	subscriptions        Subscription[]
+			// 	id             Int      @id @default(autoincrement())
+			// 	productId      String
+			// 	variantId      String   @unique
+			// 	variantEnabled Boolean  @default(true)
+			// 	name           String
+			// 	description    String?
+			// 		price          Int // Prix de base en centimes pour une unité
+			// 	billingCycle   String // "monthly" or "annually"
+			// 	packageSize    Int? // Nombre d'unités incluses dans le package
+			// 		createdAt      DateTime @default(now())
+			// 	mostPopular    Boolean  @default(false)
+			// 	features       String   @default("")
+			// 	buttonText     String   @default("Subscribe")
+			//
+			// 	subscriptions Subscription[]
 			// }
 
 			await _addVariant({
@@ -172,35 +166,31 @@ export async function syncPlans() {
 				name: variant.name,
 				description: variant.description,
 				price: parseInt(priceString),
-				credits: 0,
 				billingCycle: interval,
-				category: currentPriceObj.attributes.category,
-				pricingScheme: currentPriceObj.attributes.scheme,
-				setupFeeEnabled: variant.setup_fee_enabled,
-				setupFee: variant.setup_fee,
 				packageSize: variant.package_size,
-				tiers: variant.tiers,
-				renewalIntervalUnit: interval,
-				renewalIntervalCount: intervalCount,
-				trialIntervalUnit: trialInterval,
-				trialIntervalCount: trialIntervalCount,
 			})
 
 			// OLD CODE
 			// await _addVariant({
+			// 	productId: variant.product_id.toString(),
+			// 	variantId: v.id,
+			// 	variantEnabled: true,
 			// 	name: variant.name,
 			// 	description: variant.description,
 			// 	price: parseInt(priceString),
-			// 	interval,
-			// 	intervalCount,
-			// 	isUsageBased,
-			// 	productId: variant.product_id,
-			// 	productName,
-			// 	variantId: parseInt(v.id),
-			// 	trialInterval,
-			// 	trialIntervalCount,
-			// 	sort: variant.sort,
-			// });
+			// 	credits: 0,
+			// 	billingCycle: interval,
+			// 	category: currentPriceObj.attributes.category,
+			// 	pricingScheme: currentPriceObj.attributes.scheme,
+			// 	setupFeeEnabled: variant.setup_fee_enabled,
+			// 	setupFee: variant.setup_fee,
+			// 	packageSize: variant.package_size,
+			// 	tiers: variant.tiers,
+			// 	renewalIntervalUnit: interval,
+			// 	renewalIntervalCount: intervalCount,
+			// 	trialIntervalUnit: trialInterval,
+			// 	trialIntervalCount: trialIntervalCount,
+			// })
 		}
 	}
 

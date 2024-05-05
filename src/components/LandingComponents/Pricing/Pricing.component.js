@@ -3,18 +3,22 @@ import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import { getPlans } from '@/services/database.service'
 
 // FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
-	{ value: 'annually', label: 'Annually', priceSuffix: '/year' },
+	{
+		value: 'annually',
+		label: 'Annually',
+		priceSuffix: '/year',
+	},
 ]
 const tiers = [
 	{
 		name: 'Starter',
-		id: 'tier-starter',
-		// FIXME replace the href with the correct one
-		href: '#',
+		id: 'tier-starter', // FIXME replace the href with the correct one
+		href: '/rhguiezhfuzef',
 		price: { monthly: '€2.99', annually: '€29.90' },
 		description: 'Ideal for small projects, independents and personal use.',
 		features: [
@@ -24,13 +28,12 @@ const tiers = [
 			'Accept classic image formats, (JPEG, PNG, WEBP)',
 			'Full HD image support, (up to 1080p)',
 		],
-		mostPopular: false,
+		mostPopular: true,
 		buttonText: 'Subscribe',
 	},
 	{
 		name: 'Growth',
-		id: 'tier-growth',
-		// FIXME replace the href with the correct one
+		id: 'tier-growth', // FIXME replace the href with the correct one
 		href: '#',
 		price: { monthly: '€24.90', annually: '€249.00' },
 		description: 'Perfect for growing businesses and advanced users.',
@@ -43,13 +46,12 @@ const tiers = [
 			'Accept modern image formats, (AVIF, HEIC, JPEG-XR, JPEG 2000)',
 			'Ultra HD image support, (up to 4K)',
 		],
-		mostPopular: true,
+		mostPopular: false,
 		buttonText: 'Subscribe',
 	},
 	{
 		name: 'Enterprise',
-		id: 'tier-enterprise',
-		// FIXME replace the href with the correct one
+		id: 'tier-enterprise', // FIXME replace the href with the correct one
 		href: '#',
 		price: { monthly: 'Custom', annually: 'Custom' },
 		description:
@@ -75,6 +77,8 @@ function classNames(...classes) {
 }
 
 export function PricingComponent() {
+	const [plans, setPlans] = useState([])
+
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
 
@@ -86,6 +90,16 @@ export function PricingComponent() {
 			setIsAnnually(false)
 		}
 	}, [frequency])
+
+	useEffect(() => {
+		getPlans().then(setPlans)
+	}, [])
+
+	// while no data is fetched, show a loading spinner
+
+	if (plans.length === 0) {
+		return <div className="bg-white py-24 sm:py-32">loading...</div>
+	}
 
 	return (
 		<div className="bg-white py-24 sm:py-32">
@@ -127,9 +141,7 @@ export function PricingComponent() {
 								<div className={'transition-none'}>
 									<span className={'transition-none'}>{option.label}</span>
 									<div
-										className={`${
-											option.value === 'annually' ? 'block' : 'hidden'
-										} absolute
+										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute
 										-right-4 -top-5 rounded-full 
 										border border-forvoyez_orange-500 bg-white/80 p-1 px-1.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
 									>
