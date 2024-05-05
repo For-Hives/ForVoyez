@@ -9,7 +9,7 @@ export function ClientComponentComponent() {
 	if (isLoaded && isSignedIn) {
 		// Client-side redirection if needed
 		// You can use `router.push` here
-		router.push('/account')
+		router.push('/app')
 	}
 
 	return null

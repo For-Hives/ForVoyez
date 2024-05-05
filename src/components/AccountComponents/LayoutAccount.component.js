@@ -4,21 +4,21 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-import { HeaderDashboard } from '@/components/AccountComponents/HeaderAccount.component'
-import { NavigationAccountComponent } from '@/components/AccountComponents/NavigationAccount.component'
+import { HeaderDashboard } from '@/components/AppComponents/HeaderApp.component'
+import { NavigationAppComponent } from '@/components/AppComponents/NavigationApp.component'
 import { UserButton, useUser } from '@clerk/nextjs'
-import { HeroPatternAccountComponent } from '@/components/AccountComponents/HeroPatternAccount.component'
-import { SectionProviderAccountComponent } from '@/components/AccountComponents/SectionProviderAccount.component'
+import { HeroPatternAppComponent } from '@/components/AppComponents/HeroPatternApp.component'
+import { SectionProviderAppComponent } from '@/components/AppComponents/SectionProviderApp.component'
 import { ToastContainer } from 'react-toastify'
 
-export function LayoutAccountComponent({ children }) {
+export function LayoutAppComponent({ children }) {
 	const { user } = useUser()
 
 	return (
 		<>
 			<ToastContainer position="top-right" autoClose={3000} />
 
-			<SectionProviderAccountComponent sections={[]}>
+			<SectionProviderAppComponent sections={[]}>
 				<div className="h-full lg:ml-72 xl:ml-80">
 					<motion.header
 						layoutScroll
@@ -39,7 +39,7 @@ export function LayoutAccountComponent({ children }) {
 									</Link>
 								</div>
 								<HeaderDashboard />
-								<NavigationAccountComponent className="hidden h-full lg:mt-10 lg:block" />
+								<NavigationAppComponent className="hidden h-full lg:mt-10 lg:block" />
 							</div>
 							{user && (
 								<div className={'hidden items-center gap-2 lg:flex'}>
@@ -60,14 +60,14 @@ export function LayoutAccountComponent({ children }) {
 					</motion.header>
 					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
 						<main className="flex-auto">
-							<HeroPatternAccountComponent />
+							<HeroPatternAppComponent />
 							<div className="flex h-full flex-col pb-10 pt-16">
 								<div className={'z-20'}>{children}</div>
 							</div>
 						</main>
 					</div>
 				</div>
-			</SectionProviderAccountComponent>
+			</SectionProviderAppComponent>
 		</>
 	)
 }

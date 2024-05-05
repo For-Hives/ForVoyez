@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { createUser } from '@/app/actions/account/createUser'
+import { createUser } from '@/app/actions/app/createUser'
 import {
 	BookOpenIcon,
 	ChartBarIcon,
@@ -9,7 +9,7 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { ResourceCardAccountComponent } from '@/components/AccountComponents/ResourceCardAccount.component'
+import { ResourceCardAppComponent } from '@/components/AppComponents/ResourceCardApp.component'
 
 const mainResources = [
 	{
@@ -42,7 +42,7 @@ const mainResources = [
 
 const configResources = [
 	{
-		href: '/account/tokens',
+		href: '/app/tokens',
 		name: 'API Keys',
 		description: 'Manage your API keys and authentication.',
 		icon: KeyIcon,
@@ -55,7 +55,7 @@ const configResources = [
 		},
 	},
 	{
-		href: '/account/usage',
+		href: '/app/usage',
 		name: 'Usage',
 		description: 'Track your API usage and limits.',
 		icon: ChartBarIcon,
@@ -65,7 +65,7 @@ const configResources = [
 		},
 	},
 	{
-		href: '/account/plans',
+		href: '/app/plans',
 		name: 'Plans',
 		description: 'Upgrade or change your subscription plan.',
 		icon: CreditCardIcon,
@@ -108,10 +108,7 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-2">
 					{mainResources.map(resource => (
-						<ResourceCardAccountComponent
-							key={resource.href}
-							resource={resource}
-						/>
+						<ResourceCardAppComponent key={resource.href} resource={resource} />
 					))}
 				</div>
 			</div>
@@ -121,10 +118,7 @@ export default function WelcomePage() {
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
 					{configResources.map(resource => (
-						<ResourceCardAccountComponent
-							key={resource.href}
-							resource={resource}
-						/>
+						<ResourceCardAppComponent key={resource.href} resource={resource} />
 					))}
 				</div>
 			</div>

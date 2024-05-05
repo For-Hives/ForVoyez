@@ -90,7 +90,7 @@ export async function getCheckoutURL(variantId, embed = false) {
 			},
 		},
 		productOptions: {
-			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/account/billing/`,
+			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/billing/`,
 			receiptButtonText: 'Go to Dashboard',
 		},
 	})

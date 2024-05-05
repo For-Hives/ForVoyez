@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export function TopLevelNavItemAccountComponent({ href, children, className }) {
+export function TopLevelNavItemAppComponent({ href, children, className }) {
 	return (
 		<li>
 			<Link

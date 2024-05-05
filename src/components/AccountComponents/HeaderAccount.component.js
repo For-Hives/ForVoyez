@@ -6,11 +6,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 
 import Image from 'next/image'
 import {
-	MobileNavigationAccountComponent,
+	MobileNavigationAppComponent,
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
-} from '@/components/AccountComponents/MobileNavigationAccount.component'
-import { TopLevelNavItemAccountComponent } from '@/components/AccountComponents/TopLevelNavItemAccount.component'
+} from '@/components/AppComponents/MobileNavigationApp.component'
+import { TopLevelNavItemAppComponent } from '@/components/AppComponents/TopLevelNavItemApp.component'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },
@@ -44,7 +44,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 				)}
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
-				<MobileNavigationAccountComponent />
+				<MobileNavigationAppComponent />
 				<Link href="/" aria-label="Home">
 					<span className="sr-only">ForVoyez</span>
 					<Image
@@ -60,21 +60,21 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			<div className="flex items-center gap-5">
 				<nav className="hidden md:block">
 					<ul role="list" className="flex items-center gap-8 ">
-						<TopLevelNavItemAccountComponent
+						<TopLevelNavItemAppComponent
 							className={'!text-forvoyez_orange-500'}
-							href="/account"
+							href="/app"
 						>
 							→ Dashboard
-						</TopLevelNavItemAccountComponent>
-						<TopLevelNavItemAccountComponent href="/">
+						</TopLevelNavItemAppComponent>
+						<TopLevelNavItemAppComponent href="/">
 							Website
-						</TopLevelNavItemAccountComponent>
-						<TopLevelNavItemAccountComponent href="/docs">
+						</TopLevelNavItemAppComponent>
+						<TopLevelNavItemAppComponent href="/docs">
 							Documentation
-						</TopLevelNavItemAccountComponent>
-						<TopLevelNavItemAccountComponent href="/profile">
+						</TopLevelNavItemAppComponent>
+						<TopLevelNavItemAppComponent href="/profile">
 							Profile
-						</TopLevelNavItemAccountComponent>
+						</TopLevelNavItemAppComponent>
 					</ul>
 				</nav>
 			</div>

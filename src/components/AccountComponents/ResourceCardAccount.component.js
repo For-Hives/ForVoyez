@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
-import { GridPatternAccountComponent } from '@/components/AccountComponents/GridPatternAccount.component'
+import { GridPatternAppComponent } from '@/components/AppComponents/GridPatternApp.component'
 
 function ResourceIcon({ icon: Icon }) {
 	return (
@@ -18,7 +18,7 @@ function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 	return (
 		<div className="pointer-events-none">
 			<div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
-				<GridPatternAccountComponent
+				<GridPatternAppComponent
 					width={72}
 					height={56}
 					x="50%"
@@ -34,7 +34,7 @@ function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 				className="absolute inset-0 rounded-2xl opacity-0 mix-blend-overlay transition duration-300 group-hover:opacity-100"
 				style={style}
 			>
-				<GridPatternAccountComponent
+				<GridPatternAppComponent
 					width={72}
 					height={56}
 					x="50%"
@@ -46,7 +46,7 @@ function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 	)
 }
 
-export function ResourceCardAccountComponent({ resource }) {
+export function ResourceCardAppComponent({ resource }) {
 	let mouseX = useMotionValue(0)
 	let mouseY = useMotionValue(0)
 

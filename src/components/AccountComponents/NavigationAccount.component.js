@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 
-import { useIsInsideMobileNavigation } from '@/components/AccountComponents/MobileNavigationAccount.component'
-import { useSectionStore } from '@/components/AccountComponents/SectionProviderAccount.component'
-import { remToPx } from '@/components/AccountComponents/RemToPxAccount.component'
-import { TopLevelNavItemAccountComponent } from '@/components/AccountComponents/TopLevelNavItemAccount.component'
+import { useIsInsideMobileNavigation } from '@/components/AppComponents/MobileNavigationApp.component'
+import { useSectionStore } from '@/components/AppComponents/SectionProviderApp.component'
+import { remToPx } from '@/components/AppComponents/RemToPxApp.component'
+import { TopLevelNavItemAppComponent } from '@/components/AppComponents/TopLevelNavItemApp.component'
 import { UserButton, useUser } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {
@@ -137,11 +137,11 @@ export const dashboardNavigation = [
 		],
 	},
 	{
-		title: 'Account',
+		title: 'App',
 		links: [
-			{ title: 'API Keys', href: '/account/tokens' },
-			{ title: 'Usage', href: '/account/usage' },
-			{ title: 'Plans', href: '/account/plans' },
+			{ title: 'API Keys', href: '/app/tokens' },
+			{ title: 'Usage', href: '/app/usage' },
+			{ title: 'Plans', href: '/app/plans' },
 		],
 	},
 	{
@@ -150,31 +150,28 @@ export const dashboardNavigation = [
 	},
 ]
 
-export function NavigationAccountComponent(props) {
+export function NavigationAppComponent(props) {
 	const { user } = useUser()
 
 	return (
 		<nav {...props}>
 			<ul role="list">
 				<div className={'flex flex-col gap-2 lg:hidden'}>
-					<TopLevelNavItemAccountComponent
+					<TopLevelNavItemAppComponent
 						className={'!text-forvoyez_orange-500 lg:hidden'}
-						href="/account"
+						href="/app"
 					>
 						→ Dashboard
-					</TopLevelNavItemAccountComponent>
-					<TopLevelNavItemAccountComponent href="/" className={'lg:hidden'}>
+					</TopLevelNavItemAppComponent>
+					<TopLevelNavItemAppComponent href="/" className={'lg:hidden'}>
 						Website
-					</TopLevelNavItemAccountComponent>
-					<TopLevelNavItemAccountComponent href="/docs" className={'lg:hidden'}>
+					</TopLevelNavItemAppComponent>
+					<TopLevelNavItemAppComponent href="/docs" className={'lg:hidden'}>
 						Documentation
-					</TopLevelNavItemAccountComponent>
-					<TopLevelNavItemAccountComponent
-						href="/profile"
-						className={'lg:hidden'}
-					>
+					</TopLevelNavItemAppComponent>
+					<TopLevelNavItemAppComponent href="/profile" className={'lg:hidden'}>
 						Profile
-					</TopLevelNavItemAccountComponent>
+					</TopLevelNavItemAppComponent>
 				</div>
 
 				{dashboardNavigation.map((group, groupIndex) => (
