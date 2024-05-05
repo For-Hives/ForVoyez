@@ -7,7 +7,7 @@ import { generateJwt } from '@/services/jwt.service'
 function truncateToken(token) {
 	if (!token) return ''
 	// 	slice, and return the first 5 characters of the token string, then append '...', terminating the string with the 5 last characters.
-	return token.slice(0, 5) + '-...-' + token.slice(-5)
+	return token.slice(0, 5) + '*****' + token.slice(-5)
 }
 
 export async function createToken(token) {
@@ -38,7 +38,7 @@ export async function createToken(token) {
 		},
 	})
 
-	return { ...result, jwt, jwt_shortened }
+	return { ...result, jwt_shortened }
 }
 
 export async function getAllToken() {
