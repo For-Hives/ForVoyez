@@ -27,7 +27,6 @@ export async function createToken(token) {
 	})
 
 	let jwt_shortened = truncateToken(jwt)
-	console.log('jwt', jwt)
 
 	const result = await prisma.token.create({
 		data: {

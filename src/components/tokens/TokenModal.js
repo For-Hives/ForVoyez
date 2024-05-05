@@ -78,15 +78,6 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 		}
 	}
 
-	// useEffect(() => {
-	// 	if (
-	// 		tokens[tokens.length - 1]?.jwt &&
-	// 		tokens[tokens.length - 1].jwt.length > 15
-	// 	) {
-	// 		setTokenToDisplayInClipBoardField(tokens[tokens.length - 1].jwt)
-	// 	}
-	// }, [tokens])
-
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-50" onClose={closeModal}>
@@ -103,7 +94,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 				</Transition.Child>
 
 				<div className="fixed inset-0 overflow-y-auto">
-					<div className="flex min-h-full items-center justify-center p-4 text-center">
+					<div className="flex min-h-full items-start justify-center px-4 pt-32 text-center md:items-center md:p-4">
 						<Transition.Child
 							as={Fragment}
 							enter="ease-out duration-300"
