@@ -59,7 +59,7 @@ model Plan {
   packageSize    Int? // Nombre d'unités incluses dans le package
   createdAt      DateTime @default(now())
   mostPopular    Boolean  @default(false)
-  features       String   @default("")
+  features       String   @default("[]")
   buttonText     String   @default("Subscribe")
 
   subscriptions Subscription[]

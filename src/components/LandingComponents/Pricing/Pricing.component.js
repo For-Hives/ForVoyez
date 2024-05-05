@@ -14,60 +14,144 @@ const frequencies = [
 		priceSuffix: '/year',
 	},
 ]
+// const tiers = [
+// 	{
+// 		name: 'Starter',
+// 		id: 'tier-starter', // FIXME replace the href with the correct one
+// 		href: '/rhguiezhfuzef',
+// 		price: { monthly: '€2.99', annually: '€29.90' },
+// 		description: 'Ideal for small projects, independents and personal use.',
+// 		features: [
+// 			'100 credits/month',
+// 			'Basic metadata generation',
+// 			'Community support',
+// 			'Accept classic image formats, (JPEG, PNG, WEBP)',
+// 			'Full HD image support, (up to 1080p)',
+// 		],
+// 		mostPopular: true,
+// 		buttonText: 'Subscribe',
+// 	},
+// 	{
+// 		name: 'Growth',
+// 		id: 'tier-growth', // FIXME replace the href with the correct one
+// 		href: '#',
+// 		price: { monthly: '€24.90', annually: '€249.00' },
+// 		description: 'Perfect for growing businesses and advanced users.',
+// 		features: [
+// 			'All Starter features',
+// 			'1,000 credits/month',
+// 			'Advanced metadata generation',
+// 			'Priority support',
+// 			'Bulk processing',
+// 			'Accept modern image formats, (AVIF, HEIC, JPEG-XR, JPEG 2000)',
+// 			'Ultra HD image support, (up to 4K)',
+// 		],
+// 		mostPopular: false,
+// 		buttonText: 'Subscribe',
+// 	},
+// 	{
+// 		name: 'Enterprise',
+// 		id: 'tier-enterprise', // FIXME replace the href with the correct one
+// 		href: '#',
+// 		price: { monthly: 'Custom', annually: 'Custom' },
+// 		description:
+// 			'Tailored for large-scale deployments and complex requirements.',
+// 		features: [
+// 			'All Growth features',
+// 			'Unlimited credits',
+// 			'Advanced metadata generation',
+// 			'24/7 dedicated support',
+// 			'Custom SLAs',
+// 			'Volume discounts',
+// 			'Access to beta features',
+// 			'Access to playground',
+// 			'Accept all* image formats',
+// 		],
+// 		mostPopular: false,
+// 		buttonText: 'Contact us',
+// 	},
+// ]
+
 const tiers = [
 	{
+		id: 1,
+		productId: 'tier-starter',
+		variantId: 'tier-starter-monthly',
+		variantEnabled: true,
 		name: 'Starter',
-		id: 'tier-starter', // FIXME replace the href with the correct one
-		href: '/rhguiezhfuzef',
-		price: { monthly: '€2.99', annually: '€29.90' },
 		description: 'Ideal for small projects, independents and personal use.',
-		features: [
-			'100 credits/month',
-			'Basic metadata generation',
-			'Community support',
-			'Accept classic image formats, (JPEG, PNG, WEBP)',
-			'Full HD image support, (up to 1080p)',
-		],
+		price: 299, // Prix en centimes
+		billingCycle: 'month',
+		packageSize: 100, // En supposant que "100 credits/month" représente la taille du package
+		createdAt: new Date().toISOString(),
 		mostPopular: true,
+		features:
+			'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]',
 		buttonText: 'Subscribe',
 	},
 	{
+		id: 2,
+		productId: 'tier-starter',
+		variantId: 'tier-starter-annually',
+		variantEnabled: true,
+		name: 'Starter',
+		description: 'Ideal for small projects, independents and personal use.',
+		price: 2990, // Prix en centimes
+		billingCycle: 'year',
+		packageSize: 1200, // En supposant que 100 crédits par mois pendant 12 mois
+		createdAt: new Date().toISOString(),
+		mostPopular: true,
+		features:
+			'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]',
+		buttonText: 'Subscribe',
+	},
+	{
+		id: 3,
+		productId: 'tier-growth',
+		variantId: 'tier-growth-monthly',
+		variantEnabled: true,
 		name: 'Growth',
-		id: 'tier-growth', // FIXME replace the href with the correct one
-		href: '#',
-		price: { monthly: '€24.90', annually: '€249.00' },
 		description: 'Perfect for growing businesses and advanced users.',
-		features: [
-			'All Starter features',
-			'1,000 credits/month',
-			'Advanced metadata generation',
-			'Priority support',
-			'Bulk processing',
-			'Accept modern image formats, (AVIF, HEIC, JPEG-XR, JPEG 2000)',
-			'Ultra HD image support, (up to 4K)',
-		],
+		price: 2490, // Prix en centimes
+		billingCycle: 'month',
+		packageSize: 1000,
+		createdAt: new Date().toISOString(),
 		mostPopular: false,
+		features:
+			'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]',
 		buttonText: 'Subscribe',
 	},
 	{
+		id: 4,
+		productId: 'tier-growth',
+		variantId: 'tier-growth-annually',
+		variantEnabled: true,
+		name: 'Growth',
+		description: 'Perfect for growing businesses and advanced users.',
+		price: 24900, // Prix en centimes
+		billingCycle: 'year',
+		packageSize: 12000,
+		createdAt: new Date().toISOString(),
+		mostPopular: false,
+		features:
+			'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]',
+		buttonText: 'Subscribe',
+	},
+	{
+		id: 5,
+		productId: 'tier-enterprise',
+		variantId: 'tier-enterprise-custom',
+		variantEnabled: true,
 		name: 'Enterprise',
-		id: 'tier-enterprise', // FIXME replace the href with the correct one
-		href: '#',
-		price: { monthly: 'Custom', annually: 'Custom' },
 		description:
 			'Tailored for large-scale deployments and complex requirements.',
-		features: [
-			'All Growth features',
-			'Unlimited credits',
-			'Advanced metadata generation',
-			'24/7 dedicated support',
-			'Custom SLAs',
-			'Volume discounts',
-			'Access to beta features',
-			'Access to playground',
-			'Accept all* image formats',
-		],
+		price: 0, // Custom pricing
+		billingCycle: 'custom',
+		packageSize: null, // Custom package size
+		createdAt: new Date().toISOString(),
 		mostPopular: false,
+		features:
+			'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]',
 		buttonText: 'Contact us',
 	},
 ]
@@ -153,94 +237,102 @@ export function PricingComponent() {
 					</RadioGroup>
 				</div>
 				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-					{tiers.map(tier => (
-						<div
-							key={tier.id}
-							className={classNames(
-								tier.mostPopular
-									? 'ring-2 ring-forvoyez_orange-500'
-									: 'ring-1 ring-gray-200',
-								'rounded-3xl p-8 xl:p-10'
-							)}
-						>
-							<div className="flex items-center justify-between gap-x-4">
-								<h3
-									id={tier.id}
-									className={classNames(
-										tier.mostPopular
-											? 'text-forvoyez_orange-500'
-											: 'text-gray-900',
-										'text-lg font-semibold leading-8'
-									)}
-								>
-									{tier.name}
-								</h3>
-								{tier.mostPopular ? (
-									<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
-										Most popular
-									</p>
-								) : null}
-							</div>
-							<p className="mt-4 text-sm leading-6 text-gray-600">
-								{tier.description}
-							</p>
-							<p className="mt-6 flex items-baseline gap-x-1">
-								<span className="text-4xl font-bold tracking-tight text-gray-900">
-									{tier.price[frequency.value]}
-								</span>
-								<span className="text-sm font-semibold leading-6 text-gray-600">
-									{frequency.priceSuffix}
-								</span>
-							</p>
-							<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
-							<Link
-								href={tier.href}
-								aria-describedby={tier.id}
+					{plans.map(tier => {
+						if (!isAnnually && tier.billingCycle === 'year') return null
+						if (isAnnually && tier.billingCycle === 'month') return null
+
+						return (
+							<div
+								key={tier.id}
 								className={classNames(
 									tier.mostPopular
-										? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-										: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-									'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+										? 'ring-2 ring-forvoyez_orange-500'
+										: 'ring-1 ring-gray-200',
+									'rounded-3xl p-8 xl:p-10'
 								)}
 							>
-								{tier.buttonText}
-							</Link>
-							<div className={'mt-2 flex h-[18px] items-center'}>
-								{isAnnually ? (
-									<span className="text-xs text-gray-500">
-										<span className={'font-bold'}>20% cheaper</span> than
-										monthly
-									</span>
-								) : (
-									<button
-										className={'m-0 flex gap-1 p-0'}
-										onClick={() => setFrequency(frequencies[1])}
+								<div className="flex items-center justify-between gap-x-4">
+									<h3
+										id={tier.id}
+										className={classNames(
+											tier.mostPopular
+												? 'text-forvoyez_orange-500'
+												: 'text-gray-900',
+											'text-lg font-semibold leading-8'
+										)}
 									>
+										{tier.name}
+									</h3>
+									{tier.mostPopular ? (
+										<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
+											Most popular
+										</p>
+									) : null}
+								</div>
+								<p className="mt-4 text-sm leading-6 text-gray-600">
+									{tier.description}
+								</p>
+								<p className="mt-6 flex items-baseline gap-x-1">
+									<span className="text-4xl font-bold tracking-tight text-gray-900">
+										{/* format to price in € */}
+										{tier.price / 100}€
+									</span>
+									<span className="text-sm font-semibold leading-6 text-gray-600">
+										{frequency.priceSuffix}
+									</span>
+								</p>
+								<p className={''}>
+									Billed {isAnnually ? 'annually' : 'monthly'}
+								</p>
+								<Link
+									href="#"
+									aria-describedby={tier.id}
+									className={classNames(
+										tier.mostPopular
+											? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+											: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+										'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+									)}
+								>
+									{tier.buttonText}
+								</Link>
+								<div className={'mt-2 flex h-[18px] items-center'}>
+									{isAnnually ? (
 										<span className="text-xs text-gray-500">
-											Get <span className={'font-bold'}>20% off</span> with
-											an&nbsp;<span className={'font-bold'}>annual</span>
-											&nbsp;subscription
+											<span className={'font-bold'}>20% cheaper</span> than
+											monthly
 										</span>
-										<div className={'flex h-full items-center'}>
-											{/*	Link icon*/}
-											<ArrowUpRightIcon className={'h-3 w-3 text-gray-600'} />
-										</div>
-									</button>
-								)}
+									) : (
+										<button
+											className={'m-0 flex gap-1 p-0'}
+											onClick={() => setFrequency(frequencies[1])}
+										>
+											<span className="text-xs text-gray-500">
+												Get <span className={'font-bold'}>20% off</span> with
+												an&nbsp;<span className={'font-bold'}>annual</span>
+												&nbsp;subscription
+											</span>
+											<div className={'flex h-full items-center'}>
+												{/*	Link icon*/}
+												<ArrowUpRightIcon className={'h-3 w-3 text-gray-600'} />
+											</div>
+										</button>
+									)}
+								</div>
+								<ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
+									{JSON.parse(tier.features).map(feature => (
+										<li key={feature} className="flex gap-x-3">
+											<CheckIcon
+												className="h-6 w-5 flex-none text-forvoyez_orange-500"
+												aria-hidden="true"
+											/>
+											{feature}
+										</li>
+									))}
+								</ul>
 							</div>
-							<ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
-								{tier.features.map(feature => (
-									<li key={feature} className="flex gap-x-3">
-										<CheckIcon
-											className="h-6 w-5 flex-none text-forvoyez_orange-500"
-											aria-hidden="true"
-										/>
-										{feature}
-									</li>
-								))}
-							</ul>
-						</div>
-					))}
+						)
+					})}
 				</div>
 			</div>
 		</div>
