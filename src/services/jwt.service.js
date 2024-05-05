@@ -39,3 +39,9 @@ export async function verifyJwt(jwt) {
 		throw new Error('Token is invalid')
 	}
 }
+
+export function formatJwt(jwt) {
+	const token = jwt.slice(0, 5) + '-...-' + jwt.slice(-5)
+
+	return token
+}

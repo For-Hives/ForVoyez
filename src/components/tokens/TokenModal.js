@@ -30,7 +30,30 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 		useState('')
 
 	const copyToClipboard = token => {
-		navigator.clipboard.writeText(token)
+		if (navigator.clipboard) {
+			navigator.clipboard
+				.writeText(token)
+				.then(() => {
+					console.log('Token copied using clipboard API')
+				})
+				.catch(err => {
+					console.error('Failed to copy:', err)
+				})
+		} else {
+			// Fallback to older execCommand approach
+			const textarea = document.createElement('textarea')
+			textarea.value = token
+			document.body.appendChild(textarea)
+			textarea.select()
+			try {
+				document.execCommand('copy')
+				console.log('Token copied using execCommand')
+			} catch (err) {
+				console.error('Failed to copy with execCommand:', err)
+			}
+			document.body.removeChild(textarea)
+		}
+
 		setIsCopied(true)
 		setTimeout(() => setIsCopied(false), 1500)
 	}
@@ -91,64 +114,81 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 									as="h3"
 									className="text-lg font-medium leading-6 text-gray-900"
 								>
-									Create new secret key
+									{!tokenToDisplayInClipBoardField ? (
+										<>Create new secret key</>
+									) : (
+										<>Your secret key</>
+									)}
 								</Dialog.Title>
 								<form onSubmit={handleSubmit(onSubmit)}>
 									<div className="mt-4">
-										<div className="relative">
-											<label
-												htmlFor="name"
-												className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
-											>
-												Name
-											</label>
-											<input
-												type="text"
-												name="name"
-												id="name"
-												className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
-													errors.name
-														? 'ring-red-300 focus:ring-red-500'
-														: 'ring-gray-300 focus:ring-forvoyez_orange-600'
-												}`}
-												placeholder="My API Key"
-												{...register('name')}
-											/>
-											{errors.name && (
-												<p className="mt-2 text-sm text-red-600">
-													{errors.name.message}
-												</p>
-											)}
-										</div>
-										<div className="relative mt-4">
-											<label
-												htmlFor="expiredAt"
-												className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
-											>
-												Expiration Date
-											</label>
-											<input
-												type="date"
-												name="expiredAt"
-												id="expiredAt"
-												className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
-													errors.expiredAt
-														? 'ring-red-300 focus:ring-red-500'
-														: 'ring-gray-300 focus:ring-forvoyez_orange-600'
-												}`}
-												defaultValue={
-													new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
-														.toISOString()
-														.split('T')[0]
-												}
-												{...register('expiredAt')}
-											/>
-											{errors.expiredAt && (
-												<p className="mt-2 text-sm text-red-600">
-													{errors.expiredAt.message}
-												</p>
-											)}
-										</div>
+										{tokenToDisplayInClipBoardField && (
+											<p className="text-sm text-gray-500">
+												Your secret key is generated successfully. Please copy
+												it and keep it in a safe place. You will not be able to
+												see it again.
+											</p>
+										)}
+										{!tokenToDisplayInClipBoardField && (
+											<>
+												<div className="relative">
+													<label
+														htmlFor="name"
+														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
+													>
+														Name
+													</label>
+													<input
+														type="text"
+														name="name"
+														id="name"
+														className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+															errors.name
+																? 'ring-red-300 focus:ring-red-500'
+																: 'ring-gray-300 focus:ring-forvoyez_orange-600'
+														}`}
+														placeholder="My API Key"
+														{...register('name')}
+													/>
+													{errors.name && (
+														<p className="mt-2 text-sm text-red-600">
+															{errors.name.message}
+														</p>
+													)}
+												</div>
+												<div className="relative mt-4">
+													<label
+														htmlFor="expiredAt"
+														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
+													>
+														Expiration Date
+													</label>
+													<input
+														type="date"
+														name="expiredAt"
+														id="expiredAt"
+														className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+															errors.expiredAt
+																? 'ring-red-300 focus:ring-red-500'
+																: 'ring-gray-300 focus:ring-forvoyez_orange-600'
+														}`}
+														defaultValue={
+															new Date(
+																Date.now() + 10 * 365 * 24 * 60 * 60 * 1000
+															)
+																.toISOString()
+																.split('T')[0]
+														}
+														{...register('expiredAt')}
+													/>
+													{errors.expiredAt && (
+														<p className="mt-2 text-sm text-red-600">
+															{errors.expiredAt.message}
+														</p>
+													)}
+												</div>
+											</>
+										)}
 									</div>
 
 									<div className={'mt-4'}>
@@ -220,11 +260,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 													type={'button'}
 													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
 													onClick={() => {
-														setTokenToDisplayInClipBoardField(
-															tokens[tokens.length - 1].jwt.slice(0, 5) +
-																'-...-' +
-																tokens[tokens.length - 1].jwt.slice(-5)
-														)
+														setTokenToDisplayInClipBoardField('')
 														closeModal()
 													}}
 												>
