@@ -18,7 +18,7 @@ export function LayoutAppComponent({ children }) {
 		<>
 			<ToastContainer position="top-right" autoClose={3000} />
 
-			<SectionProviderAppComponent sections={[]}>
+			<SectionProviderAppComponent>
 				<div className="h-full lg:ml-72 xl:ml-80">
 					<motion.header
 						layoutScroll

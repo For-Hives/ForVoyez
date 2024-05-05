@@ -101,12 +101,13 @@ const SectionStoreContext = createContext(null)
 const useIsomorphicLayoutEffect =
 	typeof window === 'undefined' ? useEffect : useLayoutEffect
 
-export function SectionProviderAppComponent({ sections, children }) {
+export function SectionProviderAppComponent({ sections = [], children }) {
 	let [sectionStore] = useState(() => createSectionStore(sections))
 
 	useVisibleSections(sectionStore)
 
 	useIsomorphicLayoutEffect(() => {
+		if (!sections.length) return
 		sectionStore.setState({ sections })
 	}, [sectionStore, sections])
 
