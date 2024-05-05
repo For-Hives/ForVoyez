@@ -82,9 +82,11 @@ export async function syncPlans() {
 
 			console.log('not draft or pending')
 
+			const product = (await getProduct(variant.product_id)).data?.data
+
 			// Fetch the Product name.
-			const productName =
-				(await getProduct(variant.product_id)).data?.data.attributes.name ?? ''
+			const productName = product.attributes.name ?? ''
+			const productDescription = product.attributes.description ?? ''
 
 			console.log('get product name')
 
@@ -163,8 +165,8 @@ export async function syncPlans() {
 				productId: variant.product_id.toString(),
 				variantId: v.id,
 				variantEnabled: true,
-				name: variant.name,
-				description: variant.description,
+				name: productName,
+				description: productDescription,
 				price: parseInt(priceString),
 				billingCycle: interval,
 				packageSize: variant.package_size,

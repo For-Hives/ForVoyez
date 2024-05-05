@@ -14,63 +14,6 @@ const frequencies = [
 		priceSuffix: '/year',
 	},
 ]
-// const tiers = [
-// 	{
-// 		name: 'Starter',
-// 		id: 'tier-starter', // FIXME replace the href with the correct one
-// 		href: '/rhguiezhfuzef',
-// 		price: { monthly: '€2.99', annually: '€29.90' },
-// 		description: 'Ideal for small projects, independents and personal use.',
-// 		features: [
-// 			'100 credits/month',
-// 			'Basic metadata generation',
-// 			'Community support',
-// 			'Accept classic image formats, (JPEG, PNG, WEBP)',
-// 			'Full HD image support, (up to 1080p)',
-// 		],
-// 		mostPopular: true,
-// 		buttonText: 'Subscribe',
-// 	},
-// 	{
-// 		name: 'Growth',
-// 		id: 'tier-growth', // FIXME replace the href with the correct one
-// 		href: '#',
-// 		price: { monthly: '€24.90', annually: '€249.00' },
-// 		description: 'Perfect for growing businesses and advanced users.',
-// 		features: [
-// 			'All Starter features',
-// 			'1,000 credits/month',
-// 			'Advanced metadata generation',
-// 			'Priority support',
-// 			'Bulk processing',
-// 			'Accept modern image formats, (AVIF, HEIC, JPEG-XR, JPEG 2000)',
-// 			'Ultra HD image support, (up to 4K)',
-// 		],
-// 		mostPopular: false,
-// 		buttonText: 'Subscribe',
-// 	},
-// 	{
-// 		name: 'Enterprise',
-// 		id: 'tier-enterprise', // FIXME replace the href with the correct one
-// 		href: '#',
-// 		price: { monthly: 'Custom', annually: 'Custom' },
-// 		description:
-// 			'Tailored for large-scale deployments and complex requirements.',
-// 		features: [
-// 			'All Growth features',
-// 			'Unlimited credits',
-// 			'Advanced metadata generation',
-// 			'24/7 dedicated support',
-// 			'Custom SLAs',
-// 			'Volume discounts',
-// 			'Access to beta features',
-// 			'Access to playground',
-// 			'Accept all* image formats',
-// 		],
-// 		mostPopular: false,
-// 		buttonText: 'Contact us',
-// 	},
-// ]
 
 const tiers = [
 	{
