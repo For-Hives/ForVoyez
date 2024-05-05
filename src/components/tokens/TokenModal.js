@@ -66,22 +66,26 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 				expiredAt: data.expiredAt.toISOString(),
 			}
 
-			const result = await createToken(newToken)
-			setTokens([...tokens, { ...newToken, id: result.id, jwt: result.jwt }])
+			let result = await createToken(newToken)
+			setTokenToDisplayInClipBoardField(result.jwt)
+			setTokens([
+				...tokens,
+				{ ...newToken, id: result.id, jwt: result.jwt_shortened },
+			])
 			reset()
 		} catch (error) {
 			toast.error('Failed to create token')
 		}
 	}
 
-	useEffect(() => {
-		if (
-			tokens[tokens.length - 1]?.jwt &&
-			tokens[tokens.length - 1].jwt.length > 15
-		) {
-			setTokenToDisplayInClipBoardField(tokens[tokens.length - 1].jwt)
-		}
-	}, [tokens])
+	// useEffect(() => {
+	// 	if (
+	// 		tokens[tokens.length - 1]?.jwt &&
+	// 		tokens[tokens.length - 1].jwt.length > 15
+	// 	) {
+	// 		setTokenToDisplayInClipBoardField(tokens[tokens.length - 1].jwt)
+	// 	}
+	// }, [tokens])
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>

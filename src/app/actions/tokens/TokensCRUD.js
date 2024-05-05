@@ -26,6 +26,9 @@ export async function createToken(token) {
 		name: token.name,
 	})
 
+	let jwt_shortened = truncateToken(jwt)
+	console.log('jwt', jwt)
+
 	const result = await prisma.token.create({
 		data: {
 			userId: userId,
@@ -36,7 +39,7 @@ export async function createToken(token) {
 		},
 	})
 
-	return { ...result, jwt }
+	return { ...result, jwt, jwt_shortened }
 }
 
 export async function getAllToken() {
