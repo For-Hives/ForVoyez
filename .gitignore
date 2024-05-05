@@ -49,3 +49,4 @@ yarn.lock
 
 *.iml
 bun.lockb
+prisma/dev.db
