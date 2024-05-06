@@ -9,7 +9,9 @@
 		"lint": "next lint",
 		"prettier": "prettier --write .",
 		"precommit": "lint-staged",
-		"prepare": "husky"
+		"prepare": "husky",
+		"prisma-migrate": "prisma migrate dev",
+		"prisma-generate": "prisma generate"
 	},
 	"lint-staged": {
 		"*.js": [
