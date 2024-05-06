@@ -4,14 +4,12 @@ import { FeatureComponent } from '@/components/LandingComponents/Features/Featur
 import { PricingComponent } from '@/components/LandingComponents/Pricing/Pricing.component'
 import { CtaComponent } from '@/components/LandingComponents/Cta/Cta.component'
 import { FooterComponent } from '@/components/Footer.component'
-import { ClientComponentComponent } from '@/components/LandingComponents/ClientComponent.component'
 
 export default function Home() {
 	return (
 		<div className="bg-white">
 			<NavbarComponent />
 			<main>
-				<ClientComponentComponent />
 				<HeroComponent />
 				<FeatureComponent />
 				<PricingComponent />
