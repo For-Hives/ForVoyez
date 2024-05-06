@@ -11,6 +11,7 @@ import {
 	UserButton,
 	useUser,
 } from '@clerk/nextjs'
+import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
 	{ name: 'Home', href: '/' },
@@ -65,7 +66,7 @@ export function NavbarComponent() {
 						</Link>
 					))}
 				</div>
-				<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-2">
+				<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
 					<SignedIn>
 						{/* Mount the UserButton component */}
 						<UserButton
@@ -74,6 +75,13 @@ export function NavbarComponent() {
 							afterSignOutUrl={'/'}
 							signInUrl={'/sign-in'}
 						/>
+						<Link
+							href="/app"
+							className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
+						>
+							Go to dashboard{' '}
+							<ArrowUpRightIcon className={'size-3.5'}></ArrowUpRightIcon>
+						</Link>
 					</SignedIn>
 					<SignedOut>
 						{/* Signed out users get sign in button */}
@@ -130,12 +138,23 @@ export function NavbarComponent() {
 							<div className="py-6">
 								<SignedIn>
 									{/* Mount the UserButton component */}
-									<UserButton
-										userProfileMode={'navigation'}
-										userProfileUrl={'/profile'}
-										afterSignOutUrl={'/'}
-										signInUrl={'/sign-in'}
-									/>
+									<div className={'flex flex-col gap-4'}>
+										<Link
+											href="/app"
+											className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
+										>
+											Go to dashboard{' '}
+											<ArrowUpRightIcon
+												className={'size-3.5'}
+											></ArrowUpRightIcon>
+										</Link>
+										<UserButton
+											userProfileMode={'navigation'}
+											userProfileUrl={'/profile'}
+											afterSignOutUrl={'/'}
+											signInUrl={'/sign-in'}
+										/>
+									</div>
 								</SignedIn>
 								<SignedOut>
 									{/* Signed out users get sign in button */}
