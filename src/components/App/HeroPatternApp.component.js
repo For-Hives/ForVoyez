@@ -1,4 +1,4 @@
-import { GridPatternAppComponent } from '@/components/AppComponents/GridPatternApp.component'
+import { GridPatternAppComponent } from '@/components/App/GridPatternApp.component'
 
 export function HeroPatternAppComponent() {
 	return (

@@ -1,6 +1,6 @@
 import { NavbarComponent } from '@/components/Navbar.component'
 import { FooterComponent } from '@/components/Footer.component'
-import { ContactComponent } from '@/components/ContactComponents/Contact.component'
+import { ContactComponent } from '@/components/Contact/Contact.component'
 import { ToastContainer } from 'react-toastify'
 
 export default function Home() {

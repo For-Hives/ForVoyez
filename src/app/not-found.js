@@ -1,4 +1,4 @@
-import { HeroPatternAppComponent } from '@/components/AppComponents/HeroPatternApp.component'
+import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
 import Link from 'next/link'
 
 export default function NotFound() {

@@ -9,8 +9,8 @@ import {
 	MobileNavigationAppComponent,
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
-} from '@/components/AppComponents/MobileNavigationApp.component'
-import { TopLevelNavItemAppComponent } from '@/components/AppComponents/TopLevelNavItemApp.component'
+} from '@/components/App/MobileNavigationApp.component'
+import { TopLevelNavItemAppComponent } from '@/components/App/TopLevelNavItemApp.component'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },

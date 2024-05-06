@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getCheckoutURL } from '@/services/lemonsqueezy.service'
-import { PricingComponent } from '@/components/LandingComponents/Pricing/Pricing.component'
+import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
 import { ChangingPlansComponent } from '@/components/dashboard/ChangingPlans.component'
 
 export default function PlansPage() {

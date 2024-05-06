@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 
-import { useIsInsideMobileNavigation } from '@/components/AppComponents/MobileNavigationApp.component'
-import { useSectionStore } from '@/components/AppComponents/SectionProviderApp.component'
-import { remToPx } from '@/components/AppComponents/RemToPxApp.component'
-import { TopLevelNavItemAppComponent } from '@/components/AppComponents/TopLevelNavItemApp.component'
+import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationApp.component'
+import { useSectionStore } from '@/components/App/SectionProviderApp.component'
+import { remToPx } from '@/components/App/RemToPxApp.component'
+import { TopLevelNavItemAppComponent } from '@/components/App/TopLevelNavItemApp.component'
 import { UserButton, useUser } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {

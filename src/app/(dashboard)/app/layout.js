@@ -1,4 +1,4 @@
-import { LayoutAppComponent } from '@/components/AppComponents/LayoutApp.component'
+import { LayoutAppComponent } from '@/components/App/LayoutApp.component'
 
 export default async function Layout({ children }) {
 	return (

@@ -9,7 +9,7 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { ResourceCardAppComponent } from '@/components/AppComponents/ResourceCardApp.component'
+import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
 
 const mainResources = [
 	{

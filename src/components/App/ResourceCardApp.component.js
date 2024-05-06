@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
-import { GridPatternAppComponent } from '@/components/AppComponents/GridPatternApp.component'
+import { GridPatternAppComponent } from '@/components/App/GridPatternApp.component'
 
 function ResourceIcon({ icon: Icon }) {
 	return (

@@ -4,11 +4,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-import { HeaderDashboard } from '@/components/AppComponents/HeaderApp.component'
-import { NavigationAppComponent } from '@/components/AppComponents/NavigationApp.component'
+import { HeaderDashboard } from '@/components/App/HeaderApp.component'
+import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 import { UserButton, useUser } from '@clerk/nextjs'
-import { HeroPatternAppComponent } from '@/components/AppComponents/HeroPatternApp.component'
-import { SectionProviderAppComponent } from '@/components/AppComponents/SectionProviderApp.component'
+import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
+import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp.component'
 import { ToastContainer } from 'react-toastify'
 
 export function LayoutAppComponent({ children }) {

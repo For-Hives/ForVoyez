@@ -13,8 +13,8 @@ import { Dialog, Transition } from '@headlessui/react'
 import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
-import { HeaderDashboard } from '@/components/AppComponents/HeaderApp.component'
-import { NavigationAppComponent } from '@/components/AppComponents/NavigationApp.component'
+import { HeaderDashboard } from '@/components/App/HeaderApp.component'
+import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 
 function MenuIcon(props) {
 	return (

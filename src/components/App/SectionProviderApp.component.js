@@ -8,7 +8,7 @@ import {
 	useState,
 } from 'react'
 import { createStore, useStore } from 'zustand'
-import { remToPx } from '@/components/AppComponents/RemToPxApp.component'
+import { remToPx } from '@/components/App/RemToPxApp.component'
 
 function createSectionStore(sections) {
 	return createStore()(set => ({
