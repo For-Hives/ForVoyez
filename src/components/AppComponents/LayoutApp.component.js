@@ -42,7 +42,7 @@ export function LayoutAppComponent({ children }) {
 								<NavigationAppComponent className="hidden h-full lg:mt-10 lg:block" />
 							</div>
 							{user && (
-								<div className={'hidden items-center gap-2 lg:flex'}>
+								<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
 									<UserButton
 										appearance="ghost"
 										userProfileMode="navigation"

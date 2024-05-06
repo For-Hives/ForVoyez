@@ -4,7 +4,13 @@ import Image from 'next/image'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Dialog } from '@headlessui/react'
 import { useState } from 'react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import {
+	SignedIn,
+	SignedOut,
+	SignInButton,
+	UserButton,
+	useUser,
+} from '@clerk/nextjs'
 
 const navigation = [
 	{ name: 'Home', href: '/' },
@@ -16,6 +22,7 @@ const navigation = [
 
 export function NavbarComponent() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
 	return (
 		<header className="absolute inset-x-0 top-0 z-50">
 			<nav
@@ -58,7 +65,7 @@ export function NavbarComponent() {
 						</Link>
 					))}
 				</div>
-				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
+				<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-2">
 					<SignedIn>
 						{/* Mount the UserButton component */}
 						<UserButton
