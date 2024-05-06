@@ -1,8 +1,16 @@
 import { UserProfile } from '@clerk/nextjs'
+import { NavbarComponent } from '@/components/Navbar.component'
 
 const UserProfilePage = () => (
-	<div className={'flex h-full w-screen items-center justify-center lg:p-32 p-4'}>
-		<UserProfile path="/profile" routing="path" />
+	<div>
+		<NavbarComponent />
+		<div
+			className={
+				'flex h-full w-screen items-center justify-center p-4 pt-24 lg:p-32'
+			}
+		>
+			<UserProfile path="/profile" routing="path" />
+		</div>
 	</div>
 )
 

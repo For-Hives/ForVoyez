@@ -37,7 +37,10 @@ export function NavbarComponent() {
 				<div className="flex lg:hidden">
 					<button
 						type="button"
-						className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-700"
+						className={
+							'-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 ' +
+							`text-slate-700 ${mobileMenuOpen ? 'hidden' : 'block'}`
+						}
 						onClick={() => setMobileMenuOpen(true)}
 					>
 						<span className="sr-only">Open main menu</span>
@@ -97,7 +100,7 @@ export function NavbarComponent() {
 						</Link>
 						<button
 							type="button"
-							className="-m-2.5 rounded-md p-2.5 text-slate-700"
+							className={`-m-2.5 rounded-md p-2.5 text-slate-700 ${mobileMenuOpen ? 'block' : 'hidden'}`}
 							onClick={() => setMobileMenuOpen(false)}
 						>
 							<span className="sr-only">Close menu</span>
