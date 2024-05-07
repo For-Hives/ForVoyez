@@ -2,6 +2,7 @@
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { createCheckout, NewCheckout } from '@lemonsqueezy/lemonsqueezy.js'
 import { auth } from '@clerk/nextjs'
+import { getCustomerIdFromUser } from '@/services/database.service'
 // import {lemonSqueezySetup} from "@lemonsqueezy/lemonsqueezy.js";
 
 const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID
@@ -97,4 +98,29 @@ export async function getCheckoutURL(variantId, embed = false) {
 	console.log(checkout)
 
 	return checkout.data?.data.attributes.url
+}
+
+export async function getCustomerPortalLink() {
+	await initLemonSqueezy()
+
+	const user = await auth()
+
+	if (!user) {
+		throw new Error('User is not authenticated.')
+	}
+
+	console.log('user', user)
+	// get user subscription using database.service
+	const customerId = await getCustomerIdFromUser(user.userId)
+
+	console.log('customerId', customerId)
+	if (!customerId) {
+		throw new Error('Customer not found.')
+	}
+
+	// get customer object
+	const customer = await ls.getCustomer(customerId)
+
+	console.log(customer.data.data.attributes.urls.customer_portal)
+	return customer.data.data.attributes.urls.customer_portal
 }

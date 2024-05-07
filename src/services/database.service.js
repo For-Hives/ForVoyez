@@ -198,3 +198,20 @@ export async function syncPlans() {
 
 	return productVariants
 }
+
+export async function getCustomerIdFromUser(userId) {
+	// obtain it throught table user.subscription[0].customerId
+
+	// check if user has a subscription
+	const sub = await prisma.subscription.findFirst({
+		where: {
+			userId: userId,
+		},
+	})
+
+	if (sub) {
+		return sub.customerId
+	}
+
+	return null
+}

@@ -4,7 +4,10 @@ import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { getPlans } from '@/services/database.service'
-import { getCheckoutURL } from '@/services/lemonsqueezy.service'
+import {
+	getCheckoutURL,
+	getCustomerPortalLink,
+} from '@/services/lemonsqueezy.service'
 import { useRouter } from 'next/navigation'
 import { useMotionValue } from 'framer-motion'
 import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
@@ -75,6 +78,11 @@ export function ChangingPlansComponent() {
 			[0, 1],
 			[1, 3],
 		],
+	}
+
+	function manageSubscription() {
+		console.log('click')
+		getCustomerPortalLink().then(url => router.push(url))
 	}
 
 	return (
@@ -311,13 +319,14 @@ export function ChangingPlansComponent() {
 				</div>
 			</div>
 
-			{/* button to manage subscribtion */}
-			<div className="mt-16 text-center">
-				<Link href="/dashboard/subscriptions">
-					<a className="text-lg font-semibold text-forvoyez_orange-500">
-						Manage your subscription
-					</a>
-				</Link>
+			{/* modern button google like with cool effect */}
+			<div className="mt-16 rounded-full bg-forvoyez_orange-500/10 p-4 text-center hover:bg-forvoyez_orange-500/20">
+				<button
+					onClick={() => manageSubscription()}
+					className="text-lg font-semibold text-forvoyez_orange-500"
+				>
+					Manage your subscription
+				</button>
 			</div>
 		</div>
 	)
