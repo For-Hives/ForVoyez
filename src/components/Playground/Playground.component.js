@@ -70,8 +70,10 @@ export function Playground() {
 	}, [jsonSchema])
 
 	useEffect(() => {
-		// fixme - this is not working
-		// setJsonSchema(JSON.stringify(defaultJsonTemplateSchema))
+		// get the value for defaultJsonTemplateSchema from the constants file
+		// then, set a '\n' at the second and last - 1 character
+		const value = JSON.stringify(defaultJsonTemplateSchema, null, 4)
+		setJsonSchema(value)
 	}, [])
 
 	return (
@@ -194,6 +196,7 @@ export function Playground() {
 							value={jsonSchema}
 							onChange={value => setJsonSchema(value)}
 							height="200px"
+							width={'100%'}
 							options={{
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
