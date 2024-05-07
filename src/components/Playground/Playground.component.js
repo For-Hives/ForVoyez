@@ -51,6 +51,9 @@ export function Playground() {
 	}
 
 	const validateJson = json => {
+		if (!json || json.trim() === '') {
+			return true
+		}
 		try {
 			JSON.parse(json)
 			return true
@@ -176,7 +179,7 @@ export function Playground() {
 					</p>
 					<div className="mt-2">
 						<ReactJson
-							src={JSON.parse(jsonSchema)}
+							src={jsonSchema ? JSON.parse(jsonSchema) : {}}
 							theme="monokai"
 							onEdit={edit => setJsonSchema(JSON.stringify(edit.updated_src))}
 							onAdd={add => setJsonSchema(JSON.stringify(add.updated_src))}
