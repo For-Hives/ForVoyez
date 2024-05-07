@@ -101,6 +101,7 @@ export async function processWebhook(id) {
 			break
 		case 'subscription_created':
 			console.log('Subscription created')
+			await processSubscriptionCreated(JSON.parse(webhook.body))
 			break
 		case 'subscription_payment_success':
 			console.log('subscription_payment_success')
@@ -141,6 +142,37 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		data: {
 			credits: user.credits + 10, // todo : add the number of credits from the subscription plan
 			customerId: webhook.customerId,
+		},
+	})
+}
+
+async function processSubscriptionCreated(webhook) {
+	// link plan with variantId
+	const plan = await prisma.plan.findUnique({
+		where: {
+			variantId: webhook.data.attributes.variant_id,
+		},
+	})
+
+	// create a new subscription in the database for the user
+	const subscription = await prisma.subscription.create({
+		data: {
+			lemonSqueezyId: webhook.data.id,
+			orderId: webhook.data.attributes.order_id,
+			name: webhook.data.attributes.user_name,
+			email: webhook.data.attributes.user_email,
+			status: webhook.data.attributes.status,
+			statusFormatted: webhook.data.attributes.status_formatted,
+			renewsAt: webhook.data.attributes.renews_at,
+			endsAt: webhook.data.attributes.ends_at,
+			trialEndsAt: webhook.data.attributes.trial_ends_at,
+			price: webhook.data.attributes.total,
+			isUsageBased: false,
+			isPaused: false,
+			subscriptionItemId: webhook.data.attributes.subscription_id,
+			userId: webhook.data.attributes.customer_id,
+			planId: plan.id,
+			customerId: webhook.data.attributes.customer_id,
 		},
 	})
 }
