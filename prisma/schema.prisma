@@ -66,23 +66,21 @@ model Plan {
 }
 
 model Subscription {
-  id                 Int     @id @default(autoincrement())
-  lemonSqueezyId     String  @unique
-  orderId            Int
-  name               String
-  email              String
-  status             String
-  statusFormatted    String
-  renewsAt           String? // Assumes text fields can be nullable if not marked @notNull in Drizzle
-  endsAt             String?
-  trialEndsAt        String?
-  price              String
-  isUsageBased       Boolean @default(false)
-  isPaused           Boolean @default(false)
-  subscriptionItemId Int
-  userId             String
-  planId             Int
-  customerId         String
+  id              Int     @id @default(autoincrement())
+  lemonSqueezyId  String  @unique
+  orderId         Int
+  name            String
+  email           String
+  status          String
+  statusFormatted String
+  renewsAt        String? // Assumes text fields can be nullable if not marked @notNull in Drizzle
+  endsAt          String?
+  trialEndsAt     String?
+  isUsageBased    Boolean @default(false)
+  isPaused        Boolean @default(false)
+  userId          String
+  planId          Int
+  customerId      String
 
   users User @relation(fields: [userId], references: [clerkId])
   plans Plan @relation(fields: [planId], references: [id])
