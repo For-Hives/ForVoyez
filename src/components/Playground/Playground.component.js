@@ -48,16 +48,22 @@ export function Playground() {
 	}
 
 	return (
-		<div className="grid grid-cols-3 gap-8">
+		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
 			<div className={'flex flex-col gap-4'}>
 				<div>
 					<h3>Image upload</h3>
 					<label
 						htmlFor="image"
-						className="sr-only block text-sm font-medium leading-6 text-gray-900"
+						className="block text-sm font-medium leading-6 text-gray-900"
 					>
 						Your image
 					</label>
+					<p className="mt-1 text-sm italic text-gray-500">
+						{`Upload an image to process with our API. The image should be in PNG,
+							JPG, or GIF format and not exceed 10MB in size. You can either click
+							the "Upload a file" button or drag and drop an image into the
+							designated area.`}
+					</p>
 					<div
 						className="mt-2 flex w-full justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
 						onDrop={handleImageDrop}
@@ -114,23 +120,65 @@ export function Playground() {
 						</div>
 					)}
 				</div>
-				<textarea
-					placeholder="Context"
-					value={context}
-					onChange={e => setContext(e.target.value)}
-				/>
-				<textarea
-					placeholder="JSON Schema"
-					value={jsonSchema}
-					onChange={e => setJsonSchema(e.target.value)}
-				/>
-				<button
-					type="button"
-					onClick={handleSubmit}
-					className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-				>
-					Submit
-				</button>
+				<div>
+					<label
+						htmlFor="comment"
+						className="block text-sm font-medium leading-6 text-gray-900"
+					>
+						Add Your Context
+					</label>
+					<p className="mt-1 text-sm italic text-gray-500">
+						{`Provide additional context to help our API better understand and
+							process your image. This can include information about the image
+							content, specific requirements, or any other relevant details. The
+							more context you provide, the more accurate the results will be.`}
+					</p>
+					<div className="mt-2">
+						<textarea
+							rows="4"
+							name="Context"
+							id="Context"
+							placeholder="Enter your context here..."
+							value={context}
+							onChange={e => setContext(e.target.value)}
+							className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						></textarea>
+					</div>
+				</div>
+				<div>
+					<label
+						htmlFor="jsonSchema"
+						className="block text-sm font-medium leading-6 text-gray-900"
+					>
+						JSON Schema
+					</label>
+					<p className="mt-1 text-sm italic text-gray-500">
+						{`Specify the desired JSON schema for the API response. This allows
+							you to customize the structure and format of the returned data. Use
+							valid JSON syntax to define the schema. If left empty, the API will
+							return the default schema.`}
+					</p>
+					<div className="mt-2">
+						<textarea
+							rows="4"
+							name="jsonSchema"
+							id="jsonSchema"
+							placeholder='{ "title": "string", "description": "string", "tags": ["string"] }'
+							value={jsonSchema}
+							onChange={e => setJsonSchema(e.target.value)}
+							className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						></textarea>
+					</div>
+				</div>
+				<div>
+					<button
+						type="button"
+						onClick={handleSubmit}
+						className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					>
+						Submit
+					</button>
+				</div>
 			</div>
 			<div>
 				<h3>Request Preview</h3>
