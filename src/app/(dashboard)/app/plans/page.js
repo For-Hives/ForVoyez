@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getCheckoutURL } from '@/services/lemonsqueezy.service'
 import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
-import { ChangingPlansComponent } from '@/components/dashboard/ChangingPlans.component'
+import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
 
 export default function PlansPage() {
 	const router = useRouter()
