@@ -133,7 +133,7 @@ export const dashboardNavigation = [
 		title: 'General',
 		links: [
 			{ title: 'Documentation', href: '/docs' },
-			{ title: 'Playground', href: '/playground' },
+			{ title: 'Playground', href: '/app/playground' },
 		],
 	},
 	{
