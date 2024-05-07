@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
-import JwtModal from '@/components/tokens/JwtModal'
+import JwtModal from '@/components/Tokens/JwtModal'
 
 export default function TokenCreate({ tokens, setTokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
