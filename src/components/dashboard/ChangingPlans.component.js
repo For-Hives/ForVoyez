@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { getPlans } from '@/services/database.service'
 import { getCheckoutURL } from '@/services/lemonsqueezy.service'
 import { useRouter } from 'next/navigation'
+import { useMotionValue } from 'framer-motion'
+import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
 
 // FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
@@ -21,11 +23,15 @@ function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
+// TODO : manage DangerouslySetInnerHTML for description
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
 
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
+
+	let mouseX = useMotionValue(0)
+	let mouseY = useMotionValue(0)
 
 	const router = useRouter()
 
@@ -53,12 +59,27 @@ export function ChangingPlansComponent() {
 		}
 	}
 
+	function onMouseMove({ currentTarget, clientX, clientY }) {
+		let { left, top } = currentTarget.getBoundingClientRect()
+		mouseX.set(clientX - left)
+		mouseY.set(clientY - top)
+	}
+
 	if (plans.length === 0) {
 		return <div className="bg-white py-24 sm:py-32">loading...</div>
 	}
 
+	const pattern = {
+		y: 16,
+		squares: [
+			[0, 1],
+			[1, 3],
+		],
+	}
+
 	return (
-		<div className="bg-white py-24 sm:py-32">
+		<div className="bg-white py-24 sm:py-32" onMouseMove={onMouseMove}>
+			<ResourcePattern pattern mouseX={mouseX} mouseY={mouseY} />
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
 					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
