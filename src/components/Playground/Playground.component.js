@@ -103,8 +103,7 @@ export function Playground() {
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
 			editor.onDidChangeModelContent(resizeHandler)
-			return () =>
-				editor.removeEventListener('didChangeModelContent', resizeHandler)
+			return () => editor.removeEventListener(resizeHandler)
 		}
 	}, [])
 
