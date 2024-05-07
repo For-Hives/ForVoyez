@@ -122,24 +122,49 @@ export function Playground() {
 	}, [response])
 
 	useEffect(() => {
-		const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'multipart/form-data',
-    'Authorization': 'Bearer <user-token>'
-  },
-  body: ${getFormDataString()}
-})
-  .then(response => response.json())
-  .then(data => {
-    // Handle the API response data
-    console.log(data);
-  })
-  .catch(error => {
-    // Handle any errors
-    console.error('Error:', error);
-  });`
+		// 		const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
+		//   method: 'POST',
+		//   headers: {
+		//     'Content-Type': 'multipart/form-data',
+		//     'Authorization': 'Bearer <user-token>'
+		//   },
+		//   body: ${getFormDataString()}
+		// })
+		//   .then(response => response.json())
+		//   .then(data => {
+		//     // Handle the API response data
+		//     console.log(data);
+		//   })
+		//   .catch(error => {
+		//     // Handle any errors
+		//     console.error('Error:', error);
+		//   });`
 
+		const fetchRequest = `******************* REQUEST PREVIEW *******************
+// HTTP Method
+POST
+
+// API URL
+https://forvoyez.com/api/describe
+
+// Request Headers
+Content-Type: multipart/form-data
+Authorization: Bearer <user-token>
+// (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information.
+// It is used to authenticate the user and authorize access to the API.)
+
+// Request Body
+image: ${image ? image.name : 'No file selected'}
+// (The "image" field contains the selected image file to be sent to the API for processing.)
+
+context: ${context || 'No context provided'}
+// (The "context" field includes any additional context or information about the image provided by the user.
+// This context helps the API better understand and process the image.)
+
+jsonSchema: ${jsonSchema || 'No JSON schema provided'}
+// (The "jsonSchema" field contains the JSON schema specified by the user.
+// It defines the desired structure and format of the API response.)
+`
 		setRequestPreviewValue(fetchRequest)
 	}, [image, context, jsonSchema])
 
@@ -283,7 +308,7 @@ export function Playground() {
 						/>
 					</div>
 				</div>
-				<div className="mt-4 flex items-center justify-end">
+				<div className="flex items-center justify-end">
 					{isJsonValid ? (
 						<span className="text-sm text-green-600">Valid JSON</span>
 					) : (
@@ -294,74 +319,71 @@ export function Playground() {
 					<button
 						type="button"
 						onClick={handleSubmit}
-						className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 					>
 						Analyze your image
 					</button>
 				</div>
 			</div>
-			<div className={'flex flex-col gap-4'}>
-				<div className={'flex flex-col'}>
-					<h3>Request Preview</h3>
-					<p className="mt-1 text-sm italic text-gray-500">
-						{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
-					</p>
-					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
-						<MonacoEditor
-							language="javascript"
-							theme="vs-light"
-							value={requestPreviewValue}
-							editorDidMount={editor => (requestPreviewRef.current = editor)}
-							width={'100%'}
-							options={{
-								minimap: { enabled: false },
-								scrollBeyondLastLine: false,
-								wordWrap: 'on',
-								fontSize: 14,
-								fontFamily: 'var(--font-jost)',
-								tabSize: 4,
-								autoIndent: true,
-								folding: true,
-								lineNumbers: 'on',
-								readOnly: false,
-							}}
-						/>
-					</div>
+			<div className={'flex flex-col'}>
+				<h3>Request Preview</h3>
+				<p className="mt-1 text-sm italic text-gray-500">
+					{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
+				</p>
+				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+					<MonacoEditor
+						language="javascript"
+						theme="vs-light"
+						value={requestPreviewValue}
+						editorDidMount={editor => (requestPreviewRef.current = editor)}
+						width={'100%'}
+						options={{
+							minimap: { enabled: false },
+							scrollBeyondLastLine: false,
+							wordWrap: 'on',
+							fontSize: 14,
+							fontFamily: 'var(--font-jost)',
+							tabSize: 4,
+							autoIndent: true,
+							folding: true,
+							lineNumbers: 'on',
+							readOnly: true,
+						}}
+					/>
 				</div>
-				<div className={'flex flex-col'}>
-					<h3>API Response</h3>
-					<p className="mt-1 text-sm italic text-gray-500">
-						{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
-					</p>
-					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
-						<MonacoEditor
-							language="json"
-							theme="vs-light"
-							editorDidMount={editor => (responseRef.current = editor)}
-							value={JSON.stringify(response, null, 4)}
-							onMount={editor => {
-								responseRef.current = editor
-								resizeEditor(editor)
-							}}
-							width={'100%'}
-							height={'500px'}
-							options={{
-								minimap: { enabled: false },
-								scrollBeyondLastLine: false,
-								wordWrap: 'on',
-								fontSize: 14,
-								fontFamily: 'var(--font-jost)',
-								tabSize: 4,
-								autoIndent: true,
-								formatOnPaste: true,
-								formatOnType: true,
-								folding: true,
-								lineNumbers: 'on',
-								readOnly: false,
-								quickSuggestions: true,
-							}}
-						/>
-					</div>
+			</div>
+			<div className={'flex flex-col xl:col-span-2'}>
+				<h3>API Response</h3>
+				<p className="mt-1 text-sm italic text-gray-500">
+					{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
+				</p>
+				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+					<MonacoEditor
+						language="json"
+						theme="vs-light"
+						editorDidMount={editor => (responseRef.current = editor)}
+						value={JSON.stringify(response, null, 4)}
+						onMount={editor => {
+							responseRef.current = editor
+							resizeEditor(editor)
+						}}
+						width={'100%'}
+						height={'500px'}
+						options={{
+							minimap: { enabled: false },
+							scrollBeyondLastLine: false,
+							wordWrap: 'on',
+							fontSize: 14,
+							fontFamily: 'var(--font-jost)',
+							tabSize: 4,
+							autoIndent: true,
+							formatOnPaste: true,
+							formatOnType: true,
+							folding: true,
+							lineNumbers: 'on',
+							readOnly: true,
+						}}
+					/>
 				</div>
 			</div>
 		</div>
