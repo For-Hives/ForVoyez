@@ -150,7 +150,7 @@ async function processSubscriptionCreated(webhook) {
 	// link plan with variantId
 	const plan = await prisma.plan.findUnique({
 		where: {
-			variantId: webhook.data.attributes.variant_id,
+			variantId: webhook.data.attributes.variant_id.toString(),
 		},
 	})
 
@@ -166,13 +166,11 @@ async function processSubscriptionCreated(webhook) {
 			renewsAt: webhook.data.attributes.renews_at,
 			endsAt: webhook.data.attributes.ends_at,
 			trialEndsAt: webhook.data.attributes.trial_ends_at,
-			price: webhook.data.attributes.total,
 			isUsageBased: false,
 			isPaused: false,
-			subscriptionItemId: webhook.data.attributes.subscription_id,
-			userId: webhook.data.attributes.customer_id,
+			userId: webhook.meta.custom_data.user_id,
 			planId: plan.id,
-			customerId: webhook.data.attributes.customer_id,
+			customerId: webhook.data.attributes.customer_id.toString(),
 		},
 	})
 }
