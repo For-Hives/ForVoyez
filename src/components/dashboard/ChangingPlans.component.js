@@ -310,6 +310,15 @@ export function ChangingPlansComponent() {
 					{/*	-----------------------------------------------------------------*/}
 				</div>
 			</div>
+
+			{/* button to manage subscribtion */}
+			<div className="mt-16 text-center">
+				<Link href="/dashboard/subscriptions">
+					<a className="text-lg font-semibold text-forvoyez_orange-500">
+						Manage your subscription
+					</a>
+				</Link>
+			</div>
 		</div>
 	)
 }
