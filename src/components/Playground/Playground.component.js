@@ -1,8 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/theme-textmate'
+import MonacoEditor from 'react-monaco-editor'
+import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 export function Playground() {
 	const [isJsonValid, setIsJsonValid] = useState(true)
@@ -13,7 +12,9 @@ export function Playground() {
 	const [uploadProgress, setUploadProgress] = useState(0)
 
 	const [context, setContext] = useState('')
-	const [jsonSchema, setJsonSchema] = useState('')
+	const [jsonSchema, setJsonSchema] = useState(
+		JSON.parse(defaultJsonTemplateSchema)
+	)
 	const [response, setResponse] = useState(null)
 
 	const handleImageChange = e => {
@@ -179,18 +180,28 @@ export function Playground() {
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 					</p>
-					<div className="mt-2">
-						<AceEditor
-							mode="json"
-							theme="textmate"
+					<div className="relative mt-2 w-full overflow-hidden">
+						<MonacoEditor
+							language="json"
+							theme="vs-light"
 							value={jsonSchema}
 							onChange={value => setJsonSchema(value)}
-							name="jsonSchemaEditor"
-							editorProps={{ $blockScrolling: true }}
-							fontSize={14}
-							width="100%"
 							height="200px"
-							showPrintMargin={false}
+							options={{
+								minimap: { enabled: false },
+								scrollBeyondLastLine: false,
+								wordWrap: 'on',
+								fontSize: 14,
+								fontFamily: 'var(--font-jost)',
+								tabSize: 2,
+								autoIndent: true,
+								formatOnPaste: true,
+								formatOnType: true,
+								folding: true,
+								lineNumbers: 'on',
+								readOnly: false,
+								quickSuggestions: true,
+							}}
 						/>
 					</div>
 				</div>
@@ -198,12 +209,9 @@ export function Playground() {
 					<button
 						type="button"
 						onClick={() => {
-							const editor = ace.edit('jsonSchemaEditor')
-							const formattedJson = JSON.stringify(
-								JSON.parse(editor.getValue()),
-								null,
-								2
-							)
+							const formattedJson = monaco.editor
+								.getModels()[0]
+								.getValue(monaco.editor.EndOfLinePreference.LF, true)
 							setJsonSchema(formattedJson)
 						}}
 						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

@@ -45,6 +45,7 @@
 		"react-ace": "^11.0.1",
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.51.3",
+		"react-monaco-editor": "^0.55.0",
 		"react-toastify": "^10.0.5",
 		"react-type-animation": "3.2.0",
 		"sharp": "0.33.3",
