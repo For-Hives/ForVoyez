@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import ReactJson from 'react-json-view'
+import AceEditor from 'react-ace'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/theme-monokai'
 
 export function Playground() {
 	const [isJsonValid, setIsJsonValid] = useState(true)
@@ -178,25 +180,32 @@ export function Playground() {
 							return the default schema.`}
 					</p>
 					<div className="mt-2">
-						<ReactJson
-							src={jsonSchema ? JSON.parse(jsonSchema) : {}}
+						<AceEditor
+							mode="json"
 							theme="monokai"
-							onEdit={edit => setJsonSchema(JSON.stringify(edit.updated_src))}
-							onAdd={add => setJsonSchema(JSON.stringify(add.updated_src))}
-							onDelete={del => setJsonSchema(JSON.stringify(del.updated_src))}
-							displayObjectSize={false}
-							displayDataTypes={false}
-							enableClipboard={false}
-							style={{ padding: '1rem', borderRadius: '0.375rem' }}
+							value={jsonSchema}
+							onChange={value => setJsonSchema(value)}
+							name="jsonSchemaEditor"
+							editorProps={{ $blockScrolling: true }}
+							fontSize={14}
+							width="100%"
+							height="200px"
+							showPrintMargin={false}
 						/>
 					</div>
 				</div>
 				<div className="mt-4 flex items-center justify-between">
 					<button
 						type="button"
-						onClick={() =>
-							setJsonSchema(JSON.stringify(JSON.parse(jsonSchema), null, 2))
-						}
+						onClick={() => {
+							const editor = ace.edit('jsonSchemaEditor')
+							const formattedJson = JSON.stringify(
+								JSON.parse(editor.getValue()),
+								null,
+								2
+							)
+							setJsonSchema(formattedJson)
+						}}
 						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 					>
 						Format JSON
