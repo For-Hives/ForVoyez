@@ -6,6 +6,7 @@ import { defaultJsonTemplateSchema } from '@/constants/playground'
 export function Playground() {
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
+	const [requestPreviewValue, setRequestPreviewValue] = useState('')
 	const [image, setImage] = useState(null)
 	const [imagePreview, setImagePreview] = useState(null)
 	const [imageSize, setImageSize] = useState(0)
@@ -110,6 +111,35 @@ export function Playground() {
 	useEffect(() => {
 		resizeEditor(responseRef.current)
 	}, [response])
+
+	useEffect(() => {
+		const value = `// HTTP Method
+POST
+
+// API URL
+https://forvoyez.com/api/describe
+
+// Request Headers
+Content-Type: multipart/form-data
+Authorization: Bearer <user-token>
+// The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information.
+// It is used to authenticate the user and authorize access to the API.
+
+// Request Body
+image: ${image ? image.name : 'No file selected'}
+// The "image" field contains the selected image file to be sent to the API for processing.
+
+context: ${context || 'No context provided'}
+// The "context" field includes any additional context or information about the image provided by the user.
+// This context helps the API better understand and process the image.
+
+jsonSchema: ${jsonSchema || 'No JSON schema provided'}
+// The "jsonSchema" field contains the JSON schema specified by the user.
+// It defines the desired structure and format of the API response.
+`
+		setRequestPreviewValue(value)
+		resizeEditor(requestPreviewRef.current)
+	}, [image, context, jsonSchema])
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
@@ -271,12 +301,12 @@ export function Playground() {
 					</button>
 				</div>
 			</div>
-			<div className={''}>
+			<div className={'opacity-40'}>
 				<h3>Request Preview</h3>
 				<MonacoEditor
 					language="json"
 					theme="vs-light"
-					value={JSON.stringify({ image, context }, null, 4)}
+					value={requestPreviewValue}
 					onMount={editor => {
 						requestPreviewRef.current = editor
 						resizeEditor(editor)
