@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
@@ -14,6 +14,8 @@ export function Playground() {
 	const [context, setContext] = useState('')
 	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(null)
+
+	const editorRef = useRef(null)
 
 	const handleImageChange = e => {
 		const file = e.target.files[0]
@@ -187,6 +189,7 @@ export function Playground() {
 						<MonacoEditor
 							language="json"
 							theme="vs-light"
+							editorDidMount={editor => (editorRef.current = editor)}
 							value={jsonSchema}
 							onChange={value => setJsonSchema(value)}
 							height="200px"
@@ -212,9 +215,8 @@ export function Playground() {
 					<button
 						type="button"
 						onClick={() => {
-							const formattedJson = monaco.editor
-								.getModels()[0]
-								.getValue(monaco.editor.EndOfLinePreference.LF, true)
+							const editor = editorRef.current
+							const formattedJson = editor.getValue()
 							setJsonSchema(formattedJson)
 						}}
 						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
