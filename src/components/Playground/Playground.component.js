@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/theme-textmate'
 
 export function Playground() {
 	const [isJsonValid, setIsJsonValid] = useState(true)
@@ -182,7 +182,7 @@ export function Playground() {
 					<div className="mt-2">
 						<AceEditor
 							mode="json"
-							theme="monokai"
+							theme="textmate"
 							value={jsonSchema}
 							onChange={value => setJsonSchema(value)}
 							name="jsonSchemaEditor"
