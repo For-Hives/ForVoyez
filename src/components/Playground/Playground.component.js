@@ -16,6 +16,8 @@ export function Playground() {
 	const [response, setResponse] = useState(null)
 
 	const editorRef = useRef(null)
+	const requestPreviewRef = useRef(null)
+	const responseRef = useRef(null)
 
 	const handleImageChange = e => {
 		const file = e.target.files[0]
@@ -53,6 +55,14 @@ export function Playground() {
 		setResponse(data)
 	}
 
+	const resizeEditor = editor => {
+		if (editor) {
+			const contentHeight = editor.getContentHeight()
+			editor.getContainerDomNode().style.height = `${contentHeight}px`
+			editor.layout()
+		}
+	}
+
 	const validateJson = json => {
 		if (!json || json.trim() === '') {
 			return true
@@ -87,6 +97,20 @@ export function Playground() {
 		const value = JSON.stringify(defaultJsonTemplateSchema, null, 4)
 		setJsonSchema(value)
 	}, [])
+
+	useEffect(() => {
+		const editor = editorRef.current
+		if (editor) {
+			const resizeHandler = () => resizeEditor(editor)
+			editor.onDidChangeModelContent(resizeHandler)
+			return () =>
+				editor.removeEventListener('didChangeModelContent', resizeHandler)
+		}
+	}, [])
+
+	useEffect(() => {
+		resizeEditor(responseRef.current)
+	}, [response])
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
@@ -208,7 +232,7 @@ export function Playground() {
 							value={jsonSchema}
 							onMount={editor => {
 								editorRef.current = editor
-								formatJson()
+								resizeEditor(editor)
 							}}
 							onChange={value => setJsonSchema(value)}
 							width={'100%'}
@@ -264,7 +288,11 @@ export function Playground() {
 				<MonacoEditor
 					language="json"
 					theme="vs-light"
-					value={JSON.stringify({ image, context, jsonSchema }, null, 2)}
+					value={JSON.stringify({ image, context }, null, 4)}
+					onMount={editor => {
+						requestPreviewRef.current = editor
+						resizeEditor(editor)
+					}}
 					options={{
 						readOnly: true,
 						minimap: { enabled: false },
@@ -284,7 +312,11 @@ export function Playground() {
 				<MonacoEditor
 					language="json"
 					theme="vs-light"
-					value={JSON.stringify(response, null, 2)}
+					value={JSON.stringify(response, null, 4)}
+					onMount={editor => {
+						responseRef.current = editor
+						resizeEditor(editor)
+					}}
 					options={{
 						readOnly: true,
 						minimap: { enabled: false },
