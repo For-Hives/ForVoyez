@@ -70,7 +70,8 @@ export function Playground() {
 	}, [jsonSchema])
 
 	useEffect(() => {
-		setJsonSchema(JSON.stringify(defaultJsonTemplateSchema))
+		// fixme - this is not working
+		// setJsonSchema(JSON.stringify(defaultJsonTemplateSchema))
 	}, [])
 
 	return (
