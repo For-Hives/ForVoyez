@@ -102,8 +102,8 @@ export function Playground() {
 		const editor = editorRef.current
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
-			editor.onDidChangeModelContent(resizeHandler)
-			return () => editor.removeEventListener(resizeHandler)
+			const disposable = editor.onDidChangeModelContent(resizeHandler)
+			return () => disposable.dispose()
 		}
 	}, [])
 
@@ -223,7 +223,7 @@ export function Playground() {
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 					</p>
-					<div className="relative mt-2 w-full overflow-hidden">
+					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
 						<MonacoEditor
 							language="json"
 							theme="vs-light"
@@ -254,18 +254,7 @@ export function Playground() {
 						/>
 					</div>
 				</div>
-				<div className="mt-4 flex items-center justify-between">
-					<button
-						type="button"
-						onClick={() => {
-							const editor = editorRef.current
-							const formattedJson = editor.getValue()
-							setJsonSchema(formattedJson)
-						}}
-						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-					>
-						Format JSON
-					</button>
+				<div className="mt-4 flex items-center justify-end">
 					{isJsonValid ? (
 						<span className="text-sm text-green-600">Valid JSON</span>
 					) : (
@@ -278,11 +267,11 @@ export function Playground() {
 						onClick={handleSubmit}
 						className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 					>
-						Submit
+						Analyze your image
 					</button>
 				</div>
 			</div>
-			<div>
+			<div className={''}>
 				<h3>Request Preview</h3>
 				<MonacoEditor
 					language="json"
