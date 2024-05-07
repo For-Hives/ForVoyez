@@ -11,7 +11,7 @@ function ResourceIcon({ icon: Icon }) {
 	)
 }
 
-function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
+export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 	let maskImage = useMotionTemplate`radial-gradient(180px at ${mouseX}px ${mouseY}px, white, transparent)`
 	let style = { maskImage, WebkitMaskImage: maskImage }
 
