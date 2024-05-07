@@ -7,7 +7,7 @@ export default function Page() {
 			<NavbarComponent />
 			<main
 				className={
-					'flex h-[100dvh] w-[100dvw] items-center justify-center p-4 lg:p-32'
+					'flex min-h-[100dvh] w-[100dvw] items-center justify-center p-4 lg:p-32'
 				}
 			>
 				<SignIn />

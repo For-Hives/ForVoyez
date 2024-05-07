@@ -58,10 +58,9 @@ export function Playground() {
 					>
 						Your image
 					</label>
-					<button
+					<div
 						className="mt-2 flex w-full justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
 						onDrop={handleImageDrop}
-						onClick={e => e.preventDefault()}
 						onDragOver={e => e.preventDefault()}
 					>
 						{imagePreview ? (
@@ -101,7 +100,7 @@ export function Playground() {
 								</p>
 							</div>
 						)}
-					</button>
+					</div>
 					{image && (
 						<div className="mt-2">
 							<p className="text-sm text-gray-500">
