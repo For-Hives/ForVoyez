@@ -196,7 +196,7 @@ export function Playground() {
 							value={jsonSchema}
 							onChange={value => setJsonSchema(value)}
 							height="200px"
-							width={'100%'}
+							width={'300px'}
 							options={{
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
