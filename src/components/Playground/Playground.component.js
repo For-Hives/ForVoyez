@@ -12,9 +12,7 @@ export function Playground() {
 	const [uploadProgress, setUploadProgress] = useState(0)
 
 	const [context, setContext] = useState('')
-	const [jsonSchema, setJsonSchema] = useState(
-		JSON.parse(defaultJsonTemplateSchema)
-	)
+	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(null)
 
 	const handleImageChange = e => {
@@ -69,6 +67,10 @@ export function Playground() {
 		setIsJsonValid(validateJson(jsonSchema))
 	}, [jsonSchema])
 
+	useEffect(() => {
+		setJsonSchema(JSON.stringify(defaultJsonTemplateSchema))
+	}, [])
+
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
 			<div className={'flex flex-col gap-4'}>
@@ -87,6 +89,7 @@ export function Playground() {
 							designated area.`}
 					</p>
 					<div
+						role={'button'}
 						className="mt-2 flex w-full justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
 						onDrop={handleImageDrop}
 						onDragOver={e => e.preventDefault()}
@@ -193,7 +196,7 @@ export function Playground() {
 								wordWrap: 'on',
 								fontSize: 14,
 								fontFamily: 'var(--font-jost)',
-								tabSize: 2,
+								tabSize: 4,
 								autoIndent: true,
 								formatOnPaste: true,
 								formatOnType: true,
