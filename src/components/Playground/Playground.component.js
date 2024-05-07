@@ -91,56 +91,66 @@ export function Playground() {
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
 			const disposable = editor.onDidChangeModelContent(resizeHandler)
+			resizeEditor(editor)
 			return () => disposable.dispose()
 		}
+	}, [])
 
+	useEffect(() => {
 		const requestPreviewEditor = requestPreviewRef.current
 		if (requestPreviewEditor) {
 			const resizeHandler = () => resizeEditor(requestPreviewEditor)
 			const disposable =
 				requestPreviewEditor.onDidChangeModelContent(resizeHandler)
+			resizeEditor(requestPreviewEditor)
 			return () => disposable.dispose()
 		}
+	}, [requestPreviewValue])
 
+	useEffect(() => {
 		const responseEditor = responseRef.current
 		if (responseEditor) {
 			const resizeHandler = () => resizeEditor(responseEditor)
 			const disposable = responseEditor.onDidChangeModelContent(resizeHandler)
+			resizeEditor(responseEditor)
 			return () => disposable.dispose()
 		}
-	}, [])
+	}, [response])
 
 	useEffect(() => {
 		resizeEditor(responseRef.current)
 	}, [response])
 
 	useEffect(() => {
-		const value = `// HTTP Method
-POST
+		const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    'Authorization': 'Bearer <user-token>'
+  },
+  body: ${getFormDataString()}
+})
+  .then(response => response.json())
+  .then(data => {
+    // Handle the API response data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors
+    console.error('Error:', error);
+  });`
 
-// API URL
-https://forvoyez.com/api/describe
-
-// Request Headers
-Content-Type: multipart/form-data
-Authorization: Bearer <user-token>
-// The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information.
-// It is used to authenticate the user and authorize access to the API.
-
-// Request Body
-image: ${image ? image.name : 'No file selected'}
-// The "image" field contains the selected image file to be sent to the API for processing.
-
-context: ${context || 'No context provided'}
-// The "context" field includes any additional context or information about the image provided by the user.
-// This context helps the API better understand and process the image.
-
-jsonSchema: ${jsonSchema || 'No JSON schema provided'}
-// The "jsonSchema" field contains the JSON schema specified by the user.
-// It defines the desired structure and format of the API response.
-`
-		setRequestPreviewValue(value)
+		setRequestPreviewValue(fetchRequest)
 	}, [image, context, jsonSchema])
+
+	const getFormDataString = () => {
+		const formDataEntries = [
+			`'image': ${image ? `new File(['${image.name}'], '${image.name}', { type: '${image.type}' })` : 'null'}`,
+			`'context': '${context}'`,
+			`'jsonSchema': '${jsonSchema}'`,
+		]
+		return `new FormData([ ${formDataEntries.join(', ')} ])`
+	}
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
@@ -301,12 +311,7 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 						theme="vs-light"
 						value={requestPreviewValue}
 						editorDidMount={editor => (requestPreviewRef.current = editor)}
-						onMount={editor => {
-							requestPreviewRef.current = editor
-							resizeEditor(editor)
-						}}
 						width={'100%'}
-						height={'1000px'}
 						options={{
 							minimap: { enabled: false },
 							scrollBeyondLastLine: false,
@@ -315,12 +320,9 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 							fontFamily: 'var(--font-jost)',
 							tabSize: 4,
 							autoIndent: true,
-							formatOnPaste: true,
-							formatOnType: true,
 							folding: true,
 							lineNumbers: 'on',
 							readOnly: false,
-							quickSuggestions: true,
 						}}
 					/>
 				</div>
