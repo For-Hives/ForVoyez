@@ -82,6 +82,7 @@ model Subscription {
   subscriptionItemId Int
   userId             String
   planId             Int
+  customerId         String
 
   users User @relation(fields: [userId], references: [clerkId])
   plans Plan @relation(fields: [planId], references: [id])
