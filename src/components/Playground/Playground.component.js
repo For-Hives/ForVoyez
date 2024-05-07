@@ -56,10 +56,10 @@ export function Playground() {
 		setResponse(data)
 	}
 
-	const resizeEditor = editor => {
+	const resizeEditor = (editor, ref) => {
 		if (editor) {
 			const contentHeight = editor.getContentHeight()
-			editor.getContainerDomNode().style.height = `${contentHeight}px`
+			ref.current.getContainerDomNode().style.height = `${contentHeight}px`
 			editor.layout()
 		}
 	}
@@ -87,6 +87,26 @@ export function Playground() {
 			editor.setValue(formattedJson)
 		}
 	}
+
+	useEffect(() => {
+		const requestPreviewEditor = requestPreviewRef.current
+		if (requestPreviewEditor) {
+			const resizeHandler = () =>
+				resizeEditor(requestPreviewEditor, requestPreviewRef)
+			const disposable =
+				requestPreviewEditor.onDidChangeModelContent(resizeHandler)
+			return () => disposable.dispose()
+		}
+	}, [requestPreviewValue])
+
+	useEffect(() => {
+		const responseEditor = responseRef.current
+		if (responseEditor) {
+			const resizeHandler = () => resizeEditor(responseEditor, responseRef)
+			const disposable = responseEditor.onDidChangeModelContent(resizeHandler)
+			return () => disposable.dispose()
+		}
+	}, [response])
 
 	useEffect(() => {
 		setIsJsonValid(validateJson(jsonSchema))
@@ -311,12 +331,8 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 						language="json"
 						theme="vs-light"
 						value={requestPreviewValue}
-						onMount={editor => {
-							requestPreviewRef.current = editor
-							resizeEditor(editor)
-						}}
-						height={'520px'}
-						width={'100%'}
+						editorDidMount={editor => (requestPreviewRef.current = editor)}
+						onMount={editor => resizeEditor(editor, requestPreviewRef)}
 						options={{
 							readOnly: true,
 							minimap: { enabled: false },
@@ -342,10 +358,8 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 						language="json"
 						theme="vs-light"
 						value={JSON.stringify(response, null, 4)}
-						onMount={editor => {
-							responseRef.current = editor
-							resizeEditor(editor)
-						}}
+						editorDidMount={editor => (responseRef.current = editor)}
+						onMount={editor => resizeEditor(editor, responseRef)}
 						options={{
 							readOnly: true,
 							minimap: { enabled: false },
