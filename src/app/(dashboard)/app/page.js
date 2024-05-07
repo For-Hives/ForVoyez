@@ -26,7 +26,7 @@ const mainResources = [
 		},
 	},
 	{
-		href: '/playground',
+		href: '/app/playground',
 		name: 'Playground',
 		description: 'Explore and test our API endpoints.',
 		icon: CodeBracketIcon,
