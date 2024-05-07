@@ -1,7 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import ReactJson from 'react-json-view'
 
 export function Playground() {
+	const [isJsonValid, setIsJsonValid] = useState(true)
+
 	const [image, setImage] = useState(null)
 	const [imagePreview, setImagePreview] = useState(null)
 	const [imageSize, setImageSize] = useState(0)
@@ -46,6 +49,19 @@ export function Playground() {
 		const data = await res.json()
 		setResponse(data)
 	}
+
+	const validateJson = json => {
+		try {
+			JSON.parse(json)
+			return true
+		} catch (error) {
+			return false
+		}
+	}
+
+	useEffect(() => {
+		setIsJsonValid(validateJson(jsonSchema))
+	}, [jsonSchema])
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-3">
@@ -159,16 +175,34 @@ export function Playground() {
 							return the default schema.`}
 					</p>
 					<div className="mt-2">
-						<textarea
-							rows="4"
-							name="jsonSchema"
-							id="jsonSchema"
-							placeholder='{ "title": "string", "description": "string", "tags": ["string"] }'
-							value={jsonSchema}
-							onChange={e => setJsonSchema(e.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-						></textarea>
+						<ReactJson
+							src={JSON.parse(jsonSchema)}
+							theme="monokai"
+							onEdit={edit => setJsonSchema(JSON.stringify(edit.updated_src))}
+							onAdd={add => setJsonSchema(JSON.stringify(add.updated_src))}
+							onDelete={del => setJsonSchema(JSON.stringify(del.updated_src))}
+							displayObjectSize={false}
+							displayDataTypes={false}
+							enableClipboard={false}
+							style={{ padding: '1rem', borderRadius: '0.375rem' }}
+						/>
 					</div>
+				</div>
+				<div className="mt-4 flex items-center justify-between">
+					<button
+						type="button"
+						onClick={() =>
+							setJsonSchema(JSON.stringify(JSON.parse(jsonSchema), null, 2))
+						}
+						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					>
+						Format JSON
+					</button>
+					{isJsonValid ? (
+						<span className="text-sm text-green-600">Valid JSON</span>
+					) : (
+						<span className="text-sm text-red-600">Invalid JSON</span>
+					)}
 				</div>
 				<div>
 					<button
