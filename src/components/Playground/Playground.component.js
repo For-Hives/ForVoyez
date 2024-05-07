@@ -65,6 +65,18 @@ export function Playground() {
 		}
 	}
 
+	const formatJson = () => {
+		if (editorRef.current) {
+			const editor = editorRef.current
+			const formattedJson = JSON.stringify(
+				JSON.parse(editor.getValue()),
+				null,
+				4
+			)
+			editor.setValue(formattedJson)
+		}
+	}
+
 	useEffect(() => {
 		setIsJsonValid(validateJson(jsonSchema))
 	}, [jsonSchema])
@@ -194,9 +206,13 @@ export function Playground() {
 							theme="vs-light"
 							editorDidMount={editor => (editorRef.current = editor)}
 							value={jsonSchema}
+							onMount={editor => {
+								editorRef.current = editor
+								formatJson()
+							}}
 							onChange={value => setJsonSchema(value)}
-							height="200px"
-							width={'300px'}
+							width={'100%'}
+							height={'500px'}
 							options={{
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
@@ -245,11 +261,43 @@ export function Playground() {
 			</div>
 			<div>
 				<h3>Request Preview</h3>
-				<pre>{JSON.stringify({ image, context, jsonSchema }, null, 2)}</pre>
+				<MonacoEditor
+					language="json"
+					theme="vs-light"
+					value={JSON.stringify({ image, context, jsonSchema }, null, 2)}
+					options={{
+						readOnly: true,
+						minimap: { enabled: false },
+						scrollBeyondLastLine: false,
+						wordWrap: 'on',
+						fontSize: 14,
+						fontFamily: 'var(--font-jost)',
+						tabSize: 4,
+						folding: true,
+						lineNumbers: 'on',
+						quickSuggestions: false,
+					}}
+				/>
 			</div>
 			<div>
 				<h3>API Response</h3>
-				<pre>{JSON.stringify(response, null, 2)}</pre>
+				<MonacoEditor
+					language="json"
+					theme="vs-light"
+					value={JSON.stringify(response, null, 2)}
+					options={{
+						readOnly: true,
+						minimap: { enabled: false },
+						scrollBeyondLastLine: false,
+						wordWrap: 'on',
+						fontSize: 14,
+						fontFamily: 'var(--font-jost)',
+						tabSize: 4,
+						folding: true,
+						lineNumbers: 'on',
+						quickSuggestions: false,
+					}}
+				/>
 			</div>
 		</div>
 	)
