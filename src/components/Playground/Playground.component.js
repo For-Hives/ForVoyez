@@ -10,7 +10,6 @@ export function Playground() {
 	const [image, setImage] = useState(null)
 	const [imagePreview, setImagePreview] = useState(null)
 	const [imageSize, setImageSize] = useState(0)
-	const [uploadProgress, setUploadProgress] = useState(0)
 
 	const [context, setContext] = useState('')
 	const [jsonSchema, setJsonSchema] = useState('')
@@ -56,10 +55,10 @@ export function Playground() {
 		setResponse(data)
 	}
 
-	const resizeEditor = (editor, ref) => {
+	const resizeEditor = editor => {
 		if (editor) {
 			const contentHeight = editor.getContentHeight()
-			ref.current.getContainerDomNode().style.height = `${contentHeight}px`
+			editor.getContainerDomNode().style.height = `${contentHeight}px`
 			editor.layout()
 		}
 	}
@@ -75,38 +74,6 @@ export function Playground() {
 			return false
 		}
 	}
-
-	const formatJson = () => {
-		if (editorRef.current) {
-			const editor = editorRef.current
-			const formattedJson = JSON.stringify(
-				JSON.parse(editor.getValue()),
-				null,
-				4
-			)
-			editor.setValue(formattedJson)
-		}
-	}
-
-	useEffect(() => {
-		const requestPreviewEditor = requestPreviewRef.current
-		if (requestPreviewEditor) {
-			const resizeHandler = () =>
-				resizeEditor(requestPreviewEditor, requestPreviewRef)
-			const disposable =
-				requestPreviewEditor.onDidChangeModelContent(resizeHandler)
-			return () => disposable.dispose()
-		}
-	}, [requestPreviewValue])
-
-	useEffect(() => {
-		const responseEditor = responseRef.current
-		if (responseEditor) {
-			const resizeHandler = () => resizeEditor(responseEditor, responseRef)
-			const disposable = responseEditor.onDidChangeModelContent(resizeHandler)
-			return () => disposable.dispose()
-		}
-	}, [response])
 
 	useEffect(() => {
 		setIsJsonValid(validateJson(jsonSchema))
@@ -124,6 +91,21 @@ export function Playground() {
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
 			const disposable = editor.onDidChangeModelContent(resizeHandler)
+			return () => disposable.dispose()
+		}
+
+		const requestPreviewEditor = requestPreviewRef.current
+		if (requestPreviewEditor) {
+			const resizeHandler = () => resizeEditor(requestPreviewEditor)
+			const disposable =
+				requestPreviewEditor.onDidChangeModelContent(resizeHandler)
+			return () => disposable.dispose()
+		}
+
+		const responseEditor = responseRef.current
+		if (responseEditor) {
+			const resizeHandler = () => resizeEditor(responseEditor)
+			const disposable = responseEditor.onDidChangeModelContent(resizeHandler)
 			return () => disposable.dispose()
 		}
 	}, [])
@@ -158,7 +140,6 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 // It defines the desired structure and format of the API response.
 `
 		setRequestPreviewValue(value)
-		resizeEditor(requestPreviewRef.current)
 	}, [image, context, jsonSchema])
 
 	return (
@@ -222,18 +203,6 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 							</div>
 						)}
 					</div>
-					{image && (
-						<div className="mt-2">
-							<p className="text-sm text-gray-500">
-								{image.name} ({(imageSize / 1024 / 1024).toFixed(2)} MB)
-							</p>
-							<progress
-								className="w-full"
-								value={uploadProgress}
-								max="100"
-							></progress>
-						</div>
-					)}
 				</div>
 				<div>
 					<label
@@ -285,7 +254,7 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 							}}
 							onChange={value => setJsonSchema(value)}
 							width={'100%'}
-							height={'400px'}
+							height={'500px'}
 							options={{
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
@@ -321,7 +290,7 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 					</button>
 				</div>
 			</div>
-			<div className={'flex flex-col gap-4'}>
+			<div className={'flex flex-col'}>
 				<h3>Request Preview</h3>
 				<p className="mt-1 text-sm italic text-gray-500">
 					{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
@@ -332,23 +301,31 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 						theme="vs-light"
 						value={requestPreviewValue}
 						editorDidMount={editor => (requestPreviewRef.current = editor)}
-						onMount={editor => resizeEditor(editor, requestPreviewRef)}
+						onMount={editor => {
+							requestPreviewRef.current = editor
+							resizeEditor(editor)
+						}}
+						width={'100%'}
+						height={'1000px'}
 						options={{
-							readOnly: true,
 							minimap: { enabled: false },
 							scrollBeyondLastLine: false,
 							wordWrap: 'on',
 							fontSize: 14,
 							fontFamily: 'var(--font-jost)',
 							tabSize: 4,
+							autoIndent: true,
+							formatOnPaste: true,
+							formatOnType: true,
 							folding: true,
 							lineNumbers: 'on',
-							quickSuggestions: false,
+							readOnly: false,
+							quickSuggestions: true,
 						}}
 					/>
 				</div>
 			</div>
-			<div className={'flex flex-col gap-4'}>
+			<div className={'flex flex-col'}>
 				<h3>API Response</h3>
 				<p className="mt-1 text-sm italic text-gray-500">
 					{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
@@ -357,20 +334,28 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 					<MonacoEditor
 						language="json"
 						theme="vs-light"
-						value={JSON.stringify(response, null, 4)}
 						editorDidMount={editor => (responseRef.current = editor)}
-						onMount={editor => resizeEditor(editor, responseRef)}
+						value={JSON.stringify(response, null, 4)}
+						onMount={editor => {
+							responseRef.current = editor
+							resizeEditor(editor)
+						}}
+						width={'100%'}
+						height={'500px'}
 						options={{
-							readOnly: true,
 							minimap: { enabled: false },
 							scrollBeyondLastLine: false,
 							wordWrap: 'on',
 							fontSize: 14,
 							fontFamily: 'var(--font-jost)',
 							tabSize: 4,
+							autoIndent: true,
+							formatOnPaste: true,
+							formatOnType: true,
 							folding: true,
 							lineNumbers: 'on',
-							quickSuggestions: false,
+							readOnly: false,
+							quickSuggestions: true,
 						}}
 					/>
 				</div>
