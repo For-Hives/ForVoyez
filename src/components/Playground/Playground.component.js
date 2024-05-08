@@ -28,6 +28,16 @@ export function Playground() {
 	const handleSubmit = async e => {
 		e.preventDefault()
 
+		if (!image) {
+			setUploadError('Please select an image')
+			return
+		}
+
+		if (imageSize > 10 * 1024 * 1024) {
+			setUploadError('Image size should not exceed 10MB')
+			return
+		}
+
 		const formData = new FormData()
 		formData.append('image', image)
 		formData.append('context', context)
@@ -393,7 +403,12 @@ Authorization: Bearer <user-token>
 					<button
 						type="button"
 						onClick={handleSubmit}
-						className="inline-flex items-center rounded-md bg-forvoyez_orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+						disabled={!isJsonValid || !image}
+						className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+							!isJsonValid || !image
+								? 'cursor-not-allowed bg-gray-400'
+								: 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'
+						}`}
 					>
 						Analyze your image
 					</button>
