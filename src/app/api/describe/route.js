@@ -11,6 +11,7 @@ export async function POST(request) {
 		// get the authorisation header
 		const authorization = request.headers.get('Authorization')
 		if (!authorization) {
+			console.log('No Authorization header')
 			return new Response('Unauthorized', {
 				status: 401,
 				statusText: 'Unauthorized, missing Authorization header',
@@ -31,12 +32,14 @@ export async function POST(request) {
 
 			console.log(user)
 			if (user.credits <= 0) {
+				console.log('No credit left')
 				return new Response('Unauthorized, no credit left', {
 					status: 401,
 					statusText: 'Unauthorized',
 				})
 			}
 		} catch (error) {
+			console.log('Invalid token')
 			return new Response('Unauthorized, invalid token', {
 				status: 401,
 				statusText: 'Unauthorized',
@@ -47,15 +50,17 @@ export async function POST(request) {
 
 		const file = formData.get('image')
 		if (!file) {
+			console.log('No file uploaded')
 			return new Response('No file uploaded', {
 				status: 400,
 				statusText: 'Bad Request',
 			})
 		}
-		// todo : check if file is an image
 
+		// todo : check if file is an image
 		const schemaJSON = formData.get('schema')
 		if (!schemaJSON) {
+			console.log('No schema provided')
 			return new Response('No schema provided', {
 				status: 400,
 				statusText: 'Bad Request',
@@ -66,13 +71,14 @@ export async function POST(request) {
 
 		const base64Image = await blobToBase64(file)
 
-		// check if its local dev
-		if (process.env.NODE_ENV === 'development') {
-			return new Response(JSON.stringify({ base64Image }), {
-				status: 200,
-				headers: { 'Content-Type': 'application/json' },
-			})
-		}
+		// // check if its local dev
+		// if (process.env.NODE_ENV === 'development') {
+		// 	console.log('Local dev')
+		// 	return new Response(JSON.stringify({ base64Image }), {
+		// 		status: 200,
+		// 		headers: { 'Content-Type': 'application/json' },
+		// 	})
+		// }
 
 		const descriptionResult = await getImageDescription(base64Image, schema)
 
