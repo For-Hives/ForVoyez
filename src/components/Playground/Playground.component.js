@@ -111,6 +111,21 @@ export function Playground() {
 		return validTypes.includes(file.type)
 	}
 
+	const formatJsonSchema = jsonSchema => {
+		if (!jsonSchema || jsonSchema.trim() === '') {
+			return 'No JSON schema provided'
+		}
+
+		try {
+			const parsedJsonSchema = JSON.parse(jsonSchema)
+			return JSON.stringify(parsedJsonSchema, null, 4)
+				.replace(/\n/g, '\n    ')
+				.replace(/\n    \}/g, '\n    }\n')
+		} catch (error) {
+			return 'Invalid JSON'
+		}
+	}
+
 	useEffect(() => {
 		setIsJsonValid(validateJson(jsonSchema))
 	}, [jsonSchema])
@@ -172,15 +187,7 @@ Authorization: Bearer <user-token>
 	context: ${context || 'No context provided'} 
 	/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
 	
-	jsonSchema: ${
-		isJsonValid
-			? jsonSchema
-				? JSON.stringify(JSON.parse(jsonSchema), null, 4)
-						.replace(/\n/g, '\n    ')
-						.replace(/\n    \}/g, '\n    }\n')
-				: 'No JSON schema provided'
-			: 'Invalid JSON'
-	}
+	jsonSchema: ${formatJsonSchema(jsonSchema)}
 	/* (The "jsonSchema" field contains the JSON schema specified by the user. 
 	It defines the desired structure and format of the API response.) */
 }`
