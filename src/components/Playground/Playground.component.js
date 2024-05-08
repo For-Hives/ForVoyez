@@ -43,12 +43,10 @@ export function Playground() {
 		// fixme, that request is actually mocked
 		setIsProcessingResultApi(true)
 		// mock some delay
-		setTimeout(() => {
+		setTimeout(async () => {
+			const response = await describePlayground()
+			setResponse(response)
 			setIsProcessingResultApi(false)
-			const res = describePlayground()
-
-			const data = res.json()
-			setResponse(data)
 		}, 3000)
 	}
 
