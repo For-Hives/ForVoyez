@@ -100,7 +100,7 @@ export function Playground() {
 	}
 
 	const isValidFileType = file => {
-		const validTypes = ['image/png', 'image/jpeg', 'image/gif']
+		const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 		return validTypes.includes(file.type)
 	}
 
@@ -151,24 +151,6 @@ export function Playground() {
 	}, [response])
 
 	useEffect(() => {
-		// const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
-		//   method: 'POST',
-		//   headers: {
-		//     'Content-Type': 'multipart/form-data',
-		//     'Authorization': 'Bearer <user-token>'
-		//   },
-		//   body: ${getFormDataString()}
-		// })
-		//   .then(response => response.json())
-		//   .then(data => {
-		//     // Handle the API response data
-		//     console.log(data);
-		//   })
-		//   .catch(error => {
-		//     // Handle any errors
-		//     console.error('Error:', error);
-		//   });`
-
 		const fetchRequest = `// --- Request Headers ---
 Content-Type: multipart/form-data
 Authorization: Bearer <user-token>
@@ -218,7 +200,7 @@ Authorization: Bearer <user-token>
 						Your image
 					</label>
 					<p className="mt-1 text-sm italic text-gray-500">
-						{`Upload an image to process with our API. The image should be in PNG,
+						{`Upload an image to process with our API. The image should be in PNG,WEBP, 
 							JPG, or GIF format and not exceed 10MB in size. You can either click
 							the "Upload a file" button or drag and drop an image into the
 							designated area.`}
@@ -272,7 +254,7 @@ Authorization: Bearer <user-token>
 									</p>
 								</div>
 								<p className="m-0 p-0 text-xs italic text-gray-600">
-									(Only PNG, JPG, GIF up to 10MB)
+									(PNG, JPEG, WEBP, and non-animated GIF up to 10MB)
 								</p>
 								{uploadError && (
 									<p className="mt-2 text-sm text-red-600">{uploadError}</p>
