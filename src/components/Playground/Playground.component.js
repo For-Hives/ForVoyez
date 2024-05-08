@@ -195,11 +195,11 @@ Authorization: Bearer <user-token>
 					<h3>Image upload</h3>
 					<label
 						htmlFor="image"
-						className="block text-sm font-medium leading-6 text-gray-900"
+						className="block text-sm font-medium leading-6 text-slate-900"
 					>
 						Your image
 					</label>
-					<p className="mt-1 text-sm italic text-gray-500">
+					<p className="mt-1 text-sm italic text-slate-500">
 						{`Upload an image to process with our API. The image should be in PNG,WEBP, 
 							JPG, or GIF format and not exceed 10MB in size. You can either click
 							the "Upload a file" button or drag and drop an image into the
@@ -210,7 +210,7 @@ Authorization: Bearer <user-token>
 						className={`mt-2 flex w-full justify-center rounded-lg border border-dashed px-6 py-10 ${
 							isDraggingOver
 								? 'border-indigo-600 bg-indigo-50'
-								: 'border-gray-900/25'
+								: 'border-slate-900/25'
 						}`}
 						onDrop={handleImageDrop}
 						onDragOver={e => e.preventDefault()}
@@ -222,7 +222,7 @@ Authorization: Bearer <user-token>
 						) : (
 							<div className="flex flex-col text-center">
 								<svg
-									className="mx-auto h-12 w-12 text-gray-300"
+									className="mx-auto h-12 w-12 text-slate-300"
 									viewBox="0 0 24 24"
 									fill="currentColor"
 									aria-hidden="true"
@@ -233,7 +233,7 @@ Authorization: Bearer <user-token>
 										clip-rule="evenodd"
 									/>
 								</svg>
-								<div className="flex items-center text-sm leading-6 text-gray-600">
+								<div className="flex items-center text-sm leading-6 text-slate-600">
 									<label
 										htmlFor="image"
 										className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
@@ -253,7 +253,7 @@ Authorization: Bearer <user-token>
 											: 'or drag and drop'}
 									</p>
 								</div>
-								<p className="m-0 p-0 text-xs italic text-gray-600">
+								<p className="m-0 p-0 text-xs italic text-slate-600">
 									(PNG, JPEG, WEBP, and non-animated GIF up to 10MB)
 								</p>
 								{uploadError && (
@@ -266,11 +266,11 @@ Authorization: Bearer <user-token>
 				<div>
 					<label
 						htmlFor="comment"
-						className="block text-sm font-medium leading-6 text-gray-900"
+						className="block text-sm font-medium leading-6 text-slate-900"
 					>
 						Add Your Context (Optional)
 					</label>
-					<p className="mt-1 text-sm italic text-gray-500">
+					<p className="mt-1 text-sm italic text-slate-500">
 						{`Provide additional context to help our API better understand and
 							process your image. This can include information about the image
 							content, specific requirements, or any other relevant details. The
@@ -284,24 +284,24 @@ Authorization: Bearer <user-token>
 							placeholder="Enter your context here..."
 							value={context}
 							onChange={e => setContext(e.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						></textarea>
 					</div>
 				</div>
 				<div>
 					<label
 						htmlFor="jsonSchema"
-						className="block text-sm font-medium leading-6 text-gray-900"
+						className="block text-sm font-medium leading-6 text-slate-900"
 					>
 						JSON Schema (Optional)
 					</label>
-					<p className="mt-1 text-sm italic text-gray-500">
+					<p className="mt-1 text-sm italic text-slate-500">
 						{`Specify the desired JSON schema for the API response. This allows
 							you to customize the structure and format of the returned data. Use
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 					</p>
-					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 						<MonacoEditor
 							language="json"
 							theme="vs-light"
@@ -351,10 +351,10 @@ Authorization: Bearer <user-token>
 			</div>
 			<div className={'flex flex-col'}>
 				<h3>Request Preview</h3>
-				<p className="mt-1 text-sm italic text-gray-500">
+				<p className="mt-1 text-sm italic text-slate-500">
 					{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
 				</p>
-				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 					<MonacoEditor
 						language="javascript"
 						theme="vs-light"
@@ -378,10 +378,10 @@ Authorization: Bearer <user-token>
 			</div>
 			<div className={'flex flex-col xl:col-span-2'}>
 				<h3>API Response</h3>
-				<p className="mt-1 text-sm italic text-gray-500">
+				<p className="mt-1 text-sm italic text-slate-500">
 					{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
 				</p>
-				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 					<MonacoEditor
 						language="json"
 						theme="vs-light"

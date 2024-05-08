@@ -36,12 +36,12 @@ export default function TokenModalDelete({
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 								<Dialog.Title
 									as="h3"
-									className="text-lg font-medium leading-6 text-gray-900"
+									className="text-lg font-medium leading-6 text-slate-900"
 								>
 									Revoke secret key
 								</Dialog.Title>
 								<div className="mt-2">
-									<p className="text-sm text-gray-500">
+									<p className="text-sm text-slate-500">
 										Revoking this API key will immediately disable it,
 										preventing any further API requests from being made with it.
 										Any systems or applications currently using this key may
@@ -53,8 +53,8 @@ export default function TokenModalDelete({
 								</div>
 
 								<div className="mt-4">
-									<p className="text-sm font-medium text-gray-900">Token:</p>
-									<p className="text-sm text-gray-500">{token?.jwt}</p>
+									<p className="text-sm font-medium text-slate-900">Token:</p>
+									<p className="text-sm text-slate-500">{token?.jwt}</p>
 								</div>
 
 								<div className="mt-4 flex justify-end space-x-2">

@@ -92,11 +92,11 @@ export function ChangingPlansComponent() {
 					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
 						Pricing
 					</h2>
-					<p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+					<p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
 						Plans for every stage of your growth
 					</p>
 				</div>
-				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
+				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-slate-600">
 					Choose the plan that fits your needs and scale as your usage grows.
 					Upgrade, downgrade, or cancel anytime.
 				</p>
@@ -104,7 +104,7 @@ export function ChangingPlansComponent() {
 					<RadioGroup
 						value={frequency}
 						onChange={setFrequency}
-						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-gray-200"
+						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-slate-200"
 					>
 						<RadioGroup.Label className="sr-only">
 							Payment frequency
@@ -117,7 +117,7 @@ export function ChangingPlansComponent() {
 									classNames(
 										checked
 											? 'bg-forvoyez_orange-500 text-white'
-											: 'text-gray-500',
+											: 'text-slate-500',
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
@@ -147,7 +147,7 @@ export function ChangingPlansComponent() {
 								className={classNames(
 									tier.mostPopular
 										? 'ring-2 ring-forvoyez_orange-500'
-										: 'ring-1 ring-gray-200',
+										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8 xl:p-10'
 								)}
 							>
@@ -157,7 +157,7 @@ export function ChangingPlansComponent() {
 										className={classNames(
 											tier.mostPopular
 												? 'text-forvoyez_orange-500'
-												: 'text-gray-900',
+												: 'text-slate-900',
 											'text-lg font-semibold leading-8'
 										)}
 									>
@@ -169,15 +169,15 @@ export function ChangingPlansComponent() {
 										</p>
 									) : null}
 								</div>
-								<p className="mt-4 text-sm leading-6 text-gray-600">
+								<p className="mt-4 text-sm leading-6 text-slate-600">
 									{tier.description}
 								</p>
 								<p className="mt-6 flex items-baseline gap-x-1">
-									<span className="text-4xl font-bold tracking-tight text-gray-900">
+									<span className="text-4xl font-bold tracking-tight text-slate-900">
 										{/* format to price in € */}
 										{tier.price / 100}€
 									</span>
-									<span className="text-sm font-semibold leading-6 text-gray-600">
+									<span className="text-sm font-semibold leading-6 text-slate-600">
 										{frequency.priceSuffix}
 									</span>
 								</p>
@@ -218,7 +218,7 @@ export function ChangingPlansComponent() {
 								)}
 								<div className={'mt-2 flex h-[18px] items-center'}>
 									{isAnnually ? (
-										<span className="text-xs text-gray-500">
+										<span className="text-xs text-slate-500">
 											<span className={'font-bold'}>20% cheaper</span> than
 											monthly
 										</span>
@@ -227,19 +227,21 @@ export function ChangingPlansComponent() {
 											className={'m-0 flex gap-1 p-0'}
 											onClick={() => setFrequency(frequencies[1])}
 										>
-											<span className="text-xs text-gray-500">
+											<span className="text-xs text-slate-500">
 												Get <span className={'font-bold'}>20% off</span> with
 												an&nbsp;<span className={'font-bold'}>annual</span>
 												&nbsp;subscription
 											</span>
 											<div className={'flex h-full items-center'}>
 												{/*	Link icon*/}
-												<ArrowUpRightIcon className={'h-3 w-3 text-gray-600'} />
+												<ArrowUpRightIcon
+													className={'h-3 w-3 text-slate-600'}
+												/>
 											</div>
 										</button>
 									)}
 								</div>
-								<ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
+								<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 									{JSON.parse(tier.features).map(feature => (
 										<li key={feature} className="flex gap-x-3">
 											<CheckIcon
@@ -256,7 +258,7 @@ export function ChangingPlansComponent() {
 					<div
 						key="custom"
 						className={classNames(
-							'ring-1 ring-gray-200',
+							'ring-1 ring-slate-200',
 							'rounded-3xl p-8 xl:p-10'
 						)}
 					>
@@ -264,22 +266,22 @@ export function ChangingPlansComponent() {
 							<h3
 								id="custom"
 								className={classNames(
-									'text-gray-900',
+									'text-slate-900',
 									'text-lg font-semibold leading-8'
 								)}
 							>
 								Entreprise
 							</h3>
 						</div>
-						<p className="mt-4 text-sm leading-6 text-gray-600">
+						<p className="mt-4 text-sm leading-6 text-slate-600">
 							Tailored for large-scale deployments and complex requirements.
 						</p>
 						<p className="mt-6 flex items-baseline gap-x-1">
-							<span className="text-4xl font-bold tracking-tight text-gray-900">
+							<span className="text-4xl font-bold tracking-tight text-slate-900">
 								{/* format to price in € */}
 								Custom
 							</span>
-							<span className="text-sm font-semibold leading-6 text-gray-600">
+							<span className="text-sm font-semibold leading-6 text-slate-600">
 								{frequency.priceSuffix}
 							</span>
 						</p>
@@ -296,7 +298,7 @@ export function ChangingPlansComponent() {
 						</Link>
 						<div className={'mt-2 flex h-[18px] items-center'}>
 							{isAnnually ? (
-								<span className="text-xs text-gray-500">
+								<span className="text-xs text-slate-500">
 									<span className={'font-bold'}>20% cheaper</span> than monthly
 								</span>
 							) : (
@@ -304,19 +306,19 @@ export function ChangingPlansComponent() {
 									className={'m-0 flex gap-1 p-0'}
 									onClick={() => setFrequency(frequencies[1])}
 								>
-									<span className="text-xs text-gray-500">
+									<span className="text-xs text-slate-500">
 										Get <span className={'font-bold'}>20% off</span> with
 										an&nbsp;<span className={'font-bold'}>annual</span>
 										&nbsp;subscription
 									</span>
 									<div className={'flex h-full items-center'}>
 										{/*	Link icon*/}
-										<ArrowUpRightIcon className={'h-3 w-3 text-gray-600'} />
+										<ArrowUpRightIcon className={'h-3 w-3 text-slate-600'} />
 									</div>
 								</button>
 							)}
 						</div>
-						<ul className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
+						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 							{JSON.parse(
 								'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]'
 							).map(feature => (
