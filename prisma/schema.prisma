@@ -42,9 +42,9 @@ model Usage {
   userId  String
   usedAt  DateTime @default(now())
   used    Int
-  api     String
-  token   Token    @relation(fields: [tokenId], references: [id])
-  tokenId String
+  api     String   @default("describe")
+  token   Token?   @relation(fields: [tokenId], references: [id])
+  tokenId String?
 }
 
 model Plan {
