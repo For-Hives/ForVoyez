@@ -1,28 +1,29 @@
 'use server'
 
-import { auth } from '@clerk/nextjs'
 import { prisma } from '@/services/prisma.service'
+import { currentUser } from '@clerk/nextjs/server'
 
 export async function createUser() {
-	const { userId } = auth()
+	const user = await currentUser()
 
-	if (!userId) {
+	console.log(user)
+	if (!user.id) {
 		throw new Error('You must be logged to create a user')
 	}
 
-	console.log(userId)
+	console.log(user.id)
 
 	// todo : verfier que la table user a bien ete initialiser
 
 	// check if a user already exist with the same clerkId
-	const user = await prisma.user.findUnique({
+	const userDB = await prisma.user.findUnique({
 		where: {
-			clerkId: userId,
+			clerkId: user.id,
 		},
 	})
 
-	if (user) {
-		return user
+	if (userDB) {
+		return userDB
 	}
 
 	const result = await prisma.user.create({
