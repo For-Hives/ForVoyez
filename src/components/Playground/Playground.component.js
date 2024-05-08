@@ -234,7 +234,7 @@ Authorization: Bearer <user-token>
 									/>
 								</svg>
 								<div className="flex flex-col items-center justify-center text-sm leading-6 text-slate-600">
-									<div className={'flex'}>
+									<div className={'flex items-center'}>
 										<label
 											htmlFor="image"
 											className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-forvoyez_orange-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-forvoyez_orange-600 focus-within:ring-offset-2 hover:text-forvoyez_orange-500"
