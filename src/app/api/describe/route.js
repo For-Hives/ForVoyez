@@ -79,14 +79,40 @@ export async function POST(request) {
 					'Two playful animated kittens surrounded by cherry blossoms',
 				caption: 'Adorable kittens frolicking among beautiful cherry blossoms',
 			}
+			return new Response(JSON.stringify(descriptionResult), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			})
 		} else {
-			descriptionResult = await getImageDescription(base64Image, schema)
-		}
+			const reader = await getImageDescription(base64Image, schema)
 
-		return new Response(JSON.stringify(descriptionResult), {
-			status: 200,
-			headers: { 'Content-Type': 'application/json' },
-		})
+			// Set up the response headers for streaming
+			const headers = new Headers({
+				'Content-Type': 'text/event-stream',
+				'Cache-Control': 'no-cache',
+				Connection: 'keep-alive',
+			})
+			const stream = new ReadableStream({
+				async start(controller) {
+					for await (const chunk of reader) {
+						const lines = chunk
+							.toString()
+							.split('\n')
+							.filter(line => line.trim() !== '')
+						for (const line of lines) {
+							const message = line.replace(/^data: /, '')
+							if (message === '[DONE]') {
+								controller.close()
+								return
+							}
+							controller.enqueue(`data: ${message}\n\n`)
+						}
+					}
+				},
+			})
+
+			return new Response(stream, { headers })
+		}
 	} catch (error) {
 		console.error('Error processing the request:', error)
 		return new Response('Internal Server Error', { status: 500 })
