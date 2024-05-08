@@ -138,6 +138,13 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			customerId: webhook.customerId,
 		},
 	})
+
+	prisma.usage.create({
+		data: {
+			userId: user.clerkId,
+			used: 10,
+		},
+	})
 }
 
 async function processSubscriptionCreated(webhook) {
