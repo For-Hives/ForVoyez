@@ -71,16 +71,17 @@ export async function POST(request) {
 
 		const base64Image = await blobToBase64(file)
 
-		// // check if its local dev
-		// if (process.env.NODE_ENV === 'development') {
-		// 	console.log('Local dev')
-		// 	return new Response(JSON.stringify({ base64Image }), {
-		// 		status: 200,
-		// 		headers: { 'Content-Type': 'application/json' },
-		// 	})
-		// }
-
-		const descriptionResult = await getImageDescription(base64Image, schema)
+		let descriptionResult = ''
+		if (process.env.NODE_ENV === 'development') {
+			descriptionResult = {
+				name: 'Cherry Blossom Kittens',
+				alternativeText:
+					'Two playful animated kittens surrounded by cherry blossoms',
+				caption: 'Adorable kittens frolicking among beautiful cherry blossoms',
+			}
+		} else {
+			descriptionResult = await getImageDescription(base64Image, schema)
+		}
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,

@@ -37,9 +37,8 @@ export function Playground() {
 			formData.append('jsonSchema', jsonSchema)
 		}
 
-		const res = await fetch('/api/describe', {
+		const res = await fetch('/api/playground', {
 			method: 'POST',
-			headers: {}, // Add Authorization header here
 			body: formData,
 		})
 
