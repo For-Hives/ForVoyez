@@ -5,6 +5,7 @@ import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { describePlayground } from '@/app/actions/app/playground'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { loader } from '@monaco-editor/react'
 
 export function Playground() {
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
@@ -192,6 +193,32 @@ export function Playground() {
 			resizeEditor(editor)
 			return () => disposable.dispose()
 		}
+	}, [])
+
+	useEffect(() => {
+		loader.config({ paths: { vs: 'monaco-editor/min/vs' } })
+		loader.init().then(monaco => {
+			monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+				validate: true,
+				schemas: [
+					{
+						uri: 'http://myserver/foo-schema.json',
+						fileMatch: ['*'],
+						schema: {
+							type: 'object',
+							properties: {
+								p1: {
+									enum: ['v1', 'v2'],
+								},
+								p2: {
+									$ref: 'http://myserver/bar-schema.json',
+								},
+							},
+						},
+					},
+				],
+			})
+		})
 	}, [])
 
 	useEffect(() => {
@@ -405,6 +432,8 @@ Authorization: Bearer <user-token>
 							width={'100%'}
 							height={'500px'}
 							options={{
+								colorDecorators: true,
+								lineNumbers: 'on',
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
 								wordWrap: 'on',
@@ -415,9 +444,15 @@ Authorization: Bearer <user-token>
 								formatOnPaste: true,
 								formatOnType: true,
 								folding: true,
-								lineNumbers: 'on',
 								readOnly: false,
 								quickSuggestions: true,
+								// Add these options for syntax highlighting
+								selectOnLineNumbers: true,
+								renderLineHighlight: 'all',
+								contextmenu: true,
+								matchBrackets: 'always',
+								autoClosingBrackets: 'always',
+								automaticLayout: true,
 							}}
 						/>
 					</div>
@@ -464,9 +499,18 @@ Authorization: Bearer <user-token>
 							fontFamily: 'var(--font-jost)',
 							tabSize: 4,
 							autoIndent: true,
+							formatOnPaste: true,
+							formatOnType: true,
 							folding: true,
-							lineNumbers: 'on',
-							readOnly: true,
+							readOnly: false,
+							quickSuggestions: true,
+							// Add these options for syntax highlighting
+							selectOnLineNumbers: true,
+							renderLineHighlight: 'all',
+							contextmenu: true,
+							matchBrackets: 'always',
+							autoClosingBrackets: 'always',
+							automaticLayout: true,
 						}}
 					/>
 					<button
@@ -507,6 +551,8 @@ Authorization: Bearer <user-token>
 							width={'100%'}
 							height={'500px'}
 							options={{
+								colorDecorators: true,
+								lineNumbers: 'on',
 								minimap: { enabled: false },
 								scrollBeyondLastLine: false,
 								wordWrap: 'on',
@@ -517,8 +563,15 @@ Authorization: Bearer <user-token>
 								formatOnPaste: true,
 								formatOnType: true,
 								folding: true,
-								lineNumbers: 'on',
 								readOnly: true,
+								quickSuggestions: true,
+								// Add these options for syntax highlighting
+								selectOnLineNumbers: true,
+								renderLineHighlight: 'all',
+								contextmenu: true,
+								matchBrackets: 'always',
+								autoClosingBrackets: 'always',
+								automaticLayout: true,
 							}}
 						/>
 						<button
