@@ -233,25 +233,27 @@ Authorization: Bearer <user-token>
 										clip-rule="evenodd"
 									/>
 								</svg>
-								<div className="flex items-center text-sm leading-6 text-slate-600">
-									<label
-										htmlFor="image"
-										className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-forvoyez_orange-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-forvoyez_orange-600 focus-within:ring-offset-2 hover:text-forvoyez_orange-500"
-									>
-										<span>Upload a file</span>
-										<input
-											id="image"
-											name="image"
-											type="file"
-											className="sr-only"
-											onChange={handleImageChange}
-										/>
-									</label>
-									<p className="pl-1">
-										{isDraggingOver
-											? 'Drop the image here'
-											: 'or drag and drop'}
-									</p>
+								<div className="flex flex-col items-center justify-center text-sm leading-6 text-slate-600">
+									<div className={'flex'}>
+										<label
+											htmlFor="image"
+											className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-forvoyez_orange-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-forvoyez_orange-600 focus-within:ring-offset-2 hover:text-forvoyez_orange-500"
+										>
+											<span>Upload a file</span>
+											<input
+												id="image"
+												name="image"
+												type="file"
+												className="sr-only"
+												onChange={handleImageChange}
+											/>
+										</label>
+										<p className="pl-1">
+											{isDraggingOver
+												? 'Drop the image here'
+												: 'or drag and drop'}
+										</p>
+									</div>
 								</div>
 								<p className="m-0 p-0 text-xs italic text-slate-600">
 									(PNG, JPEG, WEBP, and non-animated GIF up to 10MB)
