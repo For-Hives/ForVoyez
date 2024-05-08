@@ -74,7 +74,7 @@ export function Playground() {
 			setImageSize(file.size)
 			setUploadError(null)
 		} else {
-			setUploadError('Please select a valid image file (PNG, JPG, GIF)')
+			setUploadError('Please select a valid image file (PNG, Webp, JPG, GIF)')
 		}
 	}
 
@@ -88,7 +88,7 @@ export function Playground() {
 			setImageSize(file.size)
 			setUploadError(null)
 		} else {
-			setUploadError('Please drop a valid image file (PNG, JPG, GIF)')
+			setUploadError('Please drop a valid image file (PNG, Webp, JPG, GIF)')
 		}
 	}
 
@@ -219,7 +219,7 @@ Authorization: Bearer <user-token>
 						Your image
 					</label>
 					<p className="mt-1 text-sm italic text-slate-500">
-						{`Upload an image to process with our API. The image should be in PNG,WEBP, 
+						{`Upload an image to process with our API. The image should be in PNG, WEBP, 
 							JPG, or GIF format and not exceed 10MB in size. You can either click
 							the "Upload a file" button or drag and drop an image into the
 							designated area.`}
