@@ -84,10 +84,12 @@ export function UsageChartComponent() {
 							<YAxis />
 							<Tooltip />
 							<Area
-								type="monotone"
+								type="bump"
 								dataKey="uv"
-								stroke="#8884d8"
-								fill="rgb(255 101 68)"
+								stroke="#fff"
+								fill="#ff6545"
+								dot={true}
+								fillOpacity={1}
 							/>
 						</AreaChart>
 					</ResponsiveContainer>
