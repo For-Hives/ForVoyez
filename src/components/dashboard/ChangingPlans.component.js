@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import { getPlans } from '@/services/database.service'
+import {
+	getPlans,
+	getSubscriptionFromCustomerId,
+} from '@/services/database.service'
 import {
 	getCheckoutURL,
 	getCustomerPortalLink,
@@ -11,6 +14,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useMotionValue } from 'framer-motion'
 import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
+import { useAuth } from '@clerk/nextjs'
 
 // FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
@@ -33,10 +37,11 @@ export function ChangingPlansComponent() {
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
 
-	let mouseX = useMotionValue(0)
-	let mouseY = useMotionValue(0)
+	const [currentSubscription, setCurrentSubscription] = useState(null)
 
 	const router = useRouter()
+
+	const auth = useAuth()
 
 	useEffect(() => {
 		// when the frequency change, and it's 'annually', then, swap the flag to true
@@ -49,7 +54,16 @@ export function ChangingPlansComponent() {
 
 	useEffect(() => {
 		getPlans().then(setPlans)
+		checkSubscription()
 	}, [])
+
+	async function checkSubscription() {
+		const sub = await getSubscriptionFromCustomerId(auth.user_id)
+
+		if (sub) {
+			setCurrentSubscription(sub)
+		}
+	}
 
 	// while no data is fetched, show a loading spinner
 	async function subscribe(variantId) {
@@ -62,22 +76,8 @@ export function ChangingPlansComponent() {
 		}
 	}
 
-	function onMouseMove({ currentTarget, clientX, clientY }) {
-		let { left, top } = currentTarget.getBoundingClientRect()
-		mouseX.set(clientX - left)
-		mouseY.set(clientY - top)
-	}
-
 	if (plans.length === 0) {
 		return <div className="bg-white py-24 sm:py-32">loading...</div>
-	}
-
-	const pattern = {
-		y: 16,
-		squares: [
-			[0, 1],
-			[1, 3],
-		],
 	}
 
 	function manageSubscription() {
@@ -86,8 +86,7 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="bg-white py-24 sm:py-32" onMouseMove={onMouseMove}>
-			<ResourcePattern pattern mouseX={mouseX} mouseY={mouseY} />
+		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
 					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
@@ -185,18 +184,38 @@ export function ChangingPlansComponent() {
 								<p className={''}>
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
-								<button
-									onClick={() => subscribe(tier.variantId)}
-									aria-describedby={tier.id}
-									className={classNames(
-										tier.mostPopular
-											? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-											: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-										'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-									)}
-								>
-									{tier.buttonText}
-								</button>
+
+								{currentSubscription ? (
+									<div>
+										<button
+											onClick={() => manageSubscription()}
+											aria-describedby={tier.id}
+											className={classNames(
+												tier.mostPopular
+													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+											)}
+										>
+											{currentSubscription.planId == tier.id
+												? 'Manage my Subscription'
+												: 'Change Plan'}
+										</button>
+									</div>
+								) : (
+									<button
+										onClick={() => subscribe(tier.variantId)}
+										aria-describedby={tier.id}
+										className={classNames(
+											tier.mostPopular
+												? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+											'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+										)}
+									>
+										{tier.buttonText}
+									</button>
+								)}
 								<div className={'mt-2 flex h-[18px] items-center'}>
 									{isAnnually ? (
 										<span className="text-xs text-gray-500">
@@ -234,9 +253,6 @@ export function ChangingPlansComponent() {
 							</div>
 						)
 					})}
-
-					{/*	-----------------------------------------------------------------*/}
-
 					<div
 						key="custom"
 						className={classNames(
@@ -314,19 +330,7 @@ export function ChangingPlansComponent() {
 							))}
 						</ul>
 					</div>
-
-					{/*	-----------------------------------------------------------------*/}
 				</div>
-			</div>
-
-			{/* modern button google like with cool effect */}
-			<div className="mt-16 rounded-full bg-forvoyez_orange-500/10 p-4 text-center hover:bg-forvoyez_orange-500/20">
-				<button
-					onClick={() => manageSubscription()}
-					className="text-lg font-semibold text-forvoyez_orange-500"
-				>
-					Manage your subscription
-				</button>
 			</div>
 		</div>
 	)
