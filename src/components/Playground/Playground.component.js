@@ -151,7 +151,7 @@ export function Playground() {
 	}, [response])
 
 	useEffect(() => {
-		// 		const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
+		// const fetchRequest = `fetch('https://forvoyez.com/api/describe', {
 		//   method: 'POST',
 		//   headers: {
 		//     'Content-Type': 'multipart/form-data',
@@ -169,31 +169,31 @@ export function Playground() {
 		//     console.error('Error:', error);
 		//   });`
 
-		const fetchRequest = `******************* REQUEST PREVIEW *******************
-// HTTP Method
-POST
+		const fetchRequest = `// --- Request Headers ---
+		Content-Type: multipart/form-data
+		Authorization: Bearer <user-token>
+		/* (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information. It is used to authenticate the user and authorize access to the API.) */
 
-// API URL
-https://forvoyez.com/api/describe
+		// --- Request Body ---
+		{
+			image: ${image ? image.name : 'No file selected'} 
+			/* (The "image" field contains the selected image file to be sent to the API for processing.) */
+			
+			context: ${context || 'No context provided'} 
+			/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
+			
+			jsonSchema: ${
+				jsonSchema
+					? JSON.stringify(JSON.parse(jsonSchema), null, 12).replace(
+							/\n/g,
+							'\n    '
+						)
+					: 'No JSON schema provided'
+			}
+			/* (The "jsonSchema" field contains the JSON schema specified by the user. It defines the desired structure and format of the API response.) */
+		}
+		`
 
-// Request Headers
-Content-Type: multipart/form-data
-Authorization: Bearer <user-token>
-// (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information.
-// It is used to authenticate the user and authorize access to the API.)
-
-// Request Body
-image: ${image ? image.name : 'No file selected'}
-// (The "image" field contains the selected image file to be sent to the API for processing.)
-
-context: ${context || 'No context provided'}
-// (The "context" field includes any additional context or information about the image provided by the user.
-// This context helps the API better understand and process the image.)
-
-jsonSchema: ${jsonSchema || 'No JSON schema provided'}
-// (The "jsonSchema" field contains the JSON schema specified by the user.
-// It defines the desired structure and format of the API response.)
-`
 		setRequestPreviewValue(fetchRequest)
 	}, [image, context, jsonSchema])
 
