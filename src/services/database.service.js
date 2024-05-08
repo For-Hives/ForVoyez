@@ -215,3 +215,14 @@ export async function getCustomerIdFromUser(userId) {
 
 	return null
 }
+
+export async function getSubscriptionFromCustomerId(customerId) {
+	// check if user has a subscription
+	const sub = await prisma.subscription.findFirst({
+		where: {
+			customerId: customerId,
+		},
+	})
+
+	return sub
+}
