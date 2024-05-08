@@ -11,17 +11,6 @@ import { getPlans } from '@/services/database.service' // Ajuste le chemin selon
 import { getCheckoutURL } from '@/services/lemonsqueezy.service'
 
 export default function PlansPage() {
-	const router = useRouter()
-
-	const [plans, setPlans] = useState([])
-	const [isMonthly, setIsMonthly] = useState(true)
-
-	useEffect(() => {
-		getPlans().then(setPlans)
-	}, [])
-
-	console.table(plans)
-
 	return (
 		<>
 			<h1 className="my-6 text-center text-2xl font-bold">Available Plans</h1>
