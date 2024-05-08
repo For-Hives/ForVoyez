@@ -2,8 +2,11 @@
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { describePlayground } from '@/app/actions/app/playground'
+import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 
 export function Playground() {
+	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
 	const [requestPreviewValue, setRequestPreviewValue] = useState('')
@@ -13,7 +16,7 @@ export function Playground() {
 
 	const [context, setContext] = useState('')
 	const [jsonSchema, setJsonSchema] = useState('')
-	const [response, setResponse] = useState(null)
+	const [response, setResponse] = useState('')
 
 	const [isDraggingOver, setIsDraggingOver] = useState(false)
 	const [uploadError, setUploadError] = useState(null)
@@ -37,13 +40,16 @@ export function Playground() {
 			formData.append('jsonSchema', jsonSchema)
 		}
 
-		const res = await fetch('/api/playground', {
-			method: 'POST',
-			body: formData,
-		})
+		// fixme, that request is actually mocked
+		setIsProcessingResultApi(true)
+		// mock some delay
+		setTimeout(() => {
+			setIsProcessingResultApi(false)
+			const res = describePlayground()
 
-		const data = await res.json()
-		setResponse(data)
+			const data = res.json()
+			setResponse(data)
+		}, 3000)
 	}
 
 	const resizeEditor = editor => {
@@ -427,34 +433,39 @@ Authorization: Bearer <user-token>
 				<p className="mt-1 text-sm italic text-slate-500">
 					{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
 				</p>
-				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-					<MonacoEditor
-						language="json"
-						theme="vs-light"
-						editorDidMount={editor => (responseRef.current = editor)}
-						value={JSON.stringify(response, null, 4)}
-						onMount={editor => {
-							responseRef.current = editor
-							resizeEditor(editor)
-						}}
-						width={'100%'}
-						height={'500px'}
-						options={{
-							minimap: { enabled: false },
-							scrollBeyondLastLine: false,
-							wordWrap: 'on',
-							fontSize: 14,
-							fontFamily: 'var(--font-jost)',
-							tabSize: 4,
-							autoIndent: true,
-							formatOnPaste: true,
-							formatOnType: true,
-							folding: true,
-							lineNumbers: 'on',
-							readOnly: true,
-						}}
-					/>
-				</div>
+
+				{isProcessingResultApi ? (
+					<LoadAnimation />
+				) : (
+					<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+						<MonacoEditor
+							language="json"
+							theme="vs-light"
+							editorDidMount={editor => (responseRef.current = editor)}
+							value={JSON.stringify(response, null, 4)}
+							onMount={editor => {
+								responseRef.current = editor
+								resizeEditor(editor)
+							}}
+							width={'100%'}
+							height={'500px'}
+							options={{
+								minimap: { enabled: false },
+								scrollBeyondLastLine: false,
+								wordWrap: 'on',
+								fontSize: 14,
+								fontFamily: 'var(--font-jost)',
+								tabSize: 4,
+								autoIndent: true,
+								formatOnPaste: true,
+								formatOnType: true,
+								folding: true,
+								lineNumbers: 'on',
+								readOnly: true,
+							}}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	)
