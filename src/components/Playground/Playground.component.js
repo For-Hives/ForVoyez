@@ -209,7 +209,7 @@ Authorization: Bearer <user-token>
 						role={'button'}
 						className={`mt-2 flex w-full justify-center rounded-lg border border-dashed px-6 py-10 ${
 							isDraggingOver
-								? 'border-indigo-600 bg-indigo-50'
+								? 'border-forvoyez_orange-600 bg-forvoyez_orange-50'
 								: 'border-slate-900/25'
 						}`}
 						onDrop={handleImageDrop}
@@ -236,7 +236,7 @@ Authorization: Bearer <user-token>
 								<div className="flex items-center text-sm leading-6 text-slate-600">
 									<label
 										htmlFor="image"
-										className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+										className="relative m-0 cursor-pointer rounded-md bg-white p-0 font-semibold text-forvoyez_orange-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-forvoyez_orange-600 focus-within:ring-offset-2 hover:text-forvoyez_orange-500"
 									>
 										<span>Upload a file</span>
 										<input
@@ -284,7 +284,7 @@ Authorization: Bearer <user-token>
 							placeholder="Enter your context here..."
 							value={context}
 							onChange={e => setContext(e.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 						></textarea>
 					</div>
 				</div>
@@ -343,7 +343,7 @@ Authorization: Bearer <user-token>
 					<button
 						type="button"
 						onClick={handleSubmit}
-						className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						className="inline-flex items-center rounded-md bg-forvoyez_orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
 					>
 						Analyze your image
 					</button>
