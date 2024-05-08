@@ -107,7 +107,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 								<Dialog.Title
 									as="h3"
-									className="text-lg font-medium leading-6 text-gray-900"
+									className="text-lg font-medium leading-6 text-slate-900"
 								>
 									{!tokenToDisplayInClipBoardField ? (
 										<>Create new secret key</>
@@ -118,7 +118,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 								<form onSubmit={handleSubmit(onSubmit)}>
 									<div className="mt-4">
 										{tokenToDisplayInClipBoardField && (
-											<p className="text-sm text-gray-500">
+											<p className="text-sm text-slate-500">
 												Your secret key is generated successfully. Please copy
 												it and keep it in a safe place. You will not be able to
 												see it again.
@@ -129,7 +129,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 												<div className="relative">
 													<label
 														htmlFor="name"
-														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
+														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-900"
 													>
 														Name
 													</label>
@@ -137,10 +137,10 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 														type="text"
 														name="name"
 														id="name"
-														className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.name
 																? 'ring-red-300 focus:ring-red-500'
-																: 'ring-gray-300 focus:ring-forvoyez_orange-600'
+																: 'ring-slate-300 focus:ring-forvoyez_orange-600'
 														}`}
 														placeholder="My API Key"
 														{...register('name')}
@@ -154,7 +154,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 												<div className="relative mt-4">
 													<label
 														htmlFor="expiredAt"
-														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
+														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-900"
 													>
 														Expiration Date
 													</label>
@@ -162,10 +162,10 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 														type="date"
 														name="expiredAt"
 														id="expiredAt"
-														className={`block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.expiredAt
 																? 'ring-red-300 focus:ring-red-500'
-																: 'ring-gray-300 focus:ring-forvoyez_orange-600'
+																: 'ring-slate-300 focus:ring-forvoyez_orange-600'
 														}`}
 														defaultValue={
 															new Date(
@@ -192,7 +192,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 												<div className="mt-4">
 													<label
 														htmlFor="token"
-														className="block text-sm font-medium leading-6 text-gray-900"
+														className="block text-sm font-medium leading-6 text-slate-900"
 													>
 														Your New Token
 													</label>
@@ -202,14 +202,14 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 																type="text"
 																name="token"
 																id="token"
-																className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+																className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 																value={tokenToDisplayInClipBoardField}
 																readOnly
 															/>
 														</div>
 														<button
 															type="button"
-															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50"
 															onClick={() =>
 																copyToClipboard(tokenToDisplayInClipBoardField)
 															}
@@ -221,7 +221,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 																/>
 															) : (
 																<ClipboardIcon
-																	className="-ml-0.5 h-5 w-5 text-gray-400"
+																	className="-ml-0.5 h-5 w-5 text-slate-400"
 																	aria-hidden="true"
 																/>
 															)}
