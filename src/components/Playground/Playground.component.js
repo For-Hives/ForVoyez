@@ -99,6 +99,13 @@ export function Playground() {
 		setIsDraggingOver(false)
 	}
 
+	const handleResetImage = () => {
+		setImage(null)
+		setImagePreview(null)
+		setImageSize(0)
+		setUploadError(null)
+	}
+
 	const isValidFileType = file => {
 		const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 		return validTypes.includes(file.type)
@@ -218,7 +225,32 @@ Authorization: Bearer <user-token>
 						onDragLeave={handleDragLeave}
 					>
 						{imagePreview ? (
-							<img src={imagePreview} alt="Uploaded" className="max-h-48" />
+							<div className={'relative'}>
+								<img
+									src={imagePreview}
+									alt="Uploaded"
+									className="max-h-48 rounded-lg"
+								/>
+								<button
+									onClick={handleResetImage}
+									className="absolute -right-4 top-[1.25rem] rounded-full bg-forvoyez_orange-600 p-1 text-white shadow-md hover:bg-forvoyez_orange-500 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500 focus:ring-offset-2"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="h-4 w-4"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								</button>
+							</div>
 						) : (
 							<div className="flex flex-col text-center">
 								<svg
