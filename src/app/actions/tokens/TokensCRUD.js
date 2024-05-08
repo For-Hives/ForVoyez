@@ -3,6 +3,7 @@
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/services/prisma.service'
 import { generateJwt } from '@/services/jwt.service'
+import { currentUser } from '@clerk/nextjs/server'
 
 function truncateToken(token) {
 	if (!token) return ''
@@ -11,7 +12,7 @@ function truncateToken(token) {
 }
 
 export async function createToken(token) {
-	const { userId } = auth()
+	const userId = (await currentUser()).id
 
 	if (!userId) {
 		throw new Error('You must be logged in to create a token')
@@ -42,7 +43,7 @@ export async function createToken(token) {
 }
 
 export async function getAllToken() {
-	const { userId } = auth()
+	const userId = (await currentUser()).id
 
 	if (!userId) {
 		throw new Error('You must be logged in to view tokens')
@@ -63,7 +64,7 @@ export async function getAllToken() {
 }
 
 export async function deleteToken(tokenId) {
-	const { userId } = auth()
+	const userId = (await currentUser()).id
 
 	if (!userId) {
 		throw new Error('You must be logged in to delete a token')
