@@ -28,15 +28,19 @@ export function Playground() {
 		const formData = new FormData()
 		formData.append('image', image)
 		formData.append('context', context)
-		formData.append('jsonSchema', jsonSchema)
 
-		const res = await fetch('/api/process', {
+		// Check if jsonSchema is empty
+		if (!jsonSchema || jsonSchema.trim() === '') {
+			// If empty, send the default JSON schema
+			formData.append('jsonSchema', JSON.stringify(defaultJsonTemplateSchema))
+		} else {
+			formData.append('jsonSchema', jsonSchema)
+		}
+
+		const res = await fetch('/api/describe', {
 			method: 'POST',
+			headers: {}, // Add Authorization header here
 			body: formData,
-			onUploadProgress: progressEvent => {
-				const progress = (progressEvent.loaded / progressEvent.total) * 100
-				setUploadProgress(progress)
-			},
 		})
 
 		const data = await res.json()
