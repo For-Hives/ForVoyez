@@ -170,29 +170,29 @@ export function Playground() {
 		//   });`
 
 		const fetchRequest = `// --- Request Headers ---
-		Content-Type: multipart/form-data
-		Authorization: Bearer <user-token>
-		/* (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information. It is used to authenticate the user and authorize access to the API.) */
+Content-Type: multipart/form-data
+Authorization: Bearer <user-token>
 
-		// --- Request Body ---
-		{
-			image: ${image ? image.name : 'No file selected'} 
-			/* (The "image" field contains the selected image file to be sent to the API for processing.) */
-			
-			context: ${context || 'No context provided'} 
-			/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
-			
-			jsonSchema: ${
-				jsonSchema
-					? JSON.stringify(JSON.parse(jsonSchema), null, 12).replace(
-							/\n/g,
-							'\n    '
-						)
-					: 'No JSON schema provided'
-			}
-			/* (The "jsonSchema" field contains the JSON schema specified by the user. It defines the desired structure and format of the API response.) */
-		}
-		`
+/* (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information. It is used to authenticate the user and authorize access to the API.) */
+
+// --- Request Body ---
+{
+	image: ${image ? image.name : 'No file selected'} 
+	/* (The "image" field contains the selected image file to be sent to the API for processing.) */
+	
+	context: ${context || 'No context provided'} 
+	/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
+	
+	jsonSchema: ${
+		jsonSchema
+			? JSON.stringify(JSON.parse(jsonSchema), null, 4)
+					.replace(/\n/g, '\n    ')
+					.replace(/\n    \}/g, '\n    }\n')
+			: 'No JSON schema provided'
+	}
+	/* (The "jsonSchema" field contains the JSON schema specified by the user. 
+	It defines the desired structure and format of the API response.) */
+}`
 
 		setRequestPreviewValue(fetchRequest)
 	}, [image, context, jsonSchema])
