@@ -173,18 +173,20 @@ Authorization: Bearer <user-token>
 	/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
 	
 	jsonSchema: ${
-		jsonSchema
-			? JSON.stringify(JSON.parse(jsonSchema), null, 4)
-					.replace(/\n/g, '\n    ')
-					.replace(/\n    \}/g, '\n    }\n')
-			: 'No JSON schema provided'
+		isJsonValid
+			? jsonSchema
+				? JSON.stringify(JSON.parse(jsonSchema), null, 4)
+						.replace(/\n/g, '\n    ')
+						.replace(/\n    \}/g, '\n    }\n')
+				: 'No JSON schema provided'
+			: 'Invalid JSON'
 	}
 	/* (The "jsonSchema" field contains the JSON schema specified by the user. 
 	It defines the desired structure and format of the API response.) */
 }`
 
 		setRequestPreviewValue(fetchRequest)
-	}, [image, context, jsonSchema])
+	}, [image, context, jsonSchema, isJsonValid])
 
 	const getFormDataString = () => {
 		const formDataEntries = [
