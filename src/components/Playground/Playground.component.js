@@ -4,8 +4,12 @@ import MonacoEditor from 'react-monaco-editor'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { describePlayground } from '@/app/actions/app/playground'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 
 export function Playground() {
+	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
+	const [isResponseCopied, setIsResponseCopied] = useState(false)
+
 	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
@@ -58,6 +62,32 @@ export function Playground() {
 			setResponse(response)
 			setIsProcessingResultApi(false)
 		}, 3000)
+	}
+
+	const copyToClipboard = content => {
+		if (navigator.clipboard) {
+			navigator.clipboard
+				.writeText(content)
+				.then(() => {
+					console.log('Content copied using clipboard API')
+				})
+				.catch(err => {
+					console.error('Failed to copy:', err)
+				})
+		} else {
+			// Fallback to older execCommand approach
+			const textarea = document.createElement('textarea')
+			textarea.value = content
+			document.body.appendChild(textarea)
+			textarea.select()
+			try {
+				document.execCommand('copy')
+				console.log('Content copied using execCommand')
+			} catch (err) {
+				console.error('Failed to copy with execCommand:', err)
+			}
+			document.body.removeChild(textarea)
+		}
 	}
 
 	const resizeEditor = editor => {
@@ -439,6 +469,20 @@ Authorization: Bearer <user-token>
 							readOnly: true,
 						}}
 					/>
+					<button
+						className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+						onClick={() => {
+							copyToClipboard(requestPreviewValue)
+							setIsPreviewCopied(true)
+							setTimeout(() => setIsPreviewCopied(false), 2000)
+						}}
+					>
+						{isPreviewCopied ? (
+							<CheckIcon className="h-5 w-5 text-green-500" />
+						) : (
+							<ClipboardIcon className="h-5 w-5" />
+						)}
+					</button>
 				</div>
 			</div>
 			<div className={'flex flex-col xl:col-span-2'}>
@@ -477,6 +521,20 @@ Authorization: Bearer <user-token>
 								readOnly: true,
 							}}
 						/>
+						<button
+							className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+							onClick={() => {
+								copyToClipboard(JSON.stringify(response, null, 4))
+								setIsResponseCopied(true)
+								setTimeout(() => setIsResponseCopied(false), 2000)
+							}}
+						>
+							{isResponseCopied ? (
+								<CheckIcon className="h-5 w-5 text-green-500" />
+							) : (
+								<ClipboardIcon className="h-5 w-5" />
+							)}
+						</button>
 					</div>
 				)}
 			</div>
