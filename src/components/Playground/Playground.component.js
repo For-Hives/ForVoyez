@@ -57,12 +57,43 @@ export function Playground() {
 
 		// fixme, that request is actually mocked
 		setIsProcessingResultApi(true)
-		// mock some delay
-		setTimeout(async () => {
-			const response = await describePlayground()
-			setResponse(response)
+
+		try {
+			const response = await fetch('/api/describe', {
+				method: 'POST',
+				body: formData,
+			})
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			// Process the streaming response
+			const reader = response.body.getReader()
+			const decoder = new TextDecoder('utf-8')
+			let result = ''
+
+			while (true) {
+				const { done, value } = await reader.read()
+				if (done) break
+
+				const chunk = decoder.decode(value)
+				const lines = chunk.split('\n').filter(line => line.trim() !== '')
+				for (const line of lines) {
+					const message = line.replace(/^data: /, '')
+					if (message === '[DONE]') {
+						setResponse(JSON.parse(result))
+						break
+					}
+					result += message
+					setResponse(JSON.parse(result))
+				}
+			}
+		} catch (error) {
+			console.error('Error:', error)
+		} finally {
 			setIsProcessingResultApi(false)
-		}, 3000)
+		}
 	}
 
 	const copyToClipboard = content => {
