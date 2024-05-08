@@ -15,24 +15,12 @@ export function Playground() {
 	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(null)
 
+	const [isDraggingOver, setIsDraggingOver] = useState(false)
+	const [uploadError, setUploadError] = useState(null)
+
 	const editorRef = useRef(null)
 	const requestPreviewRef = useRef(null)
 	const responseRef = useRef(null)
-
-	const handleImageChange = e => {
-		const file = e.target.files[0]
-		setImage(file)
-		setImagePreview(URL.createObjectURL(file))
-		setImageSize(file.size)
-	}
-
-	const handleImageDrop = e => {
-		e.preventDefault()
-		const file = e.dataTransfer.files[0]
-		setImage(file)
-		setImagePreview(URL.createObjectURL(file))
-		setImageSize(file.size)
-	}
 
 	const handleSubmit = async e => {
 		e.preventDefault()
@@ -73,6 +61,47 @@ export function Playground() {
 		} catch (error) {
 			return false
 		}
+	}
+
+	const handleImageChange = e => {
+		const file = e.target.files[0]
+		if (file && isValidFileType(file)) {
+			setImage(file)
+			setImagePreview(URL.createObjectURL(file))
+			setImageSize(file.size)
+			setUploadError(null)
+		} else {
+			setUploadError('Please select a valid image file (PNG, JPG, GIF)')
+		}
+	}
+
+	const handleImageDrop = e => {
+		e.preventDefault()
+		setIsDraggingOver(false)
+		const file = e.dataTransfer.files[0]
+		if (file && isValidFileType(file)) {
+			setImage(file)
+			setImagePreview(URL.createObjectURL(file))
+			setImageSize(file.size)
+			setUploadError(null)
+		} else {
+			setUploadError('Please drop a valid image file (PNG, JPG, GIF)')
+		}
+	}
+
+	const handleDragEnter = e => {
+		e.preventDefault()
+		setIsDraggingOver(true)
+	}
+
+	const handleDragLeave = e => {
+		e.preventDefault()
+		setIsDraggingOver(false)
+	}
+
+	const isValidFileType = file => {
+		const validTypes = ['image/png', 'image/jpeg', 'image/gif']
+		return validTypes.includes(file.type)
 	}
 
 	useEffect(() => {
@@ -196,9 +225,15 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 					</p>
 					<div
 						role={'button'}
-						className="mt-2 flex w-full justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+						className={`mt-2 flex w-full justify-center rounded-lg border border-dashed px-6 py-10 ${
+							isDraggingOver
+								? 'border-indigo-600 bg-indigo-50'
+								: 'border-gray-900/25'
+						}`}
 						onDrop={handleImageDrop}
 						onDragOver={e => e.preventDefault()}
+						onDragEnter={handleDragEnter}
+						onDragLeave={handleDragLeave}
 					>
 						{imagePreview ? (
 							<img src={imagePreview} alt="Uploaded" className="max-h-48" />
@@ -230,11 +265,18 @@ jsonSchema: ${jsonSchema || 'No JSON schema provided'}
 											onChange={handleImageChange}
 										/>
 									</label>
-									<p className="pl-1">or drag and drop</p>
+									<p className="pl-1">
+										{isDraggingOver
+											? 'Drop the image here'
+											: 'or drag and drop'}
+									</p>
 								</div>
 								<p className="m-0 p-0 text-xs italic text-gray-600">
 									(Only PNG, JPG, GIF up to 10MB)
 								</p>
+								{uploadError && (
+									<p className="mt-2 text-sm text-red-600">{uploadError}</p>
+								)}
 							</div>
 						)}
 					</div>
