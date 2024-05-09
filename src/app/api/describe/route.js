@@ -62,6 +62,8 @@ export async function POST(request) {
 		const schema = JSON.parse(schemaJSON)
 		// todo : validate schema
 
+		const context = formData.get('context')
+
 		const base64Image = await blobToBase64(file)
 
 		// check if its local dev
@@ -72,7 +74,11 @@ export async function POST(request) {
 			})
 		}
 
-		const descriptionResult = await getImageDescription(base64Image, schema)
+		const descriptionResult = await getImageDescription(
+			base64Image,
+			schema,
+			context
+		)
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,

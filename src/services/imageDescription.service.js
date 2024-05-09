@@ -51,8 +51,13 @@ export async function blobToBase64(blob) {
 	}
 }
 
-// Get image description from OpenAI based on Base64 encoded image.
-export async function getImageDescription(base64Image, schema) {
+/**
+ * Get image description from OpenAI based on Base64 encoded image.
+ * @param base64Image
+ * @param data - Additional context for the image, { context: '...' , shema: { title: '...', alt: '...', caption: '...' }
+ * @returns {Promise<any>}
+ */
+export async function getImageDescription(base64Image, data) {
 	try {
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
@@ -61,7 +66,7 @@ export async function getImageDescription(base64Image, schema) {
 				{
 					role: 'user',
 					content: [
-						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${schema.context ? `The additional context for the image is: ${schema.context}.` : ''}`,
+						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}`,
 						{
 							type: 'image_url',
 							image_url: `data:image/png;base64,${base64Image}`,
@@ -80,7 +85,16 @@ export async function getImageDescription(base64Image, schema) {
 			messages: [
 				{
 					role: 'user',
-					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
+					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. 
+					Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. 
+					Generate this information and respond with a JSON object using the following fields
+					and this JSON template: ${
+						JSON.stringify(data.schema) ||
+						'{ title: "<String, Keep concise, similar to alt text recommendations, ensuring the title is informative but not overly lengthy. Try to keep it under 100 characters>", ' +
+							'alternativeText: "<String, The key is to be as succinct as possible while still providing a meaningful description of the image.>", ' +
+							'caption: "<String, Captions for images do not have a strict maximum size, but like alt text, they should be concise and directly related to the image they describe.>" }'
+					}.
+					And keep in mine the following context: ${data.context ? data.context : 'No additional context provided'}.`,
 				},
 			],
 			max_tokens: 750,
