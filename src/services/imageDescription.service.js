@@ -26,27 +26,44 @@ export async function blobToBase64(blob) {
 // Get image description from OpenAI based on Base64 encoded image.
 export async function getImageDescription(base64Image, schema) {
 	try {
-		const vision = await openai.createChatCompletion(
+		// First request to GPT-Vision (non-streaming)
+		const vision = await openai.createChatCompletion({
+			model: 'gpt-4-vision-preview',
+			messages: [
+				{
+					role: 'user',
+					content: [
+						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${schema.context ? `The additional context for the image is: ${schema.context}.` : ''}`,
+						{
+							type: 'image_url',
+							image_url: `data:image/png;base64,${base64Image}`,
+						},
+					],
+				},
+			],
+		})
+
+		const imageDescription = vision.data.choices[0].message.content
+
+		// Second request to generate alt text, caption, and title (streaming)
+		const seoResponse = await openai.createChatCompletion(
 			{
-				model: 'gpt-4-vision-preview',
+				model: 'gpt-3.5-turbo-0125',
 				messages: [
 					{
 						role: 'user',
-						content: [
-							`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${schema.context ? `The additional context for the image is: ${schema.context}.` : ''}`,
-							{
-								type: 'image_url',
-								image_url: `data:image/png;base64,${base64Image}`,
-							},
-						],
+						content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${imageDescription}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
 					},
 				],
+				max_tokens: 750,
+				n: 1,
+				stop: null,
 				stream: true, // Enable streaming
 			},
 			{ responseType: 'stream' }
 		)
 
-		const reader = vision.data
+		const reader = seoResponse.data
 
 		// Process the stream
 		let result = ''
@@ -58,37 +75,11 @@ export async function getImageDescription(base64Image, schema) {
 			for (const line of lines) {
 				const message = line.replace(/^data: /, '')
 				if (message === '[DONE]') {
-					break
+					return JSON.parse(result || '{}')
 				}
-				try {
-					const parsed = JSON.parse(message)
-					const text = parsed.choices[0].delta.content
-					if (text) {
-						result += text
-					}
-				} catch (error) {
-					console.error('Could not JSON parse stream message', message, error)
-				}
+				result += message
 			}
 		}
-
-		// Generate alt text, caption, and title for the image
-		const seoResponse = await openai.createChatCompletion({
-			model: 'gpt-3.5-turbo-0125',
-			messages: [
-				{
-					role: 'user',
-					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
-				},
-			],
-			max_tokens: 750,
-			n: 1,
-			stop: null,
-		})
-
-		return JSON.parse(
-			seoResponse.data.choices[0].message.content.trim() || '{}'
-		)
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
