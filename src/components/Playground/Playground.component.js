@@ -34,6 +34,7 @@ export function Playground() {
 	const editorRef = useRef(null)
 	const requestPreviewRef = useRef(null)
 	const responseRef = useRef(null)
+	const apiResponseRef = useRef(null)
 
 	const handleSubmit = async e => {
 		e.preventDefault()
@@ -62,6 +63,8 @@ export function Playground() {
 
 		setIsProcessingResultApi(true)
 		// move to the window to api response part
+		// Scroll to the API response section
+		apiResponseRef.current?.scrollIntoView({ behavior: 'smooth' })
 
 		try {
 			const response = await describePlaygroundAction(formData)
@@ -504,7 +507,7 @@ Authorization: Bearer <user-token>
 					</button>
 				</div>
 			</div>
-			<div className={'flex flex-col xl:col-span-2'}>
+			<div ref={apiResponseRef} className={'flex flex-col xl:col-span-2'}>
 				<h3>API Response</h3>
 				<p className="mt-1 text-sm italic text-slate-500">
 					{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
