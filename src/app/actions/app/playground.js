@@ -55,18 +55,16 @@ export async function describePlaygroundAction(formData) {
 	console.log('Converted Base64 Image:', base64Image.substring(0, 30)) // Log first 30 chars of base64 string
 
 	console.log('Getting Image Description...')
+	// Get image description using base64 encoded image
 	const description = await getImageDescription(base64Image, schema)
-	console.log('Image Description:', description)
+	const descriptionText = description // Make sure this is a string or a simple JSON object.
 
-	console.log('Preparing Response...')
-	const response = new Response(JSON.stringify(description), {
+	// Logging for verification
+	console.log('Image Description Text:', descriptionText)
+
+	// Return the description as a directly usable JSON object
+	return {
 		status: 200,
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	})
-	console.log('Response Prepared:', response)
-
-	console.log('describePlaygroundAction - End')
-	return response
+		data: descriptionText,
+	}
 }
