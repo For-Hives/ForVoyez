@@ -62,6 +62,7 @@
 
 // methode to save webhooks in the database with prisma
 import { prisma } from '@/services/prisma.service'
+import { updateCreditForUser } from '@/services/database.service'
 
 export async function saveWebhooks(webhooks) {
 	// save the webhooks in the database
@@ -121,30 +122,7 @@ export async function processWebhook(id) {
 
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
-	// get the user by clerkId
-	const user = await prisma.user.findUnique({
-		where: {
-			clerkId: webhook.userId,
-		},
-	})
-
-	// update the user credits and customer id
-	await prisma.user.update({
-		where: {
-			clerkId: user.clerkId,
-		},
-		data: {
-			credits: user.credits + 10, // todo : add the number of credits from the subscription plan
-			customerId: webhook.customerId,
-		},
-	})
-
-	prisma.usage.create({
-		data: {
-			userId: user.clerkId,
-			used: 10,
-		},
-	})
+	await updateCreditForUser(webhook.userId, 100)
 }
 
 async function processSubscriptionCreated(webhook) {
