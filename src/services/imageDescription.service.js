@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import sharp from 'sharp'
+import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 // Configure OpenAI client with environment-specific API key.
 const openai = new OpenAI({
@@ -86,13 +87,13 @@ export async function getImageDescription(base64Image, data) {
 				{
 					role: 'user',
 					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. 
-					Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. 
+					Give me a title for this image, an SEO-friendly alternative text, and a caption for this image. 
+					All the information should be thinked for SEO purposes. and should be understandable, and SEO-friendly. To get the best results,
+					think about the image and the context in which it is used. 
 					Generate this information and respond with a JSON object using the following fields
 					and this JSON template: ${
 						JSON.stringify(data.schema) ||
-						'{ title: "<String, Keep concise, similar to alt text recommendations, ensuring the title is informative but not overly lengthy. Try to keep it under 100 characters>", ' +
-							'alternativeText: "<String, The key is to be as succinct as possible while still providing a meaningful description of the image.>", ' +
-							'caption: "<String, Captions for images do not have a strict maximum size, but like alt text, they should be concise and directly related to the image they describe.>" }'
+						JSON.stringify(defaultJsonTemplateSchema)
 					}.
 					And keep in mine the following context: ${data.context ? data.context : 'No additional context provided'}.`,
 				},
