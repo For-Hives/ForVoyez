@@ -2,7 +2,10 @@
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
-import { describePlayground } from '@/app/actions/app/playground'
+import {
+	describePlayground,
+	describePlaygroundAction,
+} from '@/app/actions/app/playground'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { loader } from '@monaco-editor/react'
@@ -55,14 +58,10 @@ export function Playground() {
 			formData.append('jsonSchema', jsonSchema)
 		}
 
-		// fixme, that request is actually mocked
 		setIsProcessingResultApi(true)
 
 		try {
-			const response = await fetch('/api/describe', {
-				method: 'POST',
-				body: formData,
-			})
+			const response = await describePlaygroundAction(formData)
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`)
@@ -227,32 +226,6 @@ export function Playground() {
 	}, [])
 
 	useEffect(() => {
-		loader.config({ paths: { vs: 'monaco-editor/min/vs' } })
-		loader.init().then(monaco => {
-			monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-				validate: true,
-				schemas: [
-					{
-						uri: 'http://myserver/foo-schema.json',
-						fileMatch: ['*'],
-						schema: {
-							type: 'object',
-							properties: {
-								p1: {
-									enum: ['v1', 'v2'],
-								},
-								p2: {
-									$ref: 'http://myserver/bar-schema.json',
-								},
-							},
-						},
-					},
-				],
-			})
-		})
-	}, [])
-
-	useEffect(() => {
 		const requestPreviewEditor = requestPreviewRef.current
 		if (requestPreviewEditor) {
 			const resizeHandler = () => resizeEditor(requestPreviewEditor)
@@ -299,15 +272,6 @@ Authorization: Bearer <user-token>
 
 		setRequestPreviewValue(fetchRequest)
 	}, [image, context, jsonSchema, isJsonValid])
-
-	const getFormDataString = () => {
-		const formDataEntries = [
-			`'image': ${image ? `new File(['${image.name}'], '${image.name}', { type: '${image.type}' })` : 'null'}`,
-			`'context': '${context}'`,
-			`'jsonSchema': '${jsonSchema}'`,
-		]
-		return `new FormData([ ${formDataEntries.join(', ')} ])`
-	}
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-2">
