@@ -44,7 +44,8 @@ export function Playground() {
 			return
 		}
 
-		if (imageSize > 10 * 1024 * 1024) {
+		// 10 * 1024 * 1024
+		if (imageSize > 10485760) {
 			setUploadError('Image size should not exceed 10MB')
 			return
 		}
