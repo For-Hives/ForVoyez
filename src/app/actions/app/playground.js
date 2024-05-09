@@ -8,21 +8,24 @@ import {
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
-	console.log('describePlaygroundAction')
-	console.log(formData)
+	console.log('describePlaygroundAction - Start')
+	console.log('FormData Received:', formData)
 
 	const user = await currentUser()
+	console.log('Current User:', user)
 
 	if (!user) {
 		console.log('User not authenticated')
 		throw new Error('Unauthorized')
 	}
 
+	console.log('Fetching User Data...')
 	const userData = await prisma.user.findUnique({
 		where: {
 			clerkId: user.id,
 		},
 	})
+	console.log('User Data:', userData)
 
 	if (userData.credits <= 0) {
 		console.log('No credits left')
@@ -38,48 +41,32 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('No file uploaded')
 	}
 
-	// todo : check if file is an image
 	if (!jsonSchema) {
 		console.log('No schema provided')
 		throw new Error('No schema provided')
 	}
+
+	console.log('Parsing JSON Schema...')
 	const schema = JSON.parse(jsonSchema)
-	// todo : validate schema
+	console.log('Parsed Schema:', schema)
 
+	console.log('Converting Blob to Base64...')
 	const base64Image = await blobToBase64(image)
+	console.log('Converted Base64 Image:', base64Image.substring(0, 30)) // Log first 30 chars of base64 string
 
-	const reader = await getImageDescription(base64Image, schema)
+	console.log('Getting Image Description...')
+	const description = await getImageDescription(base64Image, schema)
+	console.log('Image Description:', description)
 
-	// Set up the response headers for streaming
-	const headers = new Headers({
-		'Content-Type': 'text/event-stream',
-		'Cache-Control': 'no-cache',
-		Connection: 'keep-alive',
-	})
-	const stream = new ReadableStream({
-		async start(controller) {
-			const decoder = new TextDecoder('utf-8')
-			let result = ''
-
-			while (true) {
-				const { done, value } = await reader.read()
-				if (done) break
-
-				const chunk = decoder.decode(value)
-				const lines = chunk.split('\n').filter(line => line.trim() !== '')
-				for (const line of lines) {
-					const message = line.replace(/^data: /, '')
-					if (message === '[DONE]') {
-						controller.enqueue(`data: ${JSON.stringify(result)}\n\n`)
-						controller.close()
-						return
-					}
-					result += message
-					controller.enqueue(`data: ${JSON.stringify(result)}\n\n`)
-				}
-			}
+	console.log('Preparing Response...')
+	const response = new Response(JSON.stringify(description), {
+		status: 200,
+		headers: {
+			'Content-Type': 'application/json',
 		},
 	})
+	console.log('Response Prepared:', response)
 
-	return new Response(stream, { headers })
+	console.log('describePlaygroundAction - End')
+	return response
 }
