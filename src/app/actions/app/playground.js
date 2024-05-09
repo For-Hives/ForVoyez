@@ -47,7 +47,7 @@ export async function describePlaygroundAction(formData) {
 	const base64Image = await blobToBase64(image)
 
 	// Get image description using base64 encoded image
-	const description = await getImageDescription(base64Image, schema)
+	const description = await getImageDescription(base64Image, schema, context)
 
 	// Return the description as a directly usable JSON object
 	return {
