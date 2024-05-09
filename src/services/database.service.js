@@ -182,7 +182,9 @@ export async function getCustomerIdFromUser(userId) {
 	return null
 }
 
-export async function updateCreditForUser(userId, credits) {
+export async function updateCreditForUser(userId, credits, tokenId = null) {
+	console.log('updating credits', userId, credits)
+
 	const user = await prisma.user.findUnique({
 		where: {
 			clerkId: userId,
@@ -199,10 +201,32 @@ export async function updateCreditForUser(userId, credits) {
 		},
 	})
 
+	// log the usage
+	console.log('logging usage')
+
 	await prisma.usage.create({
 		data: {
 			userId: userId,
 			used: user.credits + credits,
+			tokenId,
 		},
+	})
+}
+
+export async function getUsageForUser(userId) {
+	const user = await prisma.user.findUnique({
+		where: {
+			clerkId: userId,
+		},
+		include: {
+			Usage: true,
+		},
+	})
+
+	let us = await user.Usage
+	console.log('test', us)
+
+	return us.map(u => {
+		return { y: u.used, x: u.usedAt }
 	})
 }
