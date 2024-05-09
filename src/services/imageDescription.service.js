@@ -86,16 +86,17 @@ export async function getImageDescription(base64Image, data) {
 			messages: [
 				{
 					role: 'user',
-					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. 
-					Give me a title for this image, an SEO-friendly alternative text, and a caption for this image. 
-					All the information should be thinked for SEO purposes. and should be understandable, and SEO-friendly. To get the best results,
-					think about the image and the context in which it is used. 
-					Generate this information and respond with a JSON object using the following fields
-					and this JSON template: ${
-						JSON.stringify(data.schema) ||
-						JSON.stringify(defaultJsonTemplateSchema)
-					}.
-					And keep in mine the following context: ${data.context ? data.context : 'No additional context provided'}.`,
+					content: `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context. The goal is to create a title, alternative text, and caption that are not only informative and engaging but also search engine friendly.
+
+Image Description: ${result}
+
+Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template !!!:
+${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
+
+Additional Context: ${data.context || 'No additional context provided.'}
+
+Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users. 
+Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.`,
 				},
 			],
 			max_tokens: 750,
