@@ -46,54 +46,21 @@ export async function getImageDescription(base64Image, schema) {
 		console.log('Vision response:', vision.choices[0].message.content)
 		const imageDescription = vision.choices[0].message.content
 
-		console.log('Image description:', imageDescription)
-
-		// Second request to generate alt text, caption, and title (streaming)
-		const response = await fetch('https://api.openai.com/v1/chat/completions', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-			},
-			body: JSON.stringify({
-				model: 'gpt-3.5-turbo-0125',
-				messages: [
-					{
-						role: 'user',
-						content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${imageDescription}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
-					},
-				],
-				max_tokens: 750,
-				n: 1,
-				stop: null,
-				stream: true,
-			}),
+		// Generate alt text, caption, and title for the image
+		const seoResponse = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo-0125',
+			messages: [
+				{
+					role: 'user',
+					content: `You are an SEO expert and you are writing alt text, caption, and title for this image. The description of the image is: ${result}. Give me a title (name) for this image, an SEO-friendly alternative text, and a caption for this image. Generate this information and respond with a JSON object using the following fields: name, alternativeText, caption. Use this JSON template: {"name": "string", "alternativeText": "string", "caption": "string"}.`,
+				},
+			],
+			max_tokens: 750,
+			n: 1,
+			stop: null,
 		})
 
-		console.log('SEO response:', response)
-
-		// Process the stream
-		const reader = response.body.getReader()
-		const decoder = new TextDecoder('utf-8')
-		let result = ''
-
-		console.log('before while', reader)
-		while (true) {
-			const { done, value } = await reader.read()
-			if (done) break
-
-			const chunk = decoder.decode(value)
-			console.log('Chunk:', chunk)
-
-			const lines = chunk.split('\n').filter(line => line.trim() !== '')
-			for (const line of lines) {
-				const message = line.replace(/^data: /, '')
-				if (message === '[DONE]') {
-					return result
-				}
-				result += message
-			}
-		}
+		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
