@@ -1,25 +1,53 @@
 import OpenAI from 'openai'
+import sharp from 'sharp'
 
 // Configure OpenAI client with environment-specific API key.
 const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY,
 })
 
-// Convert blob to Base64 string.
+// Convert blob to Base64 string with image optimizations.
 export async function blobToBase64(blob) {
 	try {
-		// todo : check image size
-		// todo : check image type
-		// todo : check image dimensions
-		// todo : check image quality
-		// todo : check image format
-		// todo : check image orientation
+		// Check image size
+		const maxSizeInBytes = 5 * 1024 * 1024 * 2 // 10MB
+		if (blob.size > maxSizeInBytes) {
+			throw new Error('Image size exceeds the maximum limit of 10 MB')
+		}
 
-		const buffer = await blob.arrayBuffer()
-		const bytes = new Uint8Array(buffer)
+		// Check image type
+		const supportedTypes = [
+			'image/jpeg',
+			'image/jpg',
+			'image/png',
+			'image/webp',
+			'image/gif',
+		]
+		if (!supportedTypes.includes(blob.type)) {
+			throw new Error('Unsupported image type')
+		}
+
+		// Load image with sharp
+		const image = sharp(await blob.arrayBuffer())
+
+		// Check image dimensions
+		const { width, height } = await image.metadata()
+		const maxDimension = 2000 // Adjust this value as needed
+		if (width > maxDimension || height > maxDimension) {
+			image.resize(maxDimension, maxDimension, { fit: 'inside' })
+		}
+
+		// Optimize image
+		const optimizedImage = await image.webp({ quality: 75 }).toBuffer()
+
+		// log the new size
+		console.log('Optimized image size:', optimizedImage.length)
+		console.log('Original image size:', blob.size)
+
+		const bytes = new Uint8Array(optimizedImage)
 		return Buffer.from(bytes).toString('base64')
 	} catch (error) {
-		throw new Error('Conversion to Base64 failed')
+		throw new Error(`Image processing failed: ${error.message}`)
 	}
 }
 
