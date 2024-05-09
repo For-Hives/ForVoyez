@@ -182,13 +182,27 @@ export async function getCustomerIdFromUser(userId) {
 	return null
 }
 
-export async function getSubscriptionFromCustomerId(customerId) {
-	// check if user has a subscription
-	const sub = await prisma.subscription.findFirst({
+export async function updateCreditForUser(userId, credits) {
+	const user = await prisma.user.findUnique({
 		where: {
-			customerId: customerId,
+			clerkId: userId,
 		},
 	})
 
-	return sub
+	// update the user credits and customer id
+	await prisma.user.update({
+		where: {
+			clerkId: userId,
+		},
+		data: {
+			credits: user.credits + credits,
+		},
+	})
+
+	await prisma.usage.create({
+		data: {
+			userId: userId,
+			used: user.credits + credits,
+		},
+	})
 }
