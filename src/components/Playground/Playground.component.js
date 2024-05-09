@@ -61,16 +61,8 @@ export function Playground() {
 		setIsProcessingResultApi(true)
 
 		try {
-			const response = await fetch('/api/describe', {
-				method: 'POST',
-				body: formData,
-			})
+			const response = await describePlaygroundAction(formData)
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`)
-			}
-
-			// Process the streaming response
 			const reader = response.body.getReader()
 			const decoder = new TextDecoder('utf-8')
 			let result = ''
@@ -83,13 +75,8 @@ export function Playground() {
 				const lines = chunk.split('\n').filter(line => line.trim() !== '')
 				for (const line of lines) {
 					const message = line.replace(/^data: /, '')
-					if (message === '[DONE]') {
-						setResponse(JSON.parse(result))
-						break
-					}
-					result += message
-					// Update the response state in real-time
-					setResponse(JSON.parse(result))
+					result = JSON.parse(message)
+					setResponse(result)
 				}
 			}
 		} catch (error) {

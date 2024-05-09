@@ -48,23 +48,38 @@ export async function describePlaygroundAction(formData) {
 
 	const base64Image = await blobToBase64(image)
 
-	let descriptionResult = ''
-
 	const reader = await getImageDescription(base64Image, schema)
 
-	// Process the streaming response
-	let result = ''
-	for await (const chunk of reader) {
-		const lines = chunk
-			.toString()
-			.split('\n')
-			.filter(line => line.trim() !== '')
-		for (const line of lines) {
-			const message = line.replace(/^data: /, '')
-			if (message === '[DONE]') {
-				return JSON.parse(result)
+	// Set up the response headers for streaming
+	const headers = new Headers({
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache',
+		Connection: 'keep-alive',
+	})
+	const stream = new ReadableStream({
+		async start(controller) {
+			const decoder = new TextDecoder('utf-8')
+			let result = ''
+
+			while (true) {
+				const { done, value } = await reader.read()
+				if (done) break
+
+				const chunk = decoder.decode(value)
+				const lines = chunk.split('\n').filter(line => line.trim() !== '')
+				for (const line of lines) {
+					const message = line.replace(/^data: /, '')
+					if (message === '[DONE]') {
+						controller.enqueue(`data: ${JSON.stringify(result)}\n\n`)
+						controller.close()
+						return
+					}
+					result += message
+					controller.enqueue(`data: ${JSON.stringify(result)}\n\n`)
+				}
 			}
-			result += message
-		}
-	}
+		},
+	})
+
+	return new Response(stream, { headers })
 }
