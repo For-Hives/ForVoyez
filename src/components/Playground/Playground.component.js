@@ -51,19 +51,15 @@ export function Playground() {
 
 		const formData = new FormData()
 		formData.append('image', image)
-		formData.append('context', context)
-
-		// Check if jsonSchema is empty
-		if (!jsonSchema || jsonSchema.trim() === '') {
-			// If empty, send the default JSON schema
-			formData.append('jsonSchema', JSON.stringify(defaultJsonTemplateSchema))
-		} else {
-			formData.append('jsonSchema', jsonSchema)
-		}
+		formData.append(
+			'data',
+			JSON.stringify({
+				context,
+				schema: jsonSchema || defaultJsonTemplateSchema,
+			})
+		)
 
 		setIsProcessingResultApi(true)
-		// move to the window to api response part
-		// Scroll to the API response section
 		apiResponseRef.current?.scrollIntoView({ behavior: 'smooth' })
 
 		try {
