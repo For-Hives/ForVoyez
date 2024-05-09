@@ -49,7 +49,6 @@ export async function getImageDescription(base64Image, schema) {
 		console.log('Image description:', imageDescription)
 
 		// Second request to generate alt text, caption, and title (streaming)
-		// Second request to generate alt text, caption, and title (streaming)
 		const response = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {
