@@ -315,7 +315,7 @@ Authorization: Bearer <user-token>
 						) : (
 							<label
 								htmlFor="image"
-								className="flex h-full w-full cursor-pointer flex-col items-center justify-center bg-red-500/10 px-6 py-10 text-center"
+								className="flex h-full w-full cursor-pointer flex-col items-center justify-center px-6 py-10 text-center"
 							>
 								<div>
 									<svg
