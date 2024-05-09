@@ -27,7 +27,7 @@ export async function blobToBase64(blob) {
 export async function getImageDescription(base64Image, schema) {
 	try {
 		// First request to GPT-Vision (non-streaming)
-		const vision = await openai.createChatCompletion({
+		const vision = await openai.chat.completions.create({
 			model: 'gpt-4-vision-preview',
 			messages: [
 				{
@@ -45,8 +45,10 @@ export async function getImageDescription(base64Image, schema) {
 
 		const imageDescription = vision.data.choices[0].message.content
 
+		console.log('Image description:', imageDescription)
+
 		// Second request to generate alt text, caption, and title (streaming)
-		const seoResponse = await openai.createChatCompletion(
+		const seoResponse = await openai.chat.completions.stream(
 			{
 				model: 'gpt-3.5-turbo-0125',
 				messages: [
