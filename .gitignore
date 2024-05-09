@@ -52,7 +52,7 @@ bun.lockb
 
 #public/animation_features/landing_art_forvoyez.riv
 #prisma/schema.prisma
-#prisma/dev.db
+prisma/dev.db
 output.txt
 large.txt
 #prisma/migrations/
