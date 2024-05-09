@@ -24,7 +24,9 @@ export function Playground() {
 
 	const [context, setContext] = useState('')
 	const [jsonSchema, setJsonSchema] = useState('')
-	const [response, setResponse] = useState('')
+	const [response, setResponse] = useState(
+		'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
+	)
 
 	const [isDraggingOver, setIsDraggingOver] = useState(false)
 	const [uploadError, setUploadError] = useState(null)
@@ -59,6 +61,7 @@ export function Playground() {
 		}
 
 		setIsProcessingResultApi(true)
+		// move to the window to api response part
 
 		try {
 			const response = await describePlaygroundAction(formData)
