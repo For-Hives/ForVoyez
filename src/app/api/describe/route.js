@@ -5,6 +5,25 @@ import {
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
+// Helper function to check if a file is a valid image
+function isValidImageFile(file) {
+	const validTypes = [
+		'image/jpeg',
+		'image/jpg',
+		'image/png',
+		'image/webp',
+		'image/gif',
+	]
+	return validTypes.includes(file.type)
+}
+
+// Helper function to validate the schema
+function isValidSchema(schema) {
+	// Implement your schema validation logic here
+	// Return true if the schema is valid, false otherwise
+	return true
+}
+
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	try {
@@ -50,35 +69,33 @@ export async function POST(request) {
 				statusText: 'Bad Request',
 			})
 		}
-		// todo : check if file is an image
 
-		const schemaJSON = formData.get('schema')
-		if (!schemaJSON) {
-			return new Response('No schema provided', {
+		// Check if the uploaded file is an image
+		if (!isValidImageFile(file)) {
+			return new Response('Invalid image file', {
 				status: 400,
 				statusText: 'Bad Request',
 			})
 		}
-		const schema = JSON.parse(schemaJSON)
-		// todo : validate schema
 
-		const context = formData.get('context')
+		const data = JSON.parse(formData.get('data') || '{}')
+		const schema = data.schema || {}
+		const context = data.context || ''
 
-		const base64Image = await blobToBase64(file)
-
-		// check if its local dev
-		if (process.env.NODE_ENV === 'development') {
-			return new Response(JSON.stringify({ base64Image }), {
-				status: 200,
-				headers: { 'Content-Type': 'application/json' },
+		// Validate the schema if provided
+		if (schema && !isValidSchema(schema)) {
+			return new Response('Invalid schema', {
+				status: 400,
+				statusText: 'Bad Request',
 			})
 		}
 
-		const descriptionResult = await getImageDescription(
-			base64Image,
+		const base64Image = await blobToBase64(file)
+
+		const descriptionResult = await getImageDescription(base64Image, {
+			context,
 			schema,
-			context
-		)
+		})
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,
