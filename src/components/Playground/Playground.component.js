@@ -66,6 +66,7 @@ export function Playground() {
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
+			console.log('Response:', response)
 
 			// Process the streaming response
 			const reader = response.body.getReader()
