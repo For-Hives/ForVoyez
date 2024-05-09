@@ -70,9 +70,14 @@ export function Playground() {
 			const response = await describePlaygroundAction(formData)
 			if (response.status === 200) {
 				setResponse(response.data)
+			} else {
+				setResponse('Error processing the request. Please try again.')
 			}
 		} catch (error) {
 			console.error('Error:', error)
+			setResponse(
+				'An error occurred. Please check the console for more details.'
+			)
 		} finally {
 			setIsProcessingResultApi(false)
 		}
