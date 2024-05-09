@@ -61,12 +61,14 @@ export function Playground() {
 		setIsProcessingResultApi(true)
 
 		try {
-			const response = await describePlaygroundAction(formData)
+			const response = await fetch('/api/describe', {
+				method: 'POST',
+				body: formData,
+			})
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
-			console.log('Response:', response)
 
 			// Process the streaming response
 			const reader = response.body.getReader()
@@ -86,6 +88,7 @@ export function Playground() {
 						break
 					}
 					result += message
+					// Update the response state in real-time
 					setResponse(JSON.parse(result))
 				}
 			}
