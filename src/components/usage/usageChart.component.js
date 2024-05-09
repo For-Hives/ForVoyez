@@ -8,6 +8,10 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+import { getUsageForUser } from '@/services/database.service'
+import { useEffect, useState } from 'react'
+import { useAuth } from '@clerk/nextjs'
+const dataI = []
 
 const data = [
 	{
@@ -55,6 +59,17 @@ const data = [
 ]
 
 export function UsageChartComponent() {
+	const [usage, setUsage] = useState([])
+
+	const auth = useAuth()
+
+	// get data from database
+	useEffect(() => {
+		getUsageForUser(auth.userId).then(setUsage)
+	}, [])
+
+	console.table(usage)
+
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -71,7 +86,7 @@ export function UsageChartComponent() {
 						<AreaChart
 							width={500}
 							height={400}
-							data={data}
+							data={usage}
 							margin={{
 								top: 10,
 								right: 30,
@@ -80,12 +95,12 @@ export function UsageChartComponent() {
 							}}
 						>
 							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="name" />
+							<XAxis dataKey="x" />
 							<YAxis />
 							<Tooltip />
 							<Area
-								type="bump"
-								dataKey="uv"
+								type="monotone"
+								dataKey="y"
 								stroke="#fff"
 								fill="#ff6545"
 								dot={true}
