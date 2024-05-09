@@ -44,7 +44,7 @@ export async function getImageDescription(base64Image, schema) {
 		})
 
 		console.log('Vision response:', vision.choices[0].message.content)
-		const imageDescription = vision.choices[0].message.content
+		const result = vision.choices[0].message.content
 
 		// Generate alt text, caption, and title for the image
 		const seoResponse = await openai.chat.completions.create({
@@ -59,6 +59,8 @@ export async function getImageDescription(base64Image, schema) {
 			n: 1,
 			stop: null,
 		})
+
+		console.log('SEO response:', seoResponse)
 
 		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
