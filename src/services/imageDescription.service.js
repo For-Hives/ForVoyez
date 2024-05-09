@@ -43,13 +43,20 @@ export async function getImageDescription(base64Image, schema) {
 			],
 		})
 
-		const imageDescription = vision.data.choices[0].message.content
+		console.log('Vision response:', vision.choices[0].message.content)
+		const imageDescription = vision.choices[0].message.content
 
 		console.log('Image description:', imageDescription)
 
 		// Second request to generate alt text, caption, and title (streaming)
-		const seoResponse = await openai.chat.completions.stream(
-			{
+		// Second request to generate alt text, caption, and title (streaming)
+		const response = await fetch('https://api.openai.com/v1/chat/completions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+			},
+			body: JSON.stringify({
 				model: 'gpt-3.5-turbo-0125',
 				messages: [
 					{
@@ -60,20 +67,25 @@ export async function getImageDescription(base64Image, schema) {
 				max_tokens: 750,
 				n: 1,
 				stop: null,
-				stream: true, // Enable streaming
-			},
-			{ responseType: 'stream' }
-		)
+				stream: true,
+			}),
+		})
 
-		const reader = seoResponse.data
+		console.log('SEO response:', response)
 
 		// Process the stream
+		const reader = response.body.getReader()
+		const decoder = new TextDecoder('utf-8')
 		let result = ''
-		for await (const chunk of reader) {
-			const lines = chunk
-				.toString()
-				.split('\n')
-				.filter(line => line.trim() !== '')
+
+		while (true) {
+			const { done, value } = await reader.read()
+			if (done) break
+
+			const chunk = decoder.decode(value)
+			console.log('Chunk:', chunk)
+
+			const lines = chunk.split('\n').filter(line => line.trim() !== '')
 			for (const line of lines) {
 				const message = line.replace(/^data: /, '')
 				if (message === '[DONE]') {
