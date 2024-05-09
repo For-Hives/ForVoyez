@@ -18,8 +18,6 @@ export async function createToken(token) {
 		throw new Error('You must be logged in to create a token')
 	}
 
-	console.log(userId)
-
 	let jwt = await generateJwt({
 		userId: userId,
 		createdAt: token.createdAt,
@@ -54,8 +52,6 @@ export async function getAllToken() {
 			userId: userId,
 		},
 	})
-
-	console.log('views all tokens', result)
 
 	return result.map(token => ({
 		...token,

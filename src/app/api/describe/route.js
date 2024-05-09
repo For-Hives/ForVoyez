@@ -20,7 +20,6 @@ export async function POST(request) {
 		// check if the token is valid
 		try {
 			let payload = await verifyJwt(authorization)
-			console.log(payload)
 
 			// check if the token is still valid and if the user is have credit left
 			let user = await prisma.user.findUnique({
@@ -29,7 +28,6 @@ export async function POST(request) {
 				},
 			})
 
-			console.log(user)
 			if (user.credits <= 0) {
 				return new Response('Unauthorized, no credit left', {
 					status: 401,

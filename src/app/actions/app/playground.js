@@ -8,11 +8,7 @@ import {
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
-	console.log('describePlaygroundAction - Start')
-	console.log('FormData Received:', formData)
-
 	const user = await currentUser()
-	console.log('Current User:', user)
 
 	if (!user) {
 		console.log('User not authenticated')
@@ -46,15 +42,10 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('No schema provided')
 	}
 
-	console.log('Parsing JSON Schema...')
 	const schema = JSON.parse(jsonSchema)
-	console.log('Parsed Schema:', schema)
 
-	console.log('Converting Blob to Base64...')
 	const base64Image = await blobToBase64(image)
-	console.log('Converted Base64 Image:', base64Image.substring(0, 30)) // Log first 30 chars of base64 string
 
-	console.log('Getting Image Description...')
 	// Get image description using base64 encoded image
 	const description = await getImageDescription(base64Image, schema)
 
