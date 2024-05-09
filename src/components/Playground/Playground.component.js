@@ -435,6 +435,10 @@ Authorization: Bearer <user-token>
 								matchBrackets: 'always',
 								autoClosingBrackets: 'always',
 								automaticLayout: true,
+								mouseWheelZoom: false,
+								scrollbar: {
+									handleMouseWheel: false,
+								},
 							}}
 						/>
 					</div>
@@ -493,6 +497,10 @@ Authorization: Bearer <user-token>
 							matchBrackets: 'always',
 							autoClosingBrackets: 'always',
 							automaticLayout: true,
+							mouseWheelZoom: false,
+							scrollbar: {
+								handleMouseWheel: false,
+							},
 						}}
 					/>
 					<button
@@ -554,6 +562,10 @@ Authorization: Bearer <user-token>
 								matchBrackets: 'always',
 								autoClosingBrackets: 'always',
 								automaticLayout: true,
+								mouseWheelZoom: false,
+								scrollbar: {
+									handleMouseWheel: false,
+								},
 							}}
 						/>
 						<button
