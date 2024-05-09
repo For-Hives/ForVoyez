@@ -49,8 +49,3 @@ yarn.lock
 
 *.iml
 bun.lockb
-prisma/dev.db
-public/animation_features/landing_art_forvoyez.riv
-prisma/schema.prisma
-output.txt
-large.txt
