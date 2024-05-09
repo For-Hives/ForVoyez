@@ -28,23 +28,17 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('No credits left')
 	}
 
-	const image = formData.get('image')
-	const context = formData.get('context')
-	const jsonSchema = formData.get('jsonSchema')
-
-	if (!image) {
+	const file = formData.get('image')
+	if (!file) {
 		console.log('No file uploaded')
 		throw new Error('No file uploaded')
 	}
 
-	if (!jsonSchema) {
-		console.log('No schema provided')
-		throw new Error('No schema provided')
-	}
+	const data = JSON.parse(formData.get('data') || '{}')
+	const schema = data.schema || {}
+	const context = data.context || ''
 
-	const schema = JSON.parse(jsonSchema)
-
-	const base64Image = await blobToBase64(image)
+	const base64Image = await blobToBase64(file)
 
 	// Get image description using base64 encoded image
 	const description = await getImageDescription(base64Image, {
