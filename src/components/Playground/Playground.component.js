@@ -61,24 +61,6 @@ export function Playground() {
 		setIsProcessingResultApi(true)
 
 		try {
-			// const response = await describePlaygroundAction(formData)
-			//
-			// const reader = response.body.getReader()
-			// const decoder = new TextDecoder('utf-8')
-			// let result = ''
-			//
-			// while (true) {
-			// 	const { done, value } = await reader.read()
-			// 	if (done) break
-			//
-			// 	const chunk = decoder.decode(value)
-			// 	const lines = chunk.split('\n').filter(line => line.trim() !== '')
-			// 	for (const line of lines) {
-			// 		const message = line.replace(/^data: /, '')
-			// 		result = JSON.parse(message)
-			// 		setResponse(result)
-			// 	}
-			// }
 			const response = await describePlaygroundAction(formData)
 			if (response.status === 200) {
 				setResponse(response.data)
