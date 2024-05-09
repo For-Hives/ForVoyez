@@ -72,7 +72,28 @@ export async function getImageDescription(base64Image, schema) {
 
 		console.log('SEO response:', response)
 
-		return response.body
+		// Process the stream
+		const reader = response.body.getReader()
+		const decoder = new TextDecoder('utf-8')
+		let result = ''
+
+		console.log('before while', reader)
+		while (true) {
+			const { done, value } = await reader.read()
+			if (done) break
+
+			const chunk = decoder.decode(value)
+			console.log('Chunk:', chunk)
+
+			const lines = chunk.split('\n').filter(line => line.trim() !== '')
+			for (const line of lines) {
+				const message = line.replace(/^data: /, '')
+				if (message === '[DONE]') {
+					return result
+				}
+				result += message
+			}
+		}
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
