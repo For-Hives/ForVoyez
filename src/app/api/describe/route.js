@@ -4,6 +4,7 @@ import {
 } from '@/services/imageDescription.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
+import { updateCreditForUser } from '@/services/database.service'
 
 // Helper function to check if a file is a valid image
 function isValidImageFile(file) {
@@ -26,6 +27,7 @@ function isValidSchema(schema) {
 
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
+	let user
 	try {
 		// get the authorisation header
 		const authorization = request.headers.get('Authorization')
@@ -41,7 +43,7 @@ export async function POST(request) {
 			let payload = await verifyJwt(authorization)
 
 			// check if the token is still valid and if the user is have credit left
-			let user = await prisma.user.findUnique({
+			user = await prisma.user.findUnique({
 				where: {
 					clerkId: payload.userId,
 				},
@@ -96,6 +98,9 @@ export async function POST(request) {
 			context,
 			schema,
 		})
+
+		// update the user credit
+		updateCreditForUser(payload.userId, -1)
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,
