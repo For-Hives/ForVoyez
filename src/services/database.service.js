@@ -2,10 +2,10 @@
 import { getProduct } from '@lemonsqueezy/lemonsqueezy.js'
 
 import {
+	initLemonSqueezy,
+	listPrice,
 	listProducts,
 	listVariants,
-	listPrice,
-	initLemonSqueezy,
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
