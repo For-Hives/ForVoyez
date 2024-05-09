@@ -10,6 +10,7 @@ import { prisma } from '@/services/prisma.service'
 export async function describePlaygroundAction(formData) {
 	console.log('describePlaygroundAction')
 	console.log(formData)
+
 	const user = await currentUser()
 
 	if (!user) {
@@ -28,6 +29,10 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('No credits left')
 	}
 
+	const image = formData.get('image')
+	const context = formData.get('context')
+	const jsonSchema = formData.get('jsonSchema')
+
 	if (!image) {
 		console.log('No file uploaded')
 		throw new Error('No file uploaded')
@@ -44,31 +49,22 @@ export async function describePlaygroundAction(formData) {
 	const base64Image = await blobToBase64(image)
 
 	let descriptionResult = ''
-	if (process.env.NODE_ENV === 'development') {
-		descriptionResult = {
-			name: 'Cherry Blossom Kittens',
-			alternativeText:
-				'Two playful animated kittens surrounded by cherry blossoms',
-			caption: 'Adorable kittens frolicking among beautiful cherry blossoms',
-		}
-		return descriptionResult
-	} else {
-		const reader = await getImageDescription(base64Image, schema)
 
-		// Process the streaming response
-		let result = ''
-		for await (const chunk of reader) {
-			const lines = chunk
-				.toString()
-				.split('\n')
-				.filter(line => line.trim() !== '')
-			for (const line of lines) {
-				const message = line.replace(/^data: /, '')
-				if (message === '[DONE]') {
-					return JSON.parse(result)
-				}
-				result += message
+	const reader = await getImageDescription(base64Image, schema)
+
+	// Process the streaming response
+	let result = ''
+	for await (const chunk of reader) {
+		const lines = chunk
+			.toString()
+			.split('\n')
+			.filter(line => line.trim() !== '')
+		for (const line of lines) {
+			const message = line.replace(/^data: /, '')
+			if (message === '[DONE]') {
+				return JSON.parse(result)
 			}
+			result += message
 		}
 	}
 }
