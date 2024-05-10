@@ -11,7 +11,9 @@ const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID
 export async function initLemonSqueezy() {
 	ls.lemonSqueezySetup({
 		apiKey: process.env.LEMON_SQUEEZY_API_KEY,
-		onError(error) {},
+		onError(error) {
+			console.error(error)
+		},
 	})
 }
 
@@ -26,6 +28,7 @@ export async function listProducts() {
 	// todo : sync with database
 
 	if (statusCode === 200) {
+		console.log(data.data[0].relationships.variants.data)
 		// todo : save variant in database
 		return data.data
 	} else {
@@ -46,6 +49,7 @@ export async function listVariants(productID) {
 	if (statusCode === 200) {
 		return data.data
 	} else {
+		console.error(error)
 		throw new Error(error)
 	}
 }
@@ -74,6 +78,8 @@ export async function getCheckoutURL(variantId, embed = false) {
 		throw new Error('User is not authenticated.')
 	}
 
+	// console.log(user)
+
 	const checkout = await createCheckout(STORE_ID, variantId, {
 		checkoutOptions: {
 			embed,
@@ -90,6 +96,7 @@ export async function getCheckoutURL(variantId, embed = false) {
 			receiptButtonText: 'Go to Dashboard',
 		},
 	})
+	console.log(checkout)
 
 	return checkout.data?.data.attributes.url
 }
@@ -103,9 +110,11 @@ export async function getCustomerPortalLink() {
 		throw new Error('User is not authenticated.')
 	}
 
+	console.log('user', user)
 	// get user subscription using database.service
 	const customerId = await getCustomerIdFromUser(user.userId)
 
+	console.log('customerId', customerId)
 	if (!customerId) {
 		throw new Error('Customer not found.')
 	}
@@ -113,5 +122,6 @@ export async function getCustomerPortalLink() {
 	// get customer object
 	const customer = await ls.getCustomer(customerId)
 
+	console.log(customer.data.data.attributes.urls.customer_portal)
 	return customer.data.data.attributes.urls.customer_portal
 }

@@ -7,9 +7,12 @@ import { prisma } from '@/services/prisma.service'
 export async function createUser() {
 	const user = await currentUser()
 
+	console.log(user)
 	if (!user.id) {
 		throw new Error('You must be logged to create a user')
 	}
+
+	console.log(user.id)
 
 	// todo : verfier que la table user a bien ete initialiser
 

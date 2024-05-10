@@ -18,7 +18,6 @@
 	},
 	"lint-staged": {
 		"*.js": [
-			"node remove-console-logs.js",
 			"prettier --write",
 			"eslint --fix"
 		],

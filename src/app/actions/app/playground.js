@@ -12,21 +12,26 @@ export async function describePlaygroundAction(formData) {
 	const user = await currentUser()
 
 	if (!user) {
+		console.error('User not authenticated')
 		throw new Error('Unauthorized')
 	}
 
+	console.log('Fetching User Data...')
 	const userData = await prisma.user.findUnique({
 		where: {
 			clerkId: user.id,
 		},
 	})
+	console.log('User Data:', userData)
 
 	if (userData.credits <= 0) {
+		console.error('No credits left')
 		throw new Error('No credits left')
 	}
 
 	const file = formData.get('image')
 	if (!file) {
+		console.error('No file uploaded')
 		throw new Error('No file uploaded')
 	}
 

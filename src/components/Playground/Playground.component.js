@@ -83,12 +83,9 @@ export function Playground() {
 
 	const copyToClipboard = content => {
 		if (navigator.clipboard) {
-			navigator.clipboard
-				.writeText(content)
-				.then(() => {})
-				.catch(err => {
-					console.error('Failed to copy:', err)
-				})
+			navigator.clipboard.writeText(content).catch(err => {
+				console.error('Failed to copy:', err)
+			})
 		} else {
 			// Fallback to older execCommand approach
 			const textarea = document.createElement('textarea')

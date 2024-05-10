@@ -71,7 +71,9 @@ export function ChangingPlansComponent() {
 		try {
 			const url = await getCheckoutURL(variantId)
 			await router.push(url)
-		} catch (e) {}
+		} catch (e) {
+			console.error(e)
+		}
 	}
 
 	if (plans.length === 0) {
@@ -79,6 +81,7 @@ export function ChangingPlansComponent() {
 	}
 
 	function manageSubscription() {
+		console.log('click')
 		getCustomerPortalLink().then(url => router.push(url))
 	}
 

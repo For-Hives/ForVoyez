@@ -32,12 +32,9 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 
 	const copyToClipboard = token => {
 		if (navigator.clipboard) {
-			navigator.clipboard
-				.writeText(token)
-				.then(() => {})
-				.catch(err => {
-					console.error('Failed to copy:', err)
-				})
+			navigator.clipboard.writeText(token).catch(err => {
+				console.error('Failed to copy:', err)
+			})
 		} else {
 			// Fallback to older execCommand approach
 			const textarea = document.createElement('textarea')
