@@ -109,24 +109,6 @@ export async function syncPlans() {
 				continue
 			}
 
-			// model Plan {
-			// 	id             Int      @id @default(autoincrement())
-			// 	productId      String
-			// 	variantId      String   @unique
-			// 	variantEnabled Boolean  @default(true)
-			// 	name           String
-			// 	description    String?
-			// 		price          Int // Prix de base en centimes pour une unité
-			// 	billingCycle   String // "monthly" or "annually"
-			// 	packageSize    Int? // Nombre d'unités incluses dans le package
-			// 		createdAt      DateTime @default(now())
-			// 	mostPopular    Boolean  @default(false)
-			// 	features       String   @default("")
-			// 	buttonText     String   @default("Subscribe")
-			//
-			// 	subscriptions Subscription[]
-			// }
-
 			await _addVariant({
 				productId: variant.product_id.toString(),
 				variantId: v.id,
@@ -137,28 +119,6 @@ export async function syncPlans() {
 				billingCycle: interval,
 				packageSize: variant.package_size,
 			})
-
-			// OLD CODE
-			// await _addVariant({
-			// 	productId: variant.product_id.toString(),
-			// 	variantId: v.id,
-			// 	variantEnabled: true,
-			// 	name: variant.name,
-			// 	description: variant.description,
-			// 	price: parseInt(priceString),
-			// 	credits: 0,
-			// 	billingCycle: interval,
-			// 	category: currentPriceObj.attributes.category,
-			// 	pricingScheme: currentPriceObj.attributes.scheme,
-			// 	setupFeeEnabled: variant.setup_fee_enabled,
-			// 	setupFee: variant.setup_fee,
-			// 	packageSize: variant.package_size,
-			// 	tiers: variant.tiers,
-			// 	renewalIntervalUnit: interval,
-			// 	renewalIntervalCount: intervalCount,
-			// 	trialIntervalUnit: trialInterval,
-			// 	trialIntervalCount: trialIntervalCount,
-			// })
 		}
 	}
 
@@ -228,5 +188,14 @@ export async function getUsageForUser(userId) {
 
 	return us.map(u => {
 		return { y: u.used, x: u.usedAt }
+	})
+}
+
+export async function getSubscriptionFromUserId(userId) {
+	// check if user has a subscription
+	return prisma.subscription.findFirst({
+		where: {
+			userId: userId,
+		},
 	})
 }
