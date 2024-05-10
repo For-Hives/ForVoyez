@@ -18,7 +18,6 @@ export async function generateJwt(payload) {
 		// toISOString
 		.sign(secretKey) // secretKey generated from previous step
 
-	console.log(token) // log token to console
 
 	return token
 }

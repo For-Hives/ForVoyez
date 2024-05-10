@@ -74,7 +74,6 @@ export async function saveWebhooks(webhooks) {
 		},
 	})
 
-	console.log('webhook saved', webhook)
 
 	return webhook.id
 }
@@ -97,18 +96,14 @@ export async function processWebhook(id) {
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
-			console.log('order_created')
 			break
 		case 'subscription_created':
-			console.log('Subscription created')
 			await processSubscriptionCreated(JSON.parse(webhook.body))
 			break
 		case 'subscription_payment_success':
-			console.log('subscription_payment_success')
 			await processSubscriptionPaymentSuccess(webhook)
 			break
 		case 'subscription_updated':
-			console.log('subscription_updated')
 			break
 	}
 
