@@ -1,10 +1,10 @@
+import { updateCreditForUser } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
-import { updateCreditForUser } from '@/services/database.service'
 
 // Helper function to check if a file is a valid image
 function isValidImageFile(file) {

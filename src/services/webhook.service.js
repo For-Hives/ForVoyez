@@ -61,8 +61,8 @@
 // }
 
 // methode to save webhooks in the database with prisma
-import { prisma } from '@/services/prisma.service'
 import { updateCreditForUser } from '@/services/database.service'
+import { prisma } from '@/services/prisma.service'
 
 export async function saveWebhooks(webhooks) {
 	// save the webhooks in the database

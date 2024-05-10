@@ -1,4 +1,6 @@
 'use client'
+import { useAuth } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
 import {
 	Area,
 	AreaChart,
@@ -8,9 +10,8 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+
 import { getUsageForUser } from '@/services/database.service'
-import { useEffect, useState } from 'react'
-import { useAuth } from '@clerk/nextjs'
 
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
