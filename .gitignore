@@ -50,11 +50,16 @@ yarn.lock
 *.iml
 bun.lockb
 
+# /!\ merci de ne pas remettre en ligne le fichier dev.db /!\
+prisma/dev.db
+
+
 #public/animation_features/landing_art_forvoyez.riv
 #prisma/schema.prisma
-prisma/dev.db
-output.txt
-large.txt
 #prisma/migrations/
 #prisma
 #bruno
+
+output.txt
+large.txt
+
