@@ -1,11 +1,5 @@
 'use client'
-import {
-	SignedIn,
-	SignedOut,
-	SignInButton,
-	UserButton,
-	useUser,
-} from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { Dialog } from '@headlessui/react'
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'

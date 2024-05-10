@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import { Jost, Source_Sans_3 } from 'next/font/google'
-import { ToastContainer } from 'react-toastify'
 
 const sourcesans = Source_Sans_3({
 	weight: ['300', '400', '700', '900'],

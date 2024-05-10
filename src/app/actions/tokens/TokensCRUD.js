@@ -1,6 +1,5 @@
 'use server'
 
-import { auth } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
 
 import { generateJwt } from '@/services/jwt.service'

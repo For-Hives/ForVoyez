@@ -2,12 +2,10 @@
 import { useAuth } from '@clerk/nextjs'
 import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
-import { useMotionValue } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
 import {
 	getPlans,
 	getSubscriptionFromCustomerId,
