@@ -38,7 +38,6 @@ export async function POST(request) {
 		// non blocking process
 		processWebhook(webhookId)
 	} catch (error) {
-		console.log(error)
 		return new Response(`Webhook error: ${error.message}`, {
 			status: 400,
 		})

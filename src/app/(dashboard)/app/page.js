@@ -94,9 +94,7 @@ const configResources = [
 ]
 
 export default function WelcomePage() {
-	useEffect(() => {
-		createUser().then(r => console.log(r))
-	}, [])
+	useEffect(() => {}, [])
 
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>

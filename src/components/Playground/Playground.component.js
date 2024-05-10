@@ -85,9 +85,7 @@ export function Playground() {
 		if (navigator.clipboard) {
 			navigator.clipboard
 				.writeText(content)
-				.then(() => {
-					console.log('Content copied using clipboard API')
-				})
+				.then(() => {})
 				.catch(err => {
 					console.error('Failed to copy:', err)
 				})
@@ -99,7 +97,6 @@ export function Playground() {
 			textarea.select()
 			try {
 				document.execCommand('copy')
-				console.log('Content copied using execCommand')
 			} catch (err) {
 				console.error('Failed to copy with execCommand:', err)
 			}
