@@ -2,9 +2,13 @@ import { createSecretKey } from 'crypto'
 
 import { jwtVerify, SignJWT } from 'jose'
 
-const secretKey = createSecretKey(process.env.JWT_SECRET, 'utf-8')
+function generateSecretKey() {
+	return createSecretKey(process.env.JWT_SECRET, 'utf-8')
+}
 
 export async function generateJwt(payload) {
+	const secretKey = generateSecretKey()
+
 	const token = await new SignJWT(payload)
 
 		// details to  encode in the token
@@ -22,6 +26,7 @@ export async function generateJwt(payload) {
 }
 
 export async function verifyJwt(jwt) {
+	const secretKey = generateSecretKey()
 	// extract token from request
 	const token = jwt.replace('Bearer ', '')
 	try {
