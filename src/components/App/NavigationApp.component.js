@@ -1,16 +1,16 @@
 'use client'
 
-import { useRef } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { UserButton, useUser } from '@clerk/nextjs'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useRef } from 'react'
 
 import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationApp.component'
-import { useSectionStore } from '@/components/App/SectionProviderApp.component'
 import { remToPx } from '@/components/App/RemToPxApp.component'
+import { useSectionStore } from '@/components/App/SectionProviderApp.component'
 import { TopLevelNavItemAppComponent } from '@/components/App/TopLevelNavItemApp.component'
-import { UserButton, useUser } from '@clerk/nextjs'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current

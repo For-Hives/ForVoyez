@@ -1,4 +1,5 @@
 import Link from 'next/link'
+
 import { AnimateSideHeroComponent } from '@/components/Landing/Hero/AnimateSideHero.component'
 
 export function HeroComponent() {

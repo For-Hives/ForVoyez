@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getPlans } from '@/services/database.service' // Ajuste le chemin selon ton architecture
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getCheckoutURL } from '@/services/lemonsqueezy.service'
-import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
+import { useEffect, useState } from 'react'
+
 import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
+import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
+import { getPlans } from '@/services/database.service' // Ajuste le chemin selon ton architecture
+import { getCheckoutURL } from '@/services/lemonsqueezy.service'
 
 export default function PlansPage() {
 	const router = useRouter()

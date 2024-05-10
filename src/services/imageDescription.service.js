@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import sharp from 'sharp'
+
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 // Configure OpenAI client with environment-specific API key.

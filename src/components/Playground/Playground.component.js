@@ -1,14 +1,15 @@
 'use client'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { loader } from '@monaco-editor/react'
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
-import { defaultJsonTemplateSchema } from '@/constants/playground'
+
 import {
 	describePlayground,
 	describePlaygroundAction,
 } from '@/app/actions/app/playground'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { loader } from '@monaco-editor/react'
+import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 export function Playground() {
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)

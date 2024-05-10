@@ -4,12 +4,13 @@ import {
 	EnvelopeIcon,
 	PhoneIcon,
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import { sendEmail } from '@/app/actions/contact/sendEmail'
-import { toast } from 'react-toastify'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import * as yup from 'yup'
+
+import { sendEmail } from '@/app/actions/contact/sendEmail'
 
 const schema = yup.object().shape({
 	'first-name': yup.string().required('First name is required'),

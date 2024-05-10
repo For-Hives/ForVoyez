@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
+
+import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import JwtModal from '@/components/Tokens/JwtModal'
 
 export default function TokenCreate({ tokens, setTokens }) {

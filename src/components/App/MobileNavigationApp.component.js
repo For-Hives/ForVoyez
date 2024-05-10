@@ -1,5 +1,8 @@
 'use client'
 
+import { Dialog, Transition } from '@headlessui/react'
+import { motion } from 'framer-motion'
+import { usePathname, useSearchParams } from 'next/navigation'
 import {
 	createContext,
 	Fragment,
@@ -8,9 +11,6 @@ import {
 	useEffect,
 	useRef,
 } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { Dialog, Transition } from '@headlessui/react'
-import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'

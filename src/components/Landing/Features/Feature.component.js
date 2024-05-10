@@ -7,8 +7,8 @@ import {
 	PuzzlePieceIcon,
 	SparklesIcon,
 } from '@heroicons/react/20/solid'
-import { useEffect, useState } from 'react'
 import RiveComponent from '@rive-app/react-canvas'
+import { useEffect, useState } from 'react'
 
 const features = [
 	{

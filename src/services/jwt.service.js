@@ -1,5 +1,6 @@
-import { SignJWT, jwtVerify } from 'jose'
 import { createSecretKey } from 'crypto'
+
+import { SignJWT, jwtVerify } from 'jose'
 
 const secretKey = createSecretKey(process.env.JWT_SECRET, 'utf-8')
 

@@ -1,10 +1,10 @@
 'use client'
-import { forwardRef } from 'react'
-import Link from 'next/link'
 import clsx from 'clsx'
 import { motion, useScroll, useTransform } from 'framer-motion'
-
 import Image from 'next/image'
+import Link from 'next/link'
+import { forwardRef } from 'react'
+
 import {
 	MobileNavigationAppComponent,
 	useIsInsideMobileNavigation,

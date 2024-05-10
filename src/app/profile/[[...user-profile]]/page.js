@@ -1,4 +1,5 @@
 import { UserProfile } from '@clerk/nextjs'
+
 import { NavbarComponent } from '@/components/Navbar.component'
 
 const UserProfilePage = () => (
