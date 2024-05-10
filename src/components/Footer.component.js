@@ -9,7 +9,7 @@ const navigation = {
 		{ name: 'Pricing', href: '#pricing' },
 		{ name: 'Documentation', href: '/documentation' },
 		{ name: 'CGU', href: '/cgu' },
-		{ name: 'Contact', href: '/contact' },
+		{ name: 'Help, FAQ & Contact', href: '/contact' },
 	],
 	social: [
 		{

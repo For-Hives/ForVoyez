@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
 import { sendEmail } from '@/app/actions/contact/sendEmail'
+import { FaqComponent } from '@/components/Contact/Faq.component'
 
 const schema = yup.object().shape({
 	'first-name': yup.string().required('First name is required'),
@@ -352,6 +353,9 @@ export function ContactComponent() {
 						</div>
 					</div>
 				</form>
+			</div>
+			<div className="bg-white">
+				<FaqComponent />
 			</div>
 		</div>
 	)
