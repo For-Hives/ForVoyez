@@ -102,6 +102,7 @@ export async function POST(request) {
 			headers: { 'Content-Type': 'application/json' },
 		})
 	} catch (error) {
+		console.error('Error processing the request:', error)
 		return new Response('Internal Server Error', { status: 500 })
 	}
 }
