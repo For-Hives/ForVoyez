@@ -102,7 +102,6 @@ export async function syncPlans() {
 			if (!isSubscription) {
 				continue
 			}
-			console.log('variant', variant)
 
 			await _addVariant({
 				productId: variant.product_id.toString(),
@@ -138,8 +137,6 @@ export async function getCustomerIdFromUser(userId) {
 }
 
 export async function updateCreditForUser(userId, credits, tokenId = null) {
-	console.log('updating credits', userId, credits)
-
 	const user = await prisma.user.findUnique({
 		where: {
 			clerkId: userId,
@@ -157,7 +154,6 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 	})
 
 	// log the usage
-	console.log('logging usage')
 
 	await prisma.usage.create({
 		data: {
@@ -179,7 +175,6 @@ export async function getUsageForUser(userId) {
 	})
 
 	let us = await user.Usage
-	console.log('test', us)
 
 	return us.map(u => {
 		return { y: u.used, x: u.usedAt }
