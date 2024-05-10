@@ -317,7 +317,7 @@ export function ChangingPlansComponent() {
 						</div>
 						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 							{JSON.parse(
-								'["100 credits/month", "Basic metadata generation", "Community support", "Accept classic image formats, (JPEG, PNG, WEBP)", "Full HD image support, (up to 1080p)"]'
+								'["All Growth plan features","Unlimited credits","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
 							).map(feature => (
 								<li key={feature} className="flex gap-x-3">
 									<CheckIcon
