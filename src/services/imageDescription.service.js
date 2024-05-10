@@ -102,7 +102,6 @@ Focus on crafting descriptions that are rich in relevant keywords, yet natural a
 			stop: null,
 		})
 
-
 		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
 		console.error('Failed to get image description:', error)

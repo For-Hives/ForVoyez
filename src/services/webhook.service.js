@@ -74,7 +74,6 @@ export async function saveWebhooks(webhooks) {
 		},
 	})
 
-
 	return webhook.id
 }
 
