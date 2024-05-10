@@ -104,6 +104,7 @@ Focus on crafting descriptions that are rich in relevant keywords, yet natural a
 
 		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
+		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
 	}
 }
