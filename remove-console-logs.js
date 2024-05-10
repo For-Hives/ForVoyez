@@ -6,7 +6,7 @@ function removeConsoleLogs(filePath) {
 	const lines = fileContent.split('\n')
 	// Remove lines that contain console.[smtg]
 	// const filteredLines = lines.filter(line => !line.includes('console.log'))
-	const filteredLines = lines.filter(line => !line.includes('console.'))
+	const filteredLines = lines.filter(line => !line.includes('console.log'))
 
 	if (lines.length !== filteredLines.length) {
 		fs.writeFileSync(filePath, filteredLines.join('\n'), 'utf-8')
