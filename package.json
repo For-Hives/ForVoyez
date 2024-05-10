@@ -9,6 +9,7 @@
 		"prettier": "prettier --write .",
 		"precommit": "lint-staged",
 		"prepare": "husky",
+		"prisma": "prisma generate && prisma migrate dev",
 		"prisma-migrate": "prisma migrate dev",
 		"prisma-generate": "prisma generate",
 		"lint": "next lint",
