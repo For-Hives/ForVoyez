@@ -1,9 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
 import 'react-toastify/dist/ReactToastify.css'
 import TokenModal from '@/components/Tokens/TokenModal'
-import { toast } from 'react-toastify'
 import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
 
 export default function TokenList({ tokens, setTokens }) {

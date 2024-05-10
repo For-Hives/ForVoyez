@@ -1,4 +1,5 @@
 import { SignUp } from '@clerk/nextjs'
+
 import { NavbarComponent } from '@/components/Navbar.component'
 
 export default function Page() {

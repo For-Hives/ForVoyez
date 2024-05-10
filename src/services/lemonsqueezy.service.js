@@ -1,7 +1,8 @@
 'use server'
+import { auth } from '@clerk/nextjs'
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { createCheckout, NewCheckout } from '@lemonsqueezy/lemonsqueezy.js'
-import { auth } from '@clerk/nextjs'
+
 import { getCustomerIdFromUser } from '@/services/database.service'
 // import {lemonSqueezySetup} from "@lemonsqueezy/lemonsqueezy.js";
 

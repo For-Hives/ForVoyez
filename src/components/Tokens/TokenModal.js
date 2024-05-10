@@ -1,11 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Fragment, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-import { createToken } from '@/app/actions/tokens/TokensCRUD'
 import { toast } from 'react-toastify'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import * as yup from 'yup'
+
+import { createToken } from '@/app/actions/tokens/TokensCRUD'
 
 const schema = yup.object().shape({
 	name: yup.string().required('Name is required'),

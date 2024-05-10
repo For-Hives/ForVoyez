@@ -1,15 +1,15 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
+import { UserButton, useUser } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ToastContainer } from 'react-toastify'
 
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'
-import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
-import { UserButton, useUser } from '@clerk/nextjs'
 import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
+import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp.component'
-import { ToastContainer } from 'react-toastify'
 
 export function LayoutAppComponent({ children }) {
 	const { user } = useUser()

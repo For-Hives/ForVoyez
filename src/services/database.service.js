@@ -1,4 +1,6 @@
 'use server'
+import { getProduct } from '@lemonsqueezy/lemonsqueezy.js'
+
 import {
 	listProducts,
 	listVariants,
@@ -6,7 +8,6 @@ import {
 	initLemonSqueezy,
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
-import { getProduct } from '@lemonsqueezy/lemonsqueezy.js'
 
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()

@@ -1,6 +1,4 @@
 'use client'
-import { useEffect } from 'react'
-import { createUser } from '@/app/actions/app/createUser'
 import {
 	BookOpenIcon,
 	ChartBarIcon,
@@ -9,6 +7,9 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
+import { useEffect } from 'react'
+
+import { createUser } from '@/app/actions/app/createUser'
 import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
 
 const mainResources = [

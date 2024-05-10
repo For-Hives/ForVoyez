@@ -1,6 +1,6 @@
 'use client'
-import { TypeAnimation } from 'react-type-animation'
 import { useEffect, useState } from 'react'
+import { TypeAnimation } from 'react-type-animation'
 
 export function GlassmorphismComponent({ title, alt, caption }) {
 	const [initialized, setInitialized] = useState(false)

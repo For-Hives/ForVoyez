@@ -1,9 +1,10 @@
 'use server'
 
 import { auth } from '@clerk/nextjs'
-import { prisma } from '@/services/prisma.service'
-import { generateJwt } from '@/services/jwt.service'
 import { currentUser } from '@clerk/nextjs/server'
+
+import { generateJwt } from '@/services/jwt.service'
+import { prisma } from '@/services/prisma.service'
 
 function truncateToken(token) {
 	if (!token) return ''

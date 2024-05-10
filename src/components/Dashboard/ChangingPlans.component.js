@@ -1,8 +1,13 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useAuth } from '@clerk/nextjs'
 import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
+import { useMotionValue } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+
+import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
 import {
 	getPlans,
 	getSubscriptionFromCustomerId,
@@ -11,10 +16,6 @@ import {
 	getCheckoutURL,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
-import { useRouter } from 'next/navigation'
-import { useMotionValue } from 'framer-motion'
-import { ResourcePattern } from '@/components/App/ResourceCardApp.component'
-import { useAuth } from '@clerk/nextjs'
 
 // FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [

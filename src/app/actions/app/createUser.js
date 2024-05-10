@@ -1,7 +1,8 @@
 'use server'
 
-import { prisma } from '@/services/prisma.service'
 import { currentUser } from '@clerk/nextjs/server'
+
+import { prisma } from '@/services/prisma.service'
 
 export async function createUser() {
 	const user = await currentUser()

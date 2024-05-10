@@ -1,8 +1,9 @@
 'use client'
-import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+
 import { getPlans } from '@/services/database.service'
 
 // FIXME replace the pricing with the correct one, from lemon squeezy

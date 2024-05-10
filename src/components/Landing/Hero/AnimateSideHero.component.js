@@ -1,11 +1,12 @@
 'use client'
-import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoLeft.component'
-import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidTop.component'
-import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidBottom.component'
-import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightTop.component'
-import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightBottom.component'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+
+import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoLeft.component'
+import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidBottom.component'
+import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidTop.component'
+import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightBottom.component'
+import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightTop.component'
 
 export function AnimateSideHeroComponent() {
 	const [textInButton, setTextInButton] = useState('Generate Now!')
