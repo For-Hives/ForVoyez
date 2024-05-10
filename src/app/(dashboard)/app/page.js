@@ -79,9 +79,10 @@ const configResources = [
 		},
 	},
 	{
-		href: '/support',
-		name: 'Help & Support',
-		description: 'Get help and support from our team.',
+		href: '/contact',
+		name: 'Help, FAQ & Contact',
+		description:
+			'Get help, view frequently asked questions, and contact our support team.',
 		icon: QuestionMarkCircleIcon,
 		pattern: {
 			y: -6,
