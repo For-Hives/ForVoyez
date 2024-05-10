@@ -85,15 +85,9 @@ export async function syncPlans() {
 			const isUsageBased =
 				currentPriceObj?.attributes.usage_aggregation !== null
 
+			const packageSize = currentPriceObj?.attributes.package_size
+
 			const interval = currentPriceObj?.attributes.renewal_interval_unit
-
-			const intervalCount =
-				currentPriceObj?.attributes.renewal_interval_quantity
-
-			const trialInterval = currentPriceObj?.attributes.trial_interval_unit
-
-			const trialIntervalCount =
-				currentPriceObj?.attributes.trial_interval_quantity
 
 			const price = isUsageBased
 				? currentPriceObj?.attributes.unit_price_decimal
@@ -108,6 +102,7 @@ export async function syncPlans() {
 			if (!isSubscription) {
 				continue
 			}
+			console.log('variant', variant)
 
 			await _addVariant({
 				productId: variant.product_id.toString(),
@@ -117,7 +112,7 @@ export async function syncPlans() {
 				description: productDescription,
 				price: parseInt(priceString),
 				billingCycle: interval,
-				packageSize: variant.package_size,
+				packageSize: packageSize,
 			})
 		}
 	}
