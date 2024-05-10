@@ -1,0 +1,10 @@
+.github
+.husky
+.idea
+.next
+bruno
+media
+node_modules
+.env.exemple
+old.env.local
+.prisma/dev.db
