@@ -39,7 +39,7 @@ cypress/videos/
 
 cypress/screenshots/
 
-.env.local
+old.env.local
 
 cypress.env.json
 
