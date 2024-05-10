@@ -79,9 +79,9 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="py-24 sm:py-32">
+		<div className="py-20">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mt-16 flex justify-center">
+				<div className="flex justify-center">
 					<RadioGroup
 						value={frequency}
 						onChange={setFrequency}
@@ -117,7 +117,7 @@ export function ChangingPlansComponent() {
 						))}
 					</RadioGroup>
 				</div>
-				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2 xl:grid-cols-3">
 					{plans.map(tier => {
 						if (!isAnnually && tier.billingCycle === 'year') return null
 						if (isAnnually && tier.billingCycle === 'month') return null
@@ -145,7 +145,7 @@ export function ChangingPlansComponent() {
 										{tier.name}
 									</h3>
 									{tier.mostPopular ? (
-										<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
+										<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-center text-xs font-semibold leading-5 text-forvoyez_orange-500">
 											Most popular
 										</p>
 									) : null}
@@ -239,10 +239,9 @@ export function ChangingPlansComponent() {
 					})}
 					<div
 						key="custom"
-						className={classNames(
-							'ring-1 ring-slate-200',
-							'rounded-3xl p-8 xl:p-10'
-						)}
+						className={
+							'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2 xl:col-span-1 xl:p-10'
+						}
 					>
 						<div className="flex items-center justify-between gap-x-4">
 							<h3
