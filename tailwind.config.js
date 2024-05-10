@@ -9,6 +9,8 @@ module.exports = {
 		{
 			pattern: /font-(sourcesans|jost)/,
 		},
+		'list-disc',
+		'!list-disc',
 	],
 	theme: {
 		fontSize: {
