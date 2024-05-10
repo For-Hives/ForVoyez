@@ -77,7 +77,6 @@ export async function getCheckoutURL(variantId, embed = false) {
 		throw new Error('User is not authenticated.')
 	}
 
-
 	const checkout = await createCheckout(STORE_ID, variantId, {
 		checkoutOptions: {
 			embed,

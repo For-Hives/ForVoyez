@@ -51,19 +51,15 @@ export async function syncPlans() {
 	// Fetch products from the Lemon Squeezy store.
 	const products = await listProducts()
 
-
 	// Loop through all the variants.
 	const allVariants = await listVariants()
 
-
 	// for...of supports asynchronous operations, unlike forEach.
 	if (allVariants) {
-
 		for (const v of allVariants) {
 			// Fetch the variant attributes.
 
 			const variant = v.attributes
-
 
 			// Skip draft variants or if there's more than one variant, skip the default
 			// variant. See https://docs.lemonsqueezy.com/api/variants
@@ -75,55 +71,43 @@ export async function syncPlans() {
 				continue
 			}
 
-
 			const product = (await getProduct(variant.product_id)).data?.data
 
 			// Fetch the Product name.
 			const productName = product.attributes.name ?? ''
 			const productDescription = product.attributes.description ?? ''
 
-
 			// Fetch the Price object.
 			const variantPriceObject = await listPrice(v.id)
 
-
 			const currentPriceObj = variantPriceObject.at(0)
-
 
 			const isUsageBased =
 				currentPriceObj?.attributes.usage_aggregation !== null
 
 			const interval = currentPriceObj?.attributes.renewal_interval_unit
 
-
 			const intervalCount =
 				currentPriceObj?.attributes.renewal_interval_quantity
 
-
 			const trialInterval = currentPriceObj?.attributes.trial_interval_unit
-
 
 			const trialIntervalCount =
 				currentPriceObj?.attributes.trial_interval_quantity
-
 
 			const price = isUsageBased
 				? currentPriceObj?.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 
-
 			const priceString = price !== null ? price?.toString() ?? '' : ''
-
 
 			const isSubscription =
 				currentPriceObj?.attributes.category === 'subscription'
-
 
 			// If not a subscription, skip it.
 			if (!isSubscription) {
 				continue
 			}
-
 
 			// model Plan {
 			// 	id             Int      @id @default(autoincrement())
