@@ -72,7 +72,6 @@ export function Playground() {
 				setResponse('Error processing the request. Please try again.')
 			}
 		} catch (error) {
-			console.error('Error:', error)
 			setResponse(
 				'An error occurred. Please check the console for more details.'
 			)
@@ -86,9 +85,7 @@ export function Playground() {
 			navigator.clipboard
 				.writeText(content)
 				.then(() => {})
-				.catch(err => {
-					console.error('Failed to copy:', err)
-				})
+				.catch(err => {})
 		} else {
 			// Fallback to older execCommand approach
 			const textarea = document.createElement('textarea')
@@ -97,9 +94,7 @@ export function Playground() {
 			textarea.select()
 			try {
 				document.execCommand('copy')
-			} catch (err) {
-				console.error('Failed to copy with execCommand:', err)
-			}
+			} catch (err) {}
 			document.body.removeChild(textarea)
 		}
 	}

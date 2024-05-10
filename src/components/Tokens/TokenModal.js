@@ -35,9 +35,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 			navigator.clipboard
 				.writeText(token)
 				.then(() => {})
-				.catch(err => {
-					console.error('Failed to copy:', err)
-				})
+				.catch(err => {})
 		} else {
 			// Fallback to older execCommand approach
 			const textarea = document.createElement('textarea')
@@ -46,9 +44,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 			textarea.select()
 			try {
 				document.execCommand('copy')
-			} catch (err) {
-				console.error('Failed to copy with execCommand:', err)
-			}
+			} catch (err) {}
 			document.body.removeChild(textarea)
 		}
 
