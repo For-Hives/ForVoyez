@@ -1,5 +1,5 @@
 'use server'
-import { auth } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { createCheckout } from '@lemonsqueezy/lemonsqueezy.js'
 
@@ -71,9 +71,10 @@ export async function listPrice(variantID) {
 export async function getCheckoutURL(variantId, embed = false) {
 	await initLemonSqueezy()
 
-	const user = await auth()
+	const user = await currentUser()
 
 	if (!user) {
+		console.error('User is not authenticated.')
 		throw new Error('User is not authenticated.')
 	}
 
@@ -85,7 +86,7 @@ export async function getCheckoutURL(variantId, embed = false) {
 		},
 		checkoutData: {
 			custom: {
-				user_id: user.userId,
+				user_id: user.id,
 			},
 		},
 		productOptions: {
@@ -100,14 +101,14 @@ export async function getCheckoutURL(variantId, embed = false) {
 export async function getCustomerPortalLink() {
 	await initLemonSqueezy()
 
-	const user = await auth()
+	const user = await currentUser()
 
 	if (!user) {
 		throw new Error('User is not authenticated.')
 	}
 
 	// get user subscription using database.service
-	const customerId = await getCustomerIdFromUser(user.userId)
+	const customerId = await getCustomerIdFromUser(user.id)
 
 	if (!customerId) {
 		throw new Error('Customer not found.')

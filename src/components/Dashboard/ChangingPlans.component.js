@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 
 import {
 	getPlans,
-	getSubscriptionFromCustomerId,
+	getSubscriptionFromUserId,
 } from '@/services/database.service'
 import {
 	getCheckoutURL,
@@ -57,7 +57,7 @@ export function ChangingPlansComponent() {
 	}, [])
 
 	async function checkSubscription() {
-		const sub = await getSubscriptionFromCustomerId(auth.user_id)
+		const sub = await getSubscriptionFromUserId(auth.userId)
 
 		if (sub) {
 			setCurrentSubscription(sub)
