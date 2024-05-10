@@ -122,7 +122,18 @@ export async function processWebhook(id) {
 
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
-	await updateCreditForUser(webhook.userId, 100)
+	// find witch plan is linked to the variantId
+	const sub = await prisma.subscription.findFirst({
+		where: {
+			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+		},
+		include: {
+			plans: true,
+		},
+	})
+
+	// update the user credits
+	await updateCreditForUser(webhook.userId, sub.plans.packageSize ?? 0)
 }
 
 async function processSubscriptionCreated(webhook) {
