@@ -19,10 +19,10 @@ const faqs = [
 	{
 		question: 'What are the available subscription plans and pricing?',
 		answer: `We offer several subscription plans to suit different needs:
-      <ul className="!list-disc pl-5 text-slate-600">
-        <li className="!list-disc">Starter: Perfect for small entrepreneurs and occasional use.</li>
-        <li className="!list-disc">Growth: Ideal for regular, daily usage.</li>  
-        <li className="!list-disc">Enterprise: Tailored for high-volume users and large organizations.</li>
+      <ul class="!list-disc pl-5">
+        <li class="!list-disc">Starter: Perfect for small entrepreneurs and occasional use.</li>
+        <li class="!list-disc">Growth: Ideal for regular, daily usage.</li>  
+        <li class="!list-disc">Enterprise: Tailored for high-volume users and large organizations.</li>
       </ul>
       Please check our pricing page for more details on each plan and current rates.`,
 	},
