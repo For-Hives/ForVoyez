@@ -1,9 +1,10 @@
 {
 	"extends": ["next/core-web-vitals", "prettier"],
-	"plugins": ["prettier"],
+	"plugins": ["prettier", "no-only-tests"],
 	"rules": {
 		"prettier/prettier": "error",
 		"no-console": "warn",
+		"no-only-tests/no-only-tests": "error",
 		"import/order": [
 			"error",
 			{
