@@ -123,7 +123,7 @@ export function ChangingPlansComponent() {
 									<span className={'transition-none'}>{option.label}</span>
 									<div
 										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute
-										-right-4 -top-5 rounded-full 
+										-right-4 -top-7 rounded-full 
 										border border-forvoyez_orange-500 bg-white/80 p-1 px-1.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
 									>
 										Save 20%
