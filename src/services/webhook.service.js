@@ -92,16 +92,17 @@ export async function processWebhook(id) {
 		return
 	}
 	// process the webhook
+	const parsed_webhook = JSON.parse(webhook.body)
 
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
 			break
 		case 'subscription_created':
-			await processSubscriptionCreated(JSON.parse(webhook.body))
+			await processSubscriptionCreated(parsed_webhook)
 			break
 		case 'subscription_payment_success':
-			await processSubscriptionPaymentSuccess(webhook)
+			await processSubscriptionPaymentSuccess(parsed_webhook)
 			break
 		case 'subscription_updated':
 			break
@@ -133,7 +134,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	})
 
 	// update the user credits
-	await updateCreditForUser(webhook.userId, sub.plans.packageSize ?? 0)
+	await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
 }
 
 async function processSubscriptionCreated(webhook) {
