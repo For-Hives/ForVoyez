@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'

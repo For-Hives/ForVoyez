@@ -1,13 +1,9 @@
 'use client'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { loader } from '@monaco-editor/react'
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 
-import {
-	describePlayground,
-	describePlaygroundAction,
-} from '@/app/actions/app/playground'
+import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 

@@ -1,9 +1,5 @@
 import { createHmac, timingSafeEqual } from 'crypto'
 
-import { nodejsWebHookHandler } from 'lemonsqueezy-webhooks'
-import { NextApiResponse, NextApiRequest } from 'next'
-import { headers } from 'next/headers'
-
 import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
 const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
