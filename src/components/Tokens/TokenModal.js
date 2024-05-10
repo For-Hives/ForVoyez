@@ -34,9 +34,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 		if (navigator.clipboard) {
 			navigator.clipboard
 				.writeText(token)
-				.then(() => {
-					console.log('Token copied using clipboard API')
-				})
+				.then(() => {})
 				.catch(err => {
 					console.error('Failed to copy:', err)
 				})
@@ -48,7 +46,6 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 			textarea.select()
 			try {
 				document.execCommand('copy')
-				console.log('Token copied using execCommand')
 			} catch (err) {
 				console.error('Failed to copy with execCommand:', err)
 			}

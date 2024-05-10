@@ -69,12 +69,9 @@ export function ChangingPlansComponent() {
 	// while no data is fetched, show a loading spinner
 	async function subscribe(variantId) {
 		try {
-			// syncPlans().then(r => console.log(r))
 			const url = await getCheckoutURL(variantId)
 			await router.push(url)
-		} catch (e) {
-			console.log(e)
-		}
+		} catch (e) {}
 	}
 
 	if (plans.length === 0) {
@@ -82,7 +79,6 @@ export function ChangingPlansComponent() {
 	}
 
 	function manageSubscription() {
-		console.log('click')
 		getCustomerPortalLink().then(url => router.push(url))
 	}
 

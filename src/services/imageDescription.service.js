@@ -43,8 +43,6 @@ export async function blobToBase64(blob) {
 		const optimizedImage = await image.webp({ quality: 75 }).toBuffer()
 
 		// log the new size
-		console.log('Optimized image size:', optimizedImage.length)
-		console.log('Original image size:', blob.size)
 
 		const bytes = new Uint8Array(optimizedImage)
 		return Buffer.from(bytes).toString('base64')
@@ -78,7 +76,6 @@ export async function getImageDescription(base64Image, data) {
 			],
 		})
 
-		console.log('Vision response:', vision.choices[0].message.content)
 		const result = vision.choices[0].message.content
 
 		// Generate alt text, caption, and title for the image
@@ -104,8 +101,6 @@ Focus on crafting descriptions that are rich in relevant keywords, yet natural a
 			n: 1,
 			stop: null,
 		})
-
-		console.log('SEO response:', seoResponse)
 
 		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {

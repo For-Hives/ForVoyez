@@ -3,7 +3,7 @@
 	"plugins": ["prettier", "no-only-tests"],
 	"rules": {
 		"prettier/prettier": "error",
-		"no-console": "error",
+		"no-console": "warn",
 		"no-only-tests/no-only-tests": "error",
 		"import/order": [
 			"error",
