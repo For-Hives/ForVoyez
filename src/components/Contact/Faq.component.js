@@ -9,26 +9,27 @@ const faqs = [
 	{
 		question: 'What is ForVoyez and what services do you offer?',
 		answer:
-			'ForVoyez is a SaaS platform that automatically generates optimized alternative text, titles, and captions for images using AI. Our API processes your images and returns SEO-friendly metadata in a JSON format.',
+			'ForVoyez is a SaaS platform that automatically generates optimized alternative text, titles, and captions for images using AI. Our API processes your images and returns SEO-friendly metadata in a JSON format. The API allows you to customize the JSON response and can be used for a variety of purposes. Simply send an image along with optional context and a data schema, and receive a properly formatted response tailored to your needs.',
 	},
 	{
 		question: 'How do I get started with ForVoyez?',
-		answer: `To get started, sign up for an account on our website. Choose a subscription plan that fits your needs and complete the payment process. Once your account is set up, you'll receive an API key that you can use to access our services.`,
+		answer:
+			'To get started, sign up for an account on our website. Once your account is set up, you can create API keys to access our services. Alternatively, you can use our playground to experiment with the API without needing an API key.',
 	},
 	{
 		question: 'What are the available subscription plans and pricing?',
-		answer: `We offer three subscription plans:
-      <ol className="list-decimal pl-5 text-slate-600">
-        <li>Pay-as-you-go: Prepaid credits system for on-demand usage.</li>
-        <li>Monthly plan: Fixed monthly fee with a set number of API requests included.</li>  
-        <li>Enterprise plan: Custom pricing for high-volume users, with a 50% premium per request.</li>
-      </ol>
-      Please check our pricing page for current rates and more details.`,
+		answer: `We offer several subscription plans to suit different needs:
+      <ul className="!list-disc pl-5 text-slate-600">
+        <li className="!list-disc">Starter: Perfect for small entrepreneurs and occasional use.</li>
+        <li className="!list-disc">Growth: Ideal for regular, daily usage.</li>  
+        <li className="!list-disc">Enterprise: Tailored for high-volume users and large organizations.</li>
+      </ul>
+      Please check our pricing page for more details on each plan and current rates.`,
 	},
 	{
 		question: 'How do I integrate ForVoyez into my application?',
 		answer:
-			'Integrating ForVoyez is simple. Our well-documented API allows you to send requests with your API key, an image, and optional parameters like a JSON schema or additional context. The API will process your request and return the generated metadata. Check out our documentation for code examples and detailed instructions.',
+			'Integrating ForVoyez is easy and can be done in any environment that can send a standard HTTP POST request and receive a JSON response. Our well-documented API allows you to send requests with your API key, an image, and optional parameters like a JSON schema or additional context. The API will process your request and return the generated metadata. Check out our documentation for code examples and detailed instructions.',
 	},
 	{
 		question: 'What image formats do you support?',
@@ -38,7 +39,7 @@ const faqs = [
 	{
 		question: 'Is there a limit to the number of API requests I can make?',
 		answer:
-			'API request limits depend on your subscription plan. Pay-as-you-go and monthly plans have set limits, while enterprise plans can be customized to your needs. You can monitor your usage from your account dashboard.',
+			'API request limits depend on your subscription plan. The Starter and Growth plans have set limits, while the Enterprise plan can be customized to your needs. You can monitor your usage from your account dashboard.',
 	},
 	{
 		question: 'How can I get support if I have any issues or questions?',
@@ -48,7 +49,7 @@ const faqs = [
 
 export function FaqComponent() {
 	return (
-		<div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
+		<div className="mx-auto max-w-7xl px-6 pb-24 sm:pb-32 lg:px-8 lg:pb-40">
 			<div className="mx-auto max-w-4xl divide-y divide-slate-900/10">
 				<h2 className="text-2xl font-bold leading-10 tracking-tight text-slate-900">
 					Frequently Asked Questions
@@ -73,10 +74,12 @@ export function FaqComponent() {
 											</span>
 										</DisclosureButton>
 									</dt>
-									<DisclosurePanel
-										className="mt-2 pr-12 text-base leading-7 text-slate-600"
-										dangerouslySetInnerHTML={{ __html: faq.answer }}
-									></DisclosurePanel>
+									<DisclosurePanel className="mt-2 pr-12">
+										<div
+											className="text-base leading-7 text-slate-600"
+											dangerouslySetInnerHTML={{ __html: faq.answer }}
+										></div>
+									</DisclosurePanel>
 								</>
 							)}
 						</Disclosure>
