@@ -6,7 +6,11 @@ export default function PlansPage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
 			<h1 className="text-xl font-bold text-slate-800">Available Plans</h1>
-			<p className="text-slate-600"></p>
+			<p className="mt-1 text-sm text-slate-600">
+				This is where you can view and change your current subscription plan.
+				Choose the plan that best suits your needs and scale as your usage
+				grows. You can upgrade, downgrade, or cancel your plan at any time.
+			</p>
 			<ChangingPlansComponent />
 		</div>
 	)

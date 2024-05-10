@@ -81,18 +81,6 @@ export function ChangingPlansComponent() {
 	return (
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
-					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
-						Pricing
-					</h2>
-					<p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-						Plans for every stage of your growth
-					</p>
-				</div>
-				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-slate-600">
-					Choose the plan that fits your needs and scale as your usage grows.
-					Upgrade, downgrade, or cancel anytime.
-				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
 						value={frequency}
