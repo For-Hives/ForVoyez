@@ -18,6 +18,8 @@ export async function generateJwt(payload) {
 		// toISOString
 		.sign(secretKey) // secretKey generated from previous step
 
+	console.log(token) // log token to console
+
 	return token
 }
 
@@ -33,6 +35,8 @@ export async function verifyJwt(jwt) {
 
 		return payload
 	} catch (e) {
+		console.error(e)
+
 		throw new Error('Token is invalid')
 	}
 }
