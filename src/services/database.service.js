@@ -35,7 +35,6 @@ export async function syncPlans() {
 	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
 		// eslint-disable-next-line no-console -- allow
-		console.log(`Syncing variant ${variant.name} with the database...`)
 
 		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
@@ -45,7 +44,6 @@ export async function syncPlans() {
 		})
 
 		/* eslint-disable no-console -- allow */
-		console.log(`${variant.name} synced with the database...`)
 
 		productVariants.push(variant)
 	}
@@ -53,23 +51,19 @@ export async function syncPlans() {
 	// Fetch products from the Lemon Squeezy store.
 	const products = await listProducts()
 
-	console.log('get products')
 
 	// Loop through all the variants.
 	const allVariants = await listVariants()
 
-	console.log('get all variants', allVariants)
 
 	// for...of supports asynchronous operations, unlike forEach.
 	if (allVariants) {
-		console.log('into all variants')
 
 		for (const v of allVariants) {
 			// Fetch the variant attributes.
 
 			const variant = v.attributes
 
-			console.log('get variant precisions')
 
 			// Skip draft variants or if there's more than one variant, skip the default
 			// variant. See https://docs.lemonsqueezy.com/api/variants
@@ -81,7 +75,6 @@ export async function syncPlans() {
 				continue
 			}
 
-			console.log('not draft or pending')
 
 			const product = (await getProduct(variant.product_id)).data?.data
 
@@ -89,60 +82,48 @@ export async function syncPlans() {
 			const productName = product.attributes.name ?? ''
 			const productDescription = product.attributes.description ?? ''
 
-			console.log('get product name')
 
 			// Fetch the Price object.
 			const variantPriceObject = await listPrice(v.id)
 
-			console.log('get variant price object', variantPriceObject)
 
 			const currentPriceObj = variantPriceObject.at(0)
 
-			console.log('get current price object', currentPriceObj)
 
 			const isUsageBased =
 				currentPriceObj?.attributes.usage_aggregation !== null
 
-			console.log('is usage based')
 			const interval = currentPriceObj?.attributes.renewal_interval_unit
 
-			console.log('get interval')
 
 			const intervalCount =
 				currentPriceObj?.attributes.renewal_interval_quantity
 
-			console.log('get interval count')
 
 			const trialInterval = currentPriceObj?.attributes.trial_interval_unit
 
-			console.log('get trial interval')
 
 			const trialIntervalCount =
 				currentPriceObj?.attributes.trial_interval_quantity
 
-			console.log('get trial interval count')
 
 			const price = isUsageBased
 				? currentPriceObj?.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 
-			console.log('get price')
 
 			const priceString = price !== null ? price?.toString() ?? '' : ''
 
-			console.log('get price string')
 
 			const isSubscription =
 				currentPriceObj?.attributes.category === 'subscription'
 
-			console.log('is subscription')
 
 			// If not a subscription, skip it.
 			if (!isSubscription) {
 				continue
 			}
 
-			console.log('not subscription')
 
 			// model Plan {
 			// 	id             Int      @id @default(autoincrement())

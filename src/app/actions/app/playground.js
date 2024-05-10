@@ -16,13 +16,11 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('Unauthorized')
 	}
 
-	console.log('Fetching User Data...')
 	const userData = await prisma.user.findUnique({
 		where: {
 			clerkId: user.id,
 		},
 	})
-	console.log('User Data:', userData)
 
 	if (userData.credits <= 0) {
 		console.error('No credits left')

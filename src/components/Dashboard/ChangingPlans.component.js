@@ -81,7 +81,6 @@ export function ChangingPlansComponent() {
 	}
 
 	function manageSubscription() {
-		console.log('click')
 		getCustomerPortalLink().then(url => router.push(url))
 	}
 
