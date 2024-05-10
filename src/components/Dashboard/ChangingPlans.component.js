@@ -15,7 +15,6 @@ import {
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
 
-// FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
 	{
@@ -29,7 +28,6 @@ function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
-// TODO : manage DangerouslySetInnerHTML for description
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
 
@@ -43,7 +41,6 @@ export function ChangingPlansComponent() {
 	const auth = useAuth()
 
 	useEffect(() => {
-		// when the frequency change, and it's 'annually', then, swap the flag to true
 		if (frequency.value === 'annually') {
 			setIsAnnually(true)
 		} else {
@@ -64,7 +61,6 @@ export function ChangingPlansComponent() {
 		}
 	}
 
-	// while no data is fetched, show a loading spinner
 	async function subscribe(variantId) {
 		try {
 			const url = await getCheckoutURL(variantId)
@@ -83,7 +79,7 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="bg-white py-24 sm:py-32">
+		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
 					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
@@ -123,7 +119,7 @@ export function ChangingPlansComponent() {
 									<span className={'transition-none'}>{option.label}</span>
 									<div
 										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute
-										-right-4 -top-7 rounded-full 
+										-right-7 -top-7 rounded-full 
 										border border-forvoyez_orange-500 bg-white/80 p-1 px-1.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
 									>
 										Save 20%
@@ -166,13 +162,15 @@ export function ChangingPlansComponent() {
 										</p>
 									) : null}
 								</div>
-								<p className="mt-4 text-sm leading-6 text-slate-600">
-									{tier.description}
-								</p>
+								<p
+									className="mt-4 text-sm leading-6 text-slate-600"
+									dangerouslySetInnerHTML={{
+										__html: tier.description,
+									}}
+								/>
 								<p className="mt-6 flex items-baseline gap-x-1">
 									<span className="text-4xl font-bold tracking-tight text-slate-900">
-										{/* format to price in € */}
-										{tier.price / 100}€
+										{(tier.price / 100).toFixed(2).replace('.', ',')}€
 									</span>
 									<span className="text-sm font-semibold leading-6 text-slate-600">
 										{frequency.priceSuffix}
@@ -191,10 +189,10 @@ export function ChangingPlansComponent() {
 												tier.mostPopular
 													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
 													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 											)}
 										>
-											{currentSubscription.planId == tier.id
+											{currentSubscription.planId === tier.id
 												? 'Manage my Subscription'
 												: 'Change Plan'}
 										</button>
@@ -207,7 +205,7 @@ export function ChangingPlansComponent() {
 											tier.mostPopular
 												? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
 												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-											'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
 									>
 										{tier.buttonText}
@@ -230,7 +228,6 @@ export function ChangingPlansComponent() {
 												&nbsp;subscription
 											</span>
 											<div className={'flex h-full items-center'}>
-												{/*	Link icon*/}
 												<ArrowUpRightIcon
 													className={'h-3 w-3 text-slate-600'}
 												/>
@@ -275,7 +272,6 @@ export function ChangingPlansComponent() {
 						</p>
 						<p className="mt-6 flex items-baseline gap-x-1">
 							<span className="text-4xl font-bold tracking-tight text-slate-900">
-								{/* format to price in € */}
 								Custom
 							</span>
 							<span className="text-sm font-semibold leading-6 text-slate-600">
@@ -309,7 +305,6 @@ export function ChangingPlansComponent() {
 										&nbsp;subscription
 									</span>
 									<div className={'flex h-full items-center'}>
-										{/*	Link icon*/}
 										<ArrowUpRightIcon className={'h-3 w-3 text-slate-600'} />
 									</div>
 								</button>

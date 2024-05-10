@@ -4,10 +4,10 @@ import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.com
 
 export default function PlansPage() {
 	return (
-		<>
-			<h1 className="my-6 text-center text-2xl font-bold">Available Plans</h1>
-
+		<div className="prose mx-auto max-w-5xl flex-auto">
+			<h1 className="text-xl font-bold text-slate-800">Available Plans</h1>
+			<p className="text-slate-600"></p>
 			<ChangingPlansComponent />
-		</>
+		</div>
 	)
 }
