@@ -3,10 +3,11 @@ import sharp from 'sharp'
 
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
-// Configure OpenAI client with environment-specific API key.
-const openai = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY,
-})
+function initOpenAI() {
+	return OpenAI({
+		apiKey: process.env.OPENAI_API_KEY,
+	})
+}
 
 // Convert blob to Base64 string with image optimizations.
 export async function blobToBase64(blob) {
@@ -59,6 +60,8 @@ export async function blobToBase64(blob) {
  */
 export async function getImageDescription(base64Image, data) {
 	try {
+		const openai = initOpenAI()
+
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
 			model: 'gpt-4-vision-preview',
