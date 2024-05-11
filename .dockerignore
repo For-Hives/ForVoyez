@@ -5,6 +5,5 @@
 bruno
 media
 node_modules
-.env.exemple
-old.env.local
+.env*
 .prisma/dev.db
