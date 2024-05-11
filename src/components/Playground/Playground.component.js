@@ -83,6 +83,13 @@ export function Playground() {
 		}
 	}
 
+	const copySelectedEditorContent = () => {
+		const content = getSelectedEditorContent()
+		copyToClipboard(content)
+		setIsPreviewCopied(true)
+		setTimeout(() => setIsPreviewCopied(false), 2000)
+	}
+
 	const copyToClipboard = content => {
 		if (navigator.clipboard) {
 			navigator.clipboard.writeText(content).catch(err => {
@@ -551,11 +558,7 @@ export function Playground() {
 											/>
 											<button
 												className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
-												onClick={() => {
-													copyToClipboard(requestPreviewValue)
-													setIsPreviewCopied(true)
-													setTimeout(() => setIsPreviewCopied(false), 2000)
-												}}
+												onClick={copySelectedEditorContent}
 											>
 												{isPreviewCopied ? (
 													<CheckIcon className="h-5 w-5 text-green-500" />
