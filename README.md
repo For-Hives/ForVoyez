@@ -9,10 +9,11 @@ docker run --name <name>-postgres -e POSTGRES_PASSWORD=<password> -e POSTGRES_US
 ```
 E.g.
 ```bash
-docker run --name forvoyez-postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_USER=forvoyez -e PGDATA=/var/lib/postgresql/data/pgdata -v /db/forvoyez:/var/lib/postgresql/data -p 5432:5432 -d postgres
+docker run --name forvoyez-pg -e POSTGRES_PASSWORD=123456789 -d -p 5432:5432 -v forvoyez-pg:/var/lib/postgresql/data postgres
 ```
+
 
 La chaines de connexion est la suivante:
 ```bash
-postgresql://bdd:123456@localhost:5432/bdd
+postgresql://forvoyez-pg:123456789@localhost:5432/forvoyez-pg
 ```
