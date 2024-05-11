@@ -29,7 +29,6 @@ yarn-error.log*
 .vercel
 
 .idea
-pnpm-lock.yaml
 
 .env
 
@@ -44,8 +43,7 @@ cypress/screenshots/
 cypress.env.json
 
 yarn.lock
-
-!package-lock.json
+package-lock.json
 
 *.iml
 bun.lockb
