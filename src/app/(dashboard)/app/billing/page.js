@@ -1,17 +1,16 @@
 'use client'
 
-import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
-
-export default function PlansPage() {
+export default function BillingPage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
-			<h1 className="text-xl font-bold text-slate-800">Available Plans</h1>
+			<h1 className="text-xl font-bold text-slate-800">
+				Billing & Invoice management
+			</h1>
 			<p className="mt-1 text-sm text-slate-600">
-				This is where you can view and change your current subscription plan.
-				Choose the plan that best suits your needs and scale as your usage
-				grows. You can upgrade, downgrade, or cancel your plan at any time.
+				This is where you can view and manage your invoices, payment methods,
+				and billing information. You can also update your billing details,
+				manage your payment methods, and view your billing history.
 			</p>
-			<ChangingPlansComponent />
 		</div>
 	)
 }
