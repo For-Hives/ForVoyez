@@ -74,6 +74,10 @@
 		"typescript": "5.4.5"
 	},
 	"trustedDependencies": [
-		"@clerk/shared"
+		"@clerk/shared",
+		"@prisma/client",
+		"@prisma/engines",
+		"prisma",
+		"sharp"
 	]
 }
