@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 
 import { describePlaygroundAction } from '@/app/actions/app/playground'
+import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
@@ -471,7 +472,7 @@ Authorization: Bearer <user-token>
 					<select
 						id="tabs"
 						name="tabs"
-						className="block w-full rounded-md border-slate-300 py-2 pl-3 pr-10 text-base focus:border-forvoyez_orange-500 focus:outline-none focus:ring-forvoyez_orange-500 sm:text-sm"
+						className="block w-full rounded-md border-slate-300 focus:border-forvoyez_orange-500 focus:ring-forvoyez_orange-500"
 					>
 						{previewLanguages.map(language => (
 							<option key={language}>{language}</option>
@@ -480,91 +481,72 @@ Authorization: Bearer <user-token>
 				</div>
 				<div className="hidden sm:block">
 					<div className="border-b border-slate-200">
-						<nav className="-mb-px flex space-x-8" aria-label="Tabs">
-							<Tab.Group>
-								<Tab.List>
-									{previewLanguages.map(language => (
-										<Tab
-											key={language}
-											className={({ selected }) =>
-												selected
-													? 'whitespace-nowrap border-b-2 border-forvoyez_orange-500 px-1 py-4 text-sm font-medium text-forvoyez_orange-600'
-													: 'whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
-											}
-										>
-											{language}
-										</Tab>
-									))}
-								</Tab.List>
-								<Tab.Panels>
-									<Tab.Panel>
-										{/* TODO: Add HTTP preview */}
+						<Tab.Group>
+							<Tab.List className="flex">
+								{previewLanguages.map(language => (
+									<Tab
+										key={language}
+										className={({ selected }) =>
+											selected
+												? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
+												: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
+										}
+									>
+										{language}
+									</Tab>
+								))}
+							</Tab.List>
+							<Tab.Panels>
+								{previewLanguages.map(language => (
+									<Tab.Panel key={language}>
 										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-											{/* ... */}
+											<MonacoEditor
+												language={language.toLowerCase()}
+												theme="vs-light"
+												value={getPreviewCode(
+													language,
+													image,
+													context,
+													jsonSchema,
+													formatJsonSchema
+												)}
+												editorDidMount={editor =>
+													(requestPreviewRef.current = editor)
+												}
+												width={'100%'}
+												options={{
+													minimap: { enabled: false },
+													scrollBeyondLastLine: false,
+													wordWrap: 'on',
+													fontSize: 14,
+													fontFamily: 'var(--font-jost)',
+													tabSize: 4,
+													autoIndent: true,
+													formatOnPaste: true,
+													formatOnType: true,
+													folding: true,
+													readOnly: false,
+													quickSuggestions: true,
+													// Add these options for syntax highlighting
+													selectOnLineNumbers: true,
+													renderLineHighlight: 'all',
+													contextmenu: true,
+													matchBrackets: 'always',
+													autoClosingBrackets: 'always',
+													automaticLayout: true,
+													mouseWheelZoom: false,
+													scrollbar: {
+														handleMouseWheel: false,
+													},
+												}}
+											/>
 										</div>
 									</Tab.Panel>
-									<Tab.Panel>
-										{/* TODO: Add cURL preview */}
-										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-											{/* ... */}
-										</div>
-									</Tab.Panel>
-									<Tab.Panel>
-										{/* TODO: Add JavaScript preview */}
-										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-											{/* ... */}
-										</div>
-									</Tab.Panel>
-									<Tab.Panel>
-										{/* TODO: Add PHP preview */}
-										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-											{/* ... */}
-										</div>
-									</Tab.Panel>
-									<Tab.Panel>
-										{/* TODO: Add Python preview */}
-										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-											{/* ... */}
-										</div>
-									</Tab.Panel>
-								</Tab.Panels>
-							</Tab.Group>
-						</nav>
+								))}
+							</Tab.Panels>
+						</Tab.Group>
 					</div>
-				</div>
-				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-					<MonacoEditor
-						language="javascript"
-						theme="vs-light"
-						value={requestPreviewValue}
-						editorDidMount={editor => (requestPreviewRef.current = editor)}
-						width={'100%'}
-						options={{
-							minimap: { enabled: false },
-							scrollBeyondLastLine: false,
-							wordWrap: 'on',
-							fontSize: 14,
-							fontFamily: 'var(--font-jost)',
-							tabSize: 4,
-							autoIndent: true,
-							formatOnPaste: true,
-							formatOnType: true,
-							folding: true,
-							readOnly: false,
-							quickSuggestions: true,
-							// Add these options for syntax highlighting
-							selectOnLineNumbers: true,
-							renderLineHighlight: 'all',
-							contextmenu: true,
-							matchBrackets: 'always',
-							autoClosingBrackets: 'always',
-							automaticLayout: true,
-							mouseWheelZoom: false,
-							scrollbar: {
-								handleMouseWheel: false,
-							},
-						}}
-					/>
+
 					<button
 						className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
 						onClick={() => {
