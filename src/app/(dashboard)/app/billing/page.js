@@ -1,11 +1,13 @@
 'use client'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
 export default function BillingPage() {
+	// Use the router to redirect the user to the billing portal
+	const router = useRouter()
 	const [loadingMessage, setLoadingMessage] = useState('Loading your data...')
 
 	// Simulate checking if the user has ever been subscribed based on an error message
@@ -27,20 +29,43 @@ export default function BillingPage() {
 		try {
 			const hasSubscription = await hasEverBeenSubscribed()
 			if (!hasSubscription) {
-				toast.info(
-					'You must have been subscribed at least once to access this page.'
-				)
-				window.location.href = '/app/plans' // Redirect to plans page if user has never subscribed
+				// Use a unique toastId to prevent multiple toasts
+				if (!toast.isActive('subscription-toast')) {
+					toast.info(
+						'You must have been subscribed at least once to access this page.',
+						{ toastId: 'subscription-toast' }
+					)
+				}
 				return
 			}
 
 			setLoadingMessage('Fetching your billing portal...')
 			const url = await getCustomerPortalLink()
+			console.log('Customer portal link:', url)
 			// Uncomment the next line for actual redirection
-			// window.location.href = url;
-			setLoadingMessage('Redirecting to your billing portal...')
+			router.replace(url) // Redirect to billing portal if user has subscribed
+			setLoadingMessage('Redirecting to your billing home...')
 		} catch (error) {
-			toast.error('Failed to load data: ' + error.message)
+			if (!toast.isActive('data-load-error')) {
+				if (error.message === 'Customer not found.') {
+					toast.info(
+						'You must have been subscribed at least once to access this page.',
+						{ toastId: 'data-load-error' }
+					)
+					router.push('/app/plans') // Redirect to dashboard if user has never subscribed
+					return
+				}
+				toast.error(
+					'Failed to load data: ' +
+						error.message +
+						' ' +
+						'redirect to dashboard',
+					{
+						toastId: 'data-load-error',
+					}
+				)
+				router.push('/app') // Redirect to dashboard if data loading fails
+			}
 			setLoadingMessage('Failed to load data. Please try again later.')
 		}
 	}
@@ -55,6 +80,7 @@ export default function BillingPage() {
 				Billing & Invoice Management
 			</h1>
 			<p className="mt-1 text-sm text-slate-600">{loadingMessage}</p>
+			<div className={'h-[50vh] w-full'} />
 		</div>
 	)
 }
