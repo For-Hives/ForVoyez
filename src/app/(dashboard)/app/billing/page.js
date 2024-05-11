@@ -30,7 +30,7 @@ export default function BillingPage() {
 				toast.info(
 					'You must have been subscribed at least once to access this page.'
 				)
-				router.push('/plans')
+				window.location.href = '/app/plans' // Redirect to plans page if user has never subscribed
 				return
 			}
 
