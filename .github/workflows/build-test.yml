@@ -10,7 +10,7 @@ on:
     branches: [ "feat/cicd" ]
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
