@@ -18,8 +18,7 @@ Content-Disposition: form-data; name="data"
 
 {
   "context": "${context || 'No context provided'}",
-  "schema": ${formatJsonSchema(jsonSchema)}
-}
+  "schema": ${formatJsonSchema(jsonSchema)}}
 -----011000010111000001101001--`
 
 const CURL_EXAMPLE = (

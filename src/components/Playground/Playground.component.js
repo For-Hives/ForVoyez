@@ -33,7 +33,7 @@ export function Playground() {
 	const [uploadError, setUploadError] = useState(null)
 
 	const editorRef = useRef(null)
-	const requestPreviewRef = useRef(null)
+	const requestPreviewRefs = useRef([])
 	const responseRef = useRef(null)
 	const apiResponseRef = useRef(null)
 
@@ -184,6 +184,36 @@ export function Playground() {
 		}
 	}
 
+	const handleEditorDidMount = (editor, index) => {
+		requestPreviewRefs.current[index] = editor
+		resizeEditor(editor)
+	}
+
+	useEffect(() => {
+		const resizeAllEditors = () => {
+			requestPreviewRefs.current.forEach(editor => {
+				if (editor) {
+					resizeEditor(editor)
+				}
+			})
+		}
+
+		const disposables = requestPreviewRefs.current.map(editor => {
+			if (editor) {
+				return editor.onDidChangeModelContent(resizeAllEditors)
+			}
+			return null
+		})
+
+		return () => {
+			disposables.forEach(disposable => {
+				if (disposable) {
+					disposable.dispose()
+				}
+			})
+		}
+	}, [requestPreviewValue])
+
 	useEffect(() => {
 		setIsJsonValid(validateJson(jsonSchema))
 	}, [jsonSchema])
@@ -206,17 +236,6 @@ export function Playground() {
 	}, [])
 
 	useEffect(() => {
-		const requestPreviewEditor = requestPreviewRef.current
-		if (requestPreviewEditor) {
-			const resizeHandler = () => resizeEditor(requestPreviewEditor)
-			const disposable =
-				requestPreviewEditor.onDidChangeModelContent(resizeHandler)
-			resizeEditor(requestPreviewEditor)
-			return () => disposable.dispose()
-		}
-	}, [requestPreviewValue])
-
-	useEffect(() => {
 		const responseEditor = responseRef.current
 		if (responseEditor) {
 			const resizeHandler = () => resizeEditor(responseEditor)
@@ -229,29 +248,6 @@ export function Playground() {
 	useEffect(() => {
 		resizeEditor(responseRef.current)
 	}, [response])
-
-	useEffect(() => {
-		const fetchRequest = `// --- Request Headers ---
-Content-Type: multipart/form-data
-Authorization: Bearer <user-token>
-
-/* (The "Bearer" token is a JSON Web Token (JWT) that includes the user's authentication information. It is used to authenticate the user and authorize access to the API.) */
-
-// --- Request Body ---
-{
-	image: ${image ? image.name : 'No file selected'} 
-	/* (The "image" field contains the selected image file to be sent to the API for processing.) */
-	
-	context: ${context || 'No context provided'} 
-	/* (The "context" field includes any additional context or information about the image provided by the user. This context helps the API better understand and process the image.) */
-	
-	schema: ${formatJsonSchema(jsonSchema)}
-	/* (The "schema" field contains the JSON schema specified by the user. 
-	It defines the desired structure and format of the API response.) */
-}`
-
-		setRequestPreviewValue(fetchRequest)
-	}, [image, context, jsonSchema, isJsonValid])
 
 	return (
 		<div className="grid-col-1 grid gap-8 xl:grid-cols-2">
@@ -497,7 +493,7 @@ Authorization: Bearer <user-token>
 								))}
 							</Tab.List>
 							<Tab.Panels>
-								{previewLanguages.map(language => (
+								{previewLanguages.map((language, index) => (
 									<Tab.Panel key={language}>
 										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 											<MonacoEditor
@@ -511,7 +507,7 @@ Authorization: Bearer <user-token>
 													formatJsonSchema
 												)}
 												editorDidMount={editor =>
-													(requestPreviewRef.current = editor)
+													handleEditorDidMount(editor, index)
 												}
 												width={'100%'}
 												options={{
