@@ -28,6 +28,7 @@ function isValidSchema(schema) {
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	let user
+	let payload
 	try {
 		// get the authorisation header
 		const authorization = request.headers.get('Authorization')
@@ -40,7 +41,7 @@ export async function POST(request) {
 
 		// check if the token is valid
 		try {
-			let payload = await verifyJwt(authorization)
+			payload = await verifyJwt(authorization)
 
 			// check if the token is still valid and if the user is have credit left
 			user = await prisma.user.findUnique({
