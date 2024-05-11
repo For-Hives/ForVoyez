@@ -3,25 +3,19 @@ env:
   TOTAL_RUNNERS: 1
   NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
 
+#on:
+#  pull_request:
+#    branches: ['main']
+
 on:
-  pull_request:
-    branches: ['main']
+  push:
+    branches: [feat/cicd]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          cache: 'npm'
-          node-version: 20.x
-      - name: Install dependencies in production
-        run: npm ci --ignore-scripts
-      - name: Build the app
-        continue-on-error: false
-        run: npm run build
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -31,5 +25,5 @@ jobs:
         with:
           context: .
           push: false
-          tags: ${{ secrets.APP_IMAGE }}
-          build-args: NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
+          tags: test
+     #     tags: ${{ secrets.APP_IMAGE }}
