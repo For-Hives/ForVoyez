@@ -117,7 +117,7 @@ export function ChangingPlansComponent() {
 						))}
 					</RadioGroup>
 				</div>
-				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2 xl:grid-cols-3">
+				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 					{plans.map(tier => {
 						if (!isAnnually && tier.billingCycle === 'year') return null
 						if (isAnnually && tier.billingCycle === 'month') return null
@@ -129,7 +129,7 @@ export function ChangingPlansComponent() {
 									tier.mostPopular
 										? 'ring-2 ring-forvoyez_orange-500'
 										: 'ring-1 ring-slate-200',
-									'rounded-3xl p-8 xl:p-10'
+									'rounded-3xl p-8'
 								)}
 							>
 								<div className="flex items-center justify-between gap-x-4">
@@ -223,7 +223,7 @@ export function ChangingPlansComponent() {
 										</button>
 									)}
 								</div>
-								<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
+								<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
 									{JSON.parse(tier.features).map(feature => (
 										<li key={feature} className="flex gap-x-3">
 											<CheckIcon
@@ -239,9 +239,7 @@ export function ChangingPlansComponent() {
 					})}
 					<div
 						key="custom"
-						className={
-							'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2 xl:col-span-1 xl:p-10'
-						}
+						className={'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2'}
 					>
 						<div className="flex items-center justify-between gap-x-4">
 							<h3
@@ -297,7 +295,7 @@ export function ChangingPlansComponent() {
 								</button>
 							)}
 						</div>
-						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
+						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
 							{JSON.parse(
 								'["All Growth plan features","Unlimited credits","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
 							).map(feature => (
