@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 function initOpenAI() {
+	// ! Be careful, if you return directly the OpenAI instance, it will not work.
 	const openai = new OpenAI({
 		apiKey: process.env.OPENAI_API_KEY,
 	})
