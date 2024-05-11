@@ -14,5 +14,5 @@ docker run --name forvoyez-postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_USER
 
 La chaines de connexion est la suivante:
 ```bash
-postgresql://forvoyez:123456@localhost:5432/forvoyez
+postgresql://bdd:123456@localhost:5432/bdd
 ```
