@@ -6,4 +6,3 @@ bruno
 media
 node_modules
 .env*
-.prisma/dev.db
