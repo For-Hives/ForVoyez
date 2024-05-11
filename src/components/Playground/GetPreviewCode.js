@@ -76,15 +76,20 @@ $response = curl_exec($curl);
 curl_close($curl);
 echo $response;`
 
-const PYTHON_EXAMPLE = (image, context, jsonSchema) => `import requests
+const PYTHON_EXAMPLE = (image, context, jsonSchema) => {
+	const imageFile = image ? `'${image.name}'` : '"example.jpg"'
+	const contextValue = context || 'No context provided'
+	const schemaValue = formatJsonSchema(jsonSchema)
+
+	return `import requests 
 url = 'https://forvoyez.com/api/describe'
 files = {
-    'image': open('${image ? image.name : 'example.jpg'}', 'rb'),
+    'image': open(${imageFile}, 'rb'),
 }
 payload = {
     'data': {
-        'context': '${context || 'No context provided'}',
-        'schema': ${formatJsonSchema(jsonSchema)}
+        'context': '${contextValue}',
+        'schema': ${schemaValue}
     }
 }
 headers = {
@@ -93,8 +98,9 @@ headers = {
 
 response = requests.post(url, files=files, json=payload, headers=headers)
 print(response.json())`
+}
 
-const getPreviewCode = language => {
+export const getPreviewCode = language => {
 	switch (language) {
 		case 'HTTP':
 			return HTTP_EXAMPLE(image, context, jsonSchema)
