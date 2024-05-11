@@ -4,9 +4,10 @@ import sharp from 'sharp'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 function initOpenAI() {
-	return OpenAI({
+	const openai = new OpenAI({
 		apiKey: process.env.OPENAI_API_KEY,
 	})
+	return openai
 }
 
 // Convert blob to Base64 string with image optimizations.
