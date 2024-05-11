@@ -1,4 +1,5 @@
 'use client'
+import { Tab } from '@headlessui/react'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
@@ -8,6 +9,8 @@ import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 export function Playground() {
+	const previewLanguages = ['HTTP', 'cURL', 'JavaScript', 'PHP', 'Python']
+
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
 	const [isResponseCopied, setIsResponseCopied] = useState(false)
 
@@ -461,6 +464,74 @@ Authorization: Bearer <user-token>
 				<p className="mt-1 text-sm italic text-slate-500">
 					{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
 				</p>
+				<div className="sm:hidden">
+					<label htmlFor="tabs" className="sr-only">
+						Select a language
+					</label>
+					<select
+						id="tabs"
+						name="tabs"
+						className="block w-full rounded-md border-slate-300 py-2 pl-3 pr-10 text-base focus:border-forvoyez_orange-500 focus:outline-none focus:ring-forvoyez_orange-500 sm:text-sm"
+					>
+						{previewLanguages.map(language => (
+							<option key={language}>{language}</option>
+						))}
+					</select>
+				</div>
+				<div className="hidden sm:block">
+					<div className="border-b border-slate-200">
+						<nav className="-mb-px flex space-x-8" aria-label="Tabs">
+							<Tab.Group>
+								<Tab.List>
+									{previewLanguages.map(language => (
+										<Tab
+											key={language}
+											className={({ selected }) =>
+												selected
+													? 'whitespace-nowrap border-b-2 border-forvoyez_orange-500 px-1 py-4 text-sm font-medium text-forvoyez_orange-600'
+													: 'whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
+											}
+										>
+											{language}
+										</Tab>
+									))}
+								</Tab.List>
+								<Tab.Panels>
+									<Tab.Panel>
+										{/* TODO: Add HTTP preview */}
+										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+											{/* ... */}
+										</div>
+									</Tab.Panel>
+									<Tab.Panel>
+										{/* TODO: Add cURL preview */}
+										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+											{/* ... */}
+										</div>
+									</Tab.Panel>
+									<Tab.Panel>
+										{/* TODO: Add JavaScript preview */}
+										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+											{/* ... */}
+										</div>
+									</Tab.Panel>
+									<Tab.Panel>
+										{/* TODO: Add PHP preview */}
+										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+											{/* ... */}
+										</div>
+									</Tab.Panel>
+									<Tab.Panel>
+										{/* TODO: Add Python preview */}
+										<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+											{/* ... */}
+										</div>
+									</Tab.Panel>
+								</Tab.Panels>
+							</Tab.Group>
+						</nav>
+					</div>
+				</div>
 				<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 					<MonacoEditor
 						language="javascript"
