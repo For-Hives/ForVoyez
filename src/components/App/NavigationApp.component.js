@@ -146,7 +146,10 @@ export const dashboardNavigation = [
 	},
 	{
 		title: 'Support',
-		links: [{ title: 'Help, FAQ & Contact', href: '/contact' }],
+		links: [
+			{ title: 'Help, FAQ & Contact', href: '/contact' },
+			{ title: 'Invoice & billing management', href: '/app/billing' },
+		],
 	},
 ]
 
