@@ -13,7 +13,7 @@ module.exports = {
 	quoteProps: 'as-needed',
 	requirePragma: false,
 	insertPragma: false,
-	endOfLine: 'lf',
+	endOfLine: 'auto',
 	htmlWhitespaceSensitivity: 'css',
 	vueIndentScriptAndStyle: false,
 	embeddedLanguageFormatting: 'auto',
