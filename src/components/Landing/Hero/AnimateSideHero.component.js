@@ -77,7 +77,11 @@ export function AnimateSideHeroComponent() {
 					'container-animation absolute left-0 top-0 flex h-full w-full items-center justify-center'
 				}
 			>
-				<div className={'relative h-full w-full'}>
+				<div
+					className={
+						'relative h-full w-full lg:-translate-x-1/3 xl:translate-x-0'
+					}
+				>
 					<div
 						className={'cursor cursor-animation pointer-events-none absolute'}
 					>
