@@ -71,14 +71,14 @@ export function HeroComponent() {
 						</div>
 						<div
 							className={
-								'relative hidden w-full max-w-xl sm:block lg:shrink-0 xl:max-w-2xl'
+								'relative hidden w-full max-w-xl md:flex lg:shrink-0 xl:max-w-2xl'
 							}
 						>
 							<AnimateSideHeroComponent />
 						</div>
 						<div
 							className={
-								'relative block w-full max-w-xl sm:hidden lg:shrink-0 xl:max-w-2xl'
+								'relative flex w-full max-w-xl sm:hidden lg:shrink-0 xl:max-w-2xl'
 							}
 						>
 							<AnimateSideHeroMobileComponent />
