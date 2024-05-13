@@ -37,24 +37,13 @@ To run the ForVoyez project locally, ensure you have the following dependencies 
 - npm (v10.x or higher)
 - PostgreSQL (v16.x or higher)
 
-## Project Structure
-
-The ForVoyez project follows a standard Next.js project structure. Here's an overview of the key files and directories:
-
-- `pages/`: Contains the Next.js pages and API routes.
-- `components/`: Contains reusable React components used throughout the application.
-- `styles/`: Contains global and component-specific CSS styles.
-- `lib/`: Contains utility functions and helper modules.
-- `prisma/`: Contains Prisma schema and migration files for database management.
-- `public/`: Contains static assets such as images and fonts.
-
 ## Development
 
 To set up the development environment for ForVoyez, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/your-username/forvoyez.git`
 2. Navigate to the project directory: `cd forvoyez`
-3. Install dependencies: `npm install`
+3. Install dependencies: `npm install` or `bun install`
 4. Set up the PostgreSQL database using the provided Docker command (see README for details).
 5. Create a `.env` file based on the `.env.example` file and fill in the required environment variables.
 6. Run database migrations: `npm run prisma-migrate`
@@ -85,7 +74,7 @@ If you encounter any bugs, have feature requests, or want to contribute to the p
 
 To use the ForVoyez API, send a POST request to the `/api/describe` endpoint with the following parameters:
 
-- `image`: The image file to process (JPEG, PNG, WebP, GIF, AVIF, HEIC, JPEG-XR, JPEG 2000).
+- `image`: The image file to process (JPEG, PNG, WebP, GIF).
 - `context` (optional): Additional context or information about the image to guide the metadata generation process.
 - `jsonSchema` (optional): A custom JSON schema defining the desired output format for the generated metadata.
 
