@@ -19,11 +19,59 @@ const jost = Jost({
 })
 
 export const metadata = {
-	title: 'Here is the forhives template',
-	description: 'Here is the forhives template',
+	title: 'ForVoyez - AI-Powered Image Metadata Generation',
+	description:
+		'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+	keywords: 'ForVoyez, image metadata, alt text, SEO, AI, SaaS, API',
+	authors: [{ name: 'ForVoyez Team', url: 'https://forvoyez.com' }],
+	creator: 'ForVoyez',
+	publisher: 'ForVoyez',
 	metadataBase: new URL('https://forvoyez.com/'),
+	openGraph: {
+		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		description:
+			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+		url: 'https://forvoyez.com/',
+		siteName: 'ForVoyez',
+		images: [
+			{
+				url: 'https://forvoyez.com/og-image.jpg',
+				width: 1200,
+				height: 630,
+			},
+		],
+		locale: 'en-US',
+		type: 'website',
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		description:
+			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+		creator: '@ForVoyez',
+		images: [
+			{
+				url: 'https://forvoyez.com/twitter-image.jpg',
+				width: 1200,
+				height: 600,
+			},
+		],
+	},
+	robots: {
+		index: true,
+		follow: true,
+		nocache: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			noimageindex: true,
+			'max-video-preview': -1,
+			'max-image-preview': 'large',
+			'max-snippet': -1,
+		},
+	},
 	alternates: {
-		canonical: '/',
+		canonical: 'https://forvoyez.com/',
 		languages: {
 			'en-US': 'https://forvoyez.com/',
 		},
