@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { AnimateSideHeroComponent } from '@/components/Landing/Hero/AnimateSideHero.component'
+import { AnimateSideHeroMobileComponent } from '@/components/Landing/Hero/AnimateSideHeroMobile.component'
 
 export function HeroComponent() {
 	return (
@@ -68,7 +69,20 @@ export function HeroComponent() {
 								</Link>
 							</div>
 						</div>
-						<AnimateSideHeroComponent />
+						<div
+							className={
+								'relative hidden w-full max-w-xl sm:block lg:shrink-0 xl:max-w-2xl'
+							}
+						>
+							<AnimateSideHeroComponent />
+						</div>
+						<div
+							className={
+								'relative block w-full max-w-xl sm:hidden lg:shrink-0 xl:max-w-2xl'
+							}
+						>
+							<AnimateSideHeroMobileComponent />
+						</div>
 					</div>
 				</div>
 			</div>

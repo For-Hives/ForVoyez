@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { GlassmorphismComponent } from '@/components/Landing/Hero/ImageDemoComponents/Glassmorphism.component'
+import { GlassmorphismComponent } from '@/components/Landing/Hero/ImageDemoComponents/GlassmorphismMobile.component'
 
 export function ImageDemoRightBottomComponent() {
 	return (
