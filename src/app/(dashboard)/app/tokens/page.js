@@ -4,6 +4,15 @@ import { useState } from 'react'
 import TokenList from '@/components/Tokens/TokenList'
 import 'react-toastify/dist/ReactToastify.css'
 
+export const metadata = {
+	title: 'API Tokens - ForVoyez',
+	description:
+		'Generate, manage, and revoke your ForVoyez API tokens to securely access our image metadata generation services.',
+	alternates: {
+		canonical: '/app/tokens',
+	},
+}
+
 export default function TokenPage() {
 	const [tokens, setTokens] = useState([])
 
