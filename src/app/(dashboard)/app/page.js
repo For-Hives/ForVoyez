@@ -14,7 +14,7 @@ import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.compo
 
 const mainResources = [
 	{
-		href: '/docs',
+		href: 'https://doc.forvoyez.com/',
 		name: 'Documentation',
 		description: 'Discover our features and API reference.',
 		icon: BookOpenIcon,

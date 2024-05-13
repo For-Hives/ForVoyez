@@ -69,7 +69,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 						<TopLevelNavItemAppComponent href="/">
 							Website
 						</TopLevelNavItemAppComponent>
-						<TopLevelNavItemAppComponent href="/docs">
+						<TopLevelNavItemAppComponent href="https://doc.forvoyez.com/">
 							Documentation
 						</TopLevelNavItemAppComponent>
 						<TopLevelNavItemAppComponent href="/profile">
