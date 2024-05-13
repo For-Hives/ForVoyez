@@ -44,6 +44,11 @@ You can use the following Docker command to set up a PostgreSQL database for loc
 docker run --name forvoyez-postgres -e POSTGRES_USER=forvoyez -e POSTGRES_PASSWORD=forvoyez -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
 ```
 
+if you want to configure your .env file to connect to the database, you can use the following environment variables:
+```bash
+DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
+```
+
 Then, you can connect to the database using the following command:
 
 1. Clone the repository: `git clone https://github.com/your-username/forvoyez.git`
