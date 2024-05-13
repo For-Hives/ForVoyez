@@ -16,7 +16,7 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 		// 	after 3.5s, disable 'opacity-0' class on the div
 		setTimeout(() => {
 			setInitialized(true)
-		}, 3500)
+		}, 35)
 	}, [])
 
 	return (
@@ -40,7 +40,7 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 								whiteSpace: 'pre-wrap',
 							}}
 							sequence={[
-								3500,
+								35,
 								`\n\t"title":"${truncateText(title, 50)}",\n\n\t"alternativeText": "${truncateText(alt, 125)}",\n\n\t"caption":"${truncateText(caption, 75)}"\n`,
 							]}
 							repeat={0}

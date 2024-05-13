@@ -5,17 +5,8 @@ import { GlassmorphismComponent } from '@/components/Landing/Hero/ImageDemoCompo
 export function ImageDemoMidBottomComponent() {
 	return (
 		<div className="relative">
-			<GlassmorphismComponent
-				title={'Minimalist Elegance'}
-				alt={
-					'A minimalist interior design of a modern living room. The space features clean lines, neutral colors, and an open floor plan. Large windows allow plenty of natural light, and a few carefully chosen accent pieces add visual interest.'
-				}
-				caption={
-					'A minimalist interior design of a modern living room. The space features clean lines, neutral colors, and an open floor plan. Large windows allow plenty of natural light, and a few carefully chosen accent pieces add visual interest.'
-				}
-			/>
 			<Image
-				src="/images/minimalist_interior_modern_living_room.webp"
+				src="/images/tranquil_forest_crystal-clear.webp"
 				alt="Image of an abstract expressionist painting, demo of the generated alt text API"
 				width={200}
 				height={350}

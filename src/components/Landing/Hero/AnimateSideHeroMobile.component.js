@@ -2,13 +2,12 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoLeft.component'
-import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
-import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
-import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightBottom.component'
-import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightTop.component'
+import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoMidBottom.component'
+import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoMidTop.component'
+import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoRightBottom.component'
+import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoRightTop.component'
 
-export function AnimateSideHeroComponent() {
+export function AnimateSideHeroMobileComponent() {
 	const [textInButton, setTextInButton] = useState('Generate Now!')
 	useEffect(() => {
 		let animateButton = function (e) {
@@ -19,7 +18,7 @@ export function AnimateSideHeroComponent() {
 			e.target.classList.add('animate')
 			setTimeout(function () {
 				e.target.classList.remove('animate')
-			}, 700)
+			}, 70)
 		}
 
 		let bubblyButtons = document.getElementsByClassName('bubbly-button')
@@ -31,15 +30,15 @@ export function AnimateSideHeroComponent() {
 		// 	after 3.1s, trigger the click event on the button
 		const timeout1 = setTimeout(() => {
 			bubblyButtons[0].click()
-		}, 2800)
+		}, 28)
 
 		const timeout2 = setTimeout(() => {
 			setTextInButton('Analyse...')
-		}, 2800)
+		}, 28)
 
 		const timeout3 = setTimeout(() => {
 			setTextInButton('Done !')
-		}, 7000)
+		}, 70)
 
 		// Cleanup function pour annuler les timeouts lorsque le composant est démonté
 		return () => {
@@ -51,18 +50,6 @@ export function AnimateSideHeroComponent() {
 
 	return (
 		<div className="relative mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
-			{/* View sm + (all except mobile) */}
-			<div className="ml-auto hidden w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:block sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-				<ImageDemoLeftComponent />
-			</div>
-			<div className="mr-auto hidden w-44 flex-none space-y-8 sm:mr-0 sm:block sm:pt-52 lg:pt-36">
-				<ImageDemoMidTopComponent />
-				<ImageDemoMidBottomComponent />
-			</div>
-			<div className="hidden w-44 flex-none space-y-8 pt-32 sm:block sm:pt-0">
-				<ImageDemoRightTopComponent />
-				<ImageDemoRightBottomComponent />
-			</div>
 			{/* View mobile */}
 			<div className="mr-auto block w-44 flex-none space-y-8 sm:mr-0 sm:hidden sm:pt-52 lg:pt-36">
 				<ImageDemoMidTopComponent />
