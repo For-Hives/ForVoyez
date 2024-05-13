@@ -106,6 +106,12 @@ html {
 	animation: cursor-scale 3.5s forwards linear;
 }
 
+.cursor-animation-mobile img {
+	scale: 1.5;
+	transform: scale(1);
+	animation: cursor-scale 2s forwards linear;
+}
+
 @keyframes cursor-move {
 	0% {
 		offset-distance: 0;
