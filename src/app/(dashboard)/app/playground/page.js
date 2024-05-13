@@ -1,6 +1,15 @@
 import 'react-toastify/dist/ReactToastify.css'
 import { Playground } from '@/components/Playground/Playground.component'
 
+export const metadata = {
+	title: 'API Playground - ForVoyez',
+	description:
+		"Experiment with ForVoyez's image metadata generation API in our interactive playground and discover its powerful capabilities.",
+	alternates: {
+		canonical: '/app/playground',
+	},
+}
+
 export default function PlaygroundPage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">

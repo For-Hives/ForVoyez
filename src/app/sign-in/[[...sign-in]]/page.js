@@ -2,6 +2,15 @@ import { SignIn } from '@clerk/nextjs'
 
 import { NavbarComponent } from '@/components/Navbar.component'
 
+export const metadata = {
+	title: 'Sign In - ForVoyez',
+	description:
+		'Sign in to your ForVoyez account to access our advanced image metadata generation API and manage your projects.',
+	alternates: {
+		canonical: '/sign-in',
+	},
+}
+
 export default function Page() {
 	return (
 		<div>
