@@ -41,6 +41,13 @@ To run the ForVoyez project locally, ensure you have the following dependencies 
 
 To set up the development environment for ForVoyez, follow these steps:
 
+You can use the following Docker command to set up a PostgreSQL database for local development:
+```bash
+docker run --name forvoyez-postgres -e POSTGRES_USER=forvoyez -e POSTGRES_PASSWORD=forvoyez -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
+```
+
+Then, you can connect to the database using the following command:
+
 1. Clone the repository: `git clone https://github.com/your-username/forvoyez.git`
 2. Navigate to the project directory: `cd forvoyez`
 3. Install dependencies: `npm install` or `bun install`
@@ -95,14 +102,6 @@ Example Response:
 ## Support
 
 If you encounter any issues, have questions, or need assistance, please don't hesitate to reach out to our support team at [support@forvoyez.com](mailto:support@forvoyez.com) or visit our [contact page](https://forvoyez.com/contact).
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
-## Contributing
-
-We welcome contributions from the community! If you'd like to contribute to ForVoyez, please read our [Contributing Guidelines](CONTRIBUTING.md) and submit a pull request.
 
 ---
 
