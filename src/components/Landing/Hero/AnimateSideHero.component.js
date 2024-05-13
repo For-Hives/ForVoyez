@@ -2,11 +2,11 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoLeft.component'
-import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidBottom.component'
-import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoMidTop.component'
-import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightBottom.component'
-import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/ImageDemoRightTop.component'
+import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoLeft.component'
+import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
+import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
+import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightBottom.component'
+import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightTop.component'
 
 export function AnimateSideHeroComponent() {
 	const [textInButton, setTextInButton] = useState('Generate Now!')
@@ -51,14 +51,18 @@ export function AnimateSideHeroComponent() {
 
 	return (
 		<div className="relative mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
-			<div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+			{/* View sm + (all except mobile) */}
+			<div
+				className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0  sm:pt-80 lg:order-last
+			lg:pt-36 xl:order-none xl:pt-80"
+			>
 				<ImageDemoLeftComponent />
 			</div>
-			<div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
+			<div className="mr-auto w-44 flex-none space-y-8 sm:mr-0  sm:pt-52 lg:pt-36">
 				<ImageDemoMidTopComponent />
 				<ImageDemoMidBottomComponent />
 			</div>
-			<div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
+			<div className="w-44 flex-none space-y-8 pt-32  sm:pt-0">
 				<ImageDemoRightTopComponent />
 				<ImageDemoRightBottomComponent />
 			</div>
