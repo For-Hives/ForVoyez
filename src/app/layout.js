@@ -35,9 +35,9 @@ export const metadata = {
 		siteName: 'ForVoyez',
 		images: [
 			{
-				url: 'https://forvoyez.com/og-image.jpg',
-				width: 1200,
-				height: 630,
+				url: 'https://forvoyez.com/logo_og.webp',
+				width: 1261,
+				height: 959,
 			},
 		],
 		locale: 'en-US',
@@ -51,9 +51,9 @@ export const metadata = {
 		creator: '@ForVoyez',
 		images: [
 			{
-				url: 'https://forvoyez.com/twitter-image.jpg',
-				width: 1200,
-				height: 600,
+				url: 'https://forvoyez.com/logo_og.webp',
+				width: 1261,
+				height: 959,
 			},
 		],
 	},
