@@ -1,5 +1,3 @@
-Voici le README mis à jour avec les suggestions et les réponses à vos questions :
-
 # ForVoyez - AI-Powered Image Metadata Generation
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
