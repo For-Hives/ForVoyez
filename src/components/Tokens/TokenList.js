@@ -7,7 +7,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import TokenModal from '@/components/Tokens/TokenModal'
 import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
 
-export default function TokenList({ tokens, setTokens }) {
+export default function TokenList() {
+	const [tokens, setTokens] = useState([])
+
 	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	const openModal = () => setIsModalOpen(true)
