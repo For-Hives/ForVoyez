@@ -132,7 +132,7 @@ export const dashboardNavigation = [
 	{
 		title: 'General',
 		links: [
-			{ title: 'Documentation', href: '/docs' },
+			{ title: 'Documentation', href: 'https://doc.forvoyez.com/' },
 			{ title: 'Playground', href: '/app/playground' },
 		],
 	},
@@ -169,7 +169,10 @@ export function NavigationAppComponent(props) {
 					<TopLevelNavItemAppComponent href="/" className={'lg:hidden'}>
 						Website
 					</TopLevelNavItemAppComponent>
-					<TopLevelNavItemAppComponent href="/docs" className={'lg:hidden'}>
+					<TopLevelNavItemAppComponent
+						href="https://doc.forvoyez.com/"
+						className={'lg:hidden'}
+					>
 						Documentation
 					</TopLevelNavItemAppComponent>
 					<TopLevelNavItemAppComponent href="/profile" className={'lg:hidden'}>
