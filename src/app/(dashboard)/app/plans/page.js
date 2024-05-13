@@ -1,5 +1,3 @@
-'use client'
-
 import ClientLogicPlans from '@/app/(dashboard)/app/plans/client'
 
 export const metadata = {
