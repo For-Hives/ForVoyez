@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 import { GlassmorphismComponent } from '@/components/Landing/Hero/ImageDemoComponents/Glassmorphism.component'
 
-export function ImageDemoMidBottomComponent() {
+export function TextDemoBottomMobileComponent() {
 	return (
 		<div className="relative">
 			<Image
