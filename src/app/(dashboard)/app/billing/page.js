@@ -5,6 +5,15 @@ import { toast } from 'react-toastify'
 
 import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
+export const metadata = {
+	title: 'Billing - ForVoyez',
+	description:
+		'Manage your ForVoyez subscription, update payment methods, and view your billing history.',
+	alternates: {
+		canonical: '/app/billing',
+	},
+}
+
 export default function BillingPage() {
 	// Use the router to redirect the user to the billing portal
 	const router = useRouter()
