@@ -35,7 +35,7 @@ export async function syncPlans() {
 
 	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
-		// eslint-disable-next-line no-console -- allow
+		console.log('Adding variant:', variant)
 
 		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
@@ -44,46 +44,31 @@ export async function syncPlans() {
 			create: variant,
 		})
 
-		/* eslint-disable no-console -- allow */
-
 		productVariants.push(variant)
 	}
 
 	// Loop through all the variants.
 	const allVariants = await listVariants()
-	console.log('**********************')
-	console.log(allVariants)
-	console.log('**********************')
-	// filter the variants, only the ones that are subscriptions
-	const subscriptionVariants = allVariants.filter(
-		v => v.attributes.is_subscription
-	)
-	const onetimeVariants = allVariants.filter(v => !v.attributes.is_subscription)
 
 	// for...of supports asynchronous operations, unlike forEach.
-	if (allVariants) {
+	// Process all variants
+	if (allVariants.length > 0) {
 		for (const v of allVariants) {
-			// Fetch the variant attributes.
-
 			const variant = v.attributes
 
-			// Skip draft variants or if there's more than one variant, skip the default
-			// variant. See https://docs.lemonsqueezy.com/api/variants
+			// Skip draft variants or if there's more than one variant, skip the default variant
 			if (
 				variant.status === 'draft' ||
 				(allVariants.length !== 1 && variant.status === 'pending')
 			) {
-				// `return` exits the function entirely, not just the current iteration.
 				continue
 			}
 
 			const product = (await getProduct(variant.product_id)).data?.data
 
-			// Fetch the Product name.
 			const productName = product.attributes.name ?? ''
 			const productDescription = product.attributes.description ?? ''
 
-			// Fetch the Price object.
 			const variantPriceObject = await listPrice(v.id)
 
 			const currentPriceObj = variantPriceObject.at(0)
@@ -93,21 +78,15 @@ export async function syncPlans() {
 
 			const packageSize = currentPriceObj?.attributes.package_size
 
-			const interval = currentPriceObj?.attributes.renewal_interval_unit
+			const interval = variant.is_subscription
+				? currentPriceObj?.attributes.renewal_interval_unit
+				: null
 
 			const price = isUsageBased
 				? currentPriceObj?.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 
 			const priceString = price !== null ? price?.toString() ?? '' : ''
-
-			const isSubscription =
-				currentPriceObj?.attributes.category === 'subscription'
-
-			// If not a subscription, skip it.
-			if (!isSubscription) {
-				continue
-			}
 
 			await _addVariant({
 				productId: variant.product_id.toString(),
