@@ -1,6 +1,5 @@
 name: Build and Deploy on prod
 
-
 on:
   push:
     tags:

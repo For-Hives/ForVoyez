@@ -40,11 +40,13 @@ To run the ForVoyez project locally, ensure you have the following dependencies 
 To set up the development environment for ForVoyez, follow these steps:
 
 You can use the following Docker command to set up a PostgreSQL database for local development:
+
 ```bash
 docker run --name forvoyez-postgres -e POSTGRES_USER=forvoyez -e POSTGRES_PASSWORD=forvoyez -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
 ```
 
 if you want to configure your .env file to connect to the database, you can use the following environment variables:
+
 ```bash
 DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
 ```
@@ -89,16 +91,18 @@ To use the ForVoyez API, send a POST request to the `/api/describe` endpoint wit
 - `jsonSchema` (optional): A custom JSON schema defining the desired output format for the generated metadata.
 
 Example Request:
+
 ```bash
 curl -X POST -H "Authorization: Bearer <YOUR_API_TOKEN>" -F "image=@/path/to/image.jpg" -F "context=A beautiful sunset over the ocean" -F "jsonSchema={\"title\": \"string\", \"alt\": \"string\", \"caption\": \"string\"}" https://api.forvoyez.com/describe
 ```
 
 Example Response:
+
 ```json
 {
-  "title": "Serene Sunset Over the Calm Ocean Waves",
-  "alt": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape.",
-  "caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea."
+	"title": "Serene Sunset Over the Calm Ocean Waves",
+	"alt": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape.",
+	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea."
 }
 ```
 
