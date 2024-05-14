@@ -1,5 +1,5 @@
 'use server'
-import { getProduct } from '@lemonsqueezy/lemonsqueezy.js'
+import { getProduct, getVariant } from '@lemonsqueezy/lemonsqueezy.js'
 
 import {
 	initLemonSqueezy,
@@ -19,7 +19,7 @@ export async function getPlans(filter = null) {
 
 	syncPlans()
 
-	console.log(plans)
+	// console.log(plans)
 	return plans
 }
 
@@ -35,8 +35,6 @@ export async function syncPlans() {
 
 	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
-		console.log('Adding variant:', variant)
-
 		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
 			where: { variantId: variant.variantId },
@@ -47,19 +45,30 @@ export async function syncPlans() {
 		productVariants.push(variant)
 	}
 
+	const allProducts = await listProducts()
+	const refillProduct = allProducts[0]
+	const refillVariants = refillProduct.relationships.variants.data
+
+	const refillVariantsData = []
+	for (const refillVariant of refillVariants.slice(1)) {
+		const variant = await getVariant(refillVariant.id)
+		refillVariantsData.push(variant.data.data.attributes)
+	}
+
 	// Loop through all the variants.
-	const allVariants = await listVariants()
+	const subscriptionVariants = (await listVariants()).filter(
+		v => v.attributes.is_subscription
+	)
 
 	// for...of supports asynchronous operations, unlike forEach.
 	// Process all variants
-	if (allVariants.length > 0) {
-		for (const v of allVariants) {
+	if (subscriptionVariants.length > 0) {
+		for (const v of subscriptionVariants) {
 			const variant = v.attributes
 
-			// Skip draft variants or if there's more than one variant, skip the default variant
 			if (
 				variant.status === 'draft' ||
-				(allVariants.length !== 1 && variant.status === 'pending')
+				(subscriptionVariants.length !== 1 && variant.status === 'pending')
 			) {
 				continue
 			}
@@ -78,9 +87,7 @@ export async function syncPlans() {
 
 			const packageSize = currentPriceObj?.attributes.package_size
 
-			const interval = variant.is_subscription
-				? currentPriceObj?.attributes.renewal_interval_unit
-				: null
+			const interval = currentPriceObj?.attributes.renewal_interval_unit
 
 			const price = isUsageBased
 				? currentPriceObj?.attributes.unit_price_decimal
@@ -99,6 +106,35 @@ export async function syncPlans() {
 				packageSize: packageSize,
 			})
 		}
+	}
+
+	for (const refillVariant of refillVariants.slice(1)) {
+		const variant = await getVariant(refillVariant.id)
+		const variantAttributes = variant.data.data.attributes
+
+		const variantPriceObject = await listPrice(refillVariant.id)
+		const currentPriceObj = variantPriceObject.at(0)
+
+		const isUsageBased = currentPriceObj?.attributes.usage_aggregation !== null
+
+		const packageSize = currentPriceObj?.attributes.package_size
+
+		const price = isUsageBased
+			? currentPriceObj?.attributes.unit_price_decimal
+			: currentPriceObj.attributes.unit_price
+
+		const priceString = price !== null ? price?.toString() ?? '' : ''
+
+		await _addVariant({
+			productId: refillProduct.id.toString(),
+			variantId: refillVariant.id,
+			variantEnabled: true,
+			name: variantAttributes.name,
+			description: variantAttributes.description,
+			price: parseInt(priceString),
+			billingCycle: null,
+			packageSize: packageSize,
+		})
 	}
 
 	return productVariants
