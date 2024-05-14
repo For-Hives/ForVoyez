@@ -58,6 +58,17 @@ export function RefillPlansComponent() {
 		getCustomerPortalLink().then(url => router.push(url))
 	}
 
+	/**
+	 * Filter the refill plans from the list of all plans
+	 * @type {*[]}
+	 */
+	const refillPlans = currentSubscription
+		? plans.filter(
+				plan =>
+					!plan.billingCycle && plan.productId === currentSubscription.productId
+			)
+		: []
+
 	return (
 		<>
 			{
@@ -75,7 +86,7 @@ export function RefillPlansComponent() {
 						<div className="py-20">
 							<div className="mx-auto max-w-7xl px-6 lg:px-8">
 								<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-									{plans.map(tier => {
+									{refillPlans.map(tier => {
 										if (tier.billingCycle) return null
 										return (
 											<div
