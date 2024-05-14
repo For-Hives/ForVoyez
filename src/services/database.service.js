@@ -12,13 +12,14 @@ import { prisma } from '@/services/prisma.service'
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
 
-	// filter can be "yearly" or "monthly"
+	// filter can be "yearly" or "monthly", and it deletes the other one time paid plans (refills)
 	if (filter) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
 
 	syncPlans()
 
+	console.log(plans)
 	return plans
 }
 
@@ -48,11 +49,16 @@ export async function syncPlans() {
 		productVariants.push(variant)
 	}
 
-	// Fetch products from the Lemon Squeezy store.
-	const products = await listProducts()
-
 	// Loop through all the variants.
 	const allVariants = await listVariants()
+	console.log('**********************')
+	console.log(allVariants)
+	console.log('**********************')
+	// filter the variants, only the ones that are subscriptions
+	const subscriptionVariants = allVariants.filter(
+		v => v.attributes.is_subscription
+	)
+	const onetimeVariants = allVariants.filter(v => !v.attributes.is_subscription)
 
 	// for...of supports asynchronous operations, unlike forEach.
 	if (allVariants) {
