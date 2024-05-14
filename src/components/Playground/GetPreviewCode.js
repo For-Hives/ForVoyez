@@ -52,7 +52,6 @@ fetch('https://forvoyez.com/api/describe', {
   body: form
 })
   .then(response => response.json())
-  .then(result => console.log(result))
   .catch(error => console.error('Error:', error));`
 
 const PHP_EXAMPLE = (image, context, jsonSchema, formatJsonSchema) => `<?php

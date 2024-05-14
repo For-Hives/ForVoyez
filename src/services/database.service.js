@@ -19,7 +19,6 @@ export async function getPlans(filter = null) {
 
 	syncPlans()
 
-	// console.log(plans)
 	return plans
 }
 
