@@ -55,7 +55,7 @@ model Plan {
   name           String
   description    String?
   price          Int // Prix de base en centimes pour une unité
-  billingCycle   String // "monthly" or "annually"
+  billingCycle   String? // "monthly" or "annually"
   packageSize    Int? // Nombre d'unités incluses dans le package
   createdAt      DateTime @default(now())
   mostPopular    Boolean  @default(false)
