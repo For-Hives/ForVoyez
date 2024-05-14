@@ -1,5 +1,6 @@
 'use client'
 
+import { RefillPlansComponent } from '@/app/(dashboard)/app/plans/RefillPlans.component'
 import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
 
 export default function ClientLogicPlans() {
@@ -12,6 +13,7 @@ export default function ClientLogicPlans() {
 				grows. You can upgrade, downgrade, or cancel your plan at any time.
 			</p>
 			<ChangingPlansComponent />
+			<RefillPlansComponent />
 		</div>
 	)
 }
