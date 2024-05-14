@@ -57,6 +57,8 @@ prisma/dev.db
 #prisma/migrations/
 #prisma
 #bruno
+#pnpm-lock.yaml
+#.riv
 
 output.txt
 large.txt
