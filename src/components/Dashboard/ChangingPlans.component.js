@@ -121,6 +121,7 @@ export function ChangingPlansComponent() {
 					{plans.map(tier => {
 						if (!isAnnually && tier.billingCycle === 'year') return null
 						if (isAnnually && tier.billingCycle === 'month') return null
+						if (!tier.billingCycle) return null
 
 						return (
 							<div
