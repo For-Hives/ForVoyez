@@ -42,7 +42,6 @@ export default function ClientLogicBilling() {
 
 			setLoadingMessage('Fetching your billing portal...')
 			const url = await getCustomerPortalLink()
-			console.log('Customer portal link:', url)
 			// Uncomment the next line for actual redirection
 			router.replace(url) // Redirect to billing portal if user has subscribed
 			setLoadingMessage('Redirecting to your billing home...')
