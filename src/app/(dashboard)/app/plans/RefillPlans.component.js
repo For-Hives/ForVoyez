@@ -37,14 +37,8 @@ export function RefillPlansComponent() {
 		if (sub) {
 			setCurrentSubscription(sub)
 			console.log('current subscription', sub)
-
-			// Extract the plan name from the subscription
-			const planName = sub.name.split(' ')[0] // Assumes the plan name is the first word in the subscription name
-			setCurrentPlanName(planName)
-			console.log('current plan name', planName)
 		} else {
 			setCurrentSubscription(null)
-			setCurrentPlanName(null)
 		}
 	}
 
@@ -84,7 +78,18 @@ export function RefillPlansComponent() {
 								<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 									{plans.map(tier => {
 										if (tier.billingCycle) return null
-										if (!tier.name.includes(currentPlanName)) return null
+										console.log('current plan name', currentSubscription)
+										if (
+											currentSubscription.planId === 1 ||
+											currentSubscription.planId === 2
+										) {
+											if (!tier.name.includes('Starter')) return null
+										} else if (
+											currentSubscription.planId === 3 ||
+											currentSubscription.planId === 4
+										) {
+											if (!tier.name.includes('Growth')) return null
+										}
 
 										return (
 											<div
