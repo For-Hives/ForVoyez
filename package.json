@@ -27,7 +27,7 @@
 		"*.css": "prettier --write"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "5.0.8",
+		"@clerk/nextjs": "5.0.9",
 		"@flaticon/flaticon-uicons": "3.2.1",
 		"@headlessui/react": "2.0.3",
 		"@heroicons/react": "2.1.3",
