@@ -110,10 +110,10 @@ export function RefillPlansComponent() {
 													tier.mostPopular
 														? 'ring-2 ring-forvoyez_orange-500'
 														: 'ring-1 ring-slate-200',
-													'rounded-3xl p-8'
+													'flex flex-col rounded-3xl p-8'
 												)}
 											>
-												<div className="flex items-center justify-between gap-x-4">
+												<div className="flex h-1/4 items-start justify-between gap-x-4">
 													<h3
 														id={tier.id}
 														className={classNames(
