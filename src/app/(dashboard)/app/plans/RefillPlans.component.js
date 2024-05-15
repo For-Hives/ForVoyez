@@ -1,7 +1,5 @@
 'use client'
 import { useAuth } from '@clerk/nextjs'
-import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -27,7 +25,22 @@ export function RefillPlansComponent() {
 	const [currentPlanName, setCurrentPlanName] = useState(null)
 
 	useEffect(() => {
-		getPlans().then(setPlans)
+		getPlans().then(plans => {
+			plans.sort((a, b) => {
+				// Extract the numbers from the plan names
+				const numA = parseInt(a.name.match(/\d+/)?.[0] || '0')
+				const numB = parseInt(b.name.match(/\d+/)?.[0] || '0')
+
+				// Compare the numbers
+				if (numA !== numB) {
+					return numA - numB
+				}
+
+				// If the numbers are the same, compare the names
+				return b.name.localeCompare(a.name)
+			})
+			setPlans(plans)
+		})
 		checkSubscription()
 	}, [])
 
@@ -78,7 +91,6 @@ export function RefillPlansComponent() {
 								<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 									{plans.map(tier => {
 										if (tier.billingCycle) return null
-										console.log('current plan name', currentSubscription)
 										if (
 											currentSubscription.planId === 1 ||
 											currentSubscription.planId === 2
