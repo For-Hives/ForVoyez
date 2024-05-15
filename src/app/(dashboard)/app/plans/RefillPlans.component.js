@@ -129,9 +129,6 @@ export function RefillPlansComponent() {
 													<span className="text-4xl font-bold tracking-tight text-slate-900">
 														{(tier.price / 100).toFixed(2).replace('.', ',')}€
 													</span>
-													<span className="text-sm font-semibold leading-6 text-slate-600">
-														€
-													</span>
 												</p>
 												<p className={''}>One time refill</p>
 
