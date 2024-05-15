@@ -1,3 +1,6 @@
+Here's the updated README with the corrected GitHub URL and the instructions for using Webhook.site:
+
+```markdown
 # ForVoyez - AI-Powered Image Metadata Generation
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -45,7 +48,7 @@ You can use the following Docker command to set up a PostgreSQL database for loc
 docker run --name forvoyez-postgres -e POSTGRES_USER=forvoyez -e POSTGRES_PASSWORD=forvoyez -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
 ```
 
-if you want to configure your .env file to connect to the database, you can use the following environment variables:
+If you want to configure your .env file to connect to the database, you can use the following environment variables:
 
 ```bash
 DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
@@ -53,7 +56,7 @@ DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
 
 Then, you can connect to the database using the following command:
 
-1. Clone the repository: `git clone https://github.com/your-username/forvoyez.git`
+1. Clone the repository: `git clone https://github.com/For-Hives/ForVoyez.git`
 2. Navigate to the project directory: `cd forvoyez`
 3. Install dependencies: `npm install` or `bun install`
 4. Set up the PostgreSQL database using the provided Docker command (see README for details).
@@ -61,6 +64,52 @@ Then, you can connect to the database using the following command:
 6. Run database migrations: `npm run prisma-migrate`
 7. Generate Prisma client: `npm run prisma-generate`
 8. Start the development server: `npm run dev`
+
+## Webhook Configuration for Local Development
+
+To test and develop the Lemonsqueezy webhook locally, follow these steps:
+
+### Prerequisites
+
+- Ensure you have Node.js installed on your machine.
+- Verify that you have set the required environment variables in your `.env` file, particularly `LEMON_SQUEEZY_WEBHOOK_SECRET`, which should contain your Lemonsqueezy webhook secret key.
+
+### Steps
+
+1. Go to [https://webhook.site/](https://webhook.site/) and copy your unique URL.
+
+2. Start your local development server by running the following command in the terminal at the root of your project:
+    `npm run dev` or `bun dev`  
+    This will start your Next.js server, which will listen on `http://localhost:3000` by default.
+
+3. Globally install the `@webhooksite/cli` package by running the following command:
+    ```
+    npm install -g @webhooksite/cli
+    ```
+
+    This will install the Webhook.site command-line tool, which will allow you to forward webhooks to your local server.
+
+4. Go to the Lemonsqueezy account settings and configure the webhook URL to point to the unique URL provided by Webhook.site.
+
+5. Run the following command to forward webhooks to your local server:
+
+    ```
+    whcli forward --token=<your-token> --target=http://localhost:3000
+    ```
+    
+    Replace `<your-token>` with the token provided by Webhook.site. This command will forward the received webhooks from Webhook.site to your local `/api/webhook` endpoint.
+
+6. Configure the webhook URL in your Lemonsqueezy account settings to point to the unique URL provided by Webhook.site.
+
+7. Perform an action in Lemonsqueezy that will trigger a webhook (e.g., a test payment).
+
+8. Check your development server logs. You should see the details of the received webhook, indicating that your local endpoint has successfully processed the request.
+
+### Troubleshooting
+
+- If you encounter errors related to HTTPS when forwarding webhooks to your local server, make sure to use `http://` instead of `https://` in the target URL.
+
+- If your local server is not responding, verify that it is running and listening on the correct port (by default, `3000` for Next.js). You can also check the server logs for any relevant error messages.
 
 ## Image Metadata Generation Process
 
@@ -105,6 +154,12 @@ Example Response:
 	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea."
 }
 ```
+
+## Environment Variables
+
+To run the ForVoyez project, you need to set up the environment variables in a `.env` file. 
+You must follow the `.env.example` file to define the required variables.
+Make sure to replace the placeholders with your actual values for each environment variable.
 
 ## Support
 
