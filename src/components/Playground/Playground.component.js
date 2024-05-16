@@ -215,6 +215,21 @@ export function Playground() {
 		}
 	}
 
+	const handlePourcentLenghtSize = (text, limit) => {
+		const totalSize = text.length
+		// 	if the current size is 50% of the limit, set the color to orange
+		// 	if the current size is 80% of the limit, set the color to red
+		// 	else set the color to slate
+		if (totalSize > limit / 2) {
+			if (totalSize > (limit * 4) / 5) {
+				return 'text-red-600'
+			}
+			return 'text-orange-600'
+		} else {
+			return 'text-slate-600'
+		}
+	}
+
 	useEffect(() => {
 		const resizeAllEditors = () => {
 			requestPreviewRefs.current.forEach(editor => {
@@ -401,10 +416,12 @@ export function Playground() {
 							onChange={e => setContext(e.target.value)}
 							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 						></textarea>
+						<p
+							className={`mt-1 text-sm ${handlePourcentLenghtSize(context, 500)}`}
+						>
+							Remaining {500 - context.length}/500 characters
+						</p>
 					</div>
-					<p className="mb-0 mt-2 pb-0 pt-0 text-sm text-red-600">
-						Must be less than 500 characters*
-					</p>
 				</div>
 				<div>
 					<label
@@ -470,8 +487,10 @@ export function Playground() {
 							</div>
 						</div>
 					</div>
-					<p className={'mt-2 text-sm text-red-600'}>
-						JSON Schema must be valid JSON, and less than 3000 characters*
+					<p
+						className={`mt-1 text-sm ${handlePourcentLenghtSize(jsonSchema, 3000)}`}
+					>
+						Remaining {3000 - jsonSchema.length}/3000 characters
 					</p>
 				</div>
 
