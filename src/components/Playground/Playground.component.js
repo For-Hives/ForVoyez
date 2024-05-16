@@ -387,6 +387,7 @@ export function Playground() {
 					<div className="mt-2">
 						<textarea
 							rows="4"
+							maxLength={500}
 							name="Context"
 							id="Context"
 							placeholder="Enter your context here..."
