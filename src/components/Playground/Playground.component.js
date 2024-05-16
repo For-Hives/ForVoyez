@@ -402,7 +402,7 @@ export function Playground() {
 							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 						></textarea>
 					</div>
-					<p className="mb-0 pb-0 text-sm text-red-600">
+					<p className="mb-0 mt-2 pb-0 pt-0 text-sm text-red-600">
 						Must be less than 500 characters*
 					</p>
 				</div>
@@ -470,7 +470,7 @@ export function Playground() {
 							</div>
 						</div>
 					</div>
-					<p className={'text-sm text-red-600'}>
+					<p className={'mt-2 text-sm text-red-600'}>
 						JSON Schema must be valid JSON, and less than 3000 characters*
 					</p>
 				</div>
