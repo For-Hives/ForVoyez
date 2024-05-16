@@ -37,13 +37,17 @@ export async function blobToBase64(blob) {
 
 		// Check image dimensions
 		const { width, height } = await image.metadata()
-		const maxDimension = 2000 // Adjust this value as needed
+		const maxDimension = 1000 // Adjust this value as needed
 		if (width > maxDimension || height > maxDimension) {
-			image.resize(maxDimension, maxDimension, { fit: 'inside' })
+			image.resize({
+				width: width > height ? maxDimension : null,
+				height: height >= width ? maxDimension : null,
+				fit: 'inside',
+			})
 		}
 
 		// Optimize image
-		const optimizedImage = await image.webp({ quality: 75 }).toBuffer()
+		const optimizedImage = await image.webp({ quality: 70 }).toBuffer()
 
 		// log the new size
 
@@ -79,6 +83,7 @@ export async function getImageDescription(base64Image, data) {
 					],
 				},
 			],
+			max_tokens: 1000,
 		})
 
 		const result = vision.choices[0].message.content
