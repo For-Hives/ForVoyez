@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@clerk/nextjs':
-    specifier: 5.0.11
-    version: 5.0.11(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)
+    specifier: 5.0.12
+    version: 5.0.12(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)
   '@flaticon/flaticon-uicons':
     specifier: 3.2.1
     version: 3.2.1
@@ -162,22 +162,22 @@ packages:
       - react-dom
     dev: false
 
-  /@clerk/clerk-react@5.0.7(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-YHfVLBRFnJwOnahR3wgHlDytMbplildQ3+cKlCUByUaiUZwnanS469ll5xqd+JQKnycMz9dpNBr+6L6GrnQY/g==}
+  /@clerk/clerk-react@5.1.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-drc/V0J+h9Jsz32QsL7WmuUhhhkU21KbNz5mwLPbSzBMoLg43sx6aRjJGCfBQYPxPsuFZWDlKoJhX6LZ8yxHcA==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
       '@clerk/shared': 2.1.1(react-dom@18.3.1)(react@18.3.1)
-      '@clerk/types': 4.3.1
+      '@clerk/types': 4.4.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tslib: 2.4.1
     dev: false
 
-  /@clerk/nextjs@5.0.11(next@14.2.3)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-YMEaWS0c+wKbH9gZea3Szli6p/QEOqCp8XZ7NhjA5IJcjVZas7w83GmuGSLa+WUGlCqNfDDXDpUFmecMTfOgzA==}
+  /@clerk/nextjs@5.0.12(next@14.2.3)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-uRbt31bfPOhQw14wJUThVGlP1HT2v7Ii+UY00MWFuyx7RmOUgqDnBax2FhUcCEJJhICSU0Xf/TqrWOkQUTEg/A==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       next: ^13.5.4 || ^14.0.3
@@ -185,7 +185,7 @@ packages:
       react-dom: '>=18'
     dependencies:
       '@clerk/backend': 1.1.5(react-dom@18.3.1)(react@18.3.1)
-      '@clerk/clerk-react': 5.0.7(react-dom@18.3.1)(react@18.3.1)
+      '@clerk/clerk-react': 5.1.0(react-dom@18.3.1)(react@18.3.1)
       '@clerk/shared': 2.1.1(react-dom@18.3.1)(react@18.3.1)
       crypto-js: 4.2.0
       next: 14.2.3(react-dom@18.3.1)(react@18.3.1)
@@ -216,8 +216,8 @@ packages:
       swr: 2.2.0(react@18.3.1)
     dev: false
 
-  /@clerk/types@4.3.1:
-    resolution: {integrity: sha512-hPVutipn4W664eK1YB7RReIKz0pTtNvlWufZ9djgGfFcy//kgHIB+pdQFs1sAFbqYRazxT9AVfiS8d8jij/JBg==}
+  /@clerk/types@4.4.0:
+    resolution: {integrity: sha512-OaT02uLG1P/jBFNyoPM3n9nLdV4H0etTpa/l3iTW4IgOLiAINToLpMOvEpWzKWUq9nvmOouZlBzPVMozu7dwDg==}
     engines: {node: '>=18.17.0'}
     dependencies:
       csstype: 3.1.1
