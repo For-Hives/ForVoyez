@@ -207,6 +207,14 @@ export function Playground() {
 		resizeEditor(editor)
 	}
 
+	const handleEditorChange = (value, editor) => {
+		if (value.length > 3000) {
+			editor.setValue(value.slice(0, 3000))
+		} else {
+			setJsonSchema(value)
+		}
+	}
+
 	useEffect(() => {
 		const resizeAllEditors = () => {
 			requestPreviewRefs.current.forEach(editor => {
@@ -366,10 +374,8 @@ export function Playground() {
 								</div>
 							</label>
 						)}
-						{uploadError && (
-							<p className="text-sm text-red-600">{uploadError}</p>
-						)}
 					</div>
+					{uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
 				</div>
 				<div>
 					<label
@@ -396,6 +402,9 @@ export function Playground() {
 							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 						></textarea>
 					</div>
+					<p className="mb-0 pb-0 text-sm text-red-600">
+						Must be less than 500 characters*
+					</p>
 				</div>
 				<div>
 					<label
@@ -420,7 +429,7 @@ export function Playground() {
 								editorRef.current = editor
 								resizeEditor(editor)
 							}}
-							onChange={value => setJsonSchema(value)}
+							onChange={handleEditorChange}
 							width={'100%'}
 							height={'500px'}
 							options={{
@@ -451,15 +460,21 @@ export function Playground() {
 								},
 							}}
 						/>
+						<div className={'absolute right-3 top-2'}>
+							<div className="flex items-center justify-end">
+								{isJsonValid ? (
+									<span className="text-sm text-green-600">Valid JSON</span>
+								) : (
+									<span className="text-sm text-red-600">Invalid JSON</span>
+								)}
+							</div>
+						</div>
 					</div>
+					<p className={'text-sm text-red-600'}>
+						JSON Schema must be valid JSON, and less than 3000 characters*
+					</p>
 				</div>
-				<div className="flex items-center justify-end">
-					{isJsonValid ? (
-						<span className="text-sm text-green-600">Valid JSON</span>
-					) : (
-						<span className="text-sm text-red-600">Invalid JSON</span>
-					)}
-				</div>
+
 				<div>
 					<button
 						type="button"
