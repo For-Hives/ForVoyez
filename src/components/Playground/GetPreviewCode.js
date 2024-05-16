@@ -30,7 +30,7 @@ const CURL_EXAMPLE = (
   'https://forvoyez.com/api/describe' \\
   -H 'Authorization: Bearer <user-token>' \\
   -F 'image=@"${image ? image.name : 'example.jpg'}"' \\
-  -F 'data={"context":"${context || 'No context provided'}","schema":${JSON.stringify(JSON.parse(jsonSchema || '{}'))}}'`
+  -F 'data={"context":"${context || 'No context provided'}","schema":${formatJsonSchema(jsonSchema)}}'`
 
 const JAVASCRIPT_EXAMPLE = (
 	image,
