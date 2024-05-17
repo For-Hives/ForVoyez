@@ -151,9 +151,11 @@ async function processSubscriptionResumed(webhook) {
 // private function to process the webhook "subscription_cancelled", to update the status of the subscription
 async function processSubscriptionCancelled(webhook) {
 	// update the db to cancel the status of the subscription
+	console.log(webhook.data.attributes)
 	await prisma.subscription.update({
 		where: {
-			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+			lemonSqueezyId:
+				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 		data: {
 			status: 'cancelled',
