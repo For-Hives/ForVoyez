@@ -2,6 +2,7 @@
 import { useAuth } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 import {
 	getPlans,
@@ -57,6 +58,13 @@ export function RefillPlansComponent() {
 
 	async function subscribe(variantId) {
 		try {
+			const existingSubscription =
+				currentSubscription && currentSubscription.planId === variantId
+			if (existingSubscription) {
+				toast.info('You are already subscribed to this plan')
+				return // Prevent subscription if already subscribed
+			}
+
 			const url = await getCheckoutURL(variantId)
 			await router.push(url)
 		} catch (e) {
