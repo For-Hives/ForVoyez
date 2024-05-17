@@ -15,10 +15,16 @@ export default function NotFound() {
 					src={'/404/404.webp'}
 					alt={'404 image'}
 					fill={true}
-					className={'object-cover'}
+					className={'hidden object-cover object-right lg:block'}
+				/>
+				<Image
+					src={'/404/404_mobile.webp'}
+					alt={'404 image mobile'}
+					fill={true}
+					className={'block object-cover lg:hidden'}
 				/>
 			</div>
-			<div className="z-50 mx-auto flex h-screen w-1/2 max-w-7xl flex-col items-start justify-center py-16">
+			<div className="z-50 mx-auto flex h-screen w-1/2 max-w-7xl flex-col items-start justify-start py-40 lg:justify-center lg:py-16">
 				<p className="text-sm font-semibold text-slate-900">404</p>
 				<h1 className="mt-2 text-2xl font-bold text-slate-900">
 					Page not found
