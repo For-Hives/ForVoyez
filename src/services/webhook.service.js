@@ -148,6 +148,21 @@ async function processSubscriptionResumed(webhook) {
 	})
 }
 
+// private function to process the webhook "subscription_cancelled", to update the status of the subscription
+async function processSubscriptionCancelled(webhook) {
+	// update the db to cancel the status of the subscription
+	await prisma.subscription.update({
+		where: {
+			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+		},
+		data: {
+			status: 'cancelled',
+			statusFormatted: 'Cancelled',
+			endsAt: webhook.data.attributes.ends_at,
+		},
+	})
+}
+
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
 	// find witch plan is linked to the variantId
