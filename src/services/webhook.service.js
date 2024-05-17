@@ -137,7 +137,8 @@ async function processSubscriptionResumed(webhook) {
 	// update the db to reactivate the status of the subscription
 	await prisma.subscription.update({
 		where: {
-			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+			lemonSqueezyId:
+				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 		data: {
 			status: 'active',
@@ -177,7 +178,8 @@ async function processSubscriptionPlanChanged(webhook) {
 	// update the db to change the plan of the subscription
 	await prisma.subscription.update({
 		where: {
-			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+			lemonSqueezyId:
+				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 		data: {
 			planId: plan.id,
