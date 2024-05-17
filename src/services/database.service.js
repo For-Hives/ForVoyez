@@ -74,8 +74,8 @@ export async function syncPlans() {
 
 			const product = (await getProduct(variant.product_id)).data?.data
 
-			const productName = product.attributes.name ?? ''
-			const productDescription = product.attributes.description ?? ''
+			const productName = product?.attributes?.name ?? ''
+			const productDescription = product?.attributes?.description ?? ''
 
 			const variantPriceObject = await listPrice(v.id)
 
