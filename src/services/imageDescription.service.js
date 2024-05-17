@@ -76,7 +76,7 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 					content: [
 						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}
-						!!! this sentence is the most important in the context, Your absolute limit is 500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 500 characters !!!
+						!!! this sentence is the most important in the context, Your absolute limit is 300 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 300 characters !!!
 						`,
 						{
 							type: 'image_url',
@@ -85,7 +85,7 @@ export async function getImageDescription(base64Image, data) {
 					],
 				},
 			],
-			max_tokens: 1000,
+			max_tokens: 750,
 		})
 
 		console.log(vision)
@@ -108,10 +108,11 @@ ${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
 Additional Context: ${data.context || 'No additional context provided.'}
 
 Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users. 
-Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.`,
+Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
+!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 750 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 750 characters !!!`,
 				},
 			],
-			max_tokens: 750,
+			max_tokens: 500,
 			n: 1,
 			stop: null,
 		})
