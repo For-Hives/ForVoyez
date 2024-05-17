@@ -278,7 +278,7 @@ export function ChangingPlansComponent() {
 						</p>
 						<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 						<Link
-							href="#"
+							href="/contact"
 							aria-describedby="custom"
 							className={classNames(
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
