@@ -75,7 +75,9 @@ export async function getImageDescription(base64Image, data) {
 				{
 					role: 'user',
 					content: [
-						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}`,
+						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}
+						!!! this sentence is the most important in the context, Your absolute limit is 500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 500 characters !!!
+						`,
 						{
 							type: 'image_url',
 							image_url: `data:image/png;base64,${base64Image}`,
