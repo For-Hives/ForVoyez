@@ -208,8 +208,8 @@ export function Playground() {
 	}
 
 	const handleEditorChange = (value, editor) => {
-		if (value.length > 1500) {
-			editor.setValue(value.slice(0, 1500))
+		if (value.length > 750) {
+			editor.setValue(value.slice(0, 750))
 		} else {
 			setJsonSchema(value)
 		}
@@ -408,7 +408,7 @@ export function Playground() {
 					<div className="mt-2">
 						<textarea
 							rows="4"
-							maxLength={500}
+							maxLength={300}
 							name="Context"
 							id="Context"
 							placeholder="Enter your context here..."
@@ -417,9 +417,9 @@ export function Playground() {
 							className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
 						></textarea>
 						<p
-							className={`mt-1 text-sm ${handlePourcentLenghtSize(context, 500)}`}
+							className={`mt-1 text-sm ${handlePourcentLenghtSize(context, 300)}`}
 						>
-							Remaining {500 - context.length}/500 characters
+							Remaining {300 - context.length}/300 characters
 						</p>
 					</div>
 				</div>
@@ -488,9 +488,9 @@ export function Playground() {
 						</div>
 					</div>
 					<p
-						className={`mt-1 text-sm ${handlePourcentLenghtSize(jsonSchema, 1500)}`}
+						className={`mt-1 text-sm ${handlePourcentLenghtSize(jsonSchema, 750)}`}
 					>
-						Remaining {1500 - jsonSchema.length}/1500 characters
+						Remaining {750 - jsonSchema.length}/750 characters
 					</p>
 				</div>
 
