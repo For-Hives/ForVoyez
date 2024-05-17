@@ -173,7 +173,7 @@ export function PricingComponent() {
 								>
 									{tier.buttonText}
 								</Link>
-								<div className={'mt-2 flex h-[18px] items-center'}>
+								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
 										<span className="text-xs text-slate-500">
 											<span className={'font-bold'}>20% more tokens</span> than
@@ -181,13 +181,11 @@ export function PricingComponent() {
 										</span>
 									) : (
 										<button
-											className={'m-0 flex gap-1 p-0'}
+											className={'group m-0 flex gap-1 p-0'}
 											onClick={() => setFrequency(frequencies[1])}
 										>
-											<span className="text-xs text-slate-500">
-												Get <span className={'font-bold'}>20% more tokens</span>{' '}
-												with an&nbsp;<span className={'font-bold'}>annual</span>
-												&nbsp;subscription
+											<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
+												Get <span className={'font-bold'}>20% more tokens</span>
 											</span>
 											<div className={'flex h-full items-center'}>
 												{/*	Link icon*/}
@@ -256,29 +254,7 @@ export function PricingComponent() {
 						>
 							Contact Us
 						</Link>
-						<div className={'mt-2 flex h-[18px] items-center'}>
-							{isAnnually ? (
-								<span className="text-xs text-slate-500">
-									<span className={'font-bold'}>20% more tokens</span> than
-									monthly
-								</span>
-							) : (
-								<button
-									className={'m-0 flex gap-1 p-0'}
-									onClick={() => setFrequency(frequencies[1])}
-								>
-									<span className="text-xs text-slate-500">
-										Get <span className={'font-bold'}>20% more tokens</span>{' '}
-										with an&nbsp;<span className={'font-bold'}>annual</span>
-										&nbsp;subscription
-									</span>
-									<div className={'flex h-full items-center'}>
-										{/*	Link icon*/}
-										<ArrowUpRightIcon className={'h-3 w-3 text-slate-600'} />
-									</div>
-								</button>
-							)}
-						</div>
+
 						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 							{JSON.parse(
 								'["All Growth plan features","Unlimited credits","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
