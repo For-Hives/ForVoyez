@@ -50,7 +50,6 @@ export function RefillPlansComponent() {
 
 		if (sub) {
 			setCurrentSubscription(sub)
-			console.log('current subscription', sub)
 		} else {
 			setCurrentSubscription(null)
 		}
