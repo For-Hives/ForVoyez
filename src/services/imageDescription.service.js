@@ -37,7 +37,7 @@ export async function blobToBase64(blob) {
 
 		// Check image dimensions
 		const { width, height } = await image.metadata()
-		const maxDimension = 1000 // Adjust this value as needed
+		const maxDimension = 750 // Adjust this value as needed
 		if (width > maxDimension || height > maxDimension) {
 			image.resize({
 				width: width > height ? maxDimension : null,
@@ -47,7 +47,7 @@ export async function blobToBase64(blob) {
 		}
 
 		// Optimize image
-		const optimizedImage = await image.webp({ quality: 70 }).toBuffer()
+		const optimizedImage = await image.webp({ quality: 50 }).toBuffer()
 
 		// log the new size
 
