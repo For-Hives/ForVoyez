@@ -70,17 +70,19 @@ export async function getImageDescription(base64Image, data) {
 
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
-			model: 'gpt-4-vision-preview',
+			model: 'gpt-4o',
 			messages: [
 				{
 					role: 'user',
 					content: [
-						`Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}
-						!!! this sentence is the most important in the context, Your absolute limit is 300 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 300 characters !!!
-						`,
+						{
+							type: 'text',
+							text: `Describe this image. Make it simple. Only provide the context and an idea (think about alt text for SEO purposes). ${data.context ? `The additional context for the image is: ${data.context}.` : ''}
+                            !!! this sentence is the most important in the context, Your absolute limit is 300 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 300 characters !!!`,
+						},
 						{
 							type: 'image_url',
-							image_url: `data:image/png;base64,${base64Image}`,
+							image_url: { url: `data:image/webp;base64,${base64Image}` },
 						},
 					],
 				},
@@ -100,16 +102,16 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 					content: `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context. The goal is to create a title, alternative text, and caption that are not only informative and engaging but also search engine friendly.
 
-Image Description: ${result}
+		Image Description: ${result}
 
-Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template, don't make it under backtick, just as JSON format !!!:
-${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
+		Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template, don't make it under backtick, just as JSON format !!!:
+		${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
 
-Additional Context: ${data.context || 'No additional context provided.'}
+		Additional Context: ${data.context || 'No additional context provided.'}
 
-Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users. 
-Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
-!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 1500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 1500 characters !!!`,
+		Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
+		Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
+		!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 1500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 1500 characters !!!`,
 				},
 			],
 			max_tokens: 1000,
