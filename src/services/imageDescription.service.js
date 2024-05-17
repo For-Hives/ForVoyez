@@ -86,7 +86,9 @@ export async function getImageDescription(base64Image, data) {
 			max_tokens: 1000,
 		})
 
+		console.log(vision)
 		const result = vision.choices[0].message.content
+		console.log('Image description:', result)
 
 		// Generate alt text, caption, and title for the image
 		const seoResponse = await openai.chat.completions.create({
@@ -98,7 +100,7 @@ export async function getImageDescription(base64Image, data) {
 
 Image Description: ${result}
 
-Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template !!!:
+Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template, don't make it under backtick, just as JSON format !!!:
 ${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
 
 Additional Context: ${data.context || 'No additional context provided.'}
@@ -112,6 +114,8 @@ Focus on crafting descriptions that are rich in relevant keywords, yet natural a
 			stop: null,
 		})
 
+		console.log('SEO response:', seoResponse)
+		console.log('SEO response:', seoResponse.choices[0].message.content)
 		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
 	} catch (error) {
 		console.error('Failed to get image description:', error)

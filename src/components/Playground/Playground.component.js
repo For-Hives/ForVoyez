@@ -208,8 +208,8 @@ export function Playground() {
 	}
 
 	const handleEditorChange = (value, editor) => {
-		if (value.length > 3000) {
-			editor.setValue(value.slice(0, 3000))
+		if (value.length > 1500) {
+			editor.setValue(value.slice(0, 1500))
 		} else {
 			setJsonSchema(value)
 		}
@@ -488,9 +488,9 @@ export function Playground() {
 						</div>
 					</div>
 					<p
-						className={`mt-1 text-sm ${handlePourcentLenghtSize(jsonSchema, 3000)}`}
+						className={`mt-1 text-sm ${handlePourcentLenghtSize(jsonSchema, 1500)}`}
 					>
-						Remaining {3000 - jsonSchema.length}/3000 characters
+						Remaining {1500 - jsonSchema.length}/1500 characters
 					</p>
 				</div>
 
