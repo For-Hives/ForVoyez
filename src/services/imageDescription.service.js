@@ -109,10 +109,10 @@ Additional Context: ${data.context || 'No additional context provided.'}
 
 Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users. 
 Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
-!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 750 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 750 characters !!!`,
+!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 1500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 1500 characters !!!`,
 				},
 			],
-			max_tokens: 500,
+			max_tokens: 1000,
 			n: 1,
 			stop: null,
 		})
