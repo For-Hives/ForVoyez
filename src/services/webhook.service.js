@@ -163,6 +163,28 @@ async function processSubscriptionCancelled(webhook) {
 	})
 }
 
+// private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
+async function processSubscriptionPlanChanged(webhook) {
+	// link plan with variantId
+	const plan = await prisma.plan.findUnique({
+		where: {
+			variantId: webhook.data.attributes.variant_id.toString(),
+		},
+	})
+
+	// update the db to change the plan of the subscription
+	await prisma.subscription.update({
+		where: {
+			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+		},
+		data: {
+			planId: plan.id,
+			status: 'active',
+			statusFormatted: 'Active',
+		},
+	})
+}
+
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
 	// find witch plan is linked to the variantId
