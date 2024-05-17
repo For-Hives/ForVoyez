@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 
 import { getPlans } from '@/services/database.service'
 
-// FIXME replace the pricing with the correct one, from lemon squeezy
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
 	{
@@ -101,10 +100,10 @@ export function PricingComponent() {
 									<span className={'transition-none'}>{option.label}</span>
 									<div
 										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute
-										-right-7 -top-7 rounded-full 
-										border border-forvoyez_orange-500 bg-white/80 p-1 px-1.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
+										-right-20 -top-7 rounded-full 
+										border border-forvoyez_orange-500 bg-white/80 p-1 px-2.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
 									>
-										Save 20%
+										20%&nbsp;more&nbsp;tokens
 									</div>
 								</div>
 							</RadioGroup.Option>
@@ -177,7 +176,7 @@ export function PricingComponent() {
 								<div className={'mt-2 flex h-[18px] items-center'}>
 									{isAnnually ? (
 										<span className="text-xs text-slate-500">
-											<span className={'font-bold'}>20% cheaper</span> than
+											<span className={'font-bold'}>20% more tokens</span> than
 											monthly
 										</span>
 									) : (
@@ -186,8 +185,8 @@ export function PricingComponent() {
 											onClick={() => setFrequency(frequencies[1])}
 										>
 											<span className="text-xs text-slate-500">
-												Get <span className={'font-bold'}>20% off</span> with
-												an&nbsp;<span className={'font-bold'}>annual</span>
+												Get <span className={'font-bold'}>20% more tokens</span>{' '}
+												with an&nbsp;<span className={'font-bold'}>annual</span>
 												&nbsp;subscription
 											</span>
 											<div className={'flex h-full items-center'}>
@@ -260,7 +259,8 @@ export function PricingComponent() {
 						<div className={'mt-2 flex h-[18px] items-center'}>
 							{isAnnually ? (
 								<span className="text-xs text-slate-500">
-									<span className={'font-bold'}>20% cheaper</span> than monthly
+									<span className={'font-bold'}>20% more tokens</span> than
+									monthly
 								</span>
 							) : (
 								<button
@@ -268,8 +268,8 @@ export function PricingComponent() {
 									onClick={() => setFrequency(frequencies[1])}
 								>
 									<span className="text-xs text-slate-500">
-										Get <span className={'font-bold'}>20% off</span> with
-										an&nbsp;<span className={'font-bold'}>annual</span>
+										Get <span className={'font-bold'}>20% more tokens</span>{' '}
+										with an&nbsp;<span className={'font-bold'}>annual</span>
 										&nbsp;subscription
 									</span>
 									<div className={'flex h-full items-center'}>
