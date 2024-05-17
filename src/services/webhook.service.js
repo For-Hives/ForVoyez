@@ -97,6 +97,7 @@ export async function processWebhook(id) {
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
+			// nothing to do
 			break
 		case 'subscription_created':
 			await processSubscriptionCreated(parsed_webhook)
@@ -104,7 +105,17 @@ export async function processWebhook(id) {
 		case 'subscription_payment_success':
 			await processSubscriptionPaymentSuccess(parsed_webhook)
 			break
+		case 'subscription_resumed':
+			await processSubscriptionResumed(parsed_webhook)
+			break
+		case 'subscription_cancelled':
+			await processSubscriptionCancelled(parsed_webhook)
+			break
 		case 'subscription_updated':
+			// nothing to do
+			break
+		case 'subscription_plan_changed':
+			await processSubscriptionPlanChanged(parsed_webhook)
 			break
 	}
 
@@ -119,6 +130,22 @@ export async function processWebhook(id) {
 			},
 		})
 	}
+}
+
+// private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
+async function processSubscriptionResumed(webhook) {
+	// update the db to reactivate the status of the subscription
+	await prisma.subscription.update({
+		where: {
+			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+		},
+		data: {
+			status: 'active',
+			statusFormatted: 'Active',
+			isPaused: false,
+			endsAt: webhook.data.attributes.ends_at,
+		},
+	})
 }
 
 // private function to process the webhook "subscription_payment_success", to add credits to the user
