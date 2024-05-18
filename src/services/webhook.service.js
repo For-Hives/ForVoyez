@@ -210,6 +210,22 @@ async function processSubscriptionPlanChanged(webhook) {
 // }
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
+	console.log('Payment success', webhook)
+
+	// Log the structure of the webhook to debug issues
+	console.log('Webhook data:', JSON.stringify(webhook, null, 2))
+
+	// Ensure webhook data is present
+	if (
+		!webhook.data ||
+		!webhook.data.attributes ||
+		!webhook.data.relationships ||
+		!webhook.data.relationships.subscription
+	) {
+		console.error('Invalid webhook data')
+		return
+	}
+
 	const customerId = webhook.meta.custom_data.user_id
 	const newPlanId = webhook.data.relationships.subscription.data.id
 
@@ -256,7 +272,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			if (priceDifference < 0) {
 				return
 			} else {
-				// 	calculate the credits to add to the user, based on the package size of the new plan minus the package size of the old plan
+				// Calculate the credits to add to the user, based on the package size of the new plan minus the package size of the old plan
 				creditsDifference = newPlan.packageSize - oldPlan.packageSize
 			}
 
@@ -265,7 +281,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		}
 	} else {
 		// If the user doesn't have an existing subscription, consider the price of the new plan as the credits difference
-		// find witch plan is linked to the variantId
+		// find which plan is linked to the variantId
 		const sub = await prisma.subscription.findFirst({
 			where: {
 				lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
@@ -274,6 +290,14 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				plans: true,
 			},
 		})
+
+		if (!sub || !sub.plans) {
+			console.error(
+				'Subscription or Plan not found for subscription_id:',
+				webhook.data.attributes.subscription_id
+			)
+			return
+		}
 
 		// update the user credits
 		await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
