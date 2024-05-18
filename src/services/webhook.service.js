@@ -136,9 +136,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		where: {
 			clerkId: customerId,
 		},
-		include: {
-			subscriptions: true,
-		},
 	})
 
 	if (!user) {
@@ -147,15 +144,18 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	}
 
 	// Get the user's existing subscription (if any)
-	const existingSubscription = user.subscriptions[0]
+	const existingSubscription = await prisma.subscription.findFirst({
+		where: {
+			userId: user.id,
+		},
+		include: {
+			plans: true,
+		},
+	})
 
 	if (existingSubscription) {
 		// Get the old plan associated with the existing subscription
-		const oldPlan = await prisma.plan.findUnique({
-			where: {
-				id: existingSubscription.planId,
-			},
-		})
+		const oldPlan = existingSubscription.plans
 
 		// Get the new plan associated with the current subscription
 		const newSubscription = await prisma.subscription.findFirst({
@@ -217,11 +217,4 @@ async function processSubscriptionCreated(webhook) {
 			customerId: webhook.data.attributes.customer_id.toString(),
 		},
 	})
-}
-
-// Private function to calculate the credits based on the amount paid
-function calculateCredits(amountPaid) {
-	// Example conversion rate: 1 credit per €1. Adjust this according to your business logic.
-	const conversionRate = 1 // 1 credit per €1
-	return amountPaid * conversionRate
 }
