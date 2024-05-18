@@ -7,8 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// a table to store the new generated api key for the user, it will be used to recognize the user in the API
-// should have : uuid, user link, created at, expired at, name (optional)
 model Token {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [clerkId])
@@ -20,8 +18,6 @@ model Token {
   Usage     Usage[]
 }
 
-// a table to store the user information
-// should have a link to the Clerk user id, the remaning api credits, other fields will be added later
 model User {
   clerkId      String         @id
   customerId   Int?
@@ -34,8 +30,6 @@ model User {
   WebhookEvent WebhookEvent[]
 }
 
-// a table to store the user's api usage
-// should have: user link, used at, used credits (how many credits the user used in this request), wich api the user used, and with with token
 model Usage {
   id      String   @id @default(uuid())
   user    User     @relation(fields: [userId], references: [clerkId])
@@ -56,7 +50,7 @@ model Plan {
   description    String?
   price          Int // Prix de base en centimes pour une unité
   billingCycle   String? // "monthly" or "annually"
-  packageSize    Int? // Nombre d'unités incluses dans le package
+  packageSize    Int? // Nombre d'unités inclus dans le package
   createdAt      DateTime @default(now())
   mostPopular    Boolean  @default(false)
   features       String   @default("[]")
@@ -82,8 +76,8 @@ model Subscription {
   planId          Int
   customerId      String
 
-  users User @relation(fields: [userId], references: [clerkId])
-  plans Plan @relation(fields: [planId], references: [id])
+  user User @relation(fields: [userId], references: [clerkId])
+  plan Plan @relation(fields: [planId], references: [id])
 }
 
 model WebhookEvent {
@@ -96,5 +90,5 @@ model WebhookEvent {
   processingError String?
   customerId      Int?
 
-  users User @relation(fields: [userId], references: [clerkId])
+  user User @relation(fields: [userId], references: [clerkId])
 }
