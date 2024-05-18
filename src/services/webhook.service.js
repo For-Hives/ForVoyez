@@ -80,6 +80,7 @@ export async function saveWebhooks(webhooks) {
 
 // methode to process the webhooks #id
 export async function processWebhook(id) {
+	console.log('Processing webhook', id)
 	// get the webhook by id
 	const webhook = await prisma.webhookEvent.findUnique({
 		where: {
@@ -134,6 +135,7 @@ export async function processWebhook(id) {
 
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
 async function processSubscriptionResumed(webhook) {
+	console.log('Subscription resumed', webhook)
 	// update the db to reactivate the status of the subscription
 	await prisma.subscription.update({
 		where: {
@@ -151,6 +153,7 @@ async function processSubscriptionResumed(webhook) {
 
 // private function to process the webhook "subscription_cancelled", to update the status of the subscription
 async function processSubscriptionCancelled(webhook) {
+	console.log('Subscription cancelled', webhook)
 	// update the db to cancel the status of the subscription
 	console.log(webhook.data.attributes)
 	await prisma.subscription.update({
@@ -168,6 +171,7 @@ async function processSubscriptionCancelled(webhook) {
 
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
 async function processSubscriptionPlanChanged(webhook) {
+	console.log('Plan changed', webhook)
 	// link plan with variantId
 	const plan = await prisma.plan.findUnique({
 		where: {
@@ -207,6 +211,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 
 async function processSubscriptionCreated(webhook) {
 	// link plan with variantId
+	console.log('Subscription created', webhook)
 	const plan = await prisma.plan.findUnique({
 		where: {
 			variantId: webhook.data.attributes.variant_id.toString(),

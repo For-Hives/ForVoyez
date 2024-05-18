@@ -105,6 +105,22 @@ To test and develop the Lemonsqueezy webhook locally, follow these steps:
 
 8. Check your development server logs. You should see the details of the received webhook, indicating that your local endpoint has successfully processed the request.
 
+### Use ngrok for Local Development as an Alternative to Webhook.site
+you can use ngrok to create a secure tunnel to your local server and receive webhooks from Lemonsqueezy. Follow these steps:
+1. Download and install ngrok from [https://ngrok.com/download](https://ngrok.com/download).
+2. Start your local development server by running the following command in the terminal at the root of your project:
+    `npm run dev` or `bun dev`
+    This will start your Next.js server, which will listen on `http://localhost:3000` by default.
+3. Go to ngrok's admin interface on the website [https://dashboard.ngrok.com/get-started/setup](https://dashboard.ngrok.com/get-started/setup) and copy your unique URL.
+4. You can create a static domain on the interface and use it for your webhook.
+5. Go to the Lemonsqueezy account settings and configure the webhook URL to point to the unique URL provided by ngrok.
+6. Run the following command to forward webhooks to your local server:
+    ```
+    ngrok http --domain=[yourdomain] 3000
+    ```
+    This command will create a secure tunnel to your local server, and you will receive a unique URL that you can use to forward webhooks to your local server.
+7. Perform an action in Lemonsqueezy that will trigger a webhook (e.g., a test payment).
+
 ### Troubleshooting
 
 - If you encounter errors related to HTTPS when forwarding webhooks to your local server, make sure to use `http://` instead of `https://` in the target URL.
