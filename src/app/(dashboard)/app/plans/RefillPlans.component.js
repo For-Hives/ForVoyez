@@ -154,7 +154,7 @@ export function RefillPlansComponent() {
 												{currentSubscription ? (
 													<div>
 														<button
-															onClick={() => manageSubscription()}
+															onClick={() => subscribe(tier.variantId)}
 															aria-describedby={tier.id}
 															className={classNames(
 																tier.mostPopular
