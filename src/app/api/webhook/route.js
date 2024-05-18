@@ -5,8 +5,6 @@ import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
 export async function POST(request) {
-	console.log('Webhook received')
-	console.log(request)
 	try {
 		if (!secret) {
 			return new Response('Lemon Squeezy Webhook Secret not set in .env', {
