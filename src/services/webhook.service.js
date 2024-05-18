@@ -227,7 +227,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			clerkId: customerId,
 		},
 		include: {
-			subscriptions: true,
+			Subscription: true,
 		},
 	})
 
@@ -237,7 +237,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	}
 
 	// Get the user's existing subscription (if any)
-	const existingSubscription = user.subscriptions.find(
+	const existingSubscription = user.Subscription.find(
 		sub => sub.lemonSqueezyId === subscriptionId
 	)
 
@@ -281,7 +281,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 
 	// If the price difference is negative, the user is downgrading, so no credits are added
 	if (priceDifference < 0) {
-		console.warn('Downgrade detected: No credits added')
+		console.log('Downgrade detected: No credits added')
 		return
 	}
 

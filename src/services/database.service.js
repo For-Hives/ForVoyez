@@ -163,6 +163,12 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 		},
 	})
 
+	// Ensure the user exists
+	if (!user) {
+		console.error('User not found:', userId)
+		return
+	}
+
 	// update the user credits and customer id
 	await prisma.user.update({
 		where: {
@@ -182,6 +188,10 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 			tokenId,
 		},
 	})
+
+	console.info(
+		`Added ${creditsToAdd} credits to user ${userId}. New balance: ${user.credits + creditsToAdd}`
+	)
 }
 
 export async function getUsageForUser(userId) {
