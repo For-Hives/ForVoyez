@@ -188,10 +188,6 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 			tokenId,
 		},
 	})
-
-	console.info(
-		`Added ${creditsToAdd} credits to user ${userId}. New balance: ${user.credits + creditsToAdd}`
-	)
 }
 
 export async function getUsageForUser(userId) {
