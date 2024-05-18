@@ -129,7 +129,7 @@ async function processSubscriptionPlanChanged(webhook) {
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
 	const customerId = webhook.meta.custom_data.user_id
-	const newPlanId = webhook.data.relationships.subscription.data.id
+	const subscriptionId = webhook.data.attributes.subscription_id
 
 	// Get the user based on the customerId
 	const user = await prisma.user.findUnique({
@@ -158,30 +158,34 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		})
 
 		// Get the new plan associated with the current subscription
-		const newPlan = await prisma.plan.findUnique({
+		const newSubscription = await prisma.subscription.findFirst({
 			where: {
-				id: newPlanId,
-			},
-		})
-
-		if (oldPlan && newPlan) {
-			// Calculate the packageSize difference between the new plan and the old plan
-			const packageDifference = newPlan.packageSize - oldPlan.packageSize
-			// Update the user's credits by adding the credits difference using the updateCreditForUser function
-			await updateCreditForUser(customerId, packageDifference)
-		}
-	} else {
-		// find witch plan is linked to the variantId
-		const sub = await prisma.subscription.findFirst({
-			where: {
-				lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+				lemonSqueezyId: subscriptionId.toString(),
 			},
 			include: {
 				plans: true,
 			},
 		})
 
-		// update the user credits
+		if (oldPlan && newSubscription) {
+			// Calculate the packageSize difference between the new plan and the old plan
+			const packageDifference =
+				newSubscription.plans.packageSize - oldPlan.packageSize
+			// Update the user's credits by adding the credits difference using the updateCreditForUser function
+			await updateCreditForUser(customerId, packageDifference)
+		}
+	} else {
+		// Find which plan is linked to the subscription ID
+		const sub = await prisma.subscription.findFirst({
+			where: {
+				lemonSqueezyId: subscriptionId.toString(),
+			},
+			include: {
+				plans: true,
+			},
+		})
+
+		// Update the user credits
 		await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
 	}
 }
