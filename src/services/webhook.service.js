@@ -212,26 +212,14 @@ async function processSubscriptionPlanChanged(webhook) {
 async function processSubscriptionPaymentSuccess(webhook) {
 	console.log('Payment success', webhook)
 
-	// Ensure webhook data is present
-	if (
-		!webhook.data ||
-		!webhook.data.attributes ||
-		!webhook.data.relationships ||
-		!webhook.data.relationships.subscription
-	) {
-		console.error('Invalid webhook data')
+	// Ensure webhook data is present and valid
+	if (!webhook.data || !webhook.data.attributes) {
+		console.error('Invalid webhook data: Missing data or attributes')
 		return
 	}
 
 	const customerId = webhook.meta.custom_data.user_id
-	const subscriptionRelationship = webhook.data.relationships.subscription.data
-
-	if (!subscriptionRelationship || !subscriptionRelationship.id) {
-		console.error('Invalid subscription relationship data')
-		return
-	}
-
-	const newPlanId = subscriptionRelationship.id
+	const subscriptionId = webhook.data.attributes.subscription_id.toString()
 
 	// Get the user based on the customerId
 	const user = await prisma.user.findUnique({
@@ -249,62 +237,59 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	}
 
 	// Get the user's existing subscription (if any)
-	const existingSubscription = user.subscriptions[0]
+	const existingSubscription = user.subscriptions.find(
+		sub => sub.lemonSqueezyId === subscriptionId
+	)
 
-	let creditsDifference = 0
-
-	if (existingSubscription) {
-		// Get the old plan associated with the existing subscription
-		const oldPlan = await prisma.plan.findUnique({
-			where: {
-				id: existingSubscription.planId,
-			},
-		})
-
-		// Get the new plan associated with the current subscription
-		const newPlan = await prisma.plan.findUnique({
-			where: {
-				id: newPlanId,
-			},
-		})
-
-		if (oldPlan && newPlan) {
-			// Calculate the price difference between the new plan and the old plan
-			const priceDifference = newPlan.price - oldPlan.price
-
-			// if the price difference is negative, the user is downgrading, so no credits are added
-			if (priceDifference < 0) {
-				return
-			} else {
-				// Calculate the credits to add to the user, based on the package size of the new plan minus the package size of the old plan
-				creditsDifference = newPlan.packageSize - oldPlan.packageSize
-			}
-
-			// Update the user's credits by adding the credits difference using the updateCreditForUser function
-			await updateCreditForUser(customerId, creditsDifference)
-		}
-	} else {
-		// If the user doesn't have an existing subscription, consider the price of the new plan as the credits difference
-		const sub = await prisma.subscription.findFirst({
-			where: {
-				lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
-			},
-			include: {
-				plan: true,
-			},
-		})
-
-		if (!sub || !sub.plan) {
-			console.error(
-				'Subscription or Plan not found for subscription_id:',
-				webhook.data.attributes.subscription_id
-			)
-			return
-		}
-
-		// update the user credits
-		await updateCreditForUser(sub.userId, sub.plan.packageSize ?? 0)
+	if (!existingSubscription) {
+		console.error(
+			'No existing subscription found for subscriptionId:',
+			subscriptionId
+		)
+		return
 	}
+
+	// Get the new plan id from the attributes (if available)
+	const newPlanId = webhook.data.attributes.variant_id
+
+	if (!newPlanId) {
+		console.error('Invalid subscription data: Missing new plan ID')
+		return
+	}
+
+	// Get the old plan associated with the existing subscription
+	const oldPlan = await prisma.plan.findUnique({
+		where: {
+			id: existingSubscription.planId,
+		},
+	})
+
+	// Get the new plan associated with the current subscription
+	const newPlan = await prisma.plan.findUnique({
+		where: {
+			id: newPlanId,
+		},
+	})
+
+	if (!oldPlan || !newPlan) {
+		console.error('Old plan or new plan not found')
+		return
+	}
+
+	// Calculate the price difference between the new plan and the old plan
+	const priceDifference = newPlan.price - oldPlan.price
+
+	// If the price difference is negative, the user is downgrading, so no credits are added
+	if (priceDifference < 0) {
+		console.warn('Downgrade detected: No credits added')
+		return
+	}
+
+	// Calculate the credits to add to the user, based on the package size of the new plan minus the package size of the old plan
+	const creditsDifference = newPlan.packageSize - oldPlan.packageSize
+
+	// Update the user's credits by adding the credits difference using the updateCreditForUser function
+	await updateCreditForUser(customerId, creditsDifference)
 }
 
 async function processSubscriptionCreated(webhook) {
