@@ -212,9 +212,6 @@ async function processSubscriptionPlanChanged(webhook) {
 async function processSubscriptionPaymentSuccess(webhook) {
 	console.log('Payment success', webhook)
 
-	// Log the structure of the webhook to debug issues
-	console.log('Webhook data:', JSON.stringify(webhook, null, 2))
-
 	// Ensure webhook data is present
 	if (
 		!webhook.data ||
@@ -227,7 +224,14 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	}
 
 	const customerId = webhook.meta.custom_data.user_id
-	const newPlanId = webhook.data.relationships.subscription.data.id
+	const subscriptionRelationship = webhook.data.relationships.subscription.data
+
+	if (!subscriptionRelationship || !subscriptionRelationship.id) {
+		console.error('Invalid subscription relationship data')
+		return
+	}
+
+	const newPlanId = subscriptionRelationship.id
 
 	// Get the user based on the customerId
 	const user = await prisma.user.findUnique({
@@ -281,17 +285,16 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		}
 	} else {
 		// If the user doesn't have an existing subscription, consider the price of the new plan as the credits difference
-		// find which plan is linked to the variantId
 		const sub = await prisma.subscription.findFirst({
 			where: {
 				lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
 			},
 			include: {
-				plans: true,
+				plan: true,
 			},
 		})
 
-		if (!sub || !sub.plans) {
+		if (!sub || !sub.plan) {
 			console.error(
 				'Subscription or Plan not found for subscription_id:',
 				webhook.data.attributes.subscription_id
@@ -300,7 +303,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		}
 
 		// update the user credits
-		await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
+		await updateCreditForUser(sub.userId, sub.plan.packageSize ?? 0)
 	}
 }
 
