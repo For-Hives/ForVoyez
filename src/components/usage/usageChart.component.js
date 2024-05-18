@@ -23,7 +23,7 @@ export function UsageChartComponent() {
 		getUsageForUser(auth.userId).then(setUsage)
 	}, [])
 
-	console.table(usage)
+	// console.table(usage)
 
 	return (
 		<div className="bg-white py-24 sm:py-32">
