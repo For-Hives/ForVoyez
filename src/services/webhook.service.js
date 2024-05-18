@@ -129,7 +129,11 @@ async function processSubscriptionPlanChanged(webhook) {
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
 	// Ensure webhook data is present and valid
-	if (!webhook.data || !webhook.data.attributes) {
+	if (
+		!webhook.data ||
+		!webhook.data.attributes ||
+		!webhook.data.attributes.subscription_id
+	) {
 		console.error('Invalid webhook data: Missing data or attributes')
 		return
 	}
@@ -165,9 +169,11 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		return
 	}
 
-	// Get the new plan id from the attributes (if available)
+	// Get the new plan id from the attributes
 	const newPlanId = webhook.data.attributes.variant_id
 
+	console.log('newPlanId', newPlanId)
+	console.log(webhook.data)
 	if (!newPlanId) {
 		console.error('Invalid subscription data: Missing new plan ID')
 		return
@@ -183,7 +189,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	// Get the new plan associated with the current subscription
 	const newPlan = await prisma.plan.findUnique({
 		where: {
-			id: newPlanId,
+			variantId: newPlanId,
 		},
 	})
 
@@ -206,6 +212,8 @@ async function processSubscriptionPaymentSuccess(webhook) {
 
 	// Update the user's credits by adding the credits difference using the updateCreditForUser function
 	await updateCreditForUser(customerId, creditsDifference)
+
+	console.info(`Added ${creditsDifference} credits to user ${customerId}`)
 }
 
 async function processSubscriptionCreated(webhook) {
@@ -235,4 +243,11 @@ async function processSubscriptionCreated(webhook) {
 			customerId: webhook.data.attributes.customer_id.toString(),
 		},
 	})
+}
+
+// Private function to calculate the credits based on the amount paid
+function calculateCredits(amountPaid) {
+	// Example conversion rate: 1 credit per €1. Adjust this according to your business logic.
+	const conversionRate = 1 // 1 credit per €1
+	return amountPaid * conversionRate
 }
