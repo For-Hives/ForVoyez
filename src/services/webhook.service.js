@@ -67,42 +67,45 @@ export async function processWebhook(id) {
 }
 
 // private function to process the webhook "order_created"
+// private function to process the webhook "order_created"
 async function processOrderCreated(parsed_webhook) {
-	// 	check if the user already exists
-	const user = await prisma.user.findFirst({
+	const customerId = parsed_webhook.meta.custom_data.user_id
+	const customerEmail = parsed_webhook.data.attributes.user_email
+	const customerName = parsed_webhook.data.attributes.user_name
+
+	// check if the user already exists
+	let user = await prisma.user.findUnique({
 		where: {
-			clerkId: parsed_webhook.data.attributes.customer_id,
+			clerkId: customerId,
 		},
 	})
 
 	if (!user) {
-		// create a new user in the database
-		await prisma.user.create({
+		// create a new user in the database if they don't exist
+		user = await prisma.user.create({
 			data: {
-				clerkId: parsed_webhook.data.attributes.customer_id,
-				email: parsed_webhook.data.attributes.customer_email,
-				name: parsed_webhook.data.attributes.customer_name,
+				clerkId: customerId,
+				email: customerEmail,
+				name: customerName,
 			},
 		})
 	}
 
-	// 	check if the order is paid
+	// check if the order is paid
 	if (parsed_webhook.data.attributes.status === 'paid') {
-		// 	Add credits to the user
-		// to get the correct amount of credits, we need to get the plan associated with the variantId
-		// and then get the packageSize
-		// then we can add the credits to the user
+		// get the variant_id from the first_order_item
+		const variantId =
+			parsed_webhook.data.attributes.first_order_item.variant_id.toString()
+
+		// get the plan associated with the variantId
 		const plan = await prisma.plan.findUnique({
 			where: {
-				variantId: parsed_webhook.data.attributes.variant_id.toString(),
+				variantId: variantId,
 			},
 		})
 
 		// add the credits to the user
-		await updateCreditForUser(
-			parsed_webhook.data.attributes.customer_id,
-			plan ? plan.packageSize : 0
-		)
+		await updateCreditForUser(customerId, plan ? plan.packageSize : 0)
 	}
 }
 
