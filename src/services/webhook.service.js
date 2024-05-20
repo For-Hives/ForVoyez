@@ -31,10 +31,11 @@ export async function processWebhook(id) {
 	const parsed_webhook = JSON.parse(webhook.body)
 
 	console.log('Processing webhook:', webhook.eventName)
+
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
-			// nothing to do
+			await processOrderCreated(parsed_webhook)
 			break
 		case 'subscription_created':
 			await processSubscriptionCreated(parsed_webhook)
@@ -62,6 +63,46 @@ export async function processWebhook(id) {
 			where: { id: id },
 			data: { processed: true },
 		})
+	}
+}
+
+// private function to process the webhook "order_created"
+async function processOrderCreated(parsed_webhook) {
+	// 	check if the user already exists
+	const user = await prisma.user.findFirst({
+		where: {
+			clerkId: parsed_webhook.data.attributes.customer_id,
+		},
+	})
+
+	if (!user) {
+		// create a new user in the database
+		await prisma.user.create({
+			data: {
+				clerkId: parsed_webhook.data.attributes.customer_id,
+				email: parsed_webhook.data.attributes.customer_email,
+				name: parsed_webhook.data.attributes.customer_name,
+			},
+		})
+	}
+
+	// 	check if the order is paid
+	if (parsed_webhook.data.attributes.status === 'paid') {
+		// 	Add credits to the user
+		// to get the correct amount of credits, we need to get the plan associated with the variantId
+		// and then get the packageSize
+		// then we can add the credits to the user
+		const plan = await prisma.plan.findUnique({
+			where: {
+				variantId: parsed_webhook.data.attributes.variant_id.toString(),
+			},
+		})
+
+		// add the credits to the user
+		await updateCreditForUser(
+			parsed_webhook.data.attributes.customer_id,
+			plan ? plan.packageSize : 0
+		)
 	}
 }
 
