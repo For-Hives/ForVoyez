@@ -48,7 +48,6 @@ export function RefillPlansComponent() {
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
 
-		console.log('sub', sub)
 
 		if (sub) {
 			setCurrentSubscription(sub)
@@ -103,17 +102,20 @@ export function RefillPlansComponent() {
 
 										// Add a check to ensure currentSubscription.planName exists
 										const isCurrentPlanGrowth =
-											currentSubscription?.plan?.productName?.includes('Growth')
+											currentSubscription?.plan?.name?.includes('Growth')
 										const isCurrentPlanStarter =
-											currentSubscription?.plan?.productName?.includes(
-												'Starter'
-											)
+											currentSubscription?.plan?.name?.includes('Starter')
 
-										console.log('tier.name', tier)
 										// Filter plans based on current subscription
-										if (isCurrentPlanGrowth && !tier.name.includes('Growth'))
+										if (
+											isCurrentPlanGrowth &&
+											!tier.productName.includes('Growth')
+										)
 											return null
-										if (isCurrentPlanStarter && !tier.name.includes('Starter'))
+										if (
+											isCurrentPlanStarter &&
+											!tier.productName.includes('Starter')
+										)
 											return null
 
 										return (
