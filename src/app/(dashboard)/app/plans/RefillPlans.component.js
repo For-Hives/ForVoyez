@@ -151,7 +151,7 @@ export function RefillPlansComponent() {
 												</p>
 												<p className={''}>One time refill</p>
 
-												{currentSubscription ? (
+												{currentSubscription && (
 													<div>
 														<button
 															onClick={() => subscribe(tier.variantId)}
@@ -166,19 +166,6 @@ export function RefillPlansComponent() {
 															Refill your credits
 														</button>
 													</div>
-												) : (
-													<button
-														onClick={() => subscribe(tier.variantId)}
-														aria-describedby={tier.id}
-														className={classNames(
-															tier.mostPopular
-																? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-																: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-															'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-														)}
-													>
-														{tier.buttonText}
-													</button>
 												)}
 											</div>
 										)
