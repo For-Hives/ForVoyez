@@ -52,13 +52,13 @@ bun.lockb
 prisma/dev.db
 
 
-public/animation_features/landing_art_forvoyez.riv
-prisma/schema.prisma
-prisma/migrations/
-prisma
-bruno
-pnpm-lock.yaml
-.riv
+#public/animation_features/landing_art_forvoyez.riv
+#prisma/schema.prisma
+#prisma/migrations/
+#prisma
+#bruno
+#pnpm-lock.yaml
+#.riv
 
 output.txt
 large.txt
