@@ -30,7 +30,6 @@ export async function processWebhook(id) {
 	// process the webhook
 	const parsed_webhook = JSON.parse(webhook.body)
 
-
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
@@ -236,9 +235,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				const packageDifference =
 					newSubscription.plan.packageSize - oldPlan.packageSize
 
-					'newSubscription.plan.packageSize',
-					newSubscription.plan.packageSize
-				)
 				// Update the user's credits by adding the credits difference using the updateCreditForUser function
 				await updateCreditForUser(customerId, packageDifference)
 			}
@@ -264,7 +260,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				plan: true,
 			},
 		})
-
 
 		// Update the user credits
 		await updateCreditForUser(sub.userId, sub.plan.packageSize ?? 0)
