@@ -46,7 +46,11 @@ export async function syncPlans() {
 	}
 
 	const allProducts = await listProducts()
-	const refillProduct = allProducts[0]
+	console.log(allProducts)
+	// the two first products are the refill products
+	let refillProduct = allProducts[0]
+	// const refillProduct2 = allProducts[1]
+	// refillProduct = [...refillProduct, ...refillProduct2]
 	const refillVariants = refillProduct.relationships.variants.data
 
 	const refillVariantsData = []
