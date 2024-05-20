@@ -111,15 +111,9 @@ export function RefillPlansComponent() {
 
 										console.log('tier.name', tier)
 										// Filter plans based on current subscription
-										if (
-											isCurrentPlanGrowth &&
-											!tier.productName.includes('Growth')
-										)
+										if (isCurrentPlanGrowth && !tier.name.includes('Growth'))
 											return null
-										if (
-											isCurrentPlanStarter &&
-											!tier.productName.includes('Starter')
-										)
+										if (isCurrentPlanStarter && !tier.name.includes('Starter'))
 											return null
 
 										return (

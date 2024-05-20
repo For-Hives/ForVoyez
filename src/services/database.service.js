@@ -66,7 +66,9 @@ export async function syncPlans() {
 	}
 
 	// Filter out subscription variants
-	const refillVariants = allVariants.filter(v => !v.is_subscription)
+	const refillVariants = allVariants.filter(
+		v => !v.is_subscription && v.name !== 'Default'
+	)
 
 	for (const variant of refillVariants) {
 		const variantPriceObject = await listPrice(variant.variantId)
