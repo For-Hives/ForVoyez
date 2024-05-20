@@ -32,7 +32,7 @@ export async function processWebhook(id) {
 	// process the webhook
 	const parsed_webhook = JSON.parse(webhook.body)
 
-	console.log('Processing webhook:', webhook.eventName)
+	// console.log('Processing webhook:', webhook.eventName)
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
@@ -106,30 +106,44 @@ async function processSubscriptionCancelled(webhook) {
 
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
 async function processSubscriptionPlanChanged(webhook) {
-	// link plan with variantId
-	const plan = await prisma.plan.findUnique({
+	// Get the user's current subscription
+	const subscription = await prisma.subscription.findFirst({
 		where: {
-			variantId: webhook.data.attributes.variant_id.toString(),
+			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+		},
+		include: {
+			plans: true,
 		},
 	})
 
-	// update the db to change the plan of the subscription
-	await prisma.subscription.update({
-		where: {
-			lemonSqueezyId:
-				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
-		},
-		data: {
-			planId: plan.id,
-			status: 'active',
-			statusFormatted: 'Active',
-		},
-	})
+	if (subscription) {
+		// Get the new plan associated with the variantId
+		const newPlan = await prisma.plan.findUnique({
+			where: {
+				variantId: webhook.data.attributes.variant_id.toString(),
+			},
+		})
+
+		if (newPlan) {
+			// Update the subscription with the new plan and the old plan
+			await prisma.subscription.update({
+				where: {
+					lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+				},
+				data: {
+					planId: newPlan.id,
+					oldPlanId: subscription.planId, // Save the old plan
+					status: 'active',
+					statusFormatted: 'Active',
+				},
+			})
+		}
+	}
 }
 
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
-	console.log('Payment success')
+	// console.log('Payment success')
 	// console.log(webhook)
 	const customerId = webhook.meta.custom_data.user_id
 	const subscriptionId = webhook.data.attributes.subscription_id
@@ -155,12 +169,15 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			plans: true,
 		},
 	})
-	console.log('existingSubscription', existingSubscription)
+	// console.log('existingSubscription', existingSubscription)
 
 	if (existingSubscription) {
-		// Get the old plan associated with the existing subscription
-		const oldPlan = existingSubscription.plans
-		console.log('oldPlan', oldPlan)
+		// Retrieve the old plan from the oldPlanId field of the existing subscription
+		const oldPlan = await prisma.plan.findUnique({
+			where: {
+				id: existingSubscription.oldPlanId,
+			},
+		})
 
 		// Get the new plan associated with the current subscription
 		const newSubscription = await prisma.subscription.findFirst({
@@ -171,24 +188,24 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				plans: true,
 			},
 		})
-		console.log('newSubscription', newSubscription)
+		// console.log('newSubscription', newSubscription)
 
 		if (oldPlan && newSubscription) {
 			// Calculate the packageSize difference between the new plan and the old plan
 			const packageDifference =
 				newSubscription.plans.packageSize - oldPlan.packageSize
 
-			console.log(
-				'newSubscription.plans.packageSize',
-				newSubscription.plans.packageSize
-			)
-			console.log('oldPlan.packageSize', oldPlan.packageSize)
-			console.log('packageDifference', packageDifference)
+			// console.log(
+			// 	'newSubscription.plans.packageSize',
+			// 	newSubscription.plans.packageSize
+			// )
+			// console.log('oldPlan.packageSize', oldPlan.packageSize)
+			// console.log('packageDifference', packageDifference)
 			// Update the user's credits by adding the credits difference using the updateCreditForUser function
 			await updateCreditForUser(customerId, packageDifference)
 		}
 	} else {
-		console.log('No existing subscription found')
+		// console.log('No existing subscription found')
 		// Find which plan is linked to the subscription ID
 		const sub = await prisma.subscription.findFirst({
 			where: {
@@ -199,7 +216,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			},
 		})
 
-		console.log('sub', sub)
+		// console.log('sub', sub)
 
 		// Update the user credits
 		await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
