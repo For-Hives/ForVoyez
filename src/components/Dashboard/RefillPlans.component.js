@@ -48,6 +48,8 @@ export function RefillPlansComponent() {
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
 
+		console.log('sub', sub)
+
 		if (sub) {
 			setCurrentSubscription(sub)
 		} else {
@@ -98,17 +100,19 @@ export function RefillPlansComponent() {
 								<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 									{plans.map(tier => {
 										if (tier.billingCycle) return null
-										// if (
-										// 	currentSubscription.planId === 1 ||
-										// 	currentSubscription.planId === 2
-										// ) {
-										// 	if (!tier.name.includes('Starter')) return null
-										// } else if (
-										// 	currentSubscription.planId === 3 ||
-										// 	currentSubscription.planId === 4
-										// ) {
-										// 	if (!tier.name.includes('Growth')) return null
-										// }
+
+										// Add a check to ensure currentSubscription.planName exists
+										const isCurrentPlanGrowth =
+											currentSubscription?.plan?.name?.includes('Growth')
+										const isCurrentPlanStarter =
+											currentSubscription?.plan?.name?.includes('Starter')
+
+										console.log('tier.name', tier)
+										// Filter plans based on current subscription
+										if (isCurrentPlanGrowth && !tier.name.includes('Growth'))
+											return null
+										if (isCurrentPlanStarter && !tier.name.includes('Starter'))
+											return null
 
 										return (
 											<div

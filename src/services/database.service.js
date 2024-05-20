@@ -166,5 +166,8 @@ export async function getSubscriptionFromUserId(userId) {
 		where: {
 			userId: userId,
 		},
+		include: {
+			plan: true,
+		},
 	})
 }
