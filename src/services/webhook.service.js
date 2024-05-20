@@ -98,10 +98,19 @@ async function processSubscriptionCancelled(webhook) {
 
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
 async function processSubscriptionPlanChanged(webhook) {
+	// Get the subscription ID from the webhook data
+	const subscriptionId =
+		webhook.data.attributes.first_subscription_item?.subscription_id
+
+	if (!subscriptionId) {
+		console.error('Subscription ID not found in the webhook data')
+		return
+	}
+
 	// Get the user's current subscription
 	const subscription = await prisma.subscription.findFirst({
 		where: {
-			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+			lemonSqueezyId: subscriptionId.toString(),
 		},
 		include: {
 			plan: true,
@@ -120,7 +129,7 @@ async function processSubscriptionPlanChanged(webhook) {
 			// Update the subscription with the new plan and the old plan
 			await prisma.subscription.update({
 				where: {
-					lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
+					lemonSqueezyId: subscriptionId.toString(),
 				},
 				data: {
 					planId: newPlan.id,
