@@ -112,7 +112,7 @@ async function processSubscriptionPlanChanged(webhook) {
 			lemonSqueezyId: webhook.data.attributes.subscription_id.toString(),
 		},
 		include: {
-			plans: true,
+			plan: true,
 		},
 	})
 
@@ -166,7 +166,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			userId: user.id,
 		},
 		include: {
-			plans: true,
+			plan: true,
 		},
 	})
 	// console.log('existingSubscription', existingSubscription)
@@ -185,7 +185,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				lemonSqueezyId: subscriptionId.toString(),
 			},
 			include: {
-				plans: true,
+				plan: true,
 			},
 		})
 		// console.log('newSubscription', newSubscription)
@@ -193,11 +193,11 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		if (oldPlan && newSubscription) {
 			// Calculate the packageSize difference between the new plan and the old plan
 			const packageDifference =
-				newSubscription.plans.packageSize - oldPlan.packageSize
+				newSubscription.plan.packageSize - oldPlan.packageSize
 
 			// console.log(
-			// 	'newSubscription.plans.packageSize',
-			// 	newSubscription.plans.packageSize
+			// 	'newSubscription.plan.packageSize',
+			// 	newSubscription.plan.packageSize
 			// )
 			// console.log('oldPlan.packageSize', oldPlan.packageSize)
 			// console.log('packageDifference', packageDifference)
@@ -212,14 +212,14 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				lemonSqueezyId: subscriptionId.toString(),
 			},
 			include: {
-				plans: true,
+				plan: true,
 			},
 		})
 
 		// console.log('sub', sub)
 
 		// Update the user credits
-		await updateCreditForUser(sub.userId, sub.plans.packageSize ?? 0)
+		await updateCreditForUser(sub.userId, sub.plan.packageSize ?? 0)
 	}
 }
 
