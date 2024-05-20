@@ -11,14 +11,13 @@ import { prisma } from '@/services/prisma.service'
 
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
-	// console.log(plans)
 
 	// filter can be "yearly" or "monthly", and it deletes the other one time paid plans (refills)
 	if (filter) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
 
-	syncPlans()
+	await syncPlans()
 
 	return plans
 }
@@ -32,6 +31,10 @@ export async function syncPlans() {
 
 	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
+		if (!variant.variantId) {
+			console.error('Variant ID is undefined for variant:', variant)
+			return
+		}
 		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
 			where: { variantId: variant.variantId },
@@ -48,7 +51,10 @@ export async function syncPlans() {
 		const productVariants = product.relationships.variants.data
 		for (const variant of productVariants) {
 			const variantDetails = await getVariant(variant.id)
-			allVariants.push(variantDetails.data.data.attributes)
+			allVariants.push({
+				...variantDetails.data.data.attributes,
+				variantId: variant.id,
+			})
 		}
 	}
 
@@ -56,7 +62,7 @@ export async function syncPlans() {
 	const refillVariants = allVariants.filter(v => !v.is_subscription)
 
 	for (const variant of refillVariants) {
-		const variantPriceObject = await listPrice(variant.id)
+		const variantPriceObject = await listPrice(variant.variantId)
 		const currentPriceObj = variantPriceObject.at(0)
 
 		const isUsageBased = currentPriceObj?.attributes.usage_aggregation !== null
@@ -71,7 +77,7 @@ export async function syncPlans() {
 
 		await _addVariant({
 			productId: variant.product_id.toString(),
-			variantId: variant.id,
+			variantId: variant.variantId,
 			variantEnabled: true,
 			name: variant.name,
 			description: variant.description,
