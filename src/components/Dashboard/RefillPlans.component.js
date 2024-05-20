@@ -48,7 +48,6 @@ export function RefillPlansComponent() {
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
 
-
 		if (sub) {
 			setCurrentSubscription(sub)
 		} else {
