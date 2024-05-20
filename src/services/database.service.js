@@ -30,9 +30,6 @@ export async function getPlans(filter = null) {
 export async function syncPlans() {
 	await initLemonSqueezy()
 
-	// Fetch all the variants from the database.
-	const productVariants = await prisma.plan.findMany()
-
 	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
 		// Sync the variant with the plan in the database.
@@ -41,82 +38,25 @@ export async function syncPlans() {
 			update: variant,
 			create: variant,
 		})
-
-		productVariants.push(variant)
 	}
 
 	const allProducts = await listProducts()
-	console.log(allProducts)
-	// the two first products are the refill products
-	let refillProduct = allProducts[0]
-	// const refillProduct2 = allProducts[1]
-	// refillProduct = [...refillProduct, ...refillProduct2]
-	const refillVariants = refillProduct.relationships.variants.data
+	let allVariants = []
 
-	const refillVariantsData = []
-	for (const refillVariant of refillVariants.slice(1)) {
-		const variant = await getVariant(refillVariant.id)
-		refillVariantsData.push(variant.data.data.attributes)
-	}
-
-	// Loop through all the variants.
-	const subscriptionVariants = (await listVariants()).filter(
-		v => v.attributes.is_subscription
-	)
-
-	// for...of supports asynchronous operations, unlike forEach.
-	// Process all variants
-	if (subscriptionVariants.length > 0) {
-		for (const v of subscriptionVariants) {
-			const variant = v.attributes
-
-			if (
-				variant.status === 'draft' ||
-				(subscriptionVariants.length !== 1 && variant.status === 'pending')
-			) {
-				continue
-			}
-
-			const product = (await getProduct(variant.product_id)).data?.data
-
-			const productName = product?.attributes?.name ?? ''
-			const productDescription = product?.attributes?.description ?? ''
-
-			const variantPriceObject = await listPrice(v.id)
-
-			const currentPriceObj = variantPriceObject.at(0)
-
-			const isUsageBased =
-				currentPriceObj?.attributes.usage_aggregation !== null
-
-			const packageSize = currentPriceObj?.attributes.package_size
-
-			const interval = currentPriceObj?.attributes.renewal_interval_unit
-
-			const price = isUsageBased
-				? currentPriceObj?.attributes.unit_price_decimal
-				: currentPriceObj.attributes.unit_price
-
-			const priceString = price !== null ? price?.toString() ?? '' : ''
-
-			await _addVariant({
-				productId: variant.product_id.toString(),
-				variantId: v.id,
-				variantEnabled: true,
-				name: productName,
-				description: productDescription,
-				price: parseInt(priceString),
-				billingCycle: interval,
-				packageSize: packageSize,
-			})
+	// Loop through all products and get their variants
+	for (const product of allProducts) {
+		const productVariants = product.relationships.variants.data
+		for (const variant of productVariants) {
+			const variantDetails = await getVariant(variant.id)
+			allVariants.push(variantDetails.data.data.attributes)
 		}
 	}
 
-	for (const refillVariant of refillVariants.slice(1)) {
-		const variant = await getVariant(refillVariant.id)
-		const variantAttributes = variant.data.data.attributes
+	// Filter out subscription variants
+	const refillVariants = allVariants.filter(v => !v.is_subscription)
 
-		const variantPriceObject = await listPrice(refillVariant.id)
+	for (const variant of refillVariants) {
+		const variantPriceObject = await listPrice(variant.id)
 		const currentPriceObj = variantPriceObject.at(0)
 
 		const isUsageBased = currentPriceObj?.attributes.usage_aggregation !== null
@@ -130,22 +70,22 @@ export async function syncPlans() {
 		const priceString = price !== null ? price?.toString() ?? '' : ''
 
 		await _addVariant({
-			productId: refillProduct.id.toString(),
-			variantId: refillVariant.id,
+			productId: variant.product_id.toString(),
+			variantId: variant.id,
 			variantEnabled: true,
-			name: variantAttributes.name,
-			description: variantAttributes.description,
+			name: variant.name,
+			description: variant.description,
 			price: parseInt(priceString),
 			billingCycle: null,
 			packageSize: packageSize,
 		})
 	}
 
-	return productVariants
+	return refillVariants
 }
 
 export async function getCustomerIdFromUser(userId) {
-	// obtain it throught table user.subscription[0].customerId
+	// obtain it through table user.subscription[0].customerId
 
 	// check if user has a subscription
 	const sub = await prisma.subscription.findFirst({
