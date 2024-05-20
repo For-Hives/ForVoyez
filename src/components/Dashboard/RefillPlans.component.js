@@ -103,15 +103,23 @@ export function RefillPlansComponent() {
 
 										// Add a check to ensure currentSubscription.planName exists
 										const isCurrentPlanGrowth =
-											currentSubscription?.plan?.name?.includes('Growth')
+											currentSubscription?.plan?.productName?.includes('Growth')
 										const isCurrentPlanStarter =
-											currentSubscription?.plan?.name?.includes('Starter')
+											currentSubscription?.plan?.productName?.includes(
+												'Starter'
+											)
 
 										console.log('tier.name', tier)
 										// Filter plans based on current subscription
-										if (isCurrentPlanGrowth && !tier.name.includes('Growth'))
+										if (
+											isCurrentPlanGrowth &&
+											!tier.productName.includes('Growth')
+										)
 											return null
-										if (isCurrentPlanStarter && !tier.name.includes('Starter'))
+										if (
+											isCurrentPlanStarter &&
+											!tier.productName.includes('Starter')
+										)
 											return null
 
 										return (

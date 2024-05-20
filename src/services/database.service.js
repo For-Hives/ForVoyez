@@ -30,7 +30,7 @@ export async function syncPlans() {
 	await initLemonSqueezy()
 
 	// Helper function to add a variant to the productVariants array and sync it with the database.
-	async function _addVariant(variant) {
+	async function _addVariant(variant, productName) {
 		if (!variant.variantId) {
 			console.error('Variant ID is undefined for variant:', variant)
 			return
@@ -38,8 +38,14 @@ export async function syncPlans() {
 		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
 			where: { variantId: variant.variantId },
-			update: variant,
-			create: variant,
+			update: {
+				...variant,
+				productName, // Add product name here
+			},
+			create: {
+				...variant,
+				productName, // Add product name here
+			},
 		})
 	}
 
@@ -54,14 +60,13 @@ export async function syncPlans() {
 			allVariants.push({
 				...variantDetails.data.data.attributes,
 				variantId: variant.id,
+				productName: product.attributes.name, // Add product name here
 			})
 		}
 	}
 
-	// Filter out subscription variants and those with name "Default"
-	const refillVariants = allVariants.filter(
-		v => !v.is_subscription && v.name !== 'Default'
-	)
+	// Filter out subscription variants
+	const refillVariants = allVariants.filter(v => !v.is_subscription)
 
 	for (const variant of refillVariants) {
 		const variantPriceObject = await listPrice(variant.variantId)
@@ -77,16 +82,19 @@ export async function syncPlans() {
 
 		const priceString = price !== null ? price?.toString() ?? '' : ''
 
-		await _addVariant({
-			productId: variant.product_id.toString(),
-			variantId: variant.variantId,
-			variantEnabled: true,
-			name: variant.name,
-			description: variant.description,
-			price: parseInt(priceString),
-			billingCycle: null,
-			packageSize: packageSize,
-		})
+		await _addVariant(
+			{
+				productId: variant.product_id.toString(),
+				variantId: variant.variantId,
+				variantEnabled: true,
+				name: variant.name,
+				description: variant.description,
+				price: parseInt(priceString),
+				billingCycle: null,
+				packageSize: packageSize,
+			},
+			variant.productName
+		)
 	}
 
 	return refillVariants
