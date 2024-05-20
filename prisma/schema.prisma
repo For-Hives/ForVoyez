@@ -44,6 +44,7 @@ model Usage {
 model Plan {
   id             Int      @id @default(autoincrement())
   productId      String
+  productName    String?
   variantId      String   @unique
   variantEnabled Boolean  @default(true)
   name           String
