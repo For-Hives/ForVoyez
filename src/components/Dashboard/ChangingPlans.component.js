@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import {
 	getPlans,
 	getSubscriptionFromUserId,
@@ -112,101 +113,11 @@ export function ChangingPlansComponent() {
 					</div>
 				</div>
 				<div className={'flex w-full flex-col gap-8 md:grid md:grid-cols-2'}>
-					<div className="col-span-1 w-full animate-pulse rounded-3xl bg-gray-200 p-8">
-						<div className="flex items-center justify-between gap-x-4">
-							<div className="h-4 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-3 w-24 rounded-full bg-gray-300 px-2.5 py-1 text-center text-xs font-semibold leading-5"></div>
-						</div>
-						<div className="mt-4 h-4 w-full rounded bg-gray-300"></div>
-						<div className="mt-6 flex items-baseline gap-x-1">
-							<div className="h-8 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-4 w-1/6 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-4 h-4 w-1/4 rounded bg-gray-300"></div>
-						<div>
-							<div className="mt-6 h-10 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-2 flex items-center">
-							<div className="h-4 w-full rounded bg-gray-300"></div>
-						</div>
-						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-						</ul>
-					</div>
-					<div className="col-span-1 w-full animate-pulse rounded-3xl bg-gray-200 p-8">
-						<div className="flex items-center justify-between gap-x-4">
-							<div className="h-4 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-3 w-24 rounded-full bg-gray-300 px-2.5 py-1 text-center text-xs font-semibold leading-5"></div>
-						</div>
-						<div className="mt-4 h-4 w-full rounded bg-gray-300"></div>
-						<div className="mt-6 flex items-baseline gap-x-1">
-							<div className="h-8 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-4 w-1/6 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-4 h-4 w-1/4 rounded bg-gray-300"></div>
-						<div>
-							<div className="mt-6 h-10 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-2 flex items-center">
-							<div className="h-4 w-full rounded bg-gray-300"></div>
-						</div>
-						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-						</ul>
-					</div>
-					<div className="col-span-2 animate-pulse rounded-3xl bg-gray-200 p-8">
-						<div className="flex items-center justify-between gap-x-4">
-							<div className="h-4 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-3 w-24 rounded-full bg-gray-300 px-2.5 py-1 text-center text-xs font-semibold leading-5"></div>
-						</div>
-						<div className="mt-4 h-4 w-full rounded bg-gray-300"></div>
-						<div className="mt-6 flex items-baseline gap-x-1">
-							<div className="h-8 w-1/4 rounded bg-gray-300"></div>
-							<div className="h-4 w-1/6 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-4 h-4 w-1/4 rounded bg-gray-300"></div>
-						<div>
-							<div className="mt-6 h-10 rounded bg-gray-300"></div>
-						</div>
-						<div className="mt-2 flex items-center">
-							<div className="h-4 w-full rounded bg-gray-300"></div>
-						</div>
-						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-							<li className="flex gap-x-3">
-								<div className="h-4 w-5 flex-none rounded bg-gray-300"></div>
-								<div className="h-4 w-full rounded bg-gray-300"></div>
-							</li>
-						</ul>
+					{[...Array(2)].map((_, i) => (
+						<SkeletonLoaderPricing key={i} />
+					))}
+					<div className="col-span-2">
+						<SkeletonLoaderPricing />
 					</div>
 				</div>
 			</div>
