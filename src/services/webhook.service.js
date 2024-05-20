@@ -164,7 +164,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	console.log('existingSubscription', existingSubscription)
 
 	if (existingSubscription) {
-		// Ensure oldPlanId is defined before attempting to retrieve the old plan
 		if (existingSubscription.oldPlanId) {
 			// Retrieve the old plan from the oldPlanId field of the existing subscription
 			const oldPlan = await prisma.plan.findUnique({
@@ -199,7 +198,16 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				await updateCreditForUser(customerId, packageDifference)
 			}
 		} else {
-			console.error('No old plan found for subscriptionId:', subscriptionId)
+			// If there's no old plan, add the credits from the new plan
+			const newPlan = await prisma.plan.findUnique({
+				where: {
+					id: existingSubscription.planId,
+				},
+			})
+
+			if (newPlan) {
+				await updateCreditForUser(customerId, newPlan.packageSize)
+			}
 		}
 	} else {
 		// console.log('No existing subscription found')
