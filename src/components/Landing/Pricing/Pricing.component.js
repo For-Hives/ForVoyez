@@ -53,12 +53,6 @@ export function PricingComponent() {
 		})
 	}, [])
 
-	// while no data is fetched, show a loading spinner
-
-	if (plans.length === 0) {
-		return <div className="bg-white py-24 sm:py-32">loading...</div>
-	}
-
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -111,105 +105,131 @@ export function PricingComponent() {
 					</RadioGroup>
 				</div>
 				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-					{plans.map(tier => {
-						if (!isAnnually && tier.billingCycle === 'year') return null
-						if (isAnnually && tier.billingCycle === 'month') return null
-						if (!tier.billingCycle) return null
+					{!(plans.length > 0)
+						? [...Array(2)].map((_, i) => (
+								<>
+									<div
+										key="custom"
+										className="animate-pulse rounded-3xl p-8 ring-1 ring-slate-200 xl:p-10"
+									>
+										<div className="my-4 h-6 w-3/4 rounded bg-gray-200"></div>
+										<div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
+										<div className="my-0 h-4 w-1/4 rounded bg-gray-200"></div>
+										<div className="my-4 h-12 w-3/4 rounded bg-gray-200"></div>
+										<div className="my-4 h-4 w-1/4 rounded bg-gray-200"></div>
+										<div className="my-4 h-8 w-full rounded bg-gray-200"></div>
 
-						return (
-							<div
-								key={tier.id}
-								className={classNames(
-									tier.mostPopular
-										? 'ring-2 ring-forvoyez_orange-500'
-										: 'ring-1 ring-slate-200',
-									'rounded-3xl p-8 xl:p-10'
-								)}
-							>
-								<div className="flex items-center justify-between gap-x-4">
-									<h3
-										id={tier.id}
+										<ul className="mt-8 space-y-5 text-sm leading-6 text-slate-600 xl:mt-10">
+											{[...Array(11)].map((_, i) => (
+												<li key={i} className="flex gap-x-3">
+													<div className="h-4 w-5 flex-none rounded bg-gray-200"></div>
+													<div className="h-4 w-full rounded bg-gray-200"></div>
+												</li>
+											))}
+										</ul>
+									</div>
+								</>
+							))
+						: plans.map(tier => {
+								if (!isAnnually && tier.billingCycle === 'year') return null
+								if (isAnnually && tier.billingCycle === 'month') return null
+								if (!tier.billingCycle) return null
+
+								return (
+									<div
+										key={tier.id}
 										className={classNames(
 											tier.mostPopular
-												? 'text-forvoyez_orange-500'
-												: 'text-slate-900',
-											'text-lg font-semibold leading-8'
+												? 'ring-2 ring-forvoyez_orange-500'
+												: 'ring-1 ring-slate-200',
+											'rounded-3xl p-8 xl:p-10'
 										)}
 									>
-										{tier.name}
-									</h3>
-									{tier.mostPopular ? (
-										<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
-											Most popular
-										</p>
-									) : null}
-								</div>
-								{/*Dangerous set html*/}
-								<p
-									className="mt-4 text-sm leading-6 text-slate-600"
-									dangerouslySetInnerHTML={{ __html: tier.description }}
-								/>
-								<p className="mt-6 flex items-baseline gap-x-1">
-									<span className="text-4xl font-bold tracking-tight text-slate-900">
-										{/* format to price in € and get 2 decimals */}
-										{(tier.price / 100).toFixed(2).replace('.', ',')}€
-									</span>
-									<span className="text-sm font-semibold leading-6 text-slate-600">
-										{frequency.priceSuffix}
-									</span>
-								</p>
-								<p className={''}>
-									Billed {isAnnually ? 'annually' : 'monthly'}
-								</p>
-								<Link
-									href="/app/plans"
-									aria-describedby={tier.id}
-									className={classNames(
-										tier.mostPopular
-											? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-											: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-										'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-									)}
-								>
-									{tier.buttonText}
-								</Link>
-								<div className={'mt-2 flex items-center'}>
-									{isAnnually ? (
-										<span className="text-xs text-slate-500">
-											<span className={'font-bold'}>20% more tokens</span> than
-											monthly
-										</span>
-									) : (
-										<button
-											className={'group m-0 flex gap-1 p-0'}
-											onClick={() => setFrequency(frequencies[1])}
-										>
-											<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
-												Get <span className={'font-bold'}>20% more tokens</span>
+										<div className="flex items-center justify-between gap-x-4">
+											<h3
+												id={tier.id}
+												className={classNames(
+													tier.mostPopular
+														? 'text-forvoyez_orange-500'
+														: 'text-slate-900',
+													'text-lg font-semibold leading-8'
+												)}
+											>
+												{tier.name}
+											</h3>
+											{tier.mostPopular ? (
+												<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
+													Most popular
+												</p>
+											) : null}
+										</div>
+										{/*Dangerous set html*/}
+										<p
+											className="mt-4 text-sm leading-6 text-slate-600"
+											dangerouslySetInnerHTML={{ __html: tier.description }}
+										/>
+										<p className="mt-6 flex items-baseline gap-x-1">
+											<span className="text-4xl font-bold tracking-tight text-slate-900">
+												{/* format to price in € and get 2 decimals */}
+												{(tier.price / 100).toFixed(2).replace('.', ',')}€
 											</span>
-											<div className={'flex h-full items-center'}>
-												{/*	Link icon*/}
-												<ArrowUpRightIcon
-													className={'h-3 w-3 text-slate-600'}
-												/>
-											</div>
-										</button>
-									)}
-								</div>
-								<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
-									{JSON.parse(tier.features).map(feature => (
-										<li key={feature} className="flex gap-x-3">
-											<CheckIcon
-												className="h-6 w-5 flex-none text-forvoyez_orange-500"
-												aria-hidden="true"
-											/>
-											{feature}
-										</li>
-									))}
-								</ul>
-							</div>
-						)
-					})}
+											<span className="text-sm font-semibold leading-6 text-slate-600">
+												{frequency.priceSuffix}
+											</span>
+										</p>
+										<p className={''}>
+											Billed {isAnnually ? 'annually' : 'monthly'}
+										</p>
+										<Link
+											href="/app/plans"
+											aria-describedby={tier.id}
+											className={classNames(
+												tier.mostPopular
+													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+											)}
+										>
+											{tier.buttonText}
+										</Link>
+										<div className={'mt-2 flex items-center'}>
+											{isAnnually ? (
+												<span className="text-xs text-slate-500">
+													<span className={'font-bold'}>20% more tokens</span>{' '}
+													than monthly
+												</span>
+											) : (
+												<button
+													className={'group m-0 flex gap-1 p-0'}
+													onClick={() => setFrequency(frequencies[1])}
+												>
+													<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
+														Get{' '}
+														<span className={'font-bold'}>20% more tokens</span>
+													</span>
+													<div className={'flex h-full items-center'}>
+														{/*	Link icon*/}
+														<ArrowUpRightIcon
+															className={'h-3 w-3 text-slate-600'}
+														/>
+													</div>
+												</button>
+											)}
+										</div>
+										<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
+											{JSON.parse(tier.features).map(feature => (
+												<li key={feature} className="flex gap-x-3">
+													<CheckIcon
+														className="h-6 w-5 flex-none text-forvoyez_orange-500"
+														aria-hidden="true"
+													/>
+													{feature}
+												</li>
+											))}
+										</ul>
+									</div>
+								)
+							})}
 
 					{/*	-----------------------------------------------------------------*/}
 
