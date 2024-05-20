@@ -1,7 +1,7 @@
 'use client'
 
-import { RefillPlansComponent } from '@/app/(dashboard)/app/plans/RefillPlans.component'
 import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
+import { RefillPlansComponent } from '@/components/Dashboard/RefillPlans.component'
 
 export default function ClientLogicPlans() {
 	return (
