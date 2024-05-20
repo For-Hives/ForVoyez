@@ -100,6 +100,8 @@ export async function POST(request) {
 			schema,
 		})
 
+		console.info(`User ${payload.userId} used 1 credit`)
+
 		// update the user credit
 		updateCreditForUser(payload.userId, -1)
 

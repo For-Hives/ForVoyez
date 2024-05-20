@@ -45,6 +45,16 @@ export async function describePlaygroundAction(formData) {
 		schema,
 	})
 
+	// Update the user credit
+	await prisma.user.update({
+		where: {
+			clerkId: user.id,
+		},
+		data: {
+			credits: userData.credits - 1,
+		},
+	})
+
 	// Return the description as a directly usable JSON object
 	return {
 		status: 200,
