@@ -11,6 +11,7 @@ import { prisma } from '@/services/prisma.service'
 
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
+	// console.log(plans)
 
 	// filter can be "yearly" or "monthly", and it deletes the other one time paid plans (refills)
 	if (filter) {
