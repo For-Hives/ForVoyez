@@ -40,11 +40,11 @@ export async function syncPlans() {
 			where: { variantId: variant.variantId },
 			update: {
 				...variant,
-				productName, // Add product name here
+				productName,
 			},
 			create: {
 				...variant,
-				productName, // Add product name here
+				productName,
 			},
 		})
 	}
@@ -60,7 +60,7 @@ export async function syncPlans() {
 			allVariants.push({
 				...variantDetails.data.data.attributes,
 				variantId: variant.id,
-				productName: product.attributes.name, // Add product name here
+				productName: product.attributes.name,
 			})
 		}
 	}
@@ -84,19 +84,17 @@ export async function syncPlans() {
 
 		const priceString = price !== null ? price?.toString() ?? '' : ''
 
-		await _addVariant(
-			{
-				productId: variant.product_id.toString(),
-				variantId: variant.variantId,
-				variantEnabled: true,
-				name: variant.name,
-				description: variant.description,
-				price: parseInt(priceString),
-				billingCycle: null,
-				packageSize: packageSize,
-			},
-			variant.productName
-		)
+		await _addVariant({
+			productId: variant.product_id.toString(),
+			variantId: variant.variantId,
+			variantEnabled: true,
+			name: variant.name,
+			description: variant.description,
+			price: parseInt(priceString),
+			billingCycle: null,
+			packageSize: packageSize,
+			productName: variant.productName,
+		})
 	}
 
 	return refillVariants
