@@ -164,7 +164,7 @@ export function RefillPlansComponent() {
 														{(tier.price / 100).toFixed(2).replace('.', ',')}€
 													</span>
 												</p>
-												<p className={''}>One time refill</p>
+												<p className={''}>One time paiement to refill</p>
 
 												{currentSubscription && (
 													<div>
@@ -186,6 +186,10 @@ export function RefillPlansComponent() {
 										)
 									})}
 								</div>
+								<p className={'mt-4 w-full text-right text-slate-600'}>
+									<span className={'font-bold'}>1 credit</span>&nbsp;=&nbsp;
+									<span className={'font-bold'}>1 image</span> analysis*
+								</p>
 							</div>
 						</div>
 					</>
