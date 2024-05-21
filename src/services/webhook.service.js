@@ -65,16 +65,16 @@ export async function processWebhook(id) {
 }
 
 // private function to process the webhook "order_created"
-// private function to process the webhook "order_created"
 async function processOrderCreated(parsed_webhook) {
-	const customerId = parsed_webhook.meta.custom_data.user_id
+	const userId = parsed_webhook.meta.custom_data.user_id // Clerk user ID
 	const customerEmail = parsed_webhook.data.attributes.user_email
 	const customerName = parsed_webhook.data.attributes.user_name
+	const customerId = parsed_webhook.data.attributes.customer_id.toString() // Lemon Squeezy customer ID
 
 	// check if the user already exists
 	let user = await prisma.user.findUnique({
 		where: {
-			clerkId: customerId,
+			clerkId: userId,
 		},
 	})
 
@@ -82,9 +82,10 @@ async function processOrderCreated(parsed_webhook) {
 		// create a new user in the database if they don't exist
 		user = await prisma.user.create({
 			data: {
-				clerkId: customerId,
+				clerkId: userId,
 				email: customerEmail,
 				name: customerName,
+				customerId: customerId, // Store the Lemon Squeezy customer ID
 			},
 		})
 	}
@@ -103,7 +104,7 @@ async function processOrderCreated(parsed_webhook) {
 		})
 
 		// add the credits to the user
-		await updateCreditForUser(customerId, plan ? plan.packageSize : 0)
+		await updateCreditForUser(user.id, plan ? plan.packageSize : 0) // Use user.id which is Clerk user ID
 	}
 }
 
@@ -186,18 +187,19 @@ async function processSubscriptionPlanChanged(webhook) {
 
 // private function to process the webhook "subscription_payment_success", to add credits to the user
 async function processSubscriptionPaymentSuccess(webhook) {
-	const customerId = webhook.meta.custom_data.user_id
+	const customerId = webhook.data.attributes.customer_id.toString() // Lemon Squeezy customer ID
+	const userId = webhook.meta.custom_data.user_id // Clerk user ID
 	const subscriptionId = webhook.data.attributes.subscription_id
 
-	// Get the user based on the customerId
+	// Get the user based on the Clerk user ID
 	const user = await prisma.user.findUnique({
 		where: {
-			clerkId: customerId,
+			clerkId: userId,
 		},
 	})
 
 	if (!user) {
-		console.error('User not found for customerId:', customerId)
+		console.error('User not found for userId:', userId)
 		return
 	}
 
@@ -236,7 +238,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 					newSubscription.plan.packageSize - oldPlan.packageSize
 
 				// Update the user's credits by adding the credits difference using the updateCreditForUser function
-				await updateCreditForUser(customerId, packageDifference)
+				await updateCreditForUser(user.id, packageDifference) // Use user.id which is Clerk user ID
 			}
 		} else {
 			// If there's no old plan, add the credits from the new plan
@@ -247,7 +249,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			})
 
 			if (newPlan) {
-				await updateCreditForUser(customerId, newPlan.packageSize)
+				await updateCreditForUser(user.id, newPlan.packageSize) // Use user.id which is Clerk user ID
 			}
 		}
 	} else {
@@ -262,7 +264,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		})
 
 		// Update the user credits
-		await updateCreditForUser(sub.userId, sub.plan.packageSize ?? 0)
+		await updateCreditForUser(user.id, sub.plan.packageSize ?? 0) // Use user.id which is Clerk user ID
 	}
 }
 
