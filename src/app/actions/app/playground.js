@@ -2,6 +2,7 @@
 
 import { currentUser } from '@clerk/nextjs/server'
 
+import { updateCreditForUser } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
@@ -45,15 +46,8 @@ export async function describePlaygroundAction(formData) {
 		schema,
 	})
 
-	// Update the user credit
-	await prisma.user.update({
-		where: {
-			clerkId: user.id,
-		},
-		data: {
-			credits: userData.credits - 1,
-		},
-	})
+	// Update the user credit using the updateCreditForUser function
+	await updateCreditForUser(user.id, -1)
 
 	// Return the description as a directly usable JSON object
 	return {
