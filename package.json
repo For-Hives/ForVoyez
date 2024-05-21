@@ -31,7 +31,7 @@
 		"@flaticon/flaticon-uicons": "3.2.1",
 		"@headlessui/react": "2.0.3",
 		"@heroicons/react": "2.1.3",
-		"@hookform/resolvers": "3.4.0",
+		"@hookform/resolvers": "3.4.2",
 		"@lemonsqueezy/lemonsqueezy.js": "^2.2.0",
 		"@monaco-editor/react": "4.6.0",
 		"@prisma/client": "5.14.0",
