@@ -30,7 +30,7 @@ export async function syncPlans() {
 	await initLemonSqueezy()
 
 	// Helper function to add a variant to the productVariants array and sync it with the database.
-	async function _addVariant(variant, productName) {
+	async function _addVariant(variant) {
 		if (!variant.variantId) {
 			console.error('Variant ID is undefined for variant:', variant)
 			return
@@ -40,11 +40,9 @@ export async function syncPlans() {
 			where: { variantId: variant.variantId },
 			update: {
 				...variant,
-				productName,
 			},
 			create: {
 				...variant,
-				productName,
 			},
 		})
 	}
