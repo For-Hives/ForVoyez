@@ -150,20 +150,58 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 }
 
 export async function getUsageForUser(userId) {
+	// Fetch all usage data for the user
+	const usageData = await prisma.usage.findMany({
+		where: { userId },
+		orderBy: { usedAt: 'asc' },
+	})
+
+	if (usageData.length === 0) {
+		return []
+	}
+
+	// Get initial credits for the user
 	const user = await prisma.user.findUnique({
-		where: {
-			clerkId: userId,
-		},
-		include: {
-			Usage: true,
-		},
+		where: { clerkId: userId },
 	})
 
-	let us = await user.Usage
+	let userCredits = user.credits
+	let hourlyCreditsLeft = {}
 
-	return us.map(u => {
-		return { creditsLeft: u.used, date: u.usedAt }
+	// Group usage data by hour and get the last value for each unique hour
+	usageData.forEach(usage => {
+		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
+		hourlyCreditsLeft[dateHour] = {
+			creditsLeft: usage.used,
+			date: dateHour,
+		}
+		userCredits = hourlyCreditsLeft[dateHour].creditsLeft
 	})
+
+	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
+	console.log(hourlyUsageArray)
+
+	// If there are less than 5 usage records, return all of them for better chart display
+	if (hourlyUsageArray.length <= 3) {
+		const user = await prisma.user.findUnique({
+			where: {
+				clerkId: userId,
+			},
+			include: {
+				Usage: true,
+			},
+		})
+
+		let us = await user.Usage
+
+		const log = us.map(u => {
+			return { creditsLeft: u.used, date: u.usedAt }
+		})
+		console.log(log)
+		return log
+	}
+
+	return hourlyUsageArray
 }
 
 export async function getUsageStats(userId) {
