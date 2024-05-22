@@ -26,7 +26,19 @@ export function UsageChartComponent() {
 
 	useEffect(() => {
 		getUsageForUser(auth.userId).then(setUsage)
-		getUsageByToken(auth.userId).then(setUsageByToken)
+		getUsageByToken(auth.userId).then(data => {
+			let usedTokens = 0
+			const formattedData = data.map((entry, index) => {
+				if (index > 0 && entry.y < data[index - 1].y) {
+					usedTokens += data[index - 1].y - entry.y
+				}
+				return {
+					token: entry.token,
+					used: usedTokens,
+				}
+			})
+			setUsageByToken(formattedData)
+		})
 	}, [])
 
 	return (
@@ -95,13 +107,24 @@ export function UsageChartComponent() {
 							left: 20,
 							bottom: 5,
 						}}
+						barSize={20}
 					>
-						<CartesianGrid strokeDasharray="3 3" />
-						<XAxis dataKey="token" />
+						<XAxis
+							dataKey="token"
+							scale={'point'}
+							padding={{ left: 10, right: 10 }}
+						/>
 						<YAxis />
 						<Tooltip />
 						<Legend />
-						<Bar dataKey="used" name="Credits Left" fill="#ff6545" />
+						<CartesianGrid strokeDasharray="3 3" />
+						<Bar
+							dataKey="used"
+							name="Used Tokens"
+							stroke="#ff6545"
+							fill="#fedebb"
+							fillOpacity={0.8}
+						/>
 					</BarChart>
 				</ResponsiveContainer>
 			</div>
