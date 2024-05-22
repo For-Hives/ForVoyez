@@ -174,6 +174,35 @@ export async function getUserFromUserId(userId) {
 	})
 }
 
+export async function getUsageByToken(userId) {
+	const user = await prisma.user.findUnique({
+		where: {
+			clerkId: userId,
+		},
+		include: {
+			Usage: {
+				include: {
+					token: true,
+				},
+			},
+		},
+	})
+
+	const usageByToken = user.Usage.reduce((acc, usage) => {
+		const tokenName = usage.token ? usage.token.name : 'Unknown Token'
+		if (!acc[tokenName]) {
+			acc[tokenName] = 0
+		}
+		acc[tokenName] += usage.used
+		return acc
+	}, {})
+
+	return Object.entries(usageByToken).map(([token, used]) => ({
+		token,
+		used,
+	}))
+}
+
 export async function getSubscriptionFromUserId(userId) {
 	// check if user has a subscription
 	return prisma.subscription.findFirst({
