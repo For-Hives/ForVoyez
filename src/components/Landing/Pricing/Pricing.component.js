@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
+import { sortPlans } from '@/helpers/sortPlans'
 import { getPlans } from '@/services/database.service'
-import { sortAndSetPlans } from '@/utils/sortAndSetPlans'
 
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -38,7 +38,8 @@ export function PricingComponent() {
 
 	useEffect(() => {
 		getPlans().then(plans => {
-			sortAndSetPlans(plans, setPlans)
+			const sortedPlans = sortPlans(plans)
+			setPlans(sortedPlans)
 		})
 	}, [])
 

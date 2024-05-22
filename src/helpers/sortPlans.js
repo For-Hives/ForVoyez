@@ -1,4 +1,4 @@
-export function sortedPlans(plans, setPlans) {
+function sortPlans(plans) {
 	plans.sort((a, b) => {
 		// Extract the numbers from the plan names
 		const numA = parseInt(a.name.match(/\d+/)?.[0] || '0')
@@ -12,5 +12,5 @@ export function sortedPlans(plans, setPlans) {
 		// If the numbers are the same, compare the names
 		return b.name.localeCompare(a.name)
 	})
-	setPlans(plans)
+	return plans
 }

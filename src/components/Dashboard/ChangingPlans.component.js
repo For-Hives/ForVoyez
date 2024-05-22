@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
+import { sortPlans } from '@/helpers/sortPlans'
 import {
 	getPlans,
 	getSubscriptionFromUserId,
@@ -15,7 +16,6 @@ import {
 	getCheckoutURL,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
-import { sortAndSetPlans } from '@/utils/sortAndSetPlans'
 
 const frequencies = [
 	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -52,7 +52,8 @@ export function ChangingPlansComponent() {
 
 	useEffect(() => {
 		getPlans().then(plans => {
-			sortAndSetPlans(plans, setPlans)
+			const sortedPlans = sortPlans(plans)
+			setPlans(sortedPlans)
 		})
 		checkSubscription()
 	}, [])
