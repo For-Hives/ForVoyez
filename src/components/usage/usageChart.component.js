@@ -27,16 +27,10 @@ export function UsageChartComponent() {
 	useEffect(() => {
 		getUsageForUser(auth.userId).then(setUsage)
 		getUsageByToken(auth.userId).then(data => {
-			let usedTokens = 0
-			const formattedData = data.map((entry, index) => {
-				if (index > 0 && entry.y < data[index - 1].y) {
-					usedTokens += data[index - 1].y - entry.y
-				}
-				return {
-					token: entry.token,
-					used: usedTokens,
-				}
-			})
+			const formattedData = data.map(entry => ({
+				token: entry.token,
+				used: entry.used,
+			}))
 			setUsageByToken(formattedData)
 		})
 	}, [])
@@ -89,7 +83,7 @@ export function UsageChartComponent() {
 							stroke="#ff6545"
 							fill="#fedebb"
 							dot={true}
-							fillOpacity={1}
+							fillOpacity={0.5}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>
@@ -123,7 +117,7 @@ export function UsageChartComponent() {
 							name="Used Tokens"
 							stroke="#ff6545"
 							fill="#fedebb"
-							fillOpacity={0.8}
+							fillOpacity={0.5}
 						/>
 					</BarChart>
 				</ResponsiveContainer>
