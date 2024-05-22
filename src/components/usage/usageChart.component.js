@@ -9,7 +9,6 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
-	Label,
 	Legend,
 	ResponsiveContainer,
 	Tooltip,
@@ -75,12 +74,19 @@ export function UsageChartComponent() {
 							bottom: 0,
 						}}
 					>
+						<defs>
+							<linearGradient id="colorCreditsLeft" x1="0" y1="0" x2="0" y2="1">
+								<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
+								<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
+							</linearGradient>
+						</defs>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis
 							dataKey="fullDate"
 							tickFormatter={fullDate =>
 								format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
 							}
+							minTickGap={50}
 							tickMargin={10}
 							tickSize={10}
 						/>
@@ -100,9 +106,9 @@ export function UsageChartComponent() {
 							dataKey="creditsLeft"
 							name="Credits Left"
 							stroke="#ff6545"
-							fill="#fedebb"
-							dot={true}
-							fillOpacity={0.5}
+							fill="url(#colorCreditsLeft)"
+							dot={false}
+							fillOpacity={1}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>
@@ -128,6 +134,12 @@ export function UsageChartComponent() {
 						}}
 						barSize={20}
 					>
+						<defs>
+							<linearGradient id="colorUsedTokens" x1="0" y1="0" x2="0" y2="1">
+								<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
+								<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
+							</linearGradient>
+						</defs>
 						<XAxis
 							dataKey="token"
 							scale={'point'}
@@ -146,9 +158,8 @@ export function UsageChartComponent() {
 						<Bar
 							dataKey="used"
 							name="Used Tokens"
-							stroke="#ff6545"
-							fill="#fedebb"
-							fillOpacity={0.5}
+							fill="url(#colorUsedTokens)"
+							fillOpacity={1}
 						/>
 					</BarChart>
 				</ResponsiveContainer>
