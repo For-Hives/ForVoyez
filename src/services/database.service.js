@@ -162,7 +162,7 @@ export async function getUsageForUser(userId) {
 	let us = await user.Usage
 
 	return us.map(u => {
-		return { y: u.used, x: u.usedAt }
+		return { creditsLeft: u.used, date: u.usedAt }
 	})
 }
 
