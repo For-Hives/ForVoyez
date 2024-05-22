@@ -9,6 +9,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	Label,
 	Legend,
 	ResponsiveContainer,
 	Tooltip,
@@ -68,8 +69,8 @@ export function UsageChartComponent() {
 					<AreaChart
 						data={usage}
 						margin={{
-							top: 10,
-							right: 30,
+							top: 0,
+							right: 0,
 							left: 0,
 							bottom: 0,
 						}}
@@ -80,14 +81,20 @@ export function UsageChartComponent() {
 							tickFormatter={fullDate =>
 								format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
 							}
+							tickMargin={10}
+							tickSize={10}
 						/>
-						<YAxis />
+						<YAxis tickMargin={10} tickSize={0} />
 						<Tooltip
 							labelFormatter={fullDate =>
 								format(new Date(fullDate), 'd MMMM yyyy, HH:mm', { locale: fr })
 							}
 						/>
-						<Legend />
+						<Legend
+							wrapperStyle={{
+								paddingTop: 20,
+							}}
+						/>
 						<Area
 							type="monotone"
 							dataKey="creditsLeft"
@@ -114,10 +121,10 @@ export function UsageChartComponent() {
 					<BarChart
 						data={usageByToken}
 						margin={{
-							top: 20,
-							right: 30,
-							left: 20,
-							bottom: 5,
+							top: 0,
+							right: 0,
+							left: 0,
+							bottom: 0,
 						}}
 						barSize={20}
 					>
@@ -125,10 +132,16 @@ export function UsageChartComponent() {
 							dataKey="token"
 							scale={'point'}
 							padding={{ left: 10, right: 10 }}
+							tickMargin={10}
+							tickSize={10}
 						/>
-						<YAxis />
+						<YAxis tickMargin={10} tickSize={0} allowDecimals={false} />
 						<Tooltip />
-						<Legend />
+						<Legend
+							wrapperStyle={{
+								paddingTop: 20,
+							}}
+						/>
 						<CartesianGrid strokeDasharray="3 3" />
 						<Bar
 							dataKey="used"
