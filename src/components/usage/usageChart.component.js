@@ -22,18 +22,28 @@ export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
 	const [usageByToken, setUsageByToken] = useState([])
 
-	const auth = useAuth()
+	const { userId } = useAuth()
 
 	useEffect(() => {
-		getUsageForUser(auth.userId).then(setUsage)
-		getUsageByToken(auth.userId).then(data => {
+		async function fetchUsage() {
+			const data = await getUsageForUser(userId)
+			setUsage(data)
+		}
+
+		async function fetchUsageByToken() {
+			const data = await getUsageByToken(userId)
 			const formattedData = data.map(entry => ({
 				token: entry.token,
 				used: entry.used,
 			}))
 			setUsageByToken(formattedData)
-		})
-	}, [auth.userId])
+		}
+
+		if (userId) {
+			fetchUsage()
+			fetchUsageByToken()
+		}
+	}, [userId])
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
