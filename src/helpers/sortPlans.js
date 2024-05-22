@@ -1,4 +1,4 @@
-export function sortAndSetPlans(plans, setPlans) {
+export function sortedPlans(plans, setPlans) {
 	plans.sort((a, b) => {
 		// Extract the numbers from the plan names
 		const numA = parseInt(a.name.match(/\d+/)?.[0] || '0')
