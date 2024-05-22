@@ -208,8 +208,8 @@ export function Playground() {
 	}
 
 	const handleEditorChange = (value, editor) => {
-		if (value.length > 750) {
-			editor.setValue(value.slice(0, 750))
+		if (value.length > 1000) {
+			editor.setValue(value.slice(0, 1000))
 		} else {
 			setJsonSchema(value)
 		}
@@ -488,9 +488,9 @@ export function Playground() {
 						</div>
 					</div>
 					<p
-						className={`mt-1 text-sm ${determineTextColorBasedOnLength(jsonSchema, 750)}`}
+						className={`mt-1 text-sm ${determineTextColorBasedOnLength(jsonSchema, 1000)}`}
 					>
-						Remaining {750 - jsonSchema.length}/750 characters
+						Remaining {1000 - jsonSchema.length}/1000 characters
 					</p>
 				</div>
 

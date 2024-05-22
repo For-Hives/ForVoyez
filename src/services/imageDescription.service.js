@@ -37,7 +37,7 @@ export async function blobToBase64(blob) {
 
 		// Check image dimensions
 		const { width, height } = await image.metadata()
-		const maxDimension = 750 // Adjust this value as needed
+		const maxDimension = 1000 // Adjust this value as needed
 		if (width > maxDimension || height > maxDimension) {
 			image.resize({
 				width: width > height ? maxDimension : null,
@@ -87,7 +87,7 @@ export async function getImageDescription(base64Image, data) {
 					],
 				},
 			],
-			max_tokens: 750,
+			max_tokens: 1000,
 		})
 
 		const result = vision.choices[0].message.content
