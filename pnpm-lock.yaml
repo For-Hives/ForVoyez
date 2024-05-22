@@ -21,8 +21,8 @@ dependencies:
     specifier: 3.4.2
     version: 3.4.2(react-hook-form@7.51.5)
   '@lemonsqueezy/lemonsqueezy.js':
-    specifier: 2.2.0
-    version: 2.2.0
+    specifier: 3.0.0
+    version: 3.0.0
   '@monaco-editor/react':
     specifier: 4.6.0
     version: 4.6.0(monaco-editor@0.44.0)(react-dom@18.3.1)(react@18.3.1)
@@ -595,9 +595,9 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lemonsqueezy/lemonsqueezy.js@2.2.0:
-    resolution: {integrity: sha512-DsZTeowehSLTESUZ6xxoYPDhoE8BYepWsj3TCqibG7FvB8X1HERPXQlc6E/IeGj22SOfIM997b7GfFkeLWY8pA==}
-    engines: {node: '>=18'}
+  /@lemonsqueezy/lemonsqueezy.js@3.0.0:
+    resolution: {integrity: sha512-EomAGkJLisI0/ptpe6a0plB++1Pqoe+FgMip4etfg2de05y58dkI+OA+HSdaFyXxpn1g0OtB50ofNVVoYQJX5A==}
+    engines: {node: '>=20'}
     dev: false
 
   /@monaco-editor/loader@1.4.0(monaco-editor@0.44.0):
