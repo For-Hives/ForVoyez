@@ -26,27 +26,22 @@ export function UsageChartComponent() {
 	// console.table(usage)
 
 	return (
-		<div className="bg-white py-24 sm:py-32">
-			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto max-w-4xl text-center" id={'usage'}>
-					<div className="">
-						How much left
-						{usage && usage.length ? (
-							<p>
-								<span>{usage.length > 0 ? usage[usage.length - 1].y : 0}</span>
-								/100
-							</p>
-						) : (
-							<p>no usage yet</p>
-						)}
-					</div>
-					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
-						Usage
-					</h2>
-					<p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-						Follow how much you use the API in real-time
+		<div className="">
+			<h2 className="text-lg font-bold text-slate-700">How much left</h2>
+			<div className={'flex gap-2'}>
+				<p className="mt-1 text-sm text-slate-600">
+					Follow how much you use the API in real-time :
+				</p>
+				{usage && usage.length ? (
+					<p className={'mt-1 text-sm font-bold text-forvoyez_orange-600'}>
+						{usage.length > 0 ? usage[usage.length - 1].y : 0}{' '}
+						<span className={'font-semibold text-slate-500'}>credits left</span>
 					</p>
-				</div>
+				) : (
+					<p className={'mt-1 text-sm text-slate-600'}>no usage yet</p>
+				)}
+			</div>
+			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="h-[50vh] min-h-[500px]">
 					{usage && usage.length && (
 						<ResponsiveContainer width="100%" height="100%">
