@@ -181,6 +181,9 @@ export async function getUsageByToken(userId) {
 		},
 		include: {
 			Usage: {
+				orderBy: {
+					usedAt: 'asc',
+				},
 				include: {
 					token: true,
 				},
@@ -188,19 +191,31 @@ export async function getUsageByToken(userId) {
 		},
 	})
 
-	const usageByToken = user.Usage.reduce((acc, usage) => {
-		const tokenName = usage.token ? usage.token.name : 'Unknown Token'
-		if (!acc[tokenName]) {
-			acc[tokenName] = 0
-		}
-		acc[tokenName] += usage.used
-		return acc
-	}, {})
+	const usageByToken = {}
 
-	return Object.entries(usageByToken).map(([token, used]) => ({
+	user.Usage.forEach((usage, index) => {
+		const tokenName = usage.token ? usage.token.name : 'Unknown Token'
+
+		if (!usageByToken[tokenName]) {
+			usageByToken[tokenName] = {
+				used: 0,
+				prevUsed: usage.used,
+			}
+		} else {
+			const diff = usage.used - usageByToken[tokenName].prevUsed
+			if (diff < 0) {
+				usageByToken[tokenName].used -= diff
+			}
+			usageByToken[tokenName].prevUsed = usage.used
+		}
+	})
+
+	const log = Object.entries(usageByToken).map(([token, data]) => ({
 		token,
-		used,
+		used: data.used,
 	}))
+	console.log(log)
+	return log
 }
 
 export async function getSubscriptionFromUserId(userId) {
