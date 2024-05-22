@@ -1,77 +1,109 @@
 'use client'
 import { useAuth } from '@clerk/nextjs'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import {
 	Area,
 	AreaChart,
+	Bar,
+	BarChart,
 	CartesianGrid,
+	Legend,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
 } from 'recharts'
 
-import { getUsageForUser } from '@/services/database.service'
+import { getUsageByToken, getUsageForUser } from '@/services/database.service'
 
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
+	const [usageByToken, setUsageByToken] = useState([])
 
 	const auth = useAuth()
 
-	// get data from database
 	useEffect(() => {
 		getUsageForUser(auth.userId).then(setUsage)
+		getUsageByToken(auth.userId).then(setUsageByToken)
 	}, [])
 
-	// console.table(usage)
-
 	return (
-		<div className="">
-			<h2 className="text-lg font-bold text-slate-700">How much left</h2>
-			<div className={'flex gap-2'}>
-				<p className="mt-1 text-sm text-slate-600">
-					Follow how much you use the API in real-time :
+		<div className="mx-auto max-w-7xl px-6 lg:px-8">
+			<h2 className="text-2xl font-bold text-slate-800">API Usage</h2>
+			<div className="mt-4 flex gap-2">
+				<p className="text-sm text-slate-600">
+					Follow your API usage in real-time:
 				</p>
-				{usage && usage.length ? (
-					<p className={'mt-1 text-sm font-bold text-forvoyez_orange-600'}>
-						{usage.length > 0 ? usage[usage.length - 1].y : 0}{' '}
-						<span className={'font-semibold text-slate-500'}>credits left</span>
+				{usage.length > 0 ? (
+					<p className="text-sm font-bold text-forvoyez_orange-600">
+						{usage[usage.length - 1].y}{' '}
+						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
 				) : (
-					<p className={'mt-1 text-sm text-slate-600'}>no usage yet</p>
+					<p className="text-sm text-slate-600">No usage yet</p>
 				)}
 			</div>
-			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="h-[50vh] min-h-[500px]">
-					{usage && usage.length && (
-						<ResponsiveContainer width="100%" height="100%">
-							<AreaChart
-								width={500}
-								height={400}
-								data={usage}
-								margin={{
-									top: 10,
-									right: 30,
-									left: 0,
-									bottom: 0,
-								}}
-							>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis dataKey="x" />
-								<YAxis />
-								<Tooltip />
-								<Area
-									type="monotone"
-									dataKey="y"
-									stroke="#fff"
-									fill="#ff6545"
-									dot={true}
-									fillOpacity={1}
-								/>
-							</AreaChart>
-						</ResponsiveContainer>
-					)}{' '}
-				</div>
+			<div className="mt-8 h-[400px]">
+				<ResponsiveContainer width="100%" height="100%">
+					<AreaChart
+						data={usage}
+						margin={{
+							top: 10,
+							right: 30,
+							left: 0,
+							bottom: 0,
+						}}
+					>
+						<CartesianGrid strokeDasharray="3 3" />
+						<XAxis
+							dataKey="x"
+							tickFormatter={date =>
+								format(new Date(date), 'd MMM', { locale: fr })
+							}
+						/>
+						<YAxis />
+						<Tooltip
+							labelFormatter={date =>
+								format(new Date(date), 'd MMMM yyyy', { locale: fr })
+							}
+						/>
+						<Legend />
+						<Area
+							type="monotone"
+							dataKey="y"
+							name="Credits Left"
+							stroke="#ff6545"
+							fill="#fedebb"
+							dot={true}
+							fillOpacity={1}
+						/>
+					</AreaChart>
+				</ResponsiveContainer>
+			</div>
+			<h2 className="mt-12 text-2xl font-bold text-slate-800">
+				Usage by Token
+			</h2>
+			<div className="mt-8 h-[400px]">
+				<ResponsiveContainer width="100%" height="100%">
+					<BarChart
+						data={usageByToken}
+						margin={{
+							top: 20,
+							right: 30,
+							left: 20,
+							bottom: 5,
+						}}
+					>
+						<CartesianGrid strokeDasharray="3 3" />
+						<XAxis dataKey="token" />
+						<YAxis />
+						<Tooltip />
+						<Legend />
+						<Bar dataKey="used" name="Credits Left" fill="#ff6545" />
+					</BarChart>
+				</ResponsiveContainer>
 			</div>
 		</div>
 	)
