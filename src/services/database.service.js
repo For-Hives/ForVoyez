@@ -150,33 +150,20 @@ export async function updateCreditForUser(userId, credits, tokenId = null) {
 }
 
 export async function getUsageForUser(userId) {
-	const usageData = await prisma.usage.findMany({
-		where: { userId },
-		orderBy: { usedAt: 'asc' },
+	const user = await prisma.user.findUnique({
+		where: {
+			clerkId: userId,
+		},
+		include: {
+			Usage: true,
+		},
 	})
 
-	let userCredits = 0
+	let us = await user.Usage
 
-	if (usageData.length > 0) {
-		const user = await prisma.user.findUnique({
-			where: { clerkId: userId },
-		})
-		userCredits = user.credits
-	}
-
-	const dailyUsage = usageData.reduce((acc, usage) => {
-		const date = usage.usedAt.toISOString().split('T')[0]
-		if (!acc[date]) {
-			acc[date] = { date, used: 0, creditsLeft: userCredits }
-		}
-		acc[date].used += usage.used
-		acc[date].creditsLeft -= usage.used
-		return acc
-	}, {})
-
-	const dailyUsageArray = Object.values(dailyUsage)
-
-	return dailyUsageArray
+	return us.map(u => {
+		return { creditsLeft: u.used, date: u.usedAt }
+	})
 }
 
 export async function getUsageStats(userId) {
