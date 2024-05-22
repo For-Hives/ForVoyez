@@ -33,18 +33,20 @@ export function UsageChartComponent() {
 			}))
 			setUsageByToken(formattedData)
 		})
-	}, [])
+	}, [auth.userId])
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
-			<h2 className="text-2xl font-bold text-slate-800">API Usage</h2>
+			<h2 className="text-2xl font-bold text-slate-800">
+				Remaining Credits Over Time
+			</h2>
 			<div className="mt-4 flex gap-2">
 				<p className="text-sm text-slate-600">
-					Follow your API usage in real-time:
+					Follow your remaining credits over time:
 				</p>
 				{usage.length > 0 ? (
 					<p className="text-sm font-bold text-forvoyez_orange-600">
-						{usage[usage.length - 1].y}{' '}
+						{usage[usage.length - 1].creditsLeft}{' '}
 						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
 				) : (
@@ -64,7 +66,7 @@ export function UsageChartComponent() {
 					>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis
-							dataKey="x"
+							dataKey="date"
 							tickFormatter={date =>
 								format(new Date(date), 'd MMM', { locale: fr })
 							}
@@ -78,7 +80,7 @@ export function UsageChartComponent() {
 						<Legend />
 						<Area
 							type="monotone"
-							dataKey="y"
+							dataKey="creditsLeft"
 							name="Credits Left"
 							stroke="#ff6545"
 							fill="#fedebb"
