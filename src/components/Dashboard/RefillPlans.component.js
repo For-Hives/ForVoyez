@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { sortPlans } from '@/helpers/sortPlans'
 import {
 	getPlans,
 	getSubscriptionFromUserId,
@@ -12,7 +13,6 @@ import {
 	getCheckoutURL,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
-import { sortAndSetPlans } from '@/utils/sortAndSetPlans'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -28,7 +28,8 @@ export function RefillPlansComponent() {
 
 	useEffect(() => {
 		getPlans().then(plans => {
-			sortAndSetPlans(plans, setPlans)
+			const sortedPlans = sortPlans(plans)
+			setPlans(sortedPlans)
 		})
 		checkSubscription()
 	}, [])
