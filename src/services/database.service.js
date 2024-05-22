@@ -1,11 +1,10 @@
 'use server'
-import { getProduct, getVariant } from '@lemonsqueezy/lemonsqueezy.js'
+import { getVariant } from '@lemonsqueezy/lemonsqueezy.js'
 
 import {
 	initLemonSqueezy,
 	listPrice,
 	listProducts,
-	listVariants,
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -194,15 +193,13 @@ export async function getUsageForUser(userId) {
 
 		let us = await user.Usage
 
-		const log = us.map(u => {
+		return us.map(u => {
 			return {
 				creditsLeft: u.used,
 				fullDate: u.usedAt,
 				dateHour: u.usedAt.toISOString().slice(0, 13),
 			}
 		})
-		console.log(log)
-		return log
 	}
 
 	return hourlyUsageArray
