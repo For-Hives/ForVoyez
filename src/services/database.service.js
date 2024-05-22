@@ -166,6 +166,14 @@ export async function getUsageForUser(userId) {
 	})
 }
 
+export async function getUserFromUserId(userId) {
+	return prisma.user.findUnique({
+		where: {
+			clerkId: userId,
+		},
+	})
+}
+
 export async function getSubscriptionFromUserId(userId) {
 	// check if user has a subscription
 	return prisma.subscription.findFirst({
