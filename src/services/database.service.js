@@ -166,6 +166,27 @@ export async function getUsageForUser(userId) {
 	})
 }
 
+export async function getUsageStats(userId) {
+	const usageData = await prisma.usage.findMany({
+		where: { userId },
+		orderBy: { usedAt: 'asc' },
+	})
+
+	const dailyUsage = usageData.reduce((acc, usage) => {
+		const date = usage.usedAt.toISOString().split('T')[0]
+		if (!acc[date]) {
+			acc[date] = { date, used: 0, creditsLeft: 0 }
+		}
+		acc[date].used += usage.used
+		acc[date].creditsLeft = usage.user.credits - acc[date].used // assuming user.credits is the starting credit
+		return acc
+	}, {})
+
+	const dailyUsageArray = Object.values(dailyUsage)
+
+	return dailyUsageArray
+}
+
 export async function getUserFromUserId(userId) {
 	return prisma.user.findUnique({
 		where: {
@@ -181,9 +202,6 @@ export async function getUsageByToken(userId) {
 		},
 		include: {
 			Usage: {
-				orderBy: {
-					usedAt: 'asc',
-				},
 				include: {
 					token: true,
 				},
@@ -191,31 +209,19 @@ export async function getUsageByToken(userId) {
 		},
 	})
 
-	const usageByToken = {}
-
-	user.Usage.forEach((usage, index) => {
-		const tokenName = usage.token ? usage.token.name : 'Unknown Token'
-
-		if (!usageByToken[tokenName]) {
-			usageByToken[tokenName] = {
-				used: 0,
-				prevUsed: usage.used,
-			}
-		} else {
-			const diff = usage.used - usageByToken[tokenName].prevUsed
-			if (diff < 0) {
-				usageByToken[tokenName].used -= diff
-			}
-			usageByToken[tokenName].prevUsed = usage.used
+	const usageByToken = user.Usage.reduce((acc, usage) => {
+		const tokenName = usage.token ? usage.token.name : 'Playground'
+		if (!acc[tokenName]) {
+			acc[tokenName] = 0
 		}
-	})
+		acc[tokenName] += 1
+		return acc
+	}, {})
 
-	const log = Object.entries(usageByToken).map(([token, data]) => ({
+	return Object.entries(usageByToken).map(([token, used]) => ({
 		token,
-		used: data.used,
+		used,
 	}))
-	console.log(log)
-	return log
 }
 
 export async function getSubscriptionFromUserId(userId) {
