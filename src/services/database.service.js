@@ -173,16 +173,16 @@ export async function getUsageForUser(userId) {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
 		hourlyCreditsLeft[dateHour] = {
 			creditsLeft: usage.used,
-			date: dateHour,
+			dateHour,
+			fullDate: usage.usedAt, // Full date and time
 		}
 		userCredits = hourlyCreditsLeft[dateHour].creditsLeft
 	})
 
 	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
-	console.log(hourlyUsageArray)
 
 	// If there are less than 5 usage records, return all of them for better chart display
-	if (hourlyUsageArray.length <= 3) {
+	if (hourlyUsageArray.length <= 5) {
 		const user = await prisma.user.findUnique({
 			where: {
 				clerkId: userId,
@@ -195,7 +195,11 @@ export async function getUsageForUser(userId) {
 		let us = await user.Usage
 
 		const log = us.map(u => {
-			return { creditsLeft: u.used, date: u.usedAt }
+			return {
+				creditsLeft: u.used,
+				fullDate: u.usedAt,
+				dateHour: u.usedAt.toISOString().slice(0, 13),
+			}
 		})
 		console.log(log)
 		return log
