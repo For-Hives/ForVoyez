@@ -47,10 +47,10 @@ export function UsageChartComponent() {
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
-			<h2 className="text-2xl font-bold text-slate-800">
+			<h2 className="mb-0 text-2xl font-bold text-slate-800">
 				Remaining Credits Over Time
 			</h2>
-			<div className="mt-4 flex gap-2">
+			<div className="mt-0 flex gap-2">
 				<p className="text-sm text-slate-600">
 					Follow your remaining credits over time:
 				</p>
@@ -100,9 +100,15 @@ export function UsageChartComponent() {
 					</AreaChart>
 				</ResponsiveContainer>
 			</div>
-			<h2 className="mt-12 text-2xl font-bold text-slate-800">
+			<h2 className="mb-0 mt-12 text-2xl font-bold text-slate-800">
 				Usage by Token
 			</h2>
+			<div className="mt-0 flex gap-2">
+				<p className={'text-sm text-slate-600'}>
+					Track your usage by token, and identify which tokens are being used
+					the most.
+				</p>
+			</div>
 			<div className="mt-8 h-[400px]">
 				<ResponsiveContainer width="100%" height="100%">
 					<BarChart
