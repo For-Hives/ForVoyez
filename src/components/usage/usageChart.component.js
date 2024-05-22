@@ -52,7 +52,7 @@ export function UsageChartComponent() {
 			</h2>
 			<div className="mt-4 flex gap-2">
 				<p className="text-sm text-slate-600">
-					Follow your remaining credits over time, actually you have:
+					Follow your remaining credits over time:
 				</p>
 				{usage.length > 0 ? (
 					<p className="text-sm font-bold text-forvoyez_orange-600">
@@ -76,15 +76,15 @@ export function UsageChartComponent() {
 					>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis
-							dataKey="date"
-							tickFormatter={date =>
-								format(new Date(date), 'd MMM, HH:mm', { locale: fr })
+							dataKey="fullDate"
+							tickFormatter={fullDate =>
+								format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
 							}
 						/>
 						<YAxis />
 						<Tooltip
-							labelFormatter={date =>
-								format(new Date(date), 'd MMMM yyyy, HH:mm', { locale: fr })
+							labelFormatter={fullDate =>
+								format(new Date(fullDate), 'd MMMM yyyy, HH:mm', { locale: fr })
 							}
 						/>
 						<Legend />
@@ -103,10 +103,6 @@ export function UsageChartComponent() {
 			<h2 className="mt-12 text-2xl font-bold text-slate-800">
 				Usage by Token
 			</h2>
-			<p className={'mt-1 text-sm text-slate-600'}>
-				Track your usage by token. Monitor the number of credits consumed by
-				each token.
-			</p>
 			<div className="mt-8 h-[400px]">
 				<ResponsiveContainer width="100%" height="100%">
 					<BarChart
@@ -126,15 +122,9 @@ export function UsageChartComponent() {
 						/>
 						<YAxis />
 						<Tooltip />
-						<Legend
-							verticalAlign="bottom"
-							height={36}
-							iconType="square"
-							iconSize={12}
-						/>
+						<Legend />
 						<CartesianGrid strokeDasharray="3 3" />
 						<Bar
-							type={'monotone'}
 							dataKey="used"
 							name="Used Tokens"
 							stroke="#ff6545"
