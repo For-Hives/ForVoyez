@@ -1,4 +1,4 @@
-import { updateCreditForUser } from '@/services/database.service'
+import { decrementCreditForUserFromDescribe } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
@@ -103,7 +103,7 @@ export async function POST(request) {
 		console.info(`User ${payload.userId} used 1 credit`)
 
 		// update the user credit
-		updateCreditForUser(payload.userId, -1)
+		decrementCreditForUserFromDescribe()
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,

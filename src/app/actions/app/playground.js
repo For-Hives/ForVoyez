@@ -2,7 +2,7 @@
 
 import { currentUser } from '@clerk/nextjs/server'
 
-import { updateCreditForUser } from '@/services/database.service'
+import { decrementCreditForUserFromPlayground } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
@@ -47,7 +47,7 @@ export async function describePlaygroundAction(formData) {
 	})
 
 	// Update the user credit using the updateCreditForUser function
-	await updateCreditForUser(user.id, -1)
+	await decrementCreditForUserFromPlayground()
 
 	// Return the description as a directly usable JSON object
 	return {
