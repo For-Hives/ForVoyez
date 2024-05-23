@@ -1,14 +1,14 @@
-import ClientLogicDashboard from '@/app/(dashboard)/app/client'
+import ClientLogicLegals from '@/app/(dashboard)/app/legals/client'
 
 export const metadata = {
-	title: 'Dashboard - ForVoyez',
+	title: 'Legal - ForVoyez',
 	description:
-		'Access your ForVoyez dashboard to manage your API keys, monitor usage, and explore our powerful image metadata generation capabilities.',
+		'Access the legal information for ForVoyez, including our legal notice, privacy policy, and terms of service.',
 	alternates: {
-		canonical: '/app',
+		canonical: '/app/legal',
 	},
 }
 
-export default function WelcomePage() {
-	return <ClientLogicDashboard />
+export default function LegalsPage() {
+	return <ClientLogicLegals />
 }
