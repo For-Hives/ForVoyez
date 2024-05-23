@@ -151,7 +151,7 @@ export async function updateCredits(userId, credits, tokenId, reason) {
  * Decrements the credits for the authenticated user.
  * and log the usage
  */
-export async function decrementCredit(credits, tokenId = null, reason) {
+export async function decrementCredit(reason, tokenId = null) {
 	const user = await getCurrentUser()
 	await updateCredits(user.id, -1, tokenId, reason)
 }
