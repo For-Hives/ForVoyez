@@ -3,7 +3,7 @@ export const metadata = {
 	description:
 		"Read about ForVoyez's privacy policy and how we handle your personal information when you use our AI-powered image metadata generation services.",
 	alternates: {
-		canonical: '/privacy-policy',
+		canonical: 'https://forvoyez.com/app/legals/privacy-policy',
 	},
 }
 
