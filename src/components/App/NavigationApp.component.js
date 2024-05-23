@@ -149,6 +149,7 @@ export const dashboardNavigation = [
 		links: [
 			{ title: 'Help, FAQ & Contact', href: '/contact' },
 			{ title: 'Invoice & billing management', href: '/app/billing' },
+			{ title: 'Legal Information', href: '/app/legals' },
 		],
 	},
 ]
