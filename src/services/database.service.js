@@ -245,12 +245,18 @@ export async function getUsageByToken() {
 }
 
 /**
- * Retrieves a user's subscription from their ID.
+ * Retrieves the authenticated user's subscription.
  * Includes the plan associated with the subscription.
+ * Throws an error if the user is not authenticated.
  */
-export async function getSubscriptionFromUserId(userId) {
+export async function getSubscriptionFromUserId() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+
 	return prisma.subscription.findFirst({
-		where: { userId },
+		where: { userId: user.id },
 		include: { plan: true },
 	})
 }
