@@ -103,7 +103,7 @@ export async function POST(request) {
 		console.info(`User ${payload.userId} used 1 credit`)
 
 		// update the user credit
-		decrementCredit()
+		decrementCredit('decrement token from Describe Action')
 
 		return new Response(JSON.stringify(descriptionResult), {
 			status: 200,
