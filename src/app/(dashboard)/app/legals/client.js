@@ -49,16 +49,7 @@ const legalResources = [
 	},
 ]
 
-export const metadata = {
-	title: 'Legal - ForVoyez',
-	description:
-		'Access the legal information for ForVoyez, including our legal notice, privacy policy, and terms of service.',
-	alternates: {
-		canonical: '/app/legal',
-	},
-}
-
-export default function LegalDashboard() {
+export default function ClientLogicLegals() {
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
 			<h1 className="mb-8 text-3xl font-bold">Legal Information</h1>
