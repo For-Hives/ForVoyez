@@ -39,6 +39,7 @@ model Usage {
   api     String   @default("describe")
   token   Token?   @relation(fields: [tokenId], references: [id])
   tokenId String?
+  reason  String?
 }
 
 model Plan {
