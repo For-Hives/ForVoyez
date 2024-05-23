@@ -1,5 +1,8 @@
 // methode to save webhooks in the database with prisma
-import { updateCreditForUser } from '@/services/database.service'
+import {
+	updateCreditForUserFromWebhook,
+	updateCredits,
+} from '@/services/database.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function saveWebhooks(webhooks) {
@@ -64,7 +67,7 @@ export async function processWebhook(id) {
 	}
 }
 
-// private function to process the webhook "order_created"
+// private function to process the webhook "order_created" (used in case of refill buy)
 async function processOrderCreated(parsed_webhook) {
 	const userId = parsed_webhook.meta.custom_data.user_id // Clerk user ID
 	const customerEmail = parsed_webhook.data.attributes.user_email
@@ -104,7 +107,12 @@ async function processOrderCreated(parsed_webhook) {
 		})
 
 		// add the credits to the user
-		await updateCreditForUser(user.id, plan ? plan.packageSize : 0) // Use user.id which is Clerk user ID
+		await updateCredits(
+			user.id,
+			plan ? plan.packageSize : 0,
+			null,
+			'Order created'
+		)
 	}
 }
 
@@ -185,7 +193,8 @@ async function processSubscriptionPlanChanged(webhook) {
 	}
 }
 
-// private function to process the webhook "subscription_payment_success", to add credits to the user
+// private function to process the webhook "subscription_payment_success", to add credits to the user,
+// used in case of subscription payment success
 async function processSubscriptionPaymentSuccess(webhook) {
 	const customerId = webhook.data.attributes.customer_id.toString() // Lemon Squeezy customer ID
 	const userId = webhook.meta.custom_data.user_id // Clerk user ID
@@ -237,8 +246,13 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				const packageDifference =
 					newSubscription.plan.packageSize - oldPlan.packageSize
 
-				// Update the user's credits by adding the credits difference using the updateCreditForUser function
-				await updateCreditForUser(user.id, packageDifference) // Use user.id which is Clerk user ID
+				// Update the user's credits by adding the credits difference using the updateCredits function
+				await updateCredits(
+					user.id,
+					packageDifference,
+					null,
+					'Subscription payment success (plan change)'
+				)
 			}
 		} else {
 			// If there's no old plan, add the credits from the new plan
@@ -249,7 +263,12 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			})
 
 			if (newPlan) {
-				await updateCreditForUser(user.id, newPlan.packageSize) // Use user.id which is Clerk user ID
+				await updateCredits(
+					user.id,
+					newPlan.packageSize,
+					null,
+					'Subscription payment success'
+				)
 			}
 		}
 	} else {
@@ -264,7 +283,12 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		})
 
 		// Update the user credits
-		await updateCreditForUser(user.id, sub.plan.packageSize ?? 0) // Use user.id which is Clerk user ID
+		await updateCredits(
+			user.id,
+			sub.plan.packageSize ?? 0,
+			null,
+			'Subscription payment success (new plan)'
+		)
 	}
 }
 

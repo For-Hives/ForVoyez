@@ -10,6 +10,17 @@ import {
 import { prisma } from '@/services/prisma.service'
 
 /**
+ * Retrieves the authenticated user.
+ */
+async function getCurrentUser() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+	return user
+}
+
+/**
  * Retrieves plans from the database.
  * If a filter is specified, only returns plans matching the filter.
  * Otherwise, syncs plans with Lemon Squeezy before returning them.
@@ -116,7 +127,7 @@ export async function getCustomerIdFromUser() {
  * Updates the credits for the specified user.
  * Creates an entry in the Usage table to track usage.
  */
-async function updateCredits(userId, credits, tokenId, reason) {
+export async function updateCredits(userId, credits, tokenId, reason) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
 		throw new Error('Invalid credits value')
 	}
@@ -134,25 +145,6 @@ async function updateCredits(userId, credits, tokenId, reason) {
 			reason,
 		},
 	})
-}
-
-/**
- * Retrieves the authenticated user.
- */
-async function getCurrentUser() {
-	const user = await currentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
-	return user
-}
-
-/**
- * Updates the credits for the authenticated user.
- */
-export async function updateCreditForUserFromWebhook(credits, tokenId, reason) {
-	const user = await getCurrentUser()
-	await updateCredits(user.id, credits, tokenId, reason)
 }
 
 /**
