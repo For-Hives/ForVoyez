@@ -3,7 +3,7 @@ export const metadata = {
 	description:
 		'Find important legal information about ForVoyez, including company details, intellectual property rights, and procedures for reporting copyright infringement.',
 	alternates: {
-		canonical: '/legal-notice',
+		canonical: 'https://forvoyez.com/app/legals/legal-notice',
 	},
 }
 
