@@ -8,7 +8,7 @@ const navigation = {
 		{ name: 'Features', href: '/#features' },
 		{ name: 'Pricing', href: '/#pricing' },
 		{ name: 'Documentation', href: 'https://doc.forvoyez.com/' },
-		{ name: 'CGU', href: '/cgu' },
+		{ name: 'Legals', href: '/app/legals' },
 		{ name: 'Help, FAQ & Contact', href: '/contact' },
 	],
 	social: [
