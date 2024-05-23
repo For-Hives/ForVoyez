@@ -149,23 +149,11 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 
 /**
  * Decrements the credits for the authenticated user.
- * and log the usage from describe
+ * and log the usage
  */
-export async function decrementCreditForUserFromDescribe(
-	credits,
-	tokenId = null
-) {
+export async function decrementCredit(credits, tokenId = null, reason) {
 	const user = await getCurrentUser()
-	await updateCredits(user.id, -1, tokenId, 'Describe analysis')
-}
-
-/**
- * Decrements the credits for the authenticated user.
- * and log the usage from playground
- */
-export async function decrementCreditForUserFromPlayground() {
-	const user = await getCurrentUser()
-	await updateCredits(user.id, -1, null, 'Playground analysis')
+	await updateCredits(user.id, -1, tokenId, reason)
 }
 
 /**
