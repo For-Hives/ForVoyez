@@ -112,32 +112,68 @@ export async function getCustomerIdFromUser() {
 	return sub?.customerId ?? null
 }
 
-// fixme check
 /**
- * Updates the credits for the authenticated user.
+ * Updates the credits for the specified user.
  * Creates an entry in the Usage table to track usage.
- * Throws an error if the user is not authenticated.
  */
-export async function updateCreditForUser(credits, tokenId = null) {
+async function updateCredits(userId, credits, tokenId, reason) {
+	if (typeof credits !== 'number' || isNaN(credits)) {
+		throw new Error('Invalid credits value')
+	}
+
+	await prisma.user.update({
+		where: { clerkId: userId },
+		data: { credits: { increment: credits } },
+	})
+
+	await prisma.usage.create({
+		data: {
+			userId: userId,
+			used: credits,
+			tokenId,
+			reason,
+		},
+	})
+}
+
+/**
+ * Retrieves the authenticated user.
+ */
+async function getCurrentUser() {
 	const user = await currentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
+	return user
+}
 
-	// Update user credits using Prisma's increment
-	await prisma.user.update({
-		where: { clerkId: user.id },
-		data: { credits: { increment: credits } },
-	})
+/**
+ * Updates the credits for the authenticated user.
+ */
+export async function updateCreditForUserFromWebhook(credits, tokenId, reason) {
+	const user = await getCurrentUser()
+	await updateCredits(user.id, credits, tokenId, reason)
+}
 
-	// Log the usage
-	await prisma.usage.create({
-		data: {
-			userId: user.id,
-			used: credits,
-			tokenId,
-		},
-	})
+/**
+ * Decrements the credits for the authenticated user.
+ * and log the usage from describe
+ */
+export async function decrementCreditForUserFromDescribe(
+	credits,
+	tokenId = null
+) {
+	const user = await getCurrentUser()
+	await updateCredits(user.id, -1, tokenId, 'Describe analysis')
+}
+
+/**
+ * Decrements the credits for the authenticated user.
+ * and log the usage from playground
+ */
+export async function decrementCreditForUserFromPlayground() {
+	const user = await getCurrentUser()
+	await updateCredits(user.id, -1, null, 'Playground analysis')
 }
 
 /**
