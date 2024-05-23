@@ -47,7 +47,7 @@ export async function describePlaygroundAction(formData) {
 	})
 
 	// Update the user credit using the updateCreditForUser function
-	await decrementCredit()
+	await decrementCredit('describe from PlaygroundAction')
 
 	// Return the description as a directly usable JSON object
 	return {
