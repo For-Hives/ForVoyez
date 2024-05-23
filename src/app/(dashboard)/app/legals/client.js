@@ -9,7 +9,7 @@ import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.compo
 
 const legalResources = [
 	{
-		href: '/app/legal-notice',
+		href: '/app/legals/legal-notice',
 		name: 'Legal Notice',
 		description: 'View our legal notice and company information.',
 		icon: DocumentTextIcon,
@@ -22,7 +22,7 @@ const legalResources = [
 		},
 	},
 	{
-		href: '/app/privacy-policy',
+		href: '/app/legals/privacy-policy',
 		name: 'Privacy Policy',
 		description: 'Learn about our privacy practices and data protection.',
 		icon: ShieldCheckIcon,
@@ -35,7 +35,7 @@ const legalResources = [
 		},
 	},
 	{
-		href: '/app/terms',
+		href: '/app/legals/terms',
 		name: 'Terms of Service',
 		description: 'Read our terms of service and usage policies.',
 		icon: ScaleIcon,
