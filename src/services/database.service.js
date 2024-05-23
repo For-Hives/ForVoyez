@@ -1,4 +1,5 @@
 'use server'
+import { currentUser } from '@clerk/nextjs/server'
 import { getVariant } from '@lemonsqueezy/lemonsqueezy.js'
 
 import {
@@ -8,10 +9,14 @@ import {
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
+/**
+ * Retrieves plans from the database.
+ * If a filter is specified, only returns plans matching the filter.
+ * Otherwise, syncs plans with Lemon Squeezy before returning them.
+ */
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
 
-	// filter can be "yearly" or "monthly", and it deletes the other one time paid plans (refills)
 	if (filter) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
@@ -22,27 +27,21 @@ export async function getPlans(filter = null) {
 }
 
 /**
- * This action will sync the product variants from Lemon Squeezy with the
- * Plans database model. It will only sync the 'subscription' variants.
+ * Syncs product variants from Lemon Squeezy with the Plan model in the database.
+ * Only syncs variants of type 'subscription'.
  */
 export async function syncPlans() {
 	await initLemonSqueezy()
 
-	// Helper function to add a variant to the productVariants array and sync it with the database.
 	async function _addVariant(variant) {
 		if (!variant.variantId) {
 			console.error('Variant ID is undefined for variant:', variant)
 			return
 		}
-		// Sync the variant with the plan in the database.
 		await prisma.plan.upsert({
 			where: { variantId: variant.variantId },
-			update: {
-				...variant,
-			},
-			create: {
-				...variant,
-			},
+			update: variant,
+			create: variant,
 		})
 	}
 
@@ -67,19 +66,17 @@ export async function syncPlans() {
 		v => !v.is_subscription && v.name !== 'Default'
 	)
 
+	// Add refill variants to the database
 	for (const variant of refillVariants) {
 		const variantPriceObject = await listPrice(variant.variantId)
 		const currentPriceObj = variantPriceObject.at(0)
 
 		const isUsageBased = currentPriceObj?.attributes.usage_aggregation !== null
-
 		const packageSize = currentPriceObj?.attributes.package_size
-
 		const price = isUsageBased
 			? currentPriceObj?.attributes.unit_price_decimal
 			: currentPriceObj.attributes.unit_price
-
-		const priceString = price !== null ? price?.toString() ?? '' : ''
+		const priceString = price?.toString() ?? ''
 
 		await _addVariant({
 			productId: variant.product_id.toString(),
@@ -89,7 +86,7 @@ export async function syncPlans() {
 			description: variant.description,
 			price: parseInt(priceString),
 			billingCycle: null,
-			packageSize: packageSize,
+			packageSize,
 			productName: variant.productName,
 		})
 	}
@@ -97,72 +94,67 @@ export async function syncPlans() {
 	return refillVariants
 }
 
+/**
+ * Retrieves the customer ID from the user ID.
+ * Returns null if the user has no subscription.
+ */
 export async function getCustomerIdFromUser(userId) {
-	// obtain it through table user.subscription[0].customerId
-
-	// check if user has a subscription
 	const sub = await prisma.subscription.findFirst({
-		where: {
-			userId: userId,
-		},
+		where: { userId },
 	})
 
-	if (sub) {
-		return sub.customerId
-	}
-
-	return null
+	return sub?.customerId ?? null
 }
 
-export async function updateCreditForUser(userId, credits, tokenId = null) {
-	const user = await prisma.user.findUnique({
-		where: {
-			clerkId: userId,
-		},
-	})
-
-	// Ensure the user exists
+// fixme check
+/**
+ * Updates the credits for the authenticated user.
+ * Creates an entry in the Usage table to track usage.
+ * Throws an error if the user is not authenticated.
+ */
+export async function updateCreditForUser(credits, tokenId = null) {
+	const user = await currentUser()
 	if (!user) {
-		console.error('User not found:', userId)
-		return
+		throw new Error('User not authenticated')
 	}
 
-	// update the user credits and customer id
+	// Update user credits using Prisma's increment
 	await prisma.user.update({
-		where: {
-			clerkId: userId,
-		},
-		data: {
-			credits: user.credits + credits,
-		},
+		where: { clerkId: user.id },
+		data: { credits: { increment: credits } },
 	})
 
-	// log the usage
-
+	// Log the usage
 	await prisma.usage.create({
 		data: {
-			userId: userId,
-			used: user.credits + credits,
+			userId: user.id,
+			used: credits,
 			tokenId,
 		},
 	})
 }
 
-export async function getUsageForUser(userId) {
-	// Fetch all usage data for the user
+/**
+ * Retrieves API usage for the authenticated user.
+ * Returns usage data grouped by hour.
+ * If less than 5 records, returns all usage data.
+ * Throws an error if the user is not authenticated.
+ */
+export async function getUsageForUser() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+
+	// Fetch all usage data for the user, ordered by date
 	const usageData = await prisma.usage.findMany({
-		where: { userId },
+		where: { userId: user.id },
 		orderBy: { usedAt: 'asc' },
 	})
 
 	if (usageData.length === 0) {
 		return []
 	}
-
-	// Get initial credits for the user
-	const user = await prisma.user.findUnique({
-		where: { clerkId: userId },
-	})
 
 	let userCredits = user.credits
 	let hourlyCreditsLeft = {}
@@ -173,7 +165,7 @@ export async function getUsageForUser(userId) {
 		hourlyCreditsLeft[dateHour] = {
 			creditsLeft: usage.used,
 			dateHour,
-			fullDate: usage.usedAt, // Full date and time
+			fullDate: usage.usedAt,
 		}
 		userCredits = hourlyCreditsLeft[dateHour].creditsLeft
 	})
@@ -182,95 +174,83 @@ export async function getUsageForUser(userId) {
 
 	// If there are less than 5 usage records, return all of them for better chart display
 	if (hourlyUsageArray.length <= 5) {
-		const user = await prisma.user.findUnique({
-			where: {
-				clerkId: userId,
-			},
-			include: {
-				Usage: true,
-			},
-		})
-
-		let us = await user.Usage
-
-		return us.map(u => {
-			return {
-				creditsLeft: u.used,
-				fullDate: u.usedAt,
-				dateHour: u.usedAt.toISOString().slice(0, 13),
-			}
-		})
+		return usageData.map(u => ({
+			creditsLeft: u.used,
+			fullDate: u.usedAt,
+			dateHour: u.usedAt.toISOString().slice(0, 13),
+		}))
 	}
 
 	return hourlyUsageArray
 }
 
-export async function getUsageStats(userId) {
+/**
+ * Retrieves daily usage statistics for the authenticated user.
+ * Returns an array of objects containing the date, used credits, and remaining credits for each day.
+ * Throws an error if the user is not authenticated.
+ */
+export async function getUsageStats() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+
+	// Fetch usage data for the user, including the user object
 	const usageData = await prisma.usage.findMany({
-		where: { userId },
+		where: { userId: user.id },
 		orderBy: { usedAt: 'asc' },
+		include: { user: true },
 	})
 
+	// Reduce the usage data into a daily summary
 	const dailyUsage = usageData.reduce((acc, usage) => {
 		const date = usage.usedAt.toISOString().split('T')[0]
 		if (!acc[date]) {
 			acc[date] = { date, used: 0, creditsLeft: 0 }
 		}
 		acc[date].used += usage.used
-		acc[date].creditsLeft = usage.user.credits - acc[date].used // assuming user.credits is the starting credit
+		acc[date].creditsLeft = usage.user.credits - acc[date].used
 		return acc
 	}, {})
 
-	const dailyUsageArray = Object.values(dailyUsage)
-
-	return dailyUsageArray
+	return Object.values(dailyUsage)
 }
 
-export async function getUserFromUserId(userId) {
-	return prisma.user.findUnique({
-		where: {
-			clerkId: userId,
-		},
-	})
-}
+/**
+ * Retrieves API usage by token for the authenticated user.
+ * Returns an array of objects containing the token name and the number of uses.
+ * Throws an error if the user is not authenticated.
+ */
+export async function getUsageByToken() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
 
-export async function getUsageByToken(userId) {
-	const user = await prisma.user.findUnique({
-		where: {
-			clerkId: userId,
-		},
-		include: {
-			Usage: {
-				include: {
-					token: true,
-				},
-			},
-		},
+	// Fetch usage data for the user, including the associated token
+	const usageData = await prisma.usage.findMany({
+		where: { userId: user.id },
+		include: { token: true },
 	})
 
-	const usageByToken = user.Usage.reduce((acc, usage) => {
-		const tokenName = usage.token ? usage.token.name : 'Playground'
-		if (!acc[tokenName]) {
-			acc[tokenName] = 0
-		}
-		acc[tokenName] += 1
+	// Count the number of uses for each token
+	const usageByToken = usageData.reduce((acc, usage) => {
+		const tokenName = usage.token?.name ?? 'Playground'
+		acc[tokenName] = (acc[tokenName] ?? 0) + 1
 		return acc
 	}, {})
 
-	return Object.entries(usageByToken).map(([token, used]) => ({
-		token,
-		used,
-	}))
+	// Convert the object to an array of { token, used } pairs
+	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
 }
 
+/**
+ * Retrieves a user's subscription from their ID.
+ * Includes the plan associated with the subscription.
+ */
 export async function getSubscriptionFromUserId(userId) {
-	// check if user has a subscription
 	return prisma.subscription.findFirst({
-		where: {
-			userId: userId,
-		},
-		include: {
-			plan: true,
-		},
+		where: { userId },
+		include: { plan: true },
 	})
 }
