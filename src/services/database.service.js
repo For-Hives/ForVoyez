@@ -95,12 +95,18 @@ export async function syncPlans() {
 }
 
 /**
- * Retrieves the customer ID from the user ID.
+ * Retrieves the customer ID for the authenticated user.
  * Returns null if the user has no subscription.
+ * Throws an error if the user is not authenticated.
  */
-export async function getCustomerIdFromUser(userId) {
+export async function getCustomerIdFromUser() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+
 	const sub = await prisma.subscription.findFirst({
-		where: { userId },
+		where: { userId: user.id },
 	})
 
 	return sub?.customerId ?? null
