@@ -64,20 +64,20 @@ export function RefillPlansComponent() {
 		return (
 			<>
 				<div className="animate-pulse">
-					<div className="mb-2 h-6 w-1/4 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-9/12 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-2/3 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-1/2 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-3/5 rounded bg-gray-200"></div>
-					<div className="mb-2 h-4 w-1/3 rounded bg-gray-200"></div>
+					<div className="mb-2 h-6 w-1/4 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-full rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-9/12 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-2/3 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-1/2 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-3/4 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-3/5 rounded bg-slate-200"></div>
+					<div className="mb-2 h-4 w-1/3 rounded bg-slate-200"></div>
 				</div>
 				<div className="mx-auto max-w-7xl animate-pulse px-6 lg:px-8">
 					<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-						<div className="mb-8 h-64 rounded-xl bg-gray-200"></div>
-						<div className="mb-8 h-64 rounded-xl bg-gray-200"></div>
-						<div className="mb-8 h-64 rounded-xl bg-gray-200"></div>
+						<div className="mb-8 h-64 rounded-xl bg-slate-200"></div>
+						<div className="mb-8 h-64 rounded-xl bg-slate-200"></div>
+						<div className="mb-8 h-64 rounded-xl bg-slate-200"></div>
 					</div>
 				</div>
 			</>

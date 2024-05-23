@@ -16,11 +16,14 @@ import {
 	YAxis,
 } from 'recharts'
 
+import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 import { getUsageByToken, getUsageForUser } from '@/services/database.service'
 
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
 	const [usageByToken, setUsageByToken] = useState([])
+	const [isLoadingUsage, setIsLoadingUsage] = useState(true)
+	const [isLoadingUsageByToken, setIsLoadingUsageByToken] = useState(true)
 
 	const { userId } = useAuth()
 
@@ -28,6 +31,7 @@ export function UsageChartComponent() {
 		async function fetchUsage() {
 			const data = await getUsageForUser(userId)
 			setUsage(data)
+			setIsLoadingUsage(false)
 		}
 
 		async function fetchUsageByToken() {
@@ -37,6 +41,7 @@ export function UsageChartComponent() {
 				used: entry.used,
 			}))
 			setUsageByToken(formattedData)
+			setIsLoadingUsageByToken(false)
 		}
 
 		if (userId) {
@@ -64,54 +69,66 @@ export function UsageChartComponent() {
 				)}
 			</div>
 			<div className="mt-8 h-[400px]">
-				<ResponsiveContainer width="100%" height="100%">
-					<AreaChart
-						data={usage}
-						margin={{
-							top: 0,
-							right: 0,
-							left: 0,
-							bottom: 0,
-						}}
-					>
-						<defs>
-							<linearGradient id="colorCreditsLeft" x1="0" y1="0" x2="0" y2="1">
-								<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
-								<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
-							</linearGradient>
-						</defs>
-						<CartesianGrid strokeDasharray="3 3" />
-						<XAxis
-							dataKey="fullDate"
-							tickFormatter={fullDate =>
-								format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
-							}
-							minTickGap={50}
-							tickMargin={10}
-							tickSize={10}
-						/>
-						<YAxis tickMargin={10} tickSize={0} />
-						<Tooltip
-							labelFormatter={fullDate =>
-								format(new Date(fullDate), 'd MMMM yyyy, HH:mm', { locale: fr })
-							}
-						/>
-						<Legend
-							wrapperStyle={{
-								paddingTop: 20,
+				{isLoadingUsage ? (
+					<SkeletonLoader />
+				) : (
+					<ResponsiveContainer width="100%" height="100%">
+						<AreaChart
+							data={usage}
+							margin={{
+								top: 0,
+								right: 0,
+								left: 0,
+								bottom: 0,
 							}}
-						/>
-						<Area
-							type="monotone"
-							dataKey="creditsLeft"
-							name="Credits Left"
-							stroke="#ff6545"
-							fill="url(#colorCreditsLeft)"
-							dot={false}
-							fillOpacity={1}
-						/>
-					</AreaChart>
-				</ResponsiveContainer>
+						>
+							<defs>
+								<linearGradient
+									id="colorCreditsLeft"
+									x1="0"
+									y1="0"
+									x2="0"
+									y2="1"
+								>
+									<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
+									<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
+								</linearGradient>
+							</defs>
+							<CartesianGrid strokeDasharray="3 3" />
+							<XAxis
+								dataKey="fullDate"
+								tickFormatter={fullDate =>
+									format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
+								}
+								minTickGap={50}
+								tickMargin={10}
+								tickSize={10}
+							/>
+							<YAxis tickMargin={10} tickSize={0} />
+							<Tooltip
+								labelFormatter={fullDate =>
+									format(new Date(fullDate), 'd MMMM yyyy, HH:mm', {
+										locale: fr,
+									})
+								}
+							/>
+							<Legend
+								wrapperStyle={{
+									paddingTop: 20,
+								}}
+							/>
+							<Area
+								type="monotone"
+								dataKey="creditsLeft"
+								name="Credits Left"
+								stroke="#ff6545"
+								fill="url(#colorCreditsLeft)"
+								dot={false}
+								fillOpacity={1}
+							/>
+						</AreaChart>
+					</ResponsiveContainer>
+				)}
 			</div>
 			<h2 className="mb-0 mt-12 text-2xl font-bold text-slate-800">
 				Usage by Token
@@ -123,46 +140,56 @@ export function UsageChartComponent() {
 				</p>
 			</div>
 			<div className="mt-8 h-[400px]">
-				<ResponsiveContainer width="100%" height="100%">
-					<BarChart
-						data={usageByToken}
-						margin={{
-							top: 0,
-							right: 0,
-							left: 0,
-							bottom: 0,
-						}}
-						barSize={20}
-					>
-						<defs>
-							<linearGradient id="colorUsedTokens" x1="0" y1="0" x2="0" y2="1">
-								<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
-								<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
-							</linearGradient>
-						</defs>
-						<XAxis
-							dataKey="token"
-							scale={'point'}
-							padding={{ left: 10, right: 10 }}
-							tickMargin={10}
-							tickSize={10}
-						/>
-						<YAxis tickMargin={10} tickSize={0} allowDecimals={false} />
-						<Tooltip />
-						<Legend
-							wrapperStyle={{
-								paddingTop: 20,
+				{isLoadingUsageByToken ? (
+					<SkeletonLoader />
+				) : (
+					<ResponsiveContainer width="100%" height="100%">
+						<BarChart
+							data={usageByToken}
+							margin={{
+								top: 0,
+								right: 0,
+								left: 0,
+								bottom: 0,
 							}}
-						/>
-						<CartesianGrid strokeDasharray="3 3" />
-						<Bar
-							dataKey="used"
-							name="Used Tokens"
-							fill="url(#colorUsedTokens)"
-							fillOpacity={1}
-						/>
-					</BarChart>
-				</ResponsiveContainer>
+							barSize={20}
+						>
+							<defs>
+								<linearGradient
+									id="colorUsedTokens"
+									x1="0"
+									y1="0"
+									x2="0"
+									y2="1"
+								>
+									<stop offset="0%" stopColor="#ff6545" stopOpacity={1} />
+									<stop offset="100%" stopColor="#ff6545" stopOpacity={0.7} />
+								</linearGradient>
+							</defs>
+							<XAxis
+								dataKey="token"
+								scale={'point'}
+								padding={{ left: 10, right: 10 }}
+								tickMargin={10}
+								tickSize={10}
+							/>
+							<YAxis tickMargin={10} tickSize={0} allowDecimals={false} />
+							<Tooltip />
+							<Legend
+								wrapperStyle={{
+									paddingTop: 20,
+								}}
+							/>
+							<CartesianGrid strokeDasharray="3 3" />
+							<Bar
+								dataKey="used"
+								name="Used Tokens"
+								fill="url(#colorUsedTokens)"
+								fillOpacity={1}
+							/>
+						</BarChart>
+					</ResponsiveContainer>
+				)}
 			</div>
 		</div>
 	)
