@@ -10,7 +10,6 @@ import {
 	useIsInsideMobileNavigation,
 	useMobileNavigationStore,
 } from '@/components/App/MobileNavigationApp.component'
-import { TopLevelNavItemAppComponent } from '@/components/App/TopLevelNavItemApp.component'
 
 export const HeaderDashboard = forwardRef(function HeaderDashboard(
 	{ className },
