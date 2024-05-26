@@ -258,9 +258,15 @@ export async function getSubscriptionFromUserId() {
  */
 export async function getCreditsFromUserId() {
 	const user = await currentUser()
+
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
 
-	return user.credits
+	const connectedUser = await prisma.user.findFirst({
+		where: { clerkId: user.id },
+	})
+
+	console.log(connectedUser)
+	return connectedUser.credits
 }

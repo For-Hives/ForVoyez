@@ -8,6 +8,7 @@ import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { getCreditsFromUserId } from '@/services/database.service'
 
 export function Playground() {
 	const previewLanguages = ['HTTP', 'cURL', 'JavaScript', 'PHP', 'Python']
@@ -273,11 +274,13 @@ export function Playground() {
 		const fetchUserCredits = async () => {
 			try {
 				const credits = await getCreditsFromUserId()
+				console.log('credits', credits)
 				setUserCredits(credits)
 			} catch (error) {
 				console.error('Error fetching user credits:', error)
 			}
 		}
+		console.log('fetch credits')
 
 		fetchUserCredits()
 	}, [])
