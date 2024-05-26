@@ -160,27 +160,6 @@ export function NavigationAppComponent(props) {
 	return (
 		<nav {...props}>
 			<ul role="list">
-				<div className={'flex flex-col gap-2 lg:hidden'}>
-					<TopLevelNavItemAppComponent
-						className={'!text-forvoyez_orange-500 lg:hidden'}
-						href="/app"
-					>
-						→ Dashboard
-					</TopLevelNavItemAppComponent>
-					<TopLevelNavItemAppComponent href="/" className={'lg:hidden'}>
-						Website
-					</TopLevelNavItemAppComponent>
-					<TopLevelNavItemAppComponent
-						href="https://doc.forvoyez.com/"
-						className={'lg:hidden'}
-					>
-						Documentation
-					</TopLevelNavItemAppComponent>
-					<TopLevelNavItemAppComponent href="/profile" className={'lg:hidden'}>
-						Profile
-					</TopLevelNavItemAppComponent>
-				</div>
-
 				{dashboardNavigation.map((group, groupIndex) => (
 					<NavigationGroup
 						key={group.title}

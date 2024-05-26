@@ -27,7 +27,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			ref={ref}
 			className={clsx(
 				className,
-				'fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:left-72 lg:z-30 lg:px-8 xl:left-80',
+				'fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:left-72 lg:z-30 lg:hidden lg:px-8 xl:left-80',
 				!isInsideMobileNavigation && 'backdrop-blur-sm lg:left-72 xl:left-80',
 				isInsideMobileNavigation
 					? 'bg-white'
@@ -55,28 +55,6 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 						height={80}
 					/>
 				</Link>
-			</div>
-			<div />
-			<div className="flex items-center gap-5">
-				<nav className="hidden md:block">
-					<ul role="list" className="flex items-center gap-8 ">
-						<TopLevelNavItemAppComponent
-							className={'!text-forvoyez_orange-500'}
-							href="/app"
-						>
-							→ Dashboard
-						</TopLevelNavItemAppComponent>
-						<TopLevelNavItemAppComponent href="/">
-							Website
-						</TopLevelNavItemAppComponent>
-						<TopLevelNavItemAppComponent href="https://doc.forvoyez.com/">
-							Documentation
-						</TopLevelNavItemAppComponent>
-						<TopLevelNavItemAppComponent href="/profile">
-							Profile
-						</TopLevelNavItemAppComponent>
-					</ul>
-				</nav>
 			</div>
 		</motion.div>
 	)
