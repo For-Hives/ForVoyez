@@ -132,6 +132,7 @@ export const dashboardNavigation = [
 	{
 		title: 'General',
 		links: [
+			{ title: 'Home', href: '/app' },
 			{ title: 'Documentation', href: 'https://doc.forvoyez.com/' },
 			{ title: 'Playground', href: '/app/playground' },
 		],
