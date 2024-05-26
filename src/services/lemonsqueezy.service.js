@@ -35,24 +35,6 @@ export async function listProducts() {
 	}
 }
 
-// get all products variants named "variation"
-export async function listVariants(productID) {
-	await initLemonSqueezy()
-
-	const { statusCode, error, data } = await ls.listVariants({
-		filter: { productId: productID },
-	})
-
-	// todo : sync with database
-
-	if (statusCode === 200) {
-		return data.data
-	} else {
-		console.error(error)
-		throw new Error(error)
-	}
-}
-
 export async function listPrice(variantID) {
 	const { statusCode, error, data } = await ls.listPrices({
 		filter: { variantId: variantID },

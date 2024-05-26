@@ -7,8 +7,6 @@ import { TextDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDe
 import { TextDemoTopMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/TextDemoTopMobileComponent'
 
 export function AnimateSideHeroMobileComponent() {
-	const [textInButton, setTextInButton] = useState('Generate Now!')
-
 	return (
 		<div className="relative mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
 			{/* View mobile */}
