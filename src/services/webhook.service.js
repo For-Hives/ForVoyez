@@ -193,7 +193,6 @@ async function processSubscriptionPlanChanged(webhook) {
 // private function to process the webhook "subscription_payment_success", to add credits to the user,
 // used in case of subscription payment success
 async function processSubscriptionPaymentSuccess(webhook) {
-	const customerId = webhook.data.attributes.customer_id.toString() // Lemon Squeezy customer ID
 	const userId = webhook.meta.custom_data.user_id // Clerk user ID
 	const subscriptionId = webhook.data.attributes.subscription_id
 

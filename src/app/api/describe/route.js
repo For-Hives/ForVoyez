@@ -19,7 +19,7 @@ function isValidImageFile(file) {
 }
 
 // Helper function to validate the schema
-function isValidSchema(schema) {
+function isValidSchema() {
 	// Implement your schema validation logic here
 	// Return true if the schema is valid, false otherwise
 	return true
