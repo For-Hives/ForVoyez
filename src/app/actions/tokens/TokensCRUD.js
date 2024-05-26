@@ -76,11 +76,9 @@ export async function deleteToken(tokenId) {
 		throw new Error('You do not have permission to delete this token')
 	}
 
-	const result = await prisma.token.delete({
+	return await prisma.token.delete({
 		where: {
 			id: tokenId,
 		},
 	})
-
-	return result
 }

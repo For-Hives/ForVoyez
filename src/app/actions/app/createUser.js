@@ -24,12 +24,10 @@ export async function createUser() {
 		return userDB
 	}
 
-	const result = await prisma.user.create({
+	return await prisma.user.create({
 		data: {
 			clerkId: user.id,
 			updatedAt: new Date().toISOString(),
 		},
 	})
-
-	return result
 }
