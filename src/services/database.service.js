@@ -282,3 +282,17 @@ export async function getSubscriptionFromUserId() {
 		include: { plan: true },
 	})
 }
+
+/**
+ * Retrieves the authenticated user's credits.
+ * Throws an error if the user is not authenticated.
+ * Returns the user's credits.
+ */
+export async function getCreditsFromUserId() {
+	const user = await currentUser()
+	if (!user) {
+		throw new Error('User not authenticated')
+	}
+
+	return user.credits
+}
