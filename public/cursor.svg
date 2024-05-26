@@ -19,14 +19,14 @@
         stroke-width: .5px;
       }
     </style>
-    <linearGradient id="Dégradé_sans_nom_51" data-name="Dégradé sans nom 51" x1="2" y1="24" x2="21" y2="5" gradientTransform="translate(0 26) scale(1 -1)" gradientUnits="userSpaceOnUse">
+    <linearGradient id="Dégradé_sans_nom_51" x1="2" y1="24" x2="21" y2="5" gradientTransform="translate(0 26) scale(1 -1)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#e3844d"/>
       <stop offset=".2" stop-color="#c92710"/>
       <stop offset=".5" stop-color="#dc462f"/>
       <stop offset=".7" stop-color="#e4693c"/>
       <stop offset="1" stop-color="#fe6e2b"/>
     </linearGradient>
-    <linearGradient id="Dégradé_sans_nom_50" data-name="Dégradé sans nom 50" x1="2" y1="24" x2="21" y2="5" gradientTransform="translate(0 26) scale(1 -1)" gradientUnits="userSpaceOnUse">
+    <linearGradient id="Dégradé_sans_nom_50" x1="2" y1="24" x2="21" y2="5" gradientTransform="translate(0 26) scale(1 -1)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#e3844d"/>
       <stop offset=".2" stop-color="#c92710"/>
       <stop offset=".5" stop-color="#dc462f"/>

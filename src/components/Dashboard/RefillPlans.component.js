@@ -83,10 +83,6 @@ export function RefillPlansComponent() {
 		)
 	}
 
-	function manageSubscription() {
-		getCustomerPortalLink().then(url => router.push(url))
-	}
-
 	return (
 		<>
 			{

@@ -1,4 +1,4 @@
-export function SkeletonLoaderPricing(lenght = 5) {
+export function SkeletonLoaderPricing() {
 	return (
 		<div
 			key="custom"
