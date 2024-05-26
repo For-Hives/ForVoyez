@@ -4,7 +4,7 @@ import sharp from 'sharp'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 function initOpenAI() {
-	// ! Be careful, if you return directly the OpenAI instance, it will not work.
+	// ! Be careful, if you return directly the OpenAI instance, it will not work. !
 	const openai = new OpenAI({
 		apiKey: process.env.OPENAI_API_KEY,
 	})
@@ -75,9 +75,7 @@ async function extractKeywordsAndLimitContext(context) {
 			n: 1,
 		})
 
-		const cleanedContext = response.choices[0].message.content.trim()
-
-		return cleanedContext
+		return response.choices[0].message.content.trim()
 	} catch (error) {
 		console.error('Failed to extract keywords and limit context:', error)
 		throw new Error('OpenAI service failure')
