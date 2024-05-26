@@ -24,7 +24,6 @@ export function RefillPlansComponent() {
 
 	const [plans, setPlans] = useState([])
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [currentPlanName, setCurrentPlanName] = useState(null)
 
 	useEffect(() => {
 		getPlans().then(plans => {
