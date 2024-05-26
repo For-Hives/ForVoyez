@@ -1,6 +1,3 @@
-Here's the updated README with the corrected GitHub URL and the instructions for using Webhook.site:
-
-````markdown
 # ForVoyez - AI-Powered Image Metadata Generation
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -47,7 +44,6 @@ You can use the following Docker command to set up a PostgreSQL database for loc
 ```bash
 docker run --name forvoyez-postgres -e POSTGRES_USER=forvoyez -e POSTGRES_PASSWORD=forvoyez -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
 ```
-````
 
 If you want to configure your .env file to connect to the database, you can use the following environment variables:
 
