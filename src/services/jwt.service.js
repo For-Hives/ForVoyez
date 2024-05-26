@@ -30,7 +30,7 @@ export async function verifyJwt(jwt) {
 	const token = jwt.replace('Bearer ', '')
 	try {
 		// verify token
-		const { payload, protectedHeader } = await jwtVerify(token, secretKey, {
+		const { payload } = await jwtVerify(token, secretKey, {
 			issuer: 'ForVoyez', // issuer
 			audience: 'ForVoyez', // audience
 		})
@@ -41,8 +41,4 @@ export async function verifyJwt(jwt) {
 
 		throw new Error('Token is invalid')
 	}
-}
-
-export function formatJwt(jwt) {
-	return jwt.slice(0, 5) + '-...-' + jwt.slice(-5)
 }

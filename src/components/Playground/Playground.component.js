@@ -20,7 +20,7 @@ export function Playground() {
 	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
-	const [requestPreviewValue, setRequestPreviewValue] = useState('')
+	const [requestPreviewValue] = useState('')
 	const [image, setImage] = useState(null)
 	const [imagePreview, setImagePreview] = useState(null)
 	const [imageSize, setImageSize] = useState(0)
