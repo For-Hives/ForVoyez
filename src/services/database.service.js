@@ -207,38 +207,6 @@ export async function getUsageForUser() {
 }
 
 /**
- * Retrieves daily usage statistics for the authenticated user.
- * Returns an array of objects containing the date, used credits, and remaining credits for each day.
- * Throws an error if the user is not authenticated.
- */
-export async function getUsageStats() {
-	const user = await currentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
-
-	// Fetch usage data for the user, including the user object
-	const usageData = await prisma.usage.findMany({
-		where: { userId: user.id },
-		orderBy: { usedAt: 'asc' },
-		include: { user: true },
-	})
-
-	// Reduce the usage data into a daily summary
-	const dailyUsage = usageData.reduce((acc, usage) => {
-		const date = usage.usedAt.toISOString().split('T')[0]
-		if (!acc[date]) {
-			acc[date] = { date, used: 0, creditsLeft: 0 }
-		}
-		acc[date].used += usage.used
-		acc[date].creditsLeft = usage.user.credits - acc[date].used
-		return acc
-	}, {})
-
-	return Object.values(dailyUsage)
-}
-
-/**
  * Retrieves API usage by token for the authenticated user.
  * Returns an array of objects containing the token name and the number of uses.
  * Throws an error if the user is not authenticated.
