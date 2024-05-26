@@ -9,7 +9,8 @@ function generateSecretKey() {
 export async function generateJwt(payload) {
 	const secretKey = generateSecretKey()
 
-	const token = await new SignJWT(payload)
+	// secretKey generated from previous step
+	return await new SignJWT(payload)
 
 		// details to  encode in the token
 		.setProtectedHeader({
@@ -20,9 +21,7 @@ export async function generateJwt(payload) {
 		.setAudience('ForVoyez') // audience
 		.setExpirationTime('1 day') // token expiration time, e.g., "1 day" // todo : change to Date()
 		// toISOString
-		.sign(secretKey) // secretKey generated from previous step
-
-	return token
+		.sign(secretKey)
 }
 
 export async function verifyJwt(jwt) {
@@ -45,7 +44,5 @@ export async function verifyJwt(jwt) {
 }
 
 export function formatJwt(jwt) {
-	const token = jwt.slice(0, 5) + '-...-' + jwt.slice(-5)
-
-	return token
+	return jwt.slice(0, 5) + '-...-' + jwt.slice(-5)
 }
