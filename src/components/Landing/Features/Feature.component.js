@@ -102,38 +102,6 @@ export function FeatureComponent() {
 					</div>
 				</div>
 			</div>
-			{/*<div className="sticky-demo">*/}
-			{/*	<div className="sticky-demo-container">*/}
-			{/*		<div className="sticky-demo-item sticky-demo-shark-1">*/}
-			{/*			<img*/}
-			{/*				src="https://assets.digitalocean.com/labs/sammy/Sammy_punk.png"*/}
-			{/*				width="100"*/}
-			{/*				alt="Sammy the Shark with a punk theme."*/}
-			{/*			/>*/}
-			{/*		</div>*/}
-			{/*		<div className="sticky-demo-item sticky-demo-shark-2">*/}
-			{/*			<img*/}
-			{/*				src="https://assets.digitalocean.com/labs/sammy/Sammy_pony.png"*/}
-			{/*				width="100"*/}
-			{/*				alt="Sammy the Shark with a magical pony theme."*/}
-			{/*			/>*/}
-			{/*		</div>*/}
-			{/*		<div className="sticky-demo-item sticky-demo-shark-3">*/}
-			{/*			<img*/}
-			{/*				src="https://assets.digitalocean.com/labs/sammy/Sammy_stickers_SET03.png"*/}
-			{/*				width="100"*/}
-			{/*				alt="Sammy the Shark with a dinosaur theme."*/}
-			{/*			/>*/}
-			{/*		</div>*/}
-			{/*		<div className="sticky-demo-item sticky-demo-shark-4">*/}
-			{/*			<img*/}
-			{/*				src="https://assets.digitalocean.com/labs/sammy/Sammy_stickers_SET01.png"*/}
-			{/*				width="100"*/}
-			{/*				alt="Sammy the Shark with a steampunk theme."*/}
-			{/*			/>*/}
-			{/*		</div>*/}
-			{/*	</div>*/}
-			{/*</div>*/}
 		</div>
 	)
 }
