@@ -58,10 +58,10 @@ export function LayoutAppComponent({ children }) {
 							)}
 						</div>
 					</motion.header>
-					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8">
+					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8 lg:pt-0">
 						<main className="flex-auto">
 							<HeroPatternAppComponent />
-							<div className="flex h-full flex-col pb-10 pt-16">
+							<div className="flex h-full flex-col pb-10 pt-8 xl:pt-16">
 								<div className={'z-20'}>{children}</div>
 							</div>
 						</main>
