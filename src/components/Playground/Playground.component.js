@@ -276,6 +276,14 @@ export function Playground() {
 	}, [])
 
 	useEffect(() => {
+		if (userCredits === 0) {
+			setShowTooltip(true)
+		} else {
+			setShowTooltip(false)
+		}
+	}, [userCredits])
+
+	useEffect(() => {
 		const editor = editorRef.current
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
@@ -301,36 +309,27 @@ export function Playground() {
 
 	return (
 		<>
-			<div className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8">
-				<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
-					<p className="text-sm leading-6 text-white">
-						<Link href="/app/plans">
-							<strong className="font-semibold">Playground usage</strong>
-							<svg
-								viewBox="0 0 2 2"
-								className="mx-2 inline h-0.5 w-0.5 fill-current"
-								aria-hidden="true"
-							>
-								<circle cx="1" cy="1" r="1" />
-							</svg>
-							You need to have at least 1 credit to use the playground, get a
-							plan before&nbsp;
-							<span aria-hidden="true">&rarr;</span>
-						</Link>
-					</p>
-					<button type="button" className="-m-1.5 flex-none p-1.5">
-						<span className="sr-only">Dismiss</span>
-						<svg
-							className="h-5 w-5 text-white"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							aria-hidden="true"
-						>
-							<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-						</svg>
-					</button>
+			{showTooltip && (
+				<div className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8">
+					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
+						<p className="text-sm leading-6 text-white">
+							<Link href="/app/plans">
+								<strong className="font-semibold">Playground usage</strong>
+								<svg
+									viewBox="0 0 2 2"
+									className="mx-2 inline h-0.5 w-0.5 fill-current"
+									aria-hidden="true"
+								>
+									<circle cx="1" cy="1" r="1" />
+								</svg>
+								You need to have at least 1 credit to use the playground, get a
+								plan before&nbsp;
+								<span aria-hidden="true">&rarr;</span>
+							</Link>
+						</p>
+					</div>
 				</div>
-			</div>
+			)}
 			<div className="grid-col-1 grid gap-8 xl:grid-cols-2">
 				<div className={'flex flex-col gap-4'}>
 					<div>
