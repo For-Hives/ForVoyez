@@ -12,6 +12,9 @@ import { defaultJsonTemplateSchema } from '@/constants/playground'
 export function Playground() {
 	const previewLanguages = ['HTTP', 'cURL', 'JavaScript', 'PHP', 'Python']
 
+	const [userCredits, setUserCredits] = useState(0)
+	const [showTooltip, setShowTooltip] = useState(false)
+
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
 
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
@@ -267,6 +270,19 @@ export function Playground() {
 	}, [])
 
 	useEffect(() => {
+		const fetchUserCredits = async () => {
+			try {
+				const credits = await getCreditsFromUserId()
+				setUserCredits(credits)
+			} catch (error) {
+				console.error('Error fetching user credits:', error)
+			}
+		}
+
+		fetchUserCredits()
+	}, [])
+
+	useEffect(() => {
 		const editor = editorRef.current
 		if (editor) {
 			const resizeHandler = () => resizeEditor(editor)
@@ -498,15 +514,23 @@ export function Playground() {
 					<button
 						type="button"
 						onClick={handleSubmit}
-						disabled={!isJsonValid || !image}
+						disabled={!isJsonValid || !image || userCredits === 0}
 						className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
-							!isJsonValid || !image
+							!isJsonValid || !image || userCredits === 0
 								? 'cursor-not-allowed bg-slate-400'
 								: 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'
 						}`}
+						onMouseEnter={() => setShowTooltip(userCredits === 0)}
+						onMouseLeave={() => setShowTooltip(false)}
 					>
 						Analyze your image
 					</button>
+					{showTooltip && (
+						<div className="absolute mt-2 w-64 rounded-md bg-slate-900 p-2 text-sm text-white">
+							You need credits to use the playground. Please purchase a plan to
+							get credits.
+						</div>
+					)}
 				</div>
 			</div>
 			<div className={'flex flex-col'}>
