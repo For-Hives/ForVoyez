@@ -10,7 +10,6 @@ import { useRef } from 'react'
 import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationApp.component'
 import { remToPx } from '@/components/App/RemToPxApp.component'
 import { useSectionStore } from '@/components/App/SectionProviderApp.component'
-import { TopLevelNavItemAppComponent } from '@/components/App/TopLevelNavItemApp.component'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current
