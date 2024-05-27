@@ -24,7 +24,7 @@ test.describe('Sign-in Functionality', () => {
 		await signInButton.click()
 
 		// Wait for the email input to be visible
-		const emailInput = page.locator('#identifier-field')
+		const emailInput = page.locator('input[name="identifier"]')
 		log('Waiting for email input to be visible')
 		await emailInput.waitFor({ state: 'visible', timeout: 15000 })
 
@@ -32,28 +32,45 @@ test.describe('Sign-in Functionality', () => {
 		log('Filling in sign-in form')
 		await emailInput.fill(TEST_EMAIL)
 
+		const continueButton = page.locator('button:has-text("Continue")')
+		log('Waiting for continue button to be visible')
+		await continueButton.waitFor({ state: 'visible', timeout: 15000 })
+		await continueButton.click()
+
+		// Wait for the password input to be visible
 		const passwordInput = page.locator('input[type="password"]')
 		log('Waiting for password input to be visible')
 		await passwordInput.waitFor({ state: 'visible', timeout: 15000 })
 		await passwordInput.fill(TEST_PASSWORD)
 
-		const submitButton = page.locator('button:has-text("Continue")')
-		log('Waiting for submit button to be visible')
-		await submitButton.waitFor({ state: 'visible', timeout: 15000 })
-		await submitButton.click()
+		// Click the continue button
+		log('Clicking "Continue" button')
+		await continueButton.click()
 
 		// Wait for the user button to be visible after sign-in
-		const userButton = page.locator('.cl-userButton-root button')
+		const userButton = page.locator('.cl-userButtonTrigger')
 		log('Waiting for user button to be visible after sign-in')
 		await userButton.waitFor({ state: 'visible', timeout: 15000 })
 
-		// Check if redirected to the dashboard
-		const dashboardLink = page.locator('[data-testid="dashboard-link"]')
-		log('Checking if redirected to the dashboard')
-		await expect(dashboardLink).toBeVisible()
+		// Click the user button to open the profile dialog
+		log('Clicking user button to open profile dialog')
+		await userButton.click()
 
-		// Ensure the URL is correct
-		await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}/app`)
+		// Check the user profile details in the dialog
+		const userProfileDialog = page.locator('.cl-userButtonPopoverCard')
+		log('Checking user profile dialog')
+		await expect(userProfileDialog).toBeVisible()
+
+		const userName = userProfileDialog.locator('.cl-userPreviewMainIdentifier')
+		const userEmail = userProfileDialog.locator(
+			'.cl-userPreviewSecondaryIdentifier'
+		)
+
+		log('Checking user name in profile dialog')
+		await expect(userName).toHaveText('Test Test')
+
+		log('Checking user email in profile dialog')
+		await expect(userEmail).toHaveText(TEST_EMAIL)
 
 		log('Sign-in test completed successfully')
 	})
