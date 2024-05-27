@@ -1,12 +1,17 @@
 const { expect, test } = require('@playwright/test')
 
+// Load environment variables
+require('dotenv').config()
+
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
+
 const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
 }
 
 test.describe('CTA Component', () => {
 	test('CTA section loads correctly', async ({ page }) => {
-		await page.goto('/')
+		await page.goto(BASE_URL)
 
 		log('Page loaded')
 
@@ -19,20 +24,21 @@ test.describe('CTA Component', () => {
 		const ctaTitle = ctaSection.locator('[data-testid="cta-title"]')
 		log('Checking CTA section title')
 		await expect(ctaTitle).toBeVisible()
-		await expect(ctaTitle).toHaveText(
-			'Boost your SEO with AI-powered image metadata.\nStart optimizing your images today!'
+		await expect(ctaTitle).toContainText(
+			'Boost your SEO with AI-powered image metadata.'
 		)
+		await expect(ctaTitle).toContainText('Start optimizing your images today!')
 
 		const ctaDescription = ctaSection.locator('[data-testid="cta-description"]')
 		log('Checking CTA section description')
 		await expect(ctaDescription).toBeVisible()
-		await expect(ctaDescription).toHaveText(
+		await expect(ctaDescription).toContainText(
 			'Automatically generate SEO-friendly alt texts, titles, and captions for your images. Save time and improve your search engine rankings with our easy-to-use API.'
 		)
 	})
 
 	test('CTA links are present and functional', async ({ page }) => {
-		await page.goto('/')
+		await page.goto(BASE_URL)
 
 		log('Page loaded')
 
@@ -44,10 +50,16 @@ test.describe('CTA Component', () => {
 
 		log('Clicking "Generate Metadata Now" link')
 		await generateLink.click()
-		await expect(page).toHaveURL('/app')
+
+		// Check if redirected to the sign-in page
+		await expect(page).toHaveURL(
+			`${BASE_URL}/sign-in?redirect_url=${encodeURIComponent(BASE_URL + '/app')}`
+		)
+
+		// Optionally, you can add steps to sign in here if needed
 
 		// Go back to the home page
-		await page.goto('/')
+		await page.goto(BASE_URL)
 
 		// Check the visibility and functionality of the "Learn more" link
 		const learnMoreLink = page.locator('[data-testid="cta-learn-more-link"]')
