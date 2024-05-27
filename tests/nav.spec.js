@@ -34,6 +34,7 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	]
 
 	for (const item of expectedNavItems) {
+		console.log(`Testing navigation item: ${item.name}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		await navItem.waitFor() // Wait for the navigation item to be present
 		await expect(navItem).toHaveText(item.name)
