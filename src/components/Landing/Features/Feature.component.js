@@ -96,6 +96,7 @@ export function FeatureComponent() {
 							<RiveComponent
 								autoPlay={true}
 								className="h-[50vh] w-[50vh]"
+								data-testid="rive-component"
 								src="/animation_features/landing_art_forvoyez.riv"
 								stateMachines={'State Machine 1'}
 							/>
