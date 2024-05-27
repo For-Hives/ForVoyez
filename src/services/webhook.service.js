@@ -6,10 +6,10 @@ export async function saveWebhooks(webhooks) {
 	// save the webhooks in the database
 	const webhook = await prisma.webhookEvent.create({
 		data: {
+			customerId: webhooks.data.attributes.customer_id,
+			userId: webhooks.meta.custom_data.user_id,
 			eventName: webhooks.meta.event_name,
 			body: JSON.stringify(webhooks),
-			userId: webhooks.meta.custom_data.user_id,
-			customerId: webhooks.data.attributes.customer_id,
 		},
 	})
 
@@ -58,8 +58,8 @@ export async function processWebhook(id) {
 	// if the webhook is processed, update the webhook
 	if (webhook) {
 		prisma.webhookEvent.update({
-			where: { id: id },
 			data: { processed: true },
+			where: { id: id },
 		})
 	}
 }
@@ -82,10 +82,10 @@ async function processOrderCreated(parsed_webhook) {
 		// create a new user in the database if they don't exist
 		user = await prisma.user.create({
 			data: {
-				clerkId: userId,
+				customerId: customerId, // Store the Lemon Squeezy customer ID
 				email: customerEmail,
 				name: customerName,
-				customerId: customerId, // Store the Lemon Squeezy customer ID
+				clerkId: userId,
 			},
 		})
 	}
@@ -116,15 +116,15 @@ async function processOrderCreated(parsed_webhook) {
 // private function to process the webhook "subscription_resumed", to update the status of the subscription
 async function processSubscriptionResumed(webhook) {
 	await prisma.subscription.update({
+		data: {
+			endsAt: webhook.data.attributes.ends_at,
+			statusFormatted: 'Active',
+			status: 'active',
+			isPaused: false,
+		},
 		where: {
 			lemonSqueezyId:
 				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
-		},
-		data: {
-			status: 'active',
-			statusFormatted: 'Active',
-			isPaused: false,
-			endsAt: webhook.data.attributes.ends_at,
 		},
 	})
 }
@@ -132,14 +132,14 @@ async function processSubscriptionResumed(webhook) {
 // private function to process the webhook "subscription_cancelled", to update the status of the subscription
 async function processSubscriptionCancelled(webhook) {
 	await prisma.subscription.update({
+		data: {
+			endsAt: webhook.data.attributes.ends_at,
+			statusFormatted: 'Cancelled',
+			status: 'cancelled',
+		},
 		where: {
 			lemonSqueezyId:
 				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
-		},
-		data: {
-			status: 'cancelled',
-			statusFormatted: 'Cancelled',
-			endsAt: webhook.data.attributes.ends_at,
 		},
 	})
 }
@@ -176,14 +176,14 @@ async function processSubscriptionPlanChanged(webhook) {
 		if (newPlan) {
 			// Update the subscription with the new plan and the old plan
 			await prisma.subscription.update({
+				data: {
+					oldPlanId: subscription.planId, // Save the old plan
+					statusFormatted: 'Active',
+					planId: newPlan.id,
+					status: 'active',
+				},
 				where: {
 					lemonSqueezyId: subscriptionId.toString(),
-				},
-				data: {
-					planId: newPlan.id,
-					oldPlanId: subscription.planId, // Save the old plan
-					status: 'active',
-					statusFormatted: 'Active',
 				},
 			})
 		}
@@ -299,20 +299,20 @@ async function processSubscriptionCreated(webhook) {
 	// create a new subscription in the database for the user
 	await prisma.subscription.create({
 		data: {
-			lemonSqueezyId: webhook.data.id,
-			orderId: webhook.data.attributes.order_id,
-			name: webhook.data.attributes.user_name,
-			email: webhook.data.attributes.user_email,
-			status: webhook.data.attributes.status,
+			customerId: webhook.data.attributes.customer_id.toString(),
 			statusFormatted: webhook.data.attributes.status_formatted,
-			renewsAt: webhook.data.attributes.renews_at,
-			endsAt: webhook.data.attributes.ends_at,
 			trialEndsAt: webhook.data.attributes.trial_ends_at,
+			renewsAt: webhook.data.attributes.renews_at,
+			orderId: webhook.data.attributes.order_id,
+			email: webhook.data.attributes.user_email,
+			userId: webhook.meta.custom_data.user_id,
+			name: webhook.data.attributes.user_name,
+			endsAt: webhook.data.attributes.ends_at,
+			status: webhook.data.attributes.status,
+			lemonSqueezyId: webhook.data.id,
 			isUsageBased: false,
 			isPaused: false,
-			userId: webhook.meta.custom_data.user_id,
 			planId: plan.id,
-			customerId: webhook.data.attributes.customer_id.toString(),
 		},
 	})
 }

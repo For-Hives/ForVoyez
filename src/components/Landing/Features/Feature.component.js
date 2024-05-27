@@ -1,4 +1,6 @@
 'use client'
+import { useEffect, useState } from 'react'
+
 import {
 	ClockIcon,
 	EyeIcon,
@@ -8,43 +10,42 @@ import {
 	SparklesIcon,
 } from '@heroicons/react/20/solid'
 import RiveComponent from '@rive-app/react-canvas'
-import { useEffect, useState } from 'react'
 
 const features = [
 	{
-		name: 'Automate Metadata Input',
 		description:
 			'Automatically generate SEO-optimized alt texts, titles, and captions with our AI-powered tool. Save time and focus on what matters most.',
+		name: 'Automate Metadata Input',
 		icon: SparklesIcon,
 	},
 	{
-		name: 'Seamless Integration in Minutes',
 		description:
 			'Our well-documented RESTful API allows for seamless integration with your existing applications and workflows. Start generating optimized image metadata in no time.',
+		name: 'Seamless Integration in Minutes',
 		icon: PuzzlePieceIcon,
 	},
 	{
-		name: 'Boost Your Search Engine Visibility',
 		description:
 			'Gain a competitive edge with our SEO-optimized image metadata. Improve your rankings, drive more organic traffic, and increase user engagement.',
+		name: 'Boost Your Search Engine Visibility',
 		icon: MagnifyingGlassIcon,
 	},
 	{
-		name: 'Large-Scale Metadata in a Snap',
 		description:
 			'Whether you have dozens, hundreds, or thousands of images, our tool can handle the job. Take advantage of our powerful batch processing to generate metadata for entire image libraries in a flash.',
+		name: 'Large-Scale Metadata in a Snap',
 		icon: FolderOpenIcon,
 	},
 	{
-		name: 'Create Accessible Images for Everyone',
 		description:
 			'By generating accurate alt texts and captions for your images, our tool helps make your content accessible to a wider audience. Improve the experience for all users and show your commitment to digital inclusivity.',
+		name: 'Create Accessible Images for Everyone',
 		icon: EyeIcon,
 	},
 	{
-		name: 'Free Up Your Time for What Really Counts',
 		description:
 			'By automating image metadata creation, our tool allows you to save valuable time and free up resources. Focus on creating quality content, innovating, and growing your business.',
+		name: 'Free Up Your Time for What Really Counts',
 		icon: ClockIcon,
 	},
 ]
@@ -75,11 +76,11 @@ export function FeatureComponent() {
 							</p>
 							<dl className="mt-16 max-w-xl space-y-12 text-base leading-7 text-slate-600 lg:max-w-none">
 								{features.map(feature => (
-									<div key={feature.name} className="relative pl-9">
+									<div className="relative pl-9" key={feature.name}>
 										<dt className="inline font-semibold text-slate-900">
 											<feature.icon
-												className="absolute left-1 top-1 h-5 w-5 text-forvoyez_orange-500"
 												aria-hidden="true"
+												className="absolute left-1 top-1 h-5 w-5 text-forvoyez_orange-500"
 											/>
 											{feature.name}
 										</dt>
@@ -93,9 +94,9 @@ export function FeatureComponent() {
 					<div className="sticky top-[25vh] flex h-[50vh] w-full items-center justify-center">
 						{isRiveLoaded && (
 							<RiveComponent
-								src="/animation_features/landing_art_forvoyez.riv"
-								className="h-[50vh] w-[50vh]"
 								autoPlay={true}
+								className="h-[50vh] w-[50vh]"
+								src="/animation_features/landing_art_forvoyez.riv"
 								stateMachines={'State Machine 1'}
 							/>
 						)}

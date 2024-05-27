@@ -1,10 +1,11 @@
-import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
+
 import JwtModal from '@/components/Tokens/JwtModal'
 
-export default function TokenCreate({ tokens, setTokens }) {
+export default function TokenCreate({ setTokens, tokens }) {
 	const [newTokenName, setNewTokenName] = useState('')
 	const [newTokenExpiry, setNewTokenExpiry] = useState('')
 	const [jwtModalOpen, setJwtModalOpen] = useState(false)
@@ -12,13 +13,13 @@ export default function TokenCreate({ tokens, setTokens }) {
 
 	const showToast = message => {
 		toast(message, {
-			position: 'top-right',
-			autoClose: 3000,
 			hideProgressBar: false,
+			position: 'top-right',
+			progress: undefined,
 			closeOnClick: true,
 			pauseOnHover: true,
+			autoClose: 3000,
 			draggable: true,
-			progress: undefined,
 			zIndex: 9999,
 		})
 	}
@@ -30,14 +31,14 @@ export default function TokenCreate({ tokens, setTokens }) {
 		}
 
 		const newToken = {
-			name: newTokenName,
-			createdAt: new Date().toISOString(),
 			expiredAt: new Date(newTokenExpiry).toISOString(),
+			createdAt: new Date().toISOString(),
+			name: newTokenName,
 		}
 
 		try {
 			const result = await createToken(newToken)
-			setTokens([...tokens, { ...newToken, id: result.id, jwt: result.jwt }])
+			setTokens([...tokens, { ...newToken, jwt: result.jwt, id: result.id }])
 			setNewTokenName('')
 			setNewTokenExpiry('')
 			setJwtToken(result.jwt)
@@ -51,21 +52,21 @@ export default function TokenCreate({ tokens, setTokens }) {
 	return (
 		<div className="mb-4 flex items-center justify-center rounded-lg bg-white p-4 shadow">
 			<input
-				type="text"
-				placeholder="Token Name"
-				value={newTokenName}
-				onChange={e => setNewTokenName(e.target.value)}
 				className="mb-4 mr-2 w-full rounded border p-2"
+				onChange={e => setNewTokenName(e.target.value)}
+				placeholder="Token Name"
+				type="text"
+				value={newTokenName}
 			/>
 			<input
+				className="mb-4 mr-2 w-full rounded border p-2"
+				onChange={e => setNewTokenExpiry(e.target.value)}
 				type="date"
 				value={newTokenExpiry}
-				onChange={e => setNewTokenExpiry(e.target.value)}
-				className="mb-4 mr-2 w-full rounded border p-2"
 			/>
 			<button
-				onClick={create}
 				className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+				onClick={create}
 			>
 				Create Token
 			</button>

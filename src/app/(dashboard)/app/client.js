@@ -1,4 +1,6 @@
 'use client'
+import { useEffect } from 'react'
+
 import {
 	BookOpenIcon,
 	ChartBarIcon,
@@ -7,100 +9,99 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { useEffect } from 'react'
-
 import { createUser } from '@/app/actions/app/createUser'
+
 import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
 
 const mainResources = [
 	{
-		href: 'https://doc.forvoyez.com/',
-		name: 'Documentation',
-		description: 'Discover our features and API reference.',
-		icon: BookOpenIcon,
 		pattern: {
-			y: 16,
 			squares: [
 				[0, 1],
 				[1, 3],
 			],
+			y: 16,
 		},
+		description: 'Discover our features and API reference.',
+		href: 'https://doc.forvoyez.com/',
+		name: 'Documentation',
+		icon: BookOpenIcon,
 	},
 	{
-		href: '/app/playground',
-		name: 'Playground',
-		description: 'Explore and test our API endpoints.',
-		icon: CodeBracketIcon,
 		pattern: {
-			y: -6,
 			squares: [
 				[-1, 2],
 				[1, 3],
 			],
+			y: -6,
 		},
+		description: 'Explore and test our API endpoints.',
+		href: '/app/playground',
+		icon: CodeBracketIcon,
+		name: 'Playground',
 	},
 ]
 
 const configResources = [
 	{
-		href: '/app/tokens',
-		name: 'API Keys',
-		description: 'Manage your API keys and authentication.',
-		icon: KeyIcon,
 		pattern: {
-			y: 32,
 			squares: [
 				[0, 2],
 				[1, 4],
 			],
+			y: 32,
 		},
+		description: 'Manage your API keys and authentication.',
+		href: '/app/tokens',
+		name: 'API Keys',
+		icon: KeyIcon,
 	},
 	{
-		href: '/app/usage',
-		name: 'Usage',
-		description: 'Track your API usage and limits.',
-		icon: ChartBarIcon,
 		pattern: {
-			y: 22,
 			squares: [[0, 1]],
+			y: 22,
 		},
+		description: 'Track your API usage and limits.',
+		href: '/app/usage',
+		icon: ChartBarIcon,
+		name: 'Usage',
 	},
 	{
-		href: '/app/plans',
-		name: 'Plans',
-		description: 'Upgrade or change your subscription plan.',
-		icon: CreditCardIcon,
 		pattern: {
-			y: 16,
 			squares: [
 				[0, 1],
 				[1, 3],
 			],
+			y: 16,
 		},
+		description: 'Upgrade or change your subscription plan.',
+		icon: CreditCardIcon,
+		href: '/app/plans',
+		name: 'Plans',
 	},
 	{
-		href: '/contact',
-		name: 'Help, FAQ & Contact',
 		description:
 			'Get help, view frequently asked questions, and contact our support team.',
-		icon: QuestionMarkCircleIcon,
 		pattern: {
-			y: -6,
 			squares: [
 				[-1, 2],
 				[1, 3],
 			],
+			y: -6,
 		},
+		icon: QuestionMarkCircleIcon,
+		name: 'Help, FAQ & Contact',
+		href: '/contact',
 	},
 ]
 
 export const metadata = {
-	title: 'Dashboard - ForVoyez',
 	description:
 		'Access your ForVoyez dashboard to manage your API keys, monitor usage, and explore our powerful image metadata generation capabilities.',
 	alternates: {
 		canonical: '/app',
 	},
+	title: 'Dashboard - ForVoyez',
 }
 
 export default function ClientLogicDashboard() {

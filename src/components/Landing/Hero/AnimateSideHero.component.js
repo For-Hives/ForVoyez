@@ -1,12 +1,13 @@
 'use client'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoLeft.component'
-import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
-import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
+import Image from 'next/image'
+
 import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightBottom.component'
+import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
 import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightTop.component'
+import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
+import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoLeft.component'
 
 export function AnimateSideHeroComponent() {
 	const [textInButton, setTextInButton] = useState('Generate Now!')
@@ -85,7 +86,7 @@ export function AnimateSideHeroComponent() {
 					<div
 						className={'cursor cursor-animation pointer-events-none absolute'}
 					>
-						<Image src={'/cursor.svg'} width={35} height={35} alt={'cursor'} />
+						<Image alt={'cursor'} height={35} src={'/cursor.svg'} width={35} />
 					</div>
 					<div className={'absolute bottom-0 right-0'}>
 						<div>

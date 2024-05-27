@@ -1,18 +1,19 @@
 'use client'
-import { useAuth } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { sortPlans } from '@/helpers/sortPlans'
-import {
-	getPlans,
-	getSubscriptionFromUserId,
-} from '@/services/database.service'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
+
 import {
 	getCheckoutURL,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
+import {
+	getPlans,
+	getSubscriptionFromUserId,
+} from '@/services/database.service'
+import { sortPlans } from '@/helpers/sortPlans'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -123,23 +124,23 @@ export function RefillPlansComponent() {
 
 										return (
 											<div
-												key={tier.id}
 												className={classNames(
 													tier.mostPopular
 														? 'ring-2 ring-forvoyez_orange-500'
 														: 'ring-1 ring-slate-200',
 													'flex flex-col rounded-3xl p-8'
 												)}
+												key={tier.id}
 											>
 												<div className="flex h-1/4 items-start justify-between gap-x-4">
 													<h3
-														id={tier.id}
 														className={classNames(
 															tier.mostPopular
 																? 'text-forvoyez_orange-500'
 																: 'text-slate-900',
 															'text-lg font-semibold leading-8'
 														)}
+														id={tier.id}
 													>
 														{tier.name}
 													</h3>
@@ -165,7 +166,6 @@ export function RefillPlansComponent() {
 												{currentSubscription && (
 													<div>
 														<button
-															onClick={() => subscribe(tier.variantId)}
 															aria-describedby={tier.id}
 															className={classNames(
 																tier.mostPopular
@@ -173,6 +173,7 @@ export function RefillPlansComponent() {
 																	: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 																'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 															)}
+															onClick={() => subscribe(tier.variantId)}
 														>
 															Refill your credits
 														</button>

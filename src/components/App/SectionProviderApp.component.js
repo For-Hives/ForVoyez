@@ -7,20 +7,21 @@ import {
 	useLayoutEffect,
 	useState,
 } from 'react'
+
 import { createStore, useStore } from 'zustand'
 
 import { remToPx } from '@/components/App/RemToPxApp.component'
 
 function createSectionStore(sections) {
 	return createStore()(set => ({
-		sections,
-		visibleSections: [],
 		setVisibleSections: visibleSections =>
 			set(state =>
 				state.visibleSections.join() === visibleSections.join()
 					? {}
 					: { visibleSections }
 			),
+		visibleSections: [],
+		sections,
 	}))
 }
 
@@ -38,7 +39,7 @@ function useVisibleSections(sectionStore) {
 				sectionIndex < sections.length;
 				sectionIndex++
 			) {
-				let { id, headingRef, offsetRem = 0 } = sections[sectionIndex]
+				let { offsetRem = 0, headingRef, id } = sections[sectionIndex]
 
 				if (!headingRef?.current) {
 					continue

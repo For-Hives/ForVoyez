@@ -1,6 +1,5 @@
+import { SignJWT, jwtVerify } from 'jose'
 import { createSecretKey } from 'crypto'
-
-import { jwtVerify, SignJWT } from 'jose'
 
 function generateSecretKey() {
 	return createSecretKey(process.env.JWT_SECRET, 'utf-8')
@@ -31,8 +30,8 @@ export async function verifyJwt(jwt) {
 	try {
 		// verify token
 		const { payload } = await jwtVerify(token, secretKey, {
-			issuer: 'ForVoyez', // issuer
 			audience: 'ForVoyez', // audience
+			issuer: 'ForVoyez', // issuer
 		})
 
 		return payload

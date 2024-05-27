@@ -2,11 +2,11 @@
 
 import { currentUser } from '@clerk/nextjs/server'
 
-import { decrementCredit } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
+import { decrementCredit } from '@/services/database.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
@@ -51,7 +51,7 @@ export async function describePlaygroundAction(formData) {
 
 	// Return the description as a directly usable JSON object
 	return {
-		status: 200,
 		data: description,
+		status: 200,
 	}
 }

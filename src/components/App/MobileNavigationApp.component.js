@@ -1,28 +1,29 @@
 'use client'
 
-import { Dialog, Transition } from '@headlessui/react'
-import { motion } from 'framer-motion'
-import { usePathname, useSearchParams } from 'next/navigation'
 import {
-	createContext,
 	Fragment,
 	Suspense,
+	createContext,
 	useContext,
 	useEffect,
 	useRef,
 } from 'react'
+
+import { usePathname, useSearchParams } from 'next/navigation'
+import { Dialog, Transition } from '@headlessui/react'
+import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
-import { HeaderDashboard } from '@/components/App/HeaderApp.component'
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
+import { HeaderDashboard } from '@/components/App/HeaderApp.component'
 
 function MenuIcon(props) {
 	return (
 		<svg
-			viewBox="0 0 10 9"
+			aria-hidden="true"
 			fill="none"
 			strokeLinecap="round"
-			aria-hidden="true"
+			viewBox="0 0 10 9"
 			{...props}
 		>
 			<path d="M.5 1h9M.5 8h9M.5 4.5h9" />
@@ -33,10 +34,10 @@ function MenuIcon(props) {
 function XIcon(props) {
 	return (
 		<svg
-			viewBox="0 0 10 9"
+			aria-hidden="true"
 			fill="none"
 			strokeLinecap="round"
-			aria-hidden="true"
+			viewBox="0 0 10 9"
 			{...props}
 		>
 			<path d="m1.5 1 7 7M8.5 1l-7 7" />
@@ -74,11 +75,11 @@ function MobileNavigationDialog({ isOpen, close }) {
 	}
 
 	return (
-		<Transition.Root show={isOpen} as={Fragment}>
+		<Transition.Root as={Fragment} show={isOpen}>
 			<Dialog
+				className="fixed inset-0 z-50 lg:hidden"
 				onClickCapture={onClickDialog}
 				onClose={close}
-				className="fixed inset-0 z-50 lg:hidden"
 			>
 				<Transition.Child
 					as={Fragment}
@@ -115,8 +116,8 @@ function MobileNavigationDialog({ isOpen, close }) {
 						leaveTo="-translate-x-full"
 					>
 						<motion.div
-							layoutScroll
 							className="fixed bottom-0 left-0 top-14 w-full overflow-y-auto bg-white px-4 pb-4 pt-6 shadow-lg shadow-slate-900/10 ring-1 ring-slate-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10"
+							layoutScroll
 						>
 							<NavigationAppComponent />
 						</motion.div>
@@ -132,10 +133,10 @@ export function useIsInsideMobileNavigation() {
 }
 
 export const useMobileNavigationStore = create()(set => ({
-	isOpen: false,
-	open: () => set({ isOpen: true }),
-	close: () => set({ isOpen: false }),
 	toggle: () => set(state => ({ isOpen: !state.isOpen })),
+	close: () => set({ isOpen: false }),
+	open: () => set({ isOpen: true }),
+	isOpen: false,
 }))
 
 export function MobileNavigationAppComponent() {
@@ -146,16 +147,16 @@ export function MobileNavigationAppComponent() {
 	return (
 		<IsInsideMobileNavigationContext.Provider value={true}>
 			<button
-				type="button"
-				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-slate-900/5"
 				aria-label="Toggle navigation"
+				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-slate-900/5"
 				onClick={toggle}
+				type="button"
 			>
 				<ToggleIcon className="w-2.5 stroke-slate-900" />
 			</button>
 			{!isInsideMobileNavigation && (
 				<Suspense fallback={null}>
-					<MobileNavigationDialog isOpen={isOpen} close={close} />
+					<MobileNavigationDialog close={close} isOpen={isOpen} />
 				</Suspense>
 			)}
 		</IsInsideMobileNavigationContext.Provider>

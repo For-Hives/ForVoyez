@@ -1,9 +1,10 @@
 'use client'
-import clsx from 'clsx'
+import { forwardRef } from 'react'
+
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { forwardRef } from 'react'
+import clsx from 'clsx'
 
 import {
 	MobileNavigationAppComponent,
@@ -23,7 +24,6 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 
 	return (
 		<motion.div
-			ref={ref}
 			className={clsx(
 				className,
 				'fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:left-72 lg:z-30 lg:hidden lg:px-8 xl:left-80',
@@ -32,6 +32,7 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 					? 'bg-white'
 					: 'bg-white/[var(--bg-opacity-light)]'
 			)}
+			ref={ref}
 			style={{
 				'--bg-opacity-light': bgOpacityLight,
 			}}
@@ -44,14 +45,14 @@ export const HeaderDashboard = forwardRef(function HeaderDashboard(
 			/>
 			<div className="flex items-center gap-5 lg:hidden">
 				<MobileNavigationAppComponent />
-				<Link href="/app" aria-label="Home">
+				<Link aria-label="Home" href="/app">
 					<span className="sr-only">ForVoyez</span>
 					<Image
-						className="h-8 w-auto"
-						src="/logo/logo.webp"
 						alt="logo ForVoyez"
-						width={80}
+						className="h-8 w-auto"
 						height={80}
+						src="/logo/logo.webp"
+						width={80}
 					/>
 				</Link>
 			</div>
