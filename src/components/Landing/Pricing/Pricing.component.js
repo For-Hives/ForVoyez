@@ -47,7 +47,11 @@ export function PricingComponent() {
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto max-w-4xl text-center" id={'pricing'}>
+				<div
+					className="mx-auto max-w-4xl text-center"
+					data-testid="pricing-section"
+					id="pricing"
+				>
 					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
 						Pricing
 					</h2>
@@ -78,6 +82,7 @@ export function PricingComponent() {
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
+								data-testid={`frequency-${option.value}`}
 								key={option.value}
 								value={option}
 							>
@@ -111,6 +116,7 @@ export function PricingComponent() {
 												: 'ring-1 ring-slate-200',
 											'rounded-3xl p-8 xl:p-10'
 										)}
+										data-testid={`plan-${tier.id}`}
 										key={tier.id}
 									>
 										<div className="flex items-center justify-between gap-x-4">
@@ -131,14 +137,12 @@ export function PricingComponent() {
 												</p>
 											) : null}
 										</div>
-										{/*Dangerous set html*/}
 										<p
 											className="mt-4 text-sm leading-6 text-slate-600"
 											dangerouslySetInnerHTML={{ __html: tier.description }}
 										/>
 										<p className="mt-6 flex items-baseline gap-x-1">
 											<span className="text-4xl font-bold tracking-tight text-slate-900">
-												{/* format to price in € and get 2 decimals */}
 												{(tier.price / 100).toFixed(2).replace('.', ',')}€
 											</span>
 											<span className="text-sm font-semibold leading-6 text-slate-600">
@@ -156,6 +160,7 @@ export function PricingComponent() {
 													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 											)}
+											data-testid={`plan-button-${tier.id}`}
 											href="/app/plans"
 										>
 											{tier.buttonText}
@@ -169,6 +174,7 @@ export function PricingComponent() {
 											) : (
 												<button
 													className={'group m-0 flex gap-1 p-0'}
+													data-testid="get-more-tokens"
 													onClick={() => setFrequency(frequencies[1])}
 												>
 													<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
@@ -176,7 +182,6 @@ export function PricingComponent() {
 														<span className={'font-bold'}>20% more tokens</span>
 													</span>
 													<div className={'flex h-full items-center'}>
-														{/*	Link icon*/}
 														<ArrowUpRightIcon
 															className={'h-3 w-3 text-slate-600'}
 														/>
@@ -198,12 +203,12 @@ export function PricingComponent() {
 									</div>
 								)
 							})}
-					{/*	-----------------------------------------------------------------*/}
 					<div
 						className={classNames(
 							'ring-1 ring-slate-200',
 							'rounded-3xl p-8 xl:p-10'
 						)}
+						data-testid="plan-custom"
 						key="custom"
 					>
 						<div className="flex items-center justify-between gap-x-4">
@@ -222,7 +227,6 @@ export function PricingComponent() {
 						</p>
 						<p className="mt-6 flex items-baseline gap-x-1">
 							<span className="text-4xl font-bold tracking-tight text-slate-900">
-								{/* format to price in € */}
 								Custom
 							</span>
 							<span className="text-sm font-semibold leading-6 text-slate-600">
@@ -236,6 +240,7 @@ export function PricingComponent() {
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 							)}
+							data-testid="contact-us"
 							href="/contact"
 						>
 							Contact Us
@@ -255,7 +260,6 @@ export function PricingComponent() {
 							))}
 						</ul>
 					</div>
-					{/*	-----------------------------------------------------------------*/}
 				</div>
 				<p className={'mt-4 w-full text-right text-slate-600'}>
 					<span className={'font-bold'}>1 credit</span>&nbsp;=&nbsp;
