@@ -116,7 +116,7 @@ export function PricingComponent() {
 												: 'ring-1 ring-slate-200',
 											'rounded-3xl p-8 xl:p-10'
 										)}
-										data-testid={`plan-${tier.id}`}
+										data-testid={`plan-${tier.billingCycle}`}
 										key={tier.id}
 									>
 										<div className="flex items-center justify-between gap-x-4">
