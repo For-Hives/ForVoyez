@@ -18,7 +18,7 @@ export async function generateJwt(payload) {
 		.setIssuedAt()
 		.setIssuer('ForVoyez') // issuer
 		.setAudience('ForVoyez') // audience
-		.setExpirationTime('1 day') // token expiration time, e.g., "1 day" // todo : change to Date()
+		.setExpirationTime(new Date(payload.expiredAt)) // token expiration time
 		// toISOString
 		.sign(secretKey)
 }
