@@ -6,6 +6,9 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 }) => {
 	await page.goto('/')
 
+	// Wait for the logo element to be present
+	await page.waitForSelector('nav img[alt="ForVoyez Logo"]', { timeout: 10000 })
+
 	// Test if the logo is visible and links to the home page
 	const logo = await page.locator('nav img[alt="ForVoyez Logo"]')
 	await expect(logo).toBeVisible()
