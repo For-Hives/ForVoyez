@@ -89,7 +89,9 @@ test('Navbar links are clickable and redirect correctly', async ({ page }) => {
 				page.context().waitForEvent('page'),
 				navItem.click(),
 			])
+			log(`Waiting for new page to load: ${item.href}`)
 			await newPage.waitForLoadState('load')
+			log(`Checking URL of new page: ${item.href}`)
 			await expect(newPage).toHaveURL(item.href)
 			await newPage.close()
 		}
