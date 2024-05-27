@@ -20,7 +20,7 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	await logoLink.click()
 	await expect(page).toHaveURL('/')
 
-	// Test if the navigation menu items are present, have the correct URLs, and redirect correctly
+	// Define the expected navigation items
 	const expectedNavItems = [
 		{ testId: 'nav-home', name: 'Home', href: '/' },
 		{ testId: 'nav-features', href: '/#features', name: 'Features' },
@@ -35,6 +35,7 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 
 	for (const item of expectedNavItems) {
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
+		await navItem.waitFor() // Wait for the navigation item to be present
 		await expect(navItem).toHaveText(item.name)
 		await expect(navItem).toHaveAttribute('href', item.href)
 
