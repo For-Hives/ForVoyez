@@ -1,10 +1,10 @@
 export const metadata = {
-	title: 'Privacy Policy - ForVoyez',
 	description:
 		"Read about ForVoyez's privacy policy and how we handle your personal information when you use our AI-powered image metadata generation services.",
 	alternates: {
 		canonical: 'https://forvoyez.com/app/legals/privacy-policy',
 	},
+	title: 'Privacy Policy - ForVoyez',
 }
 
 export default function PrivacyPolicyPage() {
@@ -189,8 +189,8 @@ export default function PrivacyPolicyPage() {
 					Tel : 06 21 58 26 84
 					<br />
 					<a
-						href="https://andy-cinquin.fr"
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+						href="https://andy-cinquin.fr"
 					>
 						https://andy-cinquin.fr
 					</a>
@@ -200,8 +200,8 @@ export default function PrivacyPolicyPage() {
 						<strong>ForVoyez</strong>
 						<br />
 						<a
-							href="https://forvoyez.com/contact"
 							className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+							href="https://forvoyez.com/contact"
 						>
 							https://forvoyez.com/contact
 						</a>

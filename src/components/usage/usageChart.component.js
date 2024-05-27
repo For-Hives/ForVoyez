@@ -1,8 +1,6 @@
 'use client'
-import { useAuth } from '@clerk/nextjs'
-import { format } from 'date-fns'
-import { fr } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
+
 import {
 	Area,
 	AreaChart,
@@ -15,9 +13,12 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+import { useAuth } from '@clerk/nextjs'
+import { fr } from 'date-fns/locale'
+import { format } from 'date-fns'
 
-import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 import { getUsageByToken, getUsageForUser } from '@/services/database.service'
+import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
@@ -72,22 +73,22 @@ export function UsageChartComponent() {
 				{isLoadingUsage ? (
 					<SkeletonLoader />
 				) : (
-					<ResponsiveContainer width="100%" height="100%">
+					<ResponsiveContainer height="100%" width="100%">
 						<AreaChart
 							data={usage}
 							margin={{
-								top: 0,
+								bottom: 0,
 								right: 0,
 								left: 0,
-								bottom: 0,
+								top: 0,
 							}}
 						>
 							<defs>
 								<linearGradient
 									id="colorCreditsLeft"
 									x1="0"
-									y1="0"
 									x2="0"
+									y1="0"
 									y2="1"
 								>
 									<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
@@ -97,10 +98,10 @@ export function UsageChartComponent() {
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis
 								dataKey="fullDate"
+								minTickGap={50}
 								tickFormatter={fullDate =>
 									format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
 								}
-								minTickGap={50}
 								tickMargin={10}
 								tickSize={10}
 							/>
@@ -118,13 +119,13 @@ export function UsageChartComponent() {
 								}}
 							/>
 							<Area
-								type="monotone"
 								dataKey="creditsLeft"
+								dot={false}
+								fill="url(#colorCreditsLeft)"
+								fillOpacity={1}
 								name="Credits Left"
 								stroke="#ff6545"
-								fill="url(#colorCreditsLeft)"
-								dot={false}
-								fillOpacity={1}
+								type="monotone"
 							/>
 						</AreaChart>
 					</ResponsiveContainer>
@@ -143,23 +144,23 @@ export function UsageChartComponent() {
 				{isLoadingUsageByToken ? (
 					<SkeletonLoader />
 				) : (
-					<ResponsiveContainer width="100%" height="100%">
+					<ResponsiveContainer height="100%" width="100%">
 						<BarChart
+							barSize={20}
 							data={usageByToken}
 							margin={{
-								top: 0,
+								bottom: 0,
 								right: 0,
 								left: 0,
-								bottom: 0,
+								top: 0,
 							}}
-							barSize={20}
 						>
 							<defs>
 								<linearGradient
 									id="colorUsedTokens"
 									x1="0"
-									y1="0"
 									x2="0"
+									y1="0"
 									y2="1"
 								>
 									<stop offset="0%" stopColor="#ff6545" stopOpacity={1} />
@@ -168,12 +169,12 @@ export function UsageChartComponent() {
 							</defs>
 							<XAxis
 								dataKey="token"
+								padding={{ right: 10, left: 10 }}
 								scale={'point'}
-								padding={{ left: 10, right: 10 }}
 								tickMargin={10}
 								tickSize={10}
 							/>
-							<YAxis tickMargin={10} tickSize={0} allowDecimals={false} />
+							<YAxis allowDecimals={false} tickMargin={10} tickSize={0} />
 							<Tooltip />
 							<Legend
 								wrapperStyle={{
@@ -183,9 +184,9 @@ export function UsageChartComponent() {
 							<CartesianGrid strokeDasharray="3 3" />
 							<Bar
 								dataKey="used"
-								name="Used Tokens"
 								fill="url(#colorUsedTokens)"
 								fillOpacity={1}
+								name="Used Tokens"
 							/>
 						</BarChart>
 					</ResponsiveContainer>

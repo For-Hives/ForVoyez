@@ -1,38 +1,27 @@
-import '@/styles/globals.css'
-import 'react-toastify/dist/ReactToastify.css'
-
-import { ClerkProvider } from '@clerk/nextjs'
 import { Jost, Source_Sans_3 } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+
+import 'react-toastify/dist/ReactToastify.css'
+import '@/styles/globals.css'
 
 const sourcesans = Source_Sans_3({
 	weight: ['300', '400', '700', '900'],
-	subsets: ['latin'],
 	variable: '--font-sourcesans',
 	style: ['normal', 'italic'],
+	subsets: ['latin'],
 })
 
 const jost = Jost({
 	weight: ['200', '300', '400', '500', '600', '700', '800'],
-	subsets: ['latin'],
 	variable: '--font-jost',
+	subsets: ['latin'],
 	style: ['normal'],
 })
 
 export const metadata = {
-	title: 'ForVoyez - AI-Powered Image Metadata Generation',
-	description:
-		'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
-	keywords: 'ForVoyez, image metadata, alt text, SEO, AI, SaaS, API',
-	authors: [{ name: 'ForVoyez Team', url: 'https://forvoyez.com' }],
-	creator: 'ForVoyez',
-	publisher: 'ForVoyez',
-	metadataBase: new URL('https://forvoyez.com/'),
 	openGraph: {
-		title: 'ForVoyez - AI-Powered Image Metadata Generation',
 		description:
 			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
-		url: 'https://forvoyez.com/',
-		siteName: 'ForVoyez',
 		images: [
 			{
 				url: 'https://forvoyez.com/logo_og.webp',
@@ -40,15 +29,15 @@ export const metadata = {
 				height: 959,
 			},
 		],
+		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		url: 'https://forvoyez.com/',
+		siteName: 'ForVoyez',
 		locale: 'en-US',
 		type: 'website',
 	},
 	twitter: {
-		card: 'summary_large_image',
-		title: 'ForVoyez - AI-Powered Image Metadata Generation',
 		description:
 			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
-		creator: '@ForVoyez',
 		images: [
 			{
 				url: 'https://forvoyez.com/logo_og.webp',
@@ -56,26 +45,37 @@ export const metadata = {
 				height: 959,
 			},
 		],
+		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		card: 'summary_large_image',
+		creator: '@ForVoyez',
 	},
 	robots: {
-		index: true,
-		follow: true,
-		nocache: true,
 		googleBot: {
-			index: true,
-			follow: true,
-			noimageindex: true,
-			'max-video-preview': -1,
 			'max-image-preview': 'large',
+			'max-video-preview': -1,
+			noimageindex: true,
 			'max-snippet': -1,
+			follow: true,
+			index: true,
 		},
+		nocache: true,
+		follow: true,
+		index: true,
 	},
+	description:
+		'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
 	alternates: {
-		canonical: 'https://forvoyez.com/',
 		languages: {
 			'en-US': 'https://forvoyez.com/',
 		},
+		canonical: 'https://forvoyez.com/',
 	},
+	keywords: 'ForVoyez, image metadata, alt text, SEO, AI, SaaS, API',
+	authors: [{ url: 'https://forvoyez.com', name: 'ForVoyez Team' }],
+	title: 'ForVoyez - AI-Powered Image Metadata Generation',
+	metadataBase: new URL('https://forvoyez.com/'),
+	publisher: 'ForVoyez',
+	creator: 'ForVoyez',
 }
 
 export default function RootLayout({ children }) {

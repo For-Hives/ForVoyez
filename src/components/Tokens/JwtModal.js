@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify'
 
-export default function JwtModal({ jwtToken, setJwtModalOpen }) {
+export default function JwtModal({ setJwtModalOpen, jwtToken }) {
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(jwtToken)
 		toast.success('Token has been copied to clipboard')
@@ -16,22 +16,22 @@ export default function JwtModal({ jwtToken, setJwtModalOpen }) {
 						<code>{jwtToken}</code>
 					</pre>
 					<button
-						onClick={copyToClipboard}
 						className="absolute right-1 top-1 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+						onClick={copyToClipboard}
 						title="Copier le token"
 					>
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
+							className="h-6 w-6"
 							fill="none"
-							viewBox="0 0 24 24"
 							stroke="currentColor"
 							strokeWidth={2}
-							className="h-6 w-6"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
 						>
 							<path
+								d="M8 5H5a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-3M15 2h6v6m-3-3v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9z"
 								strokeLinecap="round"
 								strokeLinejoin="round"
-								d="M8 5H5a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-3M15 2h6v6m-3-3v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9z"
 							/>
 						</svg>
 					</button>

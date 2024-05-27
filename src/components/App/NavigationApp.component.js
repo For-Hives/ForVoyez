@@ -1,38 +1,39 @@
 'use client'
 
-import { UserButton, useUser } from '@clerk/nextjs'
-import clsx from 'clsx'
-import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useRef } from 'react'
 
+import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
+import { UserButton, useUser } from '@clerk/nextjs'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import clsx from 'clsx'
+
 import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationApp.component'
-import { remToPx } from '@/components/App/RemToPxApp.component'
 import { useSectionStore } from '@/components/App/SectionProviderApp.component'
+import { remToPx } from '@/components/App/RemToPxApp.component'
 
 function useInitialValue(value, condition = true) {
 	let initialValue = useRef(value).current
 	return condition ? initialValue : value
 }
 
-function NavLink({ href, children, active = false, isAnchorLink = false }) {
+function NavLink({ isAnchorLink = false, active = false, children, href }) {
 	return (
 		<Link
-			href={href}
 			aria-current={active ? 'page' : undefined}
 			className={clsx(
 				'flex justify-between gap-2 py-1 pr-3 text-sm transition',
 				isAnchorLink ? 'pl-7' : 'pl-4',
 				active ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'
 			)}
+			href={href}
 		>
 			<span className="truncate">{children}</span>
 		</Link>
 	)
 }
 
-function VisibleSectionHighlight({ group, pathname }) {
+function VisibleSectionHighlight({ pathname, group }) {
 	let [sections, visibleSections] = useInitialValue(
 		[useSectionStore(s => s.sections), useSectionStore(s => s.visibleSections)],
 		useIsInsideMobileNavigation()
@@ -55,17 +56,17 @@ function VisibleSectionHighlight({ group, pathname }) {
 
 	return (
 		<motion.div
-			layout
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1, transition: { delay: 0.2 } }}
-			exit={{ opacity: 0 }}
+			animate={{ transition: { delay: 0.2 }, opacity: 1 }}
 			className="absolute inset-x-0 top-0 bg-slate-800/2.5 will-change-transform"
+			exit={{ opacity: 0 }}
+			initial={{ opacity: 0 }}
+			layout
 			style={{ borderRadius: 8, height, top }}
 		/>
 	)
 }
 
-function ActivePageMarker({ group, pathname }) {
+function ActivePageMarker({ pathname, group }) {
 	let itemHeight = remToPx(2)
 	let offset = remToPx(0.25)
 	let activePageIndex = group.links.findIndex(link => link.href === pathname)
@@ -73,17 +74,17 @@ function ActivePageMarker({ group, pathname }) {
 
 	return (
 		<motion.div
-			layout
+			animate={{ transition: { delay: 0.2 }, opacity: 1 }}
 			className="absolute left-2 h-6 w-px bg-forvoyez_orange-500"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1, transition: { delay: 0.2 } }}
 			exit={{ opacity: 0 }}
+			initial={{ opacity: 0 }}
+			layout
 			style={{ top }}
 		/>
 	)
 }
 
-function NavigationGroup({ group, className }) {
+function NavigationGroup({ className, group }) {
 	let isInsideMobileNavigation = useIsInsideMobileNavigation()
 	let [pathname] = useInitialValue([usePathname()], isInsideMobileNavigation)
 
@@ -93,8 +94,8 @@ function NavigationGroup({ group, className }) {
 	return (
 		<li className={clsx('relative mt-6', className)}>
 			<motion.h2
-				layout="position"
 				className="text-xs font-semibold text-slate-900"
+				layout="position"
 			>
 				{group.title}
 			</motion.h2>
@@ -105,18 +106,18 @@ function NavigationGroup({ group, className }) {
 					)}
 				</AnimatePresence>
 				<motion.div
-					layout
 					className="absolute inset-y-0 left-2 w-px bg-slate-900/10"
+					layout
 				/>
 				<AnimatePresence initial={false}>
 					{isActiveGroup && (
 						<ActivePageMarker group={group} pathname={pathname} />
 					)}
 				</AnimatePresence>
-				<ul role="list" className="border-l border-transparent">
+				<ul className="border-l border-transparent" role="list">
 					{group.links.map(link => (
-						<motion.li key={link.href} layout="position" className="relative">
-							<NavLink href={link.href} active={link.href === pathname}>
+						<motion.li className="relative" key={link.href} layout="position">
+							<NavLink active={link.href === pathname} href={link.href}>
 								{link.title}
 							</NavLink>
 						</motion.li>
@@ -129,28 +130,28 @@ function NavigationGroup({ group, className }) {
 
 export const dashboardNavigation = [
 	{
-		title: 'General',
 		links: [
 			{ title: 'Home', href: '/app' },
-			{ title: 'Documentation', href: 'https://doc.forvoyez.com/' },
-			{ title: 'Playground', href: '/app/playground' },
+			{ href: 'https://doc.forvoyez.com/', title: 'Documentation' },
+			{ href: '/app/playground', title: 'Playground' },
 		],
+		title: 'General',
 	},
 	{
-		title: 'App',
 		links: [
-			{ title: 'API Keys', href: '/app/tokens' },
-			{ title: 'Usage', href: '/app/usage' },
-			{ title: 'Plans', href: '/app/plans' },
+			{ href: '/app/tokens', title: 'API Keys' },
+			{ href: '/app/usage', title: 'Usage' },
+			{ href: '/app/plans', title: 'Plans' },
 		],
+		title: 'App',
 	},
 	{
-		title: 'Support',
 		links: [
 			{ title: 'Help, FAQ & Contact', href: '/contact' },
 			{ title: 'Invoice & billing management', href: '/app/billing' },
 			{ title: 'Legal Information', href: '/app/legals' },
 		],
+		title: 'Support',
 	},
 ]
 
@@ -162,21 +163,21 @@ export function NavigationAppComponent(props) {
 			<ul role="list">
 				{dashboardNavigation.map((group, groupIndex) => (
 					<NavigationGroup
-						key={group.title}
-						group={group}
 						className={groupIndex === 0 ? 'md:mt-0' : ''}
+						group={group}
+						key={group.title}
 					/>
 				))}
 				{user && (
 					<div className={'mt-6'}>
 						<div className={'flex items-center gap-2 lg:hidden'}>
 							<UserButton
+								afterSignOutUrl="/"
 								appearance="ghost"
 								userProfileMode="navigation"
 								userProfileUrl="/profile"
-								afterSignOutUrl="/"
 							/>
-							<Link href="/profile" className={'h-full w-full'}>
+							<Link className={'h-full w-full'} href="/profile">
 								<span className="text-sm font-medium text-slate-900">
 									{user.firstName} {user.lastName}
 								</span>

@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
-import 'react-toastify/dist/ReactToastify.css'
-import TokenModal from '@/components/Tokens/TokenModal'
+
 import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
+import TokenModal from '@/components/Tokens/TokenModal'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function TokenList() {
 	const [tokens, setTokens] = useState([])
@@ -48,16 +50,16 @@ export default function TokenList() {
 	return (
 		<div className="w-full">
 			<TokenModal
-				isOpen={isModalOpen}
 				closeModal={closeModal}
-				tokens={tokens}
+				isOpen={isModalOpen}
 				setTokens={setTokens}
+				tokens={tokens}
 			/>
 			<TokenModalDelete
-				isOpen={deleteModalOpen}
 				closeModal={closeDeleteModal}
-				token={tokenToDelete}
+				isOpen={deleteModalOpen}
 				onConfirm={handleDelete}
+				token={tokenToDelete}
 			/>
 			<div className="sm:flex sm:items-center">
 				<div className="sm:flex-auto">
@@ -68,9 +70,9 @@ export default function TokenList() {
 				</div>
 				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 					<button
-						type="button"
-						onClick={openModal}
 						className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+						onClick={openModal}
+						type="button"
 					>
 						Add token
 					</button>
@@ -84,32 +86,32 @@ export default function TokenList() {
 								<thead className="bg-slate-50">
 									<tr>
 										<th
-											scope="col"
 											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											scope="col"
 										>
 											Token name
 										</th>
 										<th
-											scope="col"
 											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											scope="col"
 										>
 											Token value
 										</th>
 										<th
-											scope="col"
 											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											scope="col"
 										>
 											Created at
 										</th>
 										<th
-											scope="col"
 											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
+											scope="col"
 										>
 											Expired at
 										</th>
 										<th
-											scope="col"
 											className="relative w-2/12 py-3.5 pl-3 pr-4 sm:pr-6"
+											scope="col"
 										>
 											<span className="sr-only">Actions</span>
 										</th>
@@ -136,12 +138,12 @@ export default function TokenList() {
 															new Date(token.createdAt).toLocaleString(
 																'en-US',
 																{
-																	month: 'short',
-																	day: 'numeric',
-																	year: 'numeric',
-																	hour: 'numeric',
 																	minute: 'numeric',
 																	second: 'numeric',
+																	year: 'numeric',
+																	hour: 'numeric',
+																	month: 'short',
+																	day: 'numeric',
 																	hour12: true,
 																}
 															)
@@ -153,12 +155,12 @@ export default function TokenList() {
 															new Date(token.expiredAt).toLocaleString(
 																'en-US',
 																{
-																	month: 'short',
-																	day: 'numeric',
-																	year: 'numeric',
-																	hour: 'numeric',
 																	minute: 'numeric',
 																	second: 'numeric',
+																	year: 'numeric',
+																	hour: 'numeric',
+																	month: 'short',
+																	day: 'numeric',
 																	hour12: true,
 																}
 															)
@@ -166,8 +168,8 @@ export default function TokenList() {
 													</td>
 													<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
 														<button
-															onClick={() => openDeleteModal(token)}
 															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
+															onClick={() => openDeleteModal(token)}
 														>
 															Delete
 														</button>

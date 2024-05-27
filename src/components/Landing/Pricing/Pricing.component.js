@@ -1,19 +1,20 @@
 'use client'
-import { RadioGroup } from '@headlessui/react'
-import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
+import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
+import { RadioGroup } from '@headlessui/react'
+import Link from 'next/link'
+
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
-import { sortPlans } from '@/helpers/sortPlans'
 import { getPlans } from '@/services/database.service'
+import { sortPlans } from '@/helpers/sortPlans'
 
 const frequencies = [
-	{ value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
+	{ priceSuffix: '/month', value: 'monthly', label: 'Monthly' },
 	{
+		priceSuffix: '/year',
 		value: 'annually',
 		label: 'Annually',
-		priceSuffix: '/year',
 	},
 ]
 
@@ -60,17 +61,15 @@ export function PricingComponent() {
 				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
-						value={frequency}
-						onChange={setFrequency}
 						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-slate-200"
+						onChange={setFrequency}
+						value={frequency}
 					>
 						<RadioGroup.Label className="sr-only">
 							Payment frequency
 						</RadioGroup.Label>
 						{frequencies.map(option => (
 							<RadioGroup.Option
-								key={option.value}
-								value={option}
 								className={({ checked }) =>
 									classNames(
 										checked
@@ -79,6 +78,8 @@ export function PricingComponent() {
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
+								key={option.value}
+								value={option}
 							>
 								<div className={'transition-none'}>
 									<span className={'transition-none'}>{option.label}</span>
@@ -104,23 +105,23 @@ export function PricingComponent() {
 
 								return (
 									<div
-										key={tier.id}
 										className={classNames(
 											tier.mostPopular
 												? 'ring-2 ring-forvoyez_orange-500'
 												: 'ring-1 ring-slate-200',
 											'rounded-3xl p-8 xl:p-10'
 										)}
+										key={tier.id}
 									>
 										<div className="flex items-center justify-between gap-x-4">
 											<h3
-												id={tier.id}
 												className={classNames(
 													tier.mostPopular
 														? 'text-forvoyez_orange-500'
 														: 'text-slate-900',
 													'text-lg font-semibold leading-8'
 												)}
+												id={tier.id}
 											>
 												{tier.name}
 											</h3>
@@ -148,7 +149,6 @@ export function PricingComponent() {
 											Billed {isAnnually ? 'annually' : 'monthly'}
 										</p>
 										<Link
-											href="/app/plans"
 											aria-describedby={tier.id}
 											className={classNames(
 												tier.mostPopular
@@ -156,6 +156,7 @@ export function PricingComponent() {
 													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 											)}
+											href="/app/plans"
 										>
 											{tier.buttonText}
 										</Link>
@@ -185,10 +186,10 @@ export function PricingComponent() {
 										</div>
 										<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 											{JSON.parse(tier.features).map(feature => (
-												<li key={feature} className="flex gap-x-3">
+												<li className="flex gap-x-3" key={feature}>
 													<CheckIcon
-														className="h-6 w-5 flex-none text-forvoyez_orange-500"
 														aria-hidden="true"
+														className="h-6 w-5 flex-none text-forvoyez_orange-500"
 													/>
 													{feature}
 												</li>
@@ -199,19 +200,19 @@ export function PricingComponent() {
 							})}
 					{/*	-----------------------------------------------------------------*/}
 					<div
-						key="custom"
 						className={classNames(
 							'ring-1 ring-slate-200',
 							'rounded-3xl p-8 xl:p-10'
 						)}
+						key="custom"
 					>
 						<div className="flex items-center justify-between gap-x-4">
 							<h3
-								id="custom"
 								className={classNames(
 									'text-slate-900',
 									'text-lg font-semibold leading-8'
 								)}
+								id="custom"
 							>
 								Entreprise
 							</h3>
@@ -230,12 +231,12 @@ export function PricingComponent() {
 						</p>
 						<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 						<Link
-							href="/contact"
 							aria-describedby="custom"
 							className={classNames(
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 							)}
+							href="/contact"
 						>
 							Contact Us
 						</Link>
@@ -244,10 +245,10 @@ export function PricingComponent() {
 							{JSON.parse(
 								'["All Growth plan features","Unlimited credits*","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
 							).map(feature => (
-								<li key={feature} className="flex gap-x-3">
+								<li className="flex gap-x-3" key={feature}>
 									<CheckIcon
-										className="h-6 w-5 flex-none text-forvoyez_orange-500"
 										aria-hidden="true"
+										className="h-6 w-5 flex-none text-forvoyez_orange-500"
 									/>
 									{feature}
 								</li>

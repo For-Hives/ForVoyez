@@ -5,12 +5,12 @@ import { FooterComponent } from '@/components/Footer.component'
 import { NavbarComponent } from '@/components/Navbar.component'
 
 export const metadata = {
-	title: 'Contact Us - ForVoyez',
 	description:
 		'Get in touch with the ForVoyez team for support, partnership opportunities, or any other inquiries related to our image metadata generation services.',
 	alternates: {
 		canonical: '/contact',
 	},
+	title: 'Contact Us - ForVoyez',
 }
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
 		<div className="bg-white">
 			<NavbarComponent />
 			<main>
-				<ToastContainer closeOnClick className={'z-50'} />
+				<ToastContainer className={'z-50'} closeOnClick />
 				<ContactComponent />
 			</main>
 			<FooterComponent />

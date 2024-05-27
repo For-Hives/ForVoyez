@@ -1,8 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
 import { TypeAnimation } from 'react-type-animation'
+import { useEffect, useState } from 'react'
 
-export function GlassmorphismComponent({ title, alt, caption }) {
+export function GlassmorphismComponent({ caption, title, alt }) {
 	const [initialized, setInitialized] = useState(false)
 
 	function truncateText(text, maxLength) {
@@ -36,16 +36,16 @@ export function GlassmorphismComponent({ title, alt, caption }) {
 					<p>{`{`}</p>
 					<div className={'flex flex-grow items-start'}>
 						<TypeAnimation
-							style={{
-								whiteSpace: 'pre-wrap',
-							}}
+							cursor={false}
+							repeat={0}
 							sequence={[
 								35,
 								`\n\t"title":"${truncateText(title, 50)}",\n\n\t"alternativeText": "${truncateText(alt, 125)}",\n\n\t"caption":"${truncateText(caption, 75)}"\n`,
 							]}
-							repeat={0}
 							speed={90}
-							cursor={false}
+							style={{
+								whiteSpace: 'pre-wrap',
+							}}
 						/>
 					</div>
 					<p>{`}`}</p>

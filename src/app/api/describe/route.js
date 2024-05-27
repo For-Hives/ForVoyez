@@ -1,8 +1,8 @@
-import { decrementCredit } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
+import { decrementCredit } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -34,8 +34,8 @@ export async function POST(request) {
 		const authorization = request.headers.get('Authorization')
 		if (!authorization) {
 			return new Response('Unauthorized', {
-				status: 401,
 				statusText: 'Unauthorized, missing Authorization header',
+				status: 401,
 			})
 		}
 
@@ -52,14 +52,14 @@ export async function POST(request) {
 
 			if (user.credits <= 0) {
 				return new Response('Unauthorized, no credit left', {
-					status: 401,
 					statusText: 'Unauthorized',
+					status: 401,
 				})
 			}
 		} catch (error) {
 			return new Response('Unauthorized, invalid token', {
-				status: 401,
 				statusText: 'Unauthorized',
+				status: 401,
 			})
 		}
 
@@ -68,16 +68,16 @@ export async function POST(request) {
 		const file = formData.get('image')
 		if (!file) {
 			return new Response('No file uploaded', {
-				status: 400,
 				statusText: 'Bad Request',
+				status: 400,
 			})
 		}
 
 		// Check if the uploaded file is an image
 		if (!isValidImageFile(file)) {
 			return new Response('Invalid image file', {
-				status: 400,
 				statusText: 'Bad Request',
+				status: 400,
 			})
 		}
 
@@ -88,8 +88,8 @@ export async function POST(request) {
 		// Validate the schema if provided
 		if (schema && !isValidSchema(schema)) {
 			return new Response('Invalid schema', {
-				status: 400,
 				statusText: 'Bad Request',
+				status: 400,
 			})
 		}
 
@@ -109,8 +109,8 @@ export async function POST(request) {
 		)
 
 		return new Response(JSON.stringify(descriptionResult), {
-			status: 200,
 			headers: { 'Content-Type': 'application/json' },
+			status: 200,
 		})
 	} catch (error) {
 		console.error('Error processing the request:', error)

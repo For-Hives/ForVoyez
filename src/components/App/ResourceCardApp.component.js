@@ -14,16 +14,16 @@ function ResourceIcon({ icon: Icon }) {
 
 export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 	let maskImage = useMotionTemplate`radial-gradient(180px at ${mouseX}px ${mouseY}px, white, transparent)`
-	let style = { maskImage, WebkitMaskImage: maskImage }
+	let style = { WebkitMaskImage: maskImage, maskImage }
 
 	return (
 		<div className="pointer-events-none">
 			<div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
 				<GridPatternAppComponent
-					width={72}
-					height={56}
-					x="50%"
 					className="absolute inset-x-0 inset-y-[-30%] h-[160%] w-full skew-y-[-18deg] fill-black/[0.02] stroke-black/5"
+					height={56}
+					width={72}
+					x="50%"
 					{...gridProps}
 				/>
 			</div>
@@ -36,10 +36,10 @@ export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 				style={style}
 			>
 				<GridPatternAppComponent
-					width={72}
-					height={56}
-					x="50%"
 					className="absolute inset-x-0 inset-y-[-30%] h-[160%] w-full skew-y-[-18deg] fill-forvoyez_orange-500/50 stroke-forvoyez_orange-500/70"
+					height={56}
+					width={72}
+					x="50%"
 					{...gridProps}
 				/>
 			</motion.div>
@@ -59,9 +59,9 @@ export function ResourceCardAppComponent({ resource }) {
 
 	return (
 		<div
+			className="group relative flex rounded-2xl bg-slate-50 transition-shadow hover:shadow-md hover:shadow-slate-900/5"
 			key={resource.href}
 			onMouseMove={onMouseMove}
-			className="group relative flex rounded-2xl bg-slate-50 transition-shadow hover:shadow-md hover:shadow-slate-900/5"
 		>
 			<ResourcePattern {...resource.pattern} mouseX={mouseX} mouseY={mouseY} />
 			<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/7.5 group-hover:ring-forvoyez_orange-500/10" />

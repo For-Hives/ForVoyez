@@ -26,8 +26,8 @@ export async function createUser() {
 
 	return await prisma.user.create({
 		data: {
-			clerkId: user.id,
 			updatedAt: new Date().toISOString(),
+			clerkId: user.id,
 		},
 	})
 }

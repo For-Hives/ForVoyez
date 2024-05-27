@@ -10,16 +10,16 @@ export default function NotFound() {
 				}
 			>
 				<Image
-					src={'/404/404.webp'}
 					alt={'404 image'}
-					fill={true}
 					className={'hidden object-cover object-right lg:block'}
+					fill={true}
+					src={'/404/404.webp'}
 				/>
 				<Image
-					src={'/404/404_mobile.webp'}
 					alt={'404 image mobile'}
-					fill={true}
 					className={'block object-cover lg:hidden'}
+					fill={true}
+					src={'/404/404_mobile.webp'}
 				/>
 			</div>
 			<div className="z-50 mx-auto flex h-screen w-1/2 max-w-7xl flex-col items-start justify-start py-40 lg:justify-center lg:py-16">
@@ -30,7 +30,7 @@ export default function NotFound() {
 				<p className="mt-2 text-base text-slate-600">
 					Sorry, we couldn’t find the page you’re looking for.
 				</p>
-				<Link href="/app" arrow="right" className="mt-8 underline">
+				<Link arrow="right" className="mt-8 underline" href="/app">
 					→ Back to docs
 				</Link>
 			</div>
