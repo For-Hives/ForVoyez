@@ -11,8 +11,6 @@ export async function createUser() {
 		throw new Error('You must be logged to create a user')
 	}
 
-	// todo : verfier que la table user a bien ete initialiser
-
 	// check if a user already exist with the same clerkId
 	const userDB = await prisma.user.findUnique({
 		where: {
