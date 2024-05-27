@@ -25,10 +25,7 @@ export async function listProducts() {
 		include: ['variants'],
 	})
 
-	// todo : sync with database
-
 	if (statusCode === 200) {
-		// todo : save variant in database
 		return data.data
 	} else {
 		throw new Error(error)
