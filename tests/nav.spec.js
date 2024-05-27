@@ -5,15 +5,20 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 }) => {
 	await page.goto('/')
 
-	// Wait for the logo element to be present
+	// Wait for the page to load completely
+	await page.waitForLoadState('load')
+
+	// Debugging step: Capture a screenshot and log page content if the logo is not found
 	try {
 		await page.waitForSelector('nav img[alt="ForVoyez Logo"]', {
 			timeout: 20000,
 		}) // Increased timeout
 	} catch (error) {
 		console.error('Logo element not found:', error)
-		await page.screenshot({ path: 'error-screenshot.png' }) // Take a screenshot for debugging
-		throw error // Re-throw the error to ensure the test fails
+		await page.screenshot({ path: 'error-screenshot.png' })
+		const pageContent = await page.content()
+		console.error('Page content:', pageContent)
+		throw error
 	}
 
 	// Test if the logo is visible and links to the home page
