@@ -1,51 +1,51 @@
 'use client'
 import {
 	DocumentTextIcon,
-	ShieldCheckIcon,
 	ScaleIcon,
+	ShieldCheckIcon,
 } from '@heroicons/react/24/outline'
 
 import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
 
 const legalResources = [
 	{
-		href: '/app/legals/legal-notice',
-		name: 'Legal Notice',
-		description: 'View our legal notice and company information.',
-		icon: DocumentTextIcon,
 		pattern: {
-			y: 16,
 			squares: [
 				[0, 1],
 				[1, 3],
 			],
+			y: 16,
 		},
+		description: 'View our legal notice and company information.',
+		href: '/app/legals/legal-notice',
+		icon: DocumentTextIcon,
+		name: 'Legal Notice',
 	},
 	{
-		href: '/app/legals/privacy-policy',
-		name: 'Privacy Policy',
-		description: 'Learn about our privacy practices and data protection.',
-		icon: ShieldCheckIcon,
 		pattern: {
-			y: -6,
 			squares: [
 				[-1, 2],
 				[1, 3],
 			],
+			y: -6,
 		},
+		description: 'Learn about our privacy practices and data protection.',
+		href: '/app/legals/privacy-policy',
+		name: 'Privacy Policy',
+		icon: ShieldCheckIcon,
 	},
 	{
-		href: '/app/legals/terms',
-		name: 'Terms of Service',
-		description: 'Read our terms of service and usage policies.',
-		icon: ScaleIcon,
 		pattern: {
-			y: 32,
 			squares: [
 				[0, 2],
 				[1, 4],
 			],
+			y: 32,
 		},
+		description: 'Read our terms of service and usage policies.',
+		href: '/app/legals/terms',
+		name: 'Terms of Service',
+		icon: ScaleIcon,
 	},
 ]
 

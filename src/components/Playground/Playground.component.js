@@ -1,11 +1,12 @@
 'use client'
-import { Tab } from '@headlessui/react'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 
 import { describePlaygroundAction } from '@/app/actions/app/playground'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { Tab } from '@headlessui/react'
+import Link from 'next/link'
+
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
@@ -63,8 +64,8 @@ export function Playground() {
 		formData.append(
 			'data',
 			JSON.stringify({
-				context,
 				schema: jsonSchema || defaultJsonTemplateSchema,
+				context,
 			})
 		)
 
@@ -316,9 +317,9 @@ export function Playground() {
 							<Link href="/app/plans">
 								<strong className="font-semibold">Playground usage</strong>
 								<svg
-									viewBox="0 0 2 2"
-									className="mx-2 inline h-0.5 w-0.5 fill-current"
 									aria-hidden="true"
+									className="mx-2 inline h-0.5 w-0.5 fill-current"
+									viewBox="0 0 2 2"
 								>
 									<circle cx="1" cy="1" r="1" />
 								</svg>
@@ -335,8 +336,8 @@ export function Playground() {
 					<div>
 						<h3>Image upload</h3>
 						<label
-							htmlFor="image"
 							className="block text-sm font-medium leading-6 text-slate-900"
+							htmlFor="image"
 						>
 							Your image
 						</label>
@@ -347,60 +348,60 @@ export function Playground() {
 							designated area.`}
 						</p>
 						<div
-							role={'button'}
 							className={`mt-2 flex w-full cursor-auto justify-center rounded-lg border border-dashed ${
 								isDraggingOver
 									? 'border-forvoyez_orange-600 bg-forvoyez_orange-50'
 									: 'border-slate-900/25'
 							}`}
-							onDrop={handleImageDrop}
-							onDragOver={e => e.preventDefault()}
 							onDragEnter={handleDragEnter}
 							onDragLeave={handleDragLeave}
+							onDragOver={e => e.preventDefault()}
+							onDrop={handleImageDrop}
+							role={'button'}
 						>
 							{imagePreview ? (
 								<div className={'relative'}>
 									<img
-										src={imagePreview}
 										alt="Uploaded"
 										className="max-h-48 rounded-lg"
+										src={imagePreview}
 									/>
 									<button
-										onClick={handleResetImage}
 										className="absolute -right-4 top-[1.25rem] rounded-full bg-forvoyez_orange-600 p-1 text-white shadow-md hover:bg-forvoyez_orange-500 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500 focus:ring-offset-2"
+										onClick={handleResetImage}
 									>
 										<svg
-											xmlns="http://www.w3.org/2000/svg"
 											className="h-4 w-4"
 											fill="none"
-											viewBox="0 0 24 24"
 											stroke="currentColor"
+											viewBox="0 0 24 24"
+											xmlns="http://www.w3.org/2000/svg"
 										>
 											<path
+												d="M6 18L18 6M6 6l12 12"
 												strokeLinecap="round"
 												strokeLinejoin="round"
 												strokeWidth={2}
-												d="M6 18L18 6M6 6l12 12"
 											/>
 										</svg>
 									</button>
 								</div>
 							) : (
 								<label
-									htmlFor="image"
 									className="flex h-full w-full cursor-pointer flex-col items-center justify-center px-6 py-10 text-center"
+									htmlFor="image"
 								>
 									<div>
 										<svg
-											className="mx-auto h-12 w-12 text-slate-300"
-											viewBox="0 0 24 24"
-											fill="currentColor"
 											aria-hidden="true"
+											className="mx-auto h-12 w-12 text-slate-300"
+											fill="currentColor"
+											viewBox="0 0 24 24"
 										>
 											<path
-												fillRule="evenodd"
-												d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
 												clipRule="evenodd"
+												d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
+												fillRule="evenodd"
 											/>
 										</svg>
 										<div
@@ -412,11 +413,11 @@ export function Playground() {
 												Upload a file
 											</span>
 											<input
+												className="sr-only"
 												id="image"
 												name="image"
-												type="file"
-												className="sr-only"
 												onChange={handleImageChange}
+												type="file"
 											/>
 											<p className="m-0 p-0 text-sm text-slate-600">
 												{isDraggingOver
@@ -437,8 +438,8 @@ export function Playground() {
 					</div>
 					<div>
 						<label
-							htmlFor="comment"
 							className="block text-sm font-medium leading-6 text-slate-900"
+							htmlFor="comment"
 						>
 							Add Your Context (Optional)
 						</label>
@@ -450,14 +451,14 @@ export function Playground() {
 						</p>
 						<div className="mt-2">
 							<textarea
-								rows="4"
+								className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+								id="Context"
 								maxLength={300}
 								name="Context"
-								id="Context"
-								placeholder="Enter your context here..."
-								value={context}
 								onChange={e => setContext(e.target.value)}
-								className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+								placeholder="Enter your context here..."
+								rows="4"
+								value={context}
 							></textarea>
 							<p
 								className={`mt-1 text-sm ${determineTextColorBasedOnLength(context, 300)}`}
@@ -468,8 +469,8 @@ export function Playground() {
 					</div>
 					<div>
 						<label
-							htmlFor="jsonSchema"
 							className="block text-sm font-medium leading-6 text-slate-900"
+							htmlFor="jsonSchema"
 						>
 							JSON Schema (Optional)
 						</label>
@@ -481,44 +482,44 @@ export function Playground() {
 						</p>
 						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 							<MonacoEditor
-								language="json"
-								theme="vs-light"
 								editorDidMount={editor => (editorRef.current = editor)}
-								value={jsonSchema}
+								height={'500px'}
+								language="json"
+								onChange={handleEditorChange}
 								onMount={editor => {
 									editorRef.current = editor
 									resizeEditor(editor)
 								}}
-								onChange={handleEditorChange}
-								width={'100%'}
-								height={'500px'}
 								options={{
-									colorDecorators: true,
-									lineNumbers: 'on',
-									minimap: { enabled: false },
-									scrollBeyondLastLine: false,
-									wordWrap: 'on',
-									fontSize: 14,
-									fontFamily: 'var(--font-jost)',
-									tabSize: 4,
-									autoIndent: true,
-									formatOnPaste: true,
-									formatOnType: true,
-									folding: true,
-									readOnly: false,
-									quickSuggestions: true,
-									// Add these options for syntax highlighting
-									selectOnLineNumbers: true,
-									renderLineHighlight: 'all',
-									contextmenu: true,
-									matchBrackets: 'always',
-									autoClosingBrackets: 'always',
-									automaticLayout: true,
-									mouseWheelZoom: false,
 									scrollbar: {
 										handleMouseWheel: false,
 									},
+									fontFamily: 'var(--font-jost)',
+									autoClosingBrackets: 'always',
+									minimap: { enabled: false },
+									scrollBeyondLastLine: false,
+									renderLineHighlight: 'all',
+									// Add these options for syntax highlighting
+									selectOnLineNumbers: true,
+									matchBrackets: 'always',
+									quickSuggestions: true,
+									colorDecorators: true,
+									automaticLayout: true,
+									mouseWheelZoom: false,
+									formatOnPaste: true,
+									formatOnType: true,
+									lineNumbers: 'on',
+									contextmenu: true,
+									autoIndent: true,
+									readOnly: false,
+									wordWrap: 'on',
+									folding: true,
+									fontSize: 14,
+									tabSize: 4,
 								}}
+								theme="vs-light"
+								value={jsonSchema}
+								width={'100%'}
 							/>
 							<div className={'absolute right-3 top-2'}>
 								<div className="flex items-center justify-end">
@@ -539,18 +540,18 @@ export function Playground() {
 
 					<div>
 						<button
-							type="button"
-							onClick={handleSubmit}
-							disabled={!isJsonValid || !image || userCredits === 0}
 							className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
 								!isJsonValid || !image || userCredits === 0
 									? 'cursor-not-allowed bg-slate-400'
 									: 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'
 							}`}
+							disabled={!isJsonValid || !image || userCredits === 0}
+							onClick={handleSubmit}
 							onMouseEnter={() =>
 								setShowTooltip(userCredits.toString() === '0')
 							}
 							onMouseLeave={() => setShowTooltip(false)}
+							type="button"
 						>
 							Analyze your image
 						</button>
@@ -562,13 +563,13 @@ export function Playground() {
 						{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
 					</p>
 					<div className="sm:hidden">
-						<label htmlFor="tabs" className="sr-only">
+						<label className="sr-only" htmlFor="tabs">
 							Select a language
 						</label>
 						<select
+							className="block w-full rounded-md border-slate-300 focus:border-forvoyez_orange-500 focus:ring-forvoyez_orange-500"
 							id="tabs"
 							name="tabs"
-							className="block w-full rounded-md border-slate-300 focus:border-forvoyez_orange-500 focus:ring-forvoyez_orange-500"
 						>
 							{previewLanguages.map(language => (
 								<option key={language}>{language}</option>
@@ -583,12 +584,12 @@ export function Playground() {
 								<Tab.List className="flex">
 									{previewLanguages.map(language => (
 										<Tab
-											key={language}
 											className={({ selected }) =>
 												selected
 													? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
 													: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
 											}
+											key={language}
 										>
 											{language}
 										</Tab>
@@ -599,7 +600,35 @@ export function Playground() {
 										<Tab.Panel key={language}>
 											<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 												<MonacoEditor
+													editorDidMount={editor =>
+														handleEditorDidMount(editor, index)
+													}
 													language={language.toLowerCase()}
+													options={{
+														scrollbar: {
+															handleMouseWheel: false,
+														},
+														fontFamily: 'var(--font-jost)',
+														autoClosingBrackets: 'always',
+														minimap: { enabled: false },
+														scrollBeyondLastLine: false,
+														renderLineHighlight: 'all',
+														// Add these options for syntax highlighting
+														selectOnLineNumbers: true,
+														matchBrackets: 'always',
+														quickSuggestions: true,
+														automaticLayout: true,
+														mouseWheelZoom: false,
+														formatOnPaste: true,
+														formatOnType: true,
+														contextmenu: true,
+														autoIndent: true,
+														readOnly: false,
+														wordWrap: 'on',
+														folding: true,
+														fontSize: 14,
+														tabSize: 4,
+													}}
 													theme="vs-light"
 													value={getPreviewCode(
 														language,
@@ -608,35 +637,7 @@ export function Playground() {
 														jsonSchema,
 														formatJsonSchema
 													)}
-													editorDidMount={editor =>
-														handleEditorDidMount(editor, index)
-													}
 													width={'100%'}
-													options={{
-														minimap: { enabled: false },
-														scrollBeyondLastLine: false,
-														wordWrap: 'on',
-														fontSize: 14,
-														fontFamily: 'var(--font-jost)',
-														tabSize: 4,
-														autoIndent: true,
-														formatOnPaste: true,
-														formatOnType: true,
-														folding: true,
-														readOnly: false,
-														quickSuggestions: true,
-														// Add these options for syntax highlighting
-														selectOnLineNumbers: true,
-														renderLineHighlight: 'all',
-														contextmenu: true,
-														matchBrackets: 'always',
-														autoClosingBrackets: 'always',
-														automaticLayout: true,
-														mouseWheelZoom: false,
-														scrollbar: {
-															handleMouseWheel: false,
-														},
-													}}
 												/>
 												<button
 													className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
@@ -656,7 +657,7 @@ export function Playground() {
 						</div>
 					</div>
 				</div>
-				<div ref={apiResponseRef} className={'flex flex-col xl:col-span-2'}>
+				<div className={'flex flex-col xl:col-span-2'} ref={apiResponseRef}>
 					<h3>API Response</h3>
 					<p className="mt-1 text-sm italic text-slate-500">
 						{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
@@ -667,43 +668,43 @@ export function Playground() {
 					) : (
 						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 							<MonacoEditor
-								language="json"
-								theme="vs-light"
 								editorDidMount={editor => (responseRef.current = editor)}
-								value={JSON.stringify(response, null, 4)}
+								height={'500px'}
+								language="json"
 								onMount={editor => {
 									responseRef.current = editor
 									resizeEditor(editor)
 								}}
-								width={'100%'}
-								height={'500px'}
 								options={{
-									colorDecorators: true,
-									lineNumbers: 'on',
-									minimap: { enabled: false },
-									scrollBeyondLastLine: false,
-									wordWrap: 'on',
-									fontSize: 14,
-									fontFamily: 'var(--font-jost)',
-									tabSize: 4,
-									autoIndent: true,
-									formatOnPaste: true,
-									formatOnType: true,
-									folding: true,
-									readOnly: true,
-									quickSuggestions: true,
-									// Add these options for syntax highlighting
-									selectOnLineNumbers: true,
-									renderLineHighlight: 'all',
-									contextmenu: true,
-									matchBrackets: 'always',
-									autoClosingBrackets: 'always',
-									automaticLayout: true,
-									mouseWheelZoom: false,
 									scrollbar: {
 										handleMouseWheel: false,
 									},
+									fontFamily: 'var(--font-jost)',
+									autoClosingBrackets: 'always',
+									minimap: { enabled: false },
+									scrollBeyondLastLine: false,
+									renderLineHighlight: 'all',
+									// Add these options for syntax highlighting
+									selectOnLineNumbers: true,
+									matchBrackets: 'always',
+									quickSuggestions: true,
+									colorDecorators: true,
+									automaticLayout: true,
+									mouseWheelZoom: false,
+									formatOnPaste: true,
+									formatOnType: true,
+									lineNumbers: 'on',
+									contextmenu: true,
+									autoIndent: true,
+									wordWrap: 'on',
+									readOnly: true,
+									folding: true,
+									fontSize: 14,
+									tabSize: 4,
 								}}
+								theme="vs-light"
+								value={JSON.stringify(response, null, 4)}
+								width={'100%'}
 							/>
 							<button
 								className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"

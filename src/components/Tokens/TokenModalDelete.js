@@ -1,14 +1,15 @@
-import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 
+import { Dialog, Transition } from '@headlessui/react'
+
 export default function TokenModalDelete({
-	isOpen,
 	closeModal,
-	token,
 	onConfirm,
+	isOpen,
+	token,
 }) {
 	return (
-		<Transition appear show={isOpen} as={Fragment}>
+		<Transition appear as={Fragment} show={isOpen}>
 			<Dialog as="div" className="relative z-50" onClose={closeModal}>
 				<Transition.Child
 					as={Fragment}
@@ -59,16 +60,16 @@ export default function TokenModalDelete({
 
 								<div className="mt-4 flex justify-end space-x-2">
 									<button
-										type="button"
 										className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
 										onClick={closeModal}
+										type="button"
 									>
 										Cancel
 									</button>
 									<button
+										className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
 										onClick={onConfirm}
 										type="button"
-										className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
 									>
 										Revoke Key
 									</button>

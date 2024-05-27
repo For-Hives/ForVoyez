@@ -1,26 +1,26 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Fragment, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { createToken } from '@/app/actions/tokens/TokensCRUD'
+import { Dialog, Transition } from '@headlessui/react'
+import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { createToken } from '@/app/actions/tokens/TokensCRUD'
-
 const schema = yup.object().shape({
-	name: yup.string().required('Name is required'),
 	expiredAt: yup
 		.date()
 		.min(new Date(), 'Expiration date must be in the future')
 		.required('Expiration date is required'),
+	name: yup.string().required('Name is required'),
 })
 
-export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
+export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 	const {
-		register,
-		handleSubmit,
 		formState: { errors },
+		handleSubmit,
+		register,
 		reset,
 	} = useForm({
 		resolver: yupResolver(schema),
@@ -56,16 +56,16 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 	async function onSubmit(data) {
 		try {
 			const newToken = {
-				name: data.name,
-				createdAt: new Date().toISOString(),
 				expiredAt: data.expiredAt.toISOString(),
+				createdAt: new Date().toISOString(),
+				name: data.name,
 			}
 
 			let result = await createToken(newToken)
 			setTokenToDisplayInClipBoardField(result.jwt)
 			setTokens([
 				...tokens,
-				{ ...newToken, id: result.id, jwt: result.jwt_shortened },
+				{ ...newToken, jwt: result.jwt_shortened, id: result.id },
 			])
 			reset()
 		} catch (error) {
@@ -74,7 +74,7 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 	}
 
 	return (
-		<Transition appear show={isOpen} as={Fragment}>
+		<Transition appear as={Fragment} show={isOpen}>
 			<Dialog as="div" className="relative z-50" onClose={closeModal}>
 				<Transition.Child
 					as={Fragment}
@@ -123,21 +123,21 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 											<>
 												<div className="relative">
 													<label
-														htmlFor="name"
 														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-900"
+														htmlFor="name"
 													>
 														Name
 													</label>
 													<input
-														type="text"
-														name="name"
-														id="name"
 														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.name
 																? 'ring-red-300 focus:ring-red-500'
 																: 'ring-slate-300 focus:ring-forvoyez_orange-600'
 														}`}
+														id="name"
+														name="name"
 														placeholder="My API Key"
+														type="text"
 														{...register('name')}
 													/>
 													{errors.name && (
@@ -148,15 +148,12 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 												</div>
 												<div className="relative mt-4">
 													<label
-														htmlFor="expiredAt"
 														className="absolute -top-3 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-900"
+														htmlFor="expiredAt"
 													>
 														Expiration Date
 													</label>
 													<input
-														type="date"
-														name="expiredAt"
-														id="expiredAt"
 														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.expiredAt
 																? 'ring-red-300 focus:ring-red-500'
@@ -169,6 +166,9 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 																.toISOString()
 																.split('T')[0]
 														}
+														id="expiredAt"
+														name="expiredAt"
+														type="date"
 														{...register('expiredAt')}
 													/>
 													{errors.expiredAt && (
@@ -186,38 +186,38 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 											tokenToDisplayInClipBoardField.length > 15 && (
 												<div className="mt-4">
 													<label
-														htmlFor="token"
 														className="block text-sm font-medium leading-6 text-slate-900"
+														htmlFor="token"
 													>
 														Your New Token
 													</label>
 													<div className="mt-2 flex rounded-md shadow-sm">
 														<div className="relative flex flex-grow items-stretch focus-within:z-10">
 															<input
-																type="text"
-																name="token"
-																id="token"
 																className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
-																value={tokenToDisplayInClipBoardField}
+																id="token"
+																name="token"
 																readOnly
+																type="text"
+																value={tokenToDisplayInClipBoardField}
 															/>
 														</div>
 														<button
-															type="button"
 															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50"
 															onClick={() =>
 																copyToClipboard(tokenToDisplayInClipBoardField)
 															}
+															type="button"
 														>
 															{isCopied ? (
 																<CheckIcon
-																	className="-ml-0.5 h-5 w-5 text-green-400"
 																	aria-hidden="true"
+																	className="-ml-0.5 h-5 w-5 text-green-400"
 																/>
 															) : (
 																<ClipboardIcon
-																	className="-ml-0.5 h-5 w-5 text-slate-400"
 																	aria-hidden="true"
+																	className="-ml-0.5 h-5 w-5 text-slate-400"
 																/>
 															)}
 															{isCopied ? 'Copied!' : 'Copy'}
@@ -230,15 +230,15 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 										{!(tokenToDisplayInClipBoardField.length > 15) && (
 											<>
 												<button
-													type="button"
 													className="inline-flex justify-center rounded-md border border-transparent bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
 													onClick={closeModal}
+													type="button"
 												>
 													Cancel
 												</button>
 												<button
-													type="submit"
 													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+													type="submit"
 												>
 													Create Token
 												</button>
@@ -247,12 +247,12 @@ export default function TokenModal({ isOpen, closeModal, tokens, setTokens }) {
 										{tokenToDisplayInClipBoardField &&
 											tokenToDisplayInClipBoardField.length > 15 && (
 												<button
-													type={'button'}
 													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
 													onClick={() => {
 														setTokenToDisplayInClipBoardField('')
 														closeModal()
 													}}
+													type={'button'}
 												>
 													I copied it
 												</button>

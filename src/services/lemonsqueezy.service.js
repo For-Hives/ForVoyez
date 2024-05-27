@@ -1,7 +1,7 @@
 'use server'
-import { currentUser } from '@clerk/nextjs/server'
-import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { createCheckout } from '@lemonsqueezy/lemonsqueezy.js'
+import * as ls from '@lemonsqueezy/lemonsqueezy.js'
+import { currentUser } from '@clerk/nextjs/server'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
 // import {lemonSqueezySetup} from "@lemonsqueezy/lemonsqueezy.js";
@@ -10,10 +10,10 @@ const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID
 
 export async function initLemonSqueezy() {
 	ls.lemonSqueezySetup({
-		apiKey: process.env.LEMON_SQUEEZY_API_KEY,
 		onError(error) {
 			console.error(error)
 		},
+		apiKey: process.env.LEMON_SQUEEZY_API_KEY,
 	})
 }
 
@@ -61,19 +61,19 @@ export async function getCheckoutURL(variantId, embed = false) {
 	}
 
 	const checkout = await createCheckout(STORE_ID, variantId, {
+		productOptions: {
+			receiptButtonText: 'Go to Dashboard',
+			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/billing/`,
+		},
 		checkoutOptions: {
-			embed,
 			media: false,
 			logo: !embed,
+			embed,
 		},
 		checkoutData: {
 			custom: {
 				user_id: user.id,
 			},
-		},
-		productOptions: {
-			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/billing/`,
-			receiptButtonText: 'Go to Dashboard',
 		},
 	})
 

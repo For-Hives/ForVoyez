@@ -1,6 +1,6 @@
 'use server'
-import { currentUser } from '@clerk/nextjs/server'
 import { getVariant } from '@lemonsqueezy/lemonsqueezy.js'
+import { currentUser } from '@clerk/nextjs/server'
 
 import {
 	initLemonSqueezy,
@@ -66,8 +66,8 @@ export async function syncPlans() {
 			const variantDetails = await getVariant(variant.id)
 			allVariants.push({
 				...variantDetails.data.data.attributes,
-				variantId: variant.id,
 				productName: product.attributes.name,
+				variantId: variant.id,
 			})
 		}
 	}
@@ -91,14 +91,14 @@ export async function syncPlans() {
 
 		await _addVariant({
 			productId: variant.product_id.toString(),
+			description: variant.description,
+			productName: variant.productName,
 			variantId: variant.variantId,
+			price: parseInt(priceString),
 			variantEnabled: true,
 			name: variant.name,
-			description: variant.description,
-			price: parseInt(priceString),
 			billingCycle: null,
 			packageSize,
-			productName: variant.productName,
 		})
 	}
 
@@ -133,8 +133,8 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 	}
 
 	await prisma.user.update({
-		where: { clerkId: userId },
 		data: { credits: { increment: credits } },
+		where: { clerkId: userId },
 	})
 
 	await prisma.usage.create({
@@ -186,8 +186,8 @@ export async function getUsageForUser() {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
 		hourlyCreditsLeft[dateHour] = {
 			creditsLeft: usage.used,
-			dateHour,
 			fullDate: usage.usedAt,
+			dateHour,
 		}
 		userCredits = hourlyCreditsLeft[dateHour].creditsLeft
 	})
@@ -197,9 +197,9 @@ export async function getUsageForUser() {
 	// If there are less than 5 usage records, return all of them for better chart display
 	if (hourlyUsageArray.length <= 5) {
 		return usageData.map(u => ({
+			dateHour: u.usedAt.toISOString().slice(0, 13),
 			creditsLeft: u.used,
 			fullDate: u.usedAt,
-			dateHour: u.usedAt.toISOString().slice(0, 13),
 		}))
 	}
 
@@ -267,6 +267,5 @@ export async function getCreditsFromUserId() {
 		where: { clerkId: user.id },
 	})
 
-	console.log(connectedUser)
 	return connectedUser.credits
 }

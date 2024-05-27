@@ -1,5 +1,9 @@
 {
-	"extends": ["next/core-web-vitals", "prettier"],
+	"extends": [
+		"prettier",
+		"next/core-web-vitals",
+		"plugin:perfectionist/recommended-natural"
+	],
 	"plugins": ["prettier", "no-only-tests"],
 	"rules": {
 		"prettier/prettier": "error",
@@ -10,22 +14,56 @@
 			}
 		],
 		"no-only-tests/no-only-tests": "error",
-		"import/order": [
+		"perfectionist/sort-objects": [
 			"error",
 			{
+				"type": "line-length",
+				"order": "desc"
+			}
+		],
+		"perfectionist/sort-enums": [
+			"error",
+			{
+				"type": "line-length",
+				"order": "desc"
+			}
+		],
+		"perfectionist/sort-imports": [
+			"error",
+			{
+				"type": "line-length",
+				"order": "desc",
 				"groups": [
-					"builtin",
-					"external",
+					"type",
+					"react",
+					"nanostores",
+					["builtin", "external"],
+					"internal-type",
 					"internal",
-					"parent",
-					"sibling",
-					"index"
+					["parent-type", "sibling-type", "index-type"],
+					["parent", "sibling", "index"],
+					"side-effect",
+					"style",
+					"object",
+					"unknown"
 				],
+				"custom-groups": {
+					"value": {
+						"react": ["react", "react-*"],
+						"nanostores": "@nanostores/**"
+					},
+					"type": {
+						"react": "react"
+					}
+				},
 				"newlines-between": "always",
-				"alphabetize": {
-					"order": "asc",
-					"caseInsensitive": true
-				}
+				"internal-pattern": [
+					"@/components/**",
+					"@/services/**",
+					"@/constants/**",
+					"@/helpers/**",
+					"@/app/actions**"
+				]
 			}
 		]
 	}

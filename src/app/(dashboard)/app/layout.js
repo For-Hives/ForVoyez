@@ -7,10 +7,10 @@ export default async function Layout({ children }) {
 		<html lang="en">
 			<Script
 				async
+				data-domains={'forvoyez.com'}
+				data-website-id="705a7c53-7dc4-4cf7-b625-f2f87a428bfb"
 				src="https://umami.wadefade.fr/script.js"
 				strategy="afterInteractive"
-				data-website-id="705a7c53-7dc4-4cf7-b625-f2f87a428bfb"
-				data-domains={'forvoyez.com'}
 			></Script>
 
 			<body>

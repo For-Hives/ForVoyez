@@ -1,10 +1,10 @@
 export const metadata = {
-	title: 'Legal Notice - ForVoyez',
 	description:
 		'Find important legal information about ForVoyez, including company details, intellectual property rights, and procedures for reporting copyright infringement.',
 	alternates: {
 		canonical: 'https://forvoyez.com/app/legals/legal-notice',
 	},
+	title: 'Legal Notice - ForVoyez',
 }
 
 export default function LegalNoticePage() {
@@ -45,8 +45,8 @@ export default function LegalNoticePage() {
 				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Contact</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					<a
-						href="mailto:contact@forvoyez.com"
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+						href="mailto:contact@forvoyez.com"
 					>
 						contact@forvoyez.com
 					</a>
@@ -61,8 +61,8 @@ export default function LegalNoticePage() {
 					To report contentious content or if you are a victim of fraudulent use
 					of a ForVoyez service, please contact us via the{' '}
 					<a
-						href="mailto:contact@forvoyez.com"
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+						href="mailto:contact@forvoyez.com"
 					>
 						contact@forvoyez.com
 					</a>{' '}
@@ -141,8 +141,8 @@ export default function LegalNoticePage() {
 				<p className="mt-4 text-sm text-slate-600">
 					E-mail:{' '}
 					<a
-						href="mailto:contact@forvoyez.com?subject=Abuse"
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+						href="mailto:contact@forvoyez.com?subject=Abuse"
 					>
 						contact@forvoyez.com
 					</a>
