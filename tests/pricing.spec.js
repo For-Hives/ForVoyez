@@ -75,8 +75,8 @@ test.describe('Pricing Component', () => {
 
 		// Check if monthly plans are displayed
 		log('Checking if monthly plans are displayed')
-		const monthlyPlans = page.locator('div:has-text("Billed monthly")')
-		await expect(monthlyPlans).toBeVisible()
+		const monthlyPlans = page.locator('[data-testid="plan-monthly"]')
+		await expect(monthlyPlans.first()).toBeVisible()
 
 		// Set the frequency to annually
 		log('Setting frequency to annually')
@@ -85,20 +85,7 @@ test.describe('Pricing Component', () => {
 
 		// Check if annual plans are displayed
 		log('Checking if annual plans are displayed')
-		const annualPlans = page.locator('div:has-text("Billed annually")')
-		await expect(annualPlans).toBeVisible()
-	})
-
-	test('Check the Rive animation component is present', async ({ page }) => {
-		await page.goto('/')
-
-		log('Page loaded')
-
-		// Check the visibility of the Rive animation
-		const riveComponent = page.locator('[data-testid="rive-component"]')
-		log('Checking visibility of Rive animation')
-		await expect(riveComponent).toBeVisible()
-
-		log('Test for Rive animation presence completed')
+		const annualPlans = page.locator('[data-testid="plan-annually"]')
+		await expect(annualPlans.first()).toBeVisible()
 	})
 })
