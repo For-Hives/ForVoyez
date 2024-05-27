@@ -9,12 +9,12 @@ test('FeatureComponent elements are present and correct', async ({ page }) => {
 
 	log('Page loaded')
 
-	// Vérifier la présence de la section des fonctionnalités
+	// Check the visibility of the features section
 	const featuresSection = page.locator('#features')
 	log('Checking visibility of features section')
 	await expect(featuresSection).toBeVisible()
 
-	// Définir les fonctionnalités attendues
+	// Define the expected features
 	const expectedFeatures = [
 		{
 			description:
@@ -69,7 +69,7 @@ test('FeatureComponent Rive animation is present', async ({ page }) => {
 
 	log('Page loaded')
 
-	// Vérifier la présence de l'animation Rive
+	// Check the visibility of the Rive animation
 	const riveComponent = page.locator('.rive-component-class')
 	log('Checking visibility of Rive animation')
 	await expect(riveComponent).toBeVisible()
