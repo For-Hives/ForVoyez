@@ -6,13 +6,18 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	await page.goto('/')
 
 	// Wait for the logo element to be present
-	await page.waitForSelector('[data-testid="logo-image"]', { timeout: 20000 })
-
-	// Test if the logo is visible and links to the home page
-	const logo = await page.locator('[data-testid="logo-image"]')
+	const logo = page.locator('[data-testid="logo-image"]')
 	await expect(logo).toBeVisible()
-	await expect(logo).toHaveAttribute('src', '/logo/logo.webp')
-	await page.locator('[data-testid="logo-link"]').click()
+
+	// Test if the logo image source is correct
+	await expect(logo).toHaveAttribute(
+		'src',
+		/\/_next\/image\?url=%2Flogo%2Flogo\.webp&.*/
+	)
+
+	// Test if the logo link redirects to the home page
+	const logoLink = page.locator('[data-testid="logo-link"]')
+	await logoLink.click()
 	await expect(page).toHaveURL('/')
 
 	// Test if the navigation menu items are present, have the correct URLs, and redirect correctly
