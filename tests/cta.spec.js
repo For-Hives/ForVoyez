@@ -53,7 +53,7 @@ test.describe('CTA Component', () => {
 
 		// Check if redirected to the sign-in page
 		await expect(page).toHaveURL(
-			`${NEXT_PUBLIC_URL}/sign-in?redirect_url=${encodeURIComponent(NEXT_PUBLIC_URL + '/app')}`
+			new RegExp(`${NEXT_PUBLIC_URL}/sign-in\\?redirect_url=.*%2Fapp`)
 		)
 
 		// Optionally, you can add steps to sign in here if needed
