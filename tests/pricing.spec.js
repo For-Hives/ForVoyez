@@ -68,6 +68,16 @@ test.describe('Pricing Component', () => {
 
 		log('Page loaded')
 
+		// Wait for the plans to be loaded
+		log('Waiting for plans to be loaded')
+		await page.waitForFunction(
+			() => {
+				const plans = document.querySelectorAll('[data-testid^="plan-"]')
+				return plans.length > 0
+			},
+			{ timeout: 20000 }
+		)
+
 		// Set the frequency to monthly
 		log('Setting frequency to monthly')
 		const frequencyMonthly = page.locator('[data-testid="frequency-monthly"]')
@@ -75,7 +85,8 @@ test.describe('Pricing Component', () => {
 
 		// Check if monthly plans are displayed
 		log('Checking if monthly plans are displayed')
-		const monthlyPlans = page.locator('[data-testid="plan-monthly"]')
+		await page.waitForSelector('[data-testid="plan-month"]')
+		const monthlyPlans = page.locator('[data-testid="plan-month"]')
 		await expect(monthlyPlans.first()).toBeVisible()
 
 		// Set the frequency to annually
@@ -85,7 +96,8 @@ test.describe('Pricing Component', () => {
 
 		// Check if annual plans are displayed
 		log('Checking if annual plans are displayed')
-		const annualPlans = page.locator('[data-testid="plan-annually"]')
+		await page.waitForSelector('[data-testid="plan-year"]')
+		const annualPlans = page.locator('[data-testid="plan-year"]')
 		await expect(annualPlans.first()).toBeVisible()
 	})
 })
