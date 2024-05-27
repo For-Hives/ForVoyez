@@ -54,7 +54,6 @@ html {
 /* custom property group for tailwind */
 @layer base {
 	* {
-		/*fixme change the base font here (and in the layout.js in  /app) */
 		@apply font-sourcesans;
 	}
 
@@ -64,7 +63,6 @@ html {
 	h4,
 	h5,
 	h6 {
-		/*fixme change the title font here (and in the layout.js in  /app) */
 		@apply font-jost;
 	}
 
