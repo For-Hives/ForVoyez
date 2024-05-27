@@ -34,14 +34,13 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	]
 
 	for (const item of expectedNavItems) {
-		const navItem = await page.locator(`[data-testid="${item.testId}"]`)
+		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		await expect(navItem).toHaveText(item.name)
 		await expect(navItem).toHaveAttribute('href', item.href)
 
 		// Click on the navigation item and check if it redirects to the correct page
-		await navItem.click()
-
 		if (item.href.startsWith('/')) {
+			await Promise.all([page.waitForNavigation(), navItem.click()])
 			await expect(page).toHaveURL(item.href)
 		} else {
 			// For external links, check if a new tab is opened with the correct URL
@@ -49,6 +48,7 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 				page.waitForEvent('popup'),
 				navItem.click(),
 			])
+			await newPage.waitForLoadState()
 			await expect(newPage).toHaveURL(item.href)
 			await newPage.close()
 		}
@@ -58,7 +58,7 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	}
 
 	// Test if the sign-in button is visible for signed-out users and links to the correct page
-	const signInButton = await page.locator('[data-testid="sign-in-button"]')
+	const signInButton = page.locator('[data-testid="sign-in-button"]')
 	await expect(signInButton).toBeVisible()
 	await signInButton.click()
 	await expect(page).toHaveURL('/sign-in')
@@ -68,22 +68,18 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 
 	// Test if the user profile and "Go to dashboard" links are visible for signed-in users
 	// (You may need to sign in programmatically before running this test)
-	const userProfileLink = await page.locator('[data-testid="user-button"]')
-	const dashboardLink = await page.locator('[data-testid="dashboard-link"]')
+	const userProfileLink = page.locator('[data-testid="user-button"]')
+	const dashboardLink = page.locator('[data-testid="dashboard-link"]')
 	await expect(userProfileLink).toBeVisible()
 	await expect(dashboardLink).toBeVisible()
 
 	// Test if the mobile menu opens and closes when clicking the hamburger icon
-	const mobileMenuButton = await page.locator(
-		'[data-testid="menu-open-button"]'
-	)
+	const mobileMenuButton = page.locator('[data-testid="menu-open-button"]')
 	await mobileMenuButton.click()
-	const mobileMenu = await page.locator('[data-testid="mobile-menu-dialog"]')
+	const mobileMenu = page.locator('[data-testid="mobile-menu-dialog"]')
 	await expect(mobileMenu).toBeVisible()
 
-	const closeMenuButton = await page.locator(
-		'[data-testid="menu-close-button"]'
-	)
+	const closeMenuButton = page.locator('[data-testid="menu-close-button"]')
 	await closeMenuButton.click()
 	await expect(mobileMenu).not.toBeVisible()
 })
