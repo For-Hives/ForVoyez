@@ -85,3 +85,28 @@ test('Navbar internal links redirect correctly', async ({ page }) => {
 
 	log('Test for internal link redirections completed')
 })
+
+test('Navbar external links have correct href', async ({ page }) => {
+	await page.goto('/')
+
+	log('Page loaded')
+
+	const externalNavItems = [
+		{
+			href: 'https://doc.forvoyez.com/',
+			testId: 'nav-documentation',
+		},
+	]
+
+	for (const item of externalNavItems) {
+		log(`Testing navigation item: ${item.testId}`)
+		const navItem = page.locator(`[data-testid="${item.testId}"]`)
+		log(`Waiting for navItem with testId: ${item.testId} to be visible`)
+		await navItem.waitFor({ state: 'visible', timeout: 10000 })
+
+		log(`Checking href of navItem with testId: ${item.testId}`)
+		await expect(navItem).toHaveAttribute('href', item.href)
+	}
+
+	log('Test for external link href completed')
+})
