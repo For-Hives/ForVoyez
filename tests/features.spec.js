@@ -70,7 +70,7 @@ test('FeatureComponent Rive animation is present', async ({ page }) => {
 	log('Page loaded')
 
 	// Check the visibility of the Rive animation
-	const riveComponent = page.locator('.rive-component-class')
+	const riveComponent = page.locator('[data-testid="rive-component"]')
 	log('Checking visibility of Rive animation')
 	await expect(riveComponent).toBeVisible()
 
