@@ -30,8 +30,8 @@ test('Navbar elements are present and correct', async ({ page }) => {
 		{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
 		{
 			href: 'https://doc.forvoyez.com/',
+			testId: 'nav-documentation',
 			name: 'Documentation',
-			testId: 'nav-docs',
 		},
 		{ testId: 'nav-contact', href: '/contact', name: 'Contact' },
 	]
