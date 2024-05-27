@@ -10,7 +10,9 @@ const log = message => {
 }
 
 test.describe('Sign-in Functionality', () => {
-	test('User can sign in successfully', async ({ page }) => {
+	test('User can sign in successfully and access manage account', async ({
+		page,
+	}) => {
 		await page.goto(NEXT_PUBLIC_URL)
 
 		log('Page loaded')
@@ -72,6 +74,26 @@ test.describe('Sign-in Functionality', () => {
 		log('Checking user email in profile dialog')
 		await expect(userEmail).toHaveText(TEST_EMAIL)
 
-		log('Sign-in test completed successfully')
+		// Check the "Manage account" button and click it
+		const manageAccountButton = userProfileDialog.locator(
+			'.cl-userButtonPopoverActionButton__manageAccount'
+		)
+		log('Checking presence of "Manage account" button')
+		await expect(manageAccountButton).toBeVisible()
+
+		log('Clicking "Manage account" button')
+		await manageAccountButton.click()
+
+		// Check if redirected to the manage account page
+		log('Checking if redirected to the manage account page')
+
+		// Check for the presence of the email address on the manage account page
+		const emailElement = page.locator(
+			'.cl-profileSectionItem__emailAddresses .cl-internal-bolkfx'
+		)
+		log('Checking presence of email address on manage account page')
+		await expect(emailElement).toHaveText(TEST_EMAIL)
+
+		log('Sign-in and manage account test completed successfully')
 	})
 })
