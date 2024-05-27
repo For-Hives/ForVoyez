@@ -17,9 +17,9 @@ test('Navbar elements are present and correct', async ({ page }) => {
 		/\/_next\/image\?url=%2Flogo%2Flogo\.webp&.*/
 	)
 
+	console.log('Checking logo link visibility')
 	// Test if the logo link redirects to the home page
 	const logoLink = page.locator('[data-testid="logo-link"]')
-	console.log('Checking logo link visibility')
 	await expect(logoLink).toBeVisible()
 
 	console.log('Defining expected navigation items')
@@ -37,7 +37,7 @@ test('Navbar elements are present and correct', async ({ page }) => {
 	]
 
 	// Print the HTML content of the nav
-	const navHtml = await page.locator('nav').innerHTML()
+	const navHtml = await page.locator('.navbar').innerHTML()
 	console.log('Nav HTML content:', navHtml)
 
 	for (const item of expectedNavItems) {

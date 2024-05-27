@@ -28,7 +28,7 @@ export function NavbarComponent() {
 		<header className="absolute inset-x-0 top-0 z-50">
 			<nav
 				aria-label="Global"
-				className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+				className="navbar mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
 			>
 				<div className="flex lg:flex-1">
 					<Link className="-m-1.5 p-1.5" data-testid="logo-link" href="/">
@@ -71,7 +71,6 @@ export function NavbarComponent() {
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
 					<SignedIn>
-						{/* Mount the UserButton component */}
 						<UserButton
 							afterSignOutUrl={'/'}
 							data-testid="user-button"
@@ -89,7 +88,6 @@ export function NavbarComponent() {
 						</Link>
 					</SignedIn>
 					<SignedOut>
-						{/* Signed out users get sign in button */}
 						<SignInButton
 							afterSignInUrl={'/app'}
 							afterSignUpUrl={'/app'}
@@ -139,7 +137,7 @@ export function NavbarComponent() {
 								{navigation.map(item => (
 									<Link
 										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-900 hover:bg-slate-50"
-										data-testid={`${item.testId.toLowerCase()}`}
+										data-testid={`nav-${item.name.toLowerCase()}`}
 										href={item.href}
 										key={item.name}
 									>
@@ -149,7 +147,6 @@ export function NavbarComponent() {
 							</div>
 							<div className="py-6">
 								<SignedIn>
-									{/* Mount the UserButton component */}
 									<div className={'flex flex-col gap-4'}>
 										<Link
 											className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
@@ -171,7 +168,6 @@ export function NavbarComponent() {
 									</div>
 								</SignedIn>
 								<SignedOut>
-									{/* Signed out users get sign in button */}
 									<SignInButton
 										className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-900 hover:bg-slate-50"
 										data-testid="sign-in-button"
