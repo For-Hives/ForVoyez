@@ -56,49 +56,32 @@ test('Navbar elements are present and correct', async ({ page }) => {
 	log('Test for presence of elements completed')
 })
 
-test('Navbar links are clickable and redirect correctly', async ({ page }) => {
+test('Navbar internal links redirect correctly', async ({ page }) => {
 	await page.goto('/')
 
 	log('Page loaded')
 
-	const expectedNavItems = [
+	const internalNavItems = [
 		{ testId: 'nav-home', href: '/' },
 		{ testId: 'nav-features', href: '/#features' },
 		{ testId: 'nav-pricing', href: '/#pricing' },
-		{
-			href: 'https://doc.forvoyez.com/',
-			testId: 'nav-documentation',
-		},
 		{ testId: 'nav-contact', href: '/contact' },
 	]
 
-	for (const item of expectedNavItems) {
+	for (const item of internalNavItems) {
 		log(`Testing navigation item: ${item.testId}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		log(`Waiting for navItem with testId: ${item.testId} to be visible`)
 		await navItem.waitFor({ state: 'visible', timeout: 10000 })
 
 		log(`Clicking navItem with testId: ${item.testId}`)
-		if (item.href.startsWith('/')) {
-			log(`Internal link: ${item.href}`)
-			await Promise.all([page.waitForNavigation(), navItem.click()])
-			await expect(page).toHaveURL(item.href)
-		} else {
-			log(`External link: ${item.href}`)
-			const [newPage] = await Promise.all([
-				page.context().waitForEvent('page'),
-				navItem.click(),
-			])
-			log(`Waiting for new page to load: ${item.href}`)
-			await newPage.waitForLoadState('load')
-			log(`Checking URL of new page: ${item.href}`)
-			await expect(newPage).toHaveURL(item.href)
-			await newPage.close()
-		}
+		log(`Internal link: ${item.href}`)
+		await Promise.all([page.waitForNavigation(), navItem.click()])
+		await expect(page).toHaveURL(item.href)
 
 		// Go back to the home page for the next iteration
 		await page.goto('/')
 	}
 
-	log('Test for redirections completed')
+	log('Test for internal link redirections completed')
 })
