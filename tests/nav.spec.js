@@ -36,30 +36,26 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	for (const item of expectedNavItems) {
 		console.info(`Testing navigation item: ${item.name}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
-		await navItem.waitFor() // Wait for the navigation item to be present
+		console.log('NavItem:', navItem)
 		await expect(navItem).toHaveText(item.name)
 		await expect(navItem).toHaveAttribute('href', item.href)
 
+		console.log('NavItem.href:', item.href)
+
 		// Click on the navigation item and check if it redirects to the correct page
 		if (item.href.startsWith('/')) {
+			console.log('Internal link:', item.href)
 			await Promise.all([page.waitForNavigation(), navItem.click()])
 			await expect(page).toHaveURL(item.href)
 		} else {
-			// For external links, click the link and check if the URL is correct
-			await page.evaluate(href => {
-				window.open(href, '_blank')
-			}, item.href)
-
-			// Verify the URL in a new context or frame (this part can vary based on your testing setup)
-			const pages = await page.context().pages()
-			const newPage = pages[pages.length - 1] // Get the most recently opened page
-			await newPage.waitForLoadState('load') // Wait for the new page to load completely
-			await expect(newPage).toHaveURL(item.href)
-			await newPage.close() // Close the new page
+			console.info('External link:', item.href)
+			// For external links, click the link and verify that it opened the expected URL
+			await navItem.click()
+			// Verify that the current URL matches the expected external URL
+			await expect(page.url()).toBe(item.href)
+			// Go back to the home page for the next iteration
+			await page.goBack()
 		}
-
-		// Go back to the home page for the next iteration
-		await page.goto('/')
 	}
 
 	// Test if the sign-in button is visible for signed-out users and links to the correct page
