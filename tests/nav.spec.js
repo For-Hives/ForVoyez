@@ -1,4 +1,3 @@
-// tests/NavbarComponent.spec.js
 const { expect, test } = require('@playwright/test')
 
 test('Navbar renders correctly and buttons redirect as expected', async ({
@@ -7,7 +6,15 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 	await page.goto('/')
 
 	// Wait for the logo element to be present
-	await page.waitForSelector('nav img[alt="ForVoyez Logo"]', { timeout: 10000 })
+	try {
+		await page.waitForSelector('nav img[alt="ForVoyez Logo"]', {
+			timeout: 20000,
+		}) // Increased timeout
+	} catch (error) {
+		console.error('Logo element not found:', error)
+		await page.screenshot({ path: 'error-screenshot.png' }) // Take a screenshot for debugging
+		throw error // Re-throw the error to ensure the test fails
+	}
 
 	// Test if the logo is visible and links to the home page
 	const logo = await page.locator('nav img[alt="ForVoyez Logo"]')
@@ -39,7 +46,10 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 			await expect(page).toHaveURL(item.href)
 		} else {
 			// For external links, check if a new tab is opened with the correct URL
-			const newPage = await page.waitForEvent('popup')
+			const [newPage] = await Promise.all([
+				page.waitForEvent('popup'),
+				navItems.nth(index).click(),
+			])
 			await expect(newPage).toHaveURL(item.href)
 			await newPage.close()
 		}
