@@ -36,6 +36,10 @@ test('Navbar elements are present and correct', async ({ page }) => {
 		{ testId: 'nav-contact', href: '/contact', name: 'Contact' },
 	]
 
+	// Print the HTML content of the nav
+	const navHtml = await page.locator('nav').innerHTML()
+	console.log('Nav HTML content:', navHtml)
+
 	for (const item of expectedNavItems) {
 		console.log('Testing navigation item:', item.name)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
