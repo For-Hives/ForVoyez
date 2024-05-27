@@ -1,3 +1,4 @@
+// tests/home.spec.js
 const { expect, test } = require('@playwright/test')
 
 test('Home page loads correctly', async ({ page }) => {
@@ -14,7 +15,9 @@ test('Home page loads correctly', async ({ page }) => {
 	)
 
 	// Check if the "Get started" button is present and has the correct href
-	const getStartedButton = await page.locator('a[href="/app"]')
+	const getStartedButton = await page.locator(
+		'a[href="/app"]:has-text("Get started")'
+	)
 	await expect(getStartedButton).toBeVisible()
 	await expect(getStartedButton).toHaveText('Get started')
 
