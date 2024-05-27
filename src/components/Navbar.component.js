@@ -10,11 +10,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const navigation = [
-	{ name: 'Home', href: '/' },
-	{ href: '/#features', name: 'Features' },
-	{ href: '/#pricing', name: 'Pricing' },
-	{ href: 'https://doc.forvoyez.com/', name: 'Documentation' },
-	{ href: '/contact', name: 'Contact' },
+	{ testId: 'nav-home', name: 'Home', href: '/' },
+	{ testId: 'nav-features', href: '/#features', name: 'Features' },
+	{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
+	{
+		href: 'https://doc.forvoyez.com/',
+		name: 'Documentation',
+		testId: 'nav-docs',
+	},
+	{ testId: 'nav-contact', href: '/contact', name: 'Contact' },
 ]
 
 export function NavbarComponent() {
