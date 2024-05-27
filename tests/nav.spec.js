@@ -37,6 +37,11 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 		console.info(`Testing navigation item: ${item.name}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		console.log('NavItem:', navItem)
+
+		// Wait for the navigation item to be present
+		await navItem.waitFor({ state: 'visible', timeout: 10000 })
+
+		// Verify the text and href of the navigation item
 		await expect(navItem).toHaveText(item.name)
 		await expect(navItem).toHaveAttribute('href', item.href)
 
@@ -49,13 +54,18 @@ test('Navbar renders correctly and buttons redirect as expected', async ({
 			await expect(page).toHaveURL(item.href)
 		} else {
 			console.info('External link:', item.href)
-			// For external links, click the link and verify that it opened the expected URL
-			await navItem.click()
-			// Verify that the current URL matches the expected external URL
-			await expect(page.url()).toBe(item.href)
-			// Go back to the home page for the next iteration
-			await page.goBack()
+			// For external links, verify that the URL is correct
+			const [newPage] = await Promise.all([
+				page.context().waitForEvent('page'),
+				navItem.click(),
+			])
+			await newPage.waitForLoadState()
+			await expect(newPage).toHaveURL(item.href)
+			await newPage.close()
 		}
+
+		// Go back to the home page for the next iteration
+		await page.goto('/')
 	}
 
 	// Test if the sign-in button is visible for signed-out users and links to the correct page
