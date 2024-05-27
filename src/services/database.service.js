@@ -32,8 +32,6 @@ export async function getPlans(filter = null) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
 
-	await syncPlans()
-
 	return plans
 }
 
