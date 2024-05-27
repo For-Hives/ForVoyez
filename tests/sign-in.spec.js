@@ -37,13 +37,13 @@ test.describe('Sign-in Functionality', () => {
 		await passwordInput.waitFor({ state: 'visible', timeout: 15000 })
 		await passwordInput.fill(TEST_PASSWORD)
 
-		const submitButton = page.locator('button[type="submit"]')
+		const submitButton = page.locator('button:has-text("Continue")')
 		log('Waiting for submit button to be visible')
 		await submitButton.waitFor({ state: 'visible', timeout: 15000 })
 		await submitButton.click()
 
 		// Wait for the user button to be visible after sign-in
-		const userButton = page.locator('[data-testid="user-button"]')
+		const userButton = page.locator('.cl-userButton-root button')
 		log('Waiting for user button to be visible after sign-in')
 		await userButton.waitFor({ state: 'visible', timeout: 15000 })
 
