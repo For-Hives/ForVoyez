@@ -3,7 +3,7 @@ const { expect, test } = require('@playwright/test')
 // Load environment variables
 require('dotenv').config()
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
+const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 
 const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
@@ -11,7 +11,7 @@ const log = message => {
 
 test.describe('CTA Component', () => {
 	test('CTA section loads correctly', async ({ page }) => {
-		await page.goto(BASE_URL)
+		await page.goto(NEXT_PUBLIC_URL)
 
 		log('Page loaded')
 
@@ -38,7 +38,7 @@ test.describe('CTA Component', () => {
 	})
 
 	test('CTA links are present and functional', async ({ page }) => {
-		await page.goto(BASE_URL)
+		await page.goto(NEXT_PUBLIC_URL)
 
 		log('Page loaded')
 
@@ -53,13 +53,13 @@ test.describe('CTA Component', () => {
 
 		// Check if redirected to the sign-in page
 		await expect(page).toHaveURL(
-			`${BASE_URL}/sign-in?redirect_url=${encodeURIComponent(BASE_URL + '/app')}`
+			`${NEXT_PUBLIC_URL}/sign-in?redirect_url=${encodeURIComponent(NEXT_PUBLIC_URL + '/app')}`
 		)
 
 		// Optionally, you can add steps to sign in here if needed
 
 		// Go back to the home page
-		await page.goto(BASE_URL)
+		await page.goto(NEXT_PUBLIC_URL)
 
 		// Check the visibility and functionality of the "Learn more" link
 		const learnMoreLink = page.locator('[data-testid="cta-learn-more-link"]')
