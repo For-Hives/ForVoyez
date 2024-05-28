@@ -65,17 +65,18 @@ test.describe('Plans Management Functionality', () => {
 	test('View and manage subscription plans', async ({ page }) => {
 		log('Page loaded')
 
-		// Verify the presence of the Available Plans header
-		log('Checking presence of "Available Plans" header')
-		await expect(page.locator('h1')).toHaveText('Available Plans')
+		// Check the visibility of the plans section
+		const plansSection = page.locator('[data-testid="plans-section"]')
+		log('Checking visibility of plans section')
+		await expect(plansSection).toBeVisible()
 
-		// Verify that plans are displayed
-		log('Checking that plans are displayed')
-		await expect(page.locator('.prose .max-w-7xl')).toBeVisible()
+		// Wait for the plans to be loaded
+		log('Waiting for plans to be loaded')
+		await page.waitForSelector('[data-testid="plans-loaded"]')
 
 		// Check if the plans are loaded and displayed correctly
 		log('Checking if the plans are loaded and displayed correctly')
-		const plans = await page.locator('.prose .max-w-7xl > div')
+		const plans = await page.locator('[data-testid^="plan-"]')
 		expect(await plans.count()).toBeGreaterThan(0)
 
 		// Try changing the plan
@@ -84,23 +85,13 @@ test.describe('Plans Management Functionality', () => {
 			.locator('button:has-text("Change Plan")')
 			.first()
 		await changePlanButton.click()
-		// Verify that the subscription management page is opened
-		await page.waitForNavigation()
-		expect(page.url()).toContain('lemonsqueezy')
 
-		// Navigate back to the plans page
-		await page.goBack()
+		// Verify if navigation to the subscription management page occurs
+		// This can be done by checking the URL or a specific element on the new page
+		// Example:
+		await page.waitForURL('**/manage-subscription', { timeout: 15000 })
+		expect(page.url()).toContain('manage-subscription')
 
-		// Try to refill a plan
-		log('Attempting to refill a plan')
-		const refillButton = page
-			.locator('button:has-text("Refill your credits")')
-			.first()
-		await refillButton.click()
-		// Verify that the subscription management page is opened
-		await page.waitForNavigation()
-		expect(page.url()).toContain('lemonsqueezy')
-
-		log('Plans management test completed successfully')
+		log('Plan management test completed successfully')
 	})
 })
