@@ -16,7 +16,6 @@ import {
 import { useAuth } from '@clerk/nextjs'
 import { fr } from 'date-fns/locale'
 import { format } from 'date-fns'
-import Link from 'next/link'
 
 import { getUsageByToken, getUsageForUser } from '@/services/database.service'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
@@ -79,10 +78,7 @@ export function UsageChartComponent() {
 					className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8"
 					data-testid="usage-tooltip"
 				>
-					<Link
-						className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5"
-						href={'/app/plans'}
-					>
+					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
 						<p className="text-sm leading-6 text-white">
 							<strong className="font-semibold">Usage Data</strong>
 							<svg
@@ -95,7 +91,7 @@ export function UsageChartComponent() {
 							You need to have used the application at least once to see the
 							usage data.
 						</p>
-					</Link>
+					</div>
 				</div>
 			)}
 			<div className="mt-8 h-[400px]">
@@ -159,7 +155,9 @@ export function UsageChartComponent() {
 						</AreaChart>
 					</ResponsiveContainer>
 				) : (
-					<SkeletonLoader />
+					<div className="flex h-full items-center justify-center">
+						<p className="text-sm text-slate-600">No usage data available.</p>
+					</div>
 				)}
 			</div>
 			<h2 className="mb-0 mt-12 text-2xl font-bold text-slate-800">
@@ -222,7 +220,11 @@ export function UsageChartComponent() {
 						</BarChart>
 					</ResponsiveContainer>
 				) : (
-					<SkeletonLoader />
+					<div className="flex h-full items-center justify-center">
+						<p className="text-sm text-slate-600">
+							No usage data available by token.
+						</p>
+					</div>
 				)}
 			</div>
 		</div>
