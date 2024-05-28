@@ -18,12 +18,12 @@ const { getCurrentUser } = TestingExports
 
 import * as ls from '@/services/lemonsqueezy.service'
 
-import { prisma } from '../PrismaMock'
+import { prisma } from '/tests/unit/mocks/prisma.mock'
 
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/lemonsqueezy.service')
 vi.mock('@/services/prisma.service', async () => {
-	const actual = await vi.importActual('../PrismaMock')
+	const actual = await vi.importActual('/tests/unit/mocks/prisma.mock')
 	return {
 		...actual,
 	}
