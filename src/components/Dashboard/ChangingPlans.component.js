@@ -84,7 +84,7 @@ export function ChangingPlansComponent() {
 
 	if (plans.length === 0) {
 		return (
-			<div className={'py-20'}>
+			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="flex justify-center pb-20">
 						<div
@@ -121,7 +121,7 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="py-20" data-testid="plans-loading">
+		<div className="py-20">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="flex justify-center">
 					<RadioGroup
