@@ -311,10 +311,13 @@ export function Playground() {
 	return (
 		<>
 			{showTooltip && (
-				<div className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8">
+				<div
+					className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8"
+					data-testid="tooltip"
+				>
 					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
 						<p className="text-sm leading-6 text-white">
-							<Link href="/app/plans">
+							<Link data-testid="tooltip-link" href="/app/plans">
 								<strong className="font-semibold">Playground usage</strong>
 								<svg
 									aria-hidden="true"
@@ -368,6 +371,7 @@ export function Playground() {
 									/>
 									<button
 										className="absolute -right-4 top-[1.25rem] rounded-full bg-forvoyez_orange-600 p-1 text-white shadow-md hover:bg-forvoyez_orange-500 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500 focus:ring-offset-2"
+										data-testid="reset-image"
 										onClick={handleResetImage}
 									>
 										<svg
@@ -389,6 +393,7 @@ export function Playground() {
 							) : (
 								<label
 									className="flex h-full w-full cursor-pointer flex-col items-center justify-center px-6 py-10 text-center"
+									data-testid="upload-area"
 									htmlFor="image"
 								>
 									<div>
@@ -452,6 +457,7 @@ export function Playground() {
 						<div className="mt-2">
 							<textarea
 								className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+								data-testid="context-input"
 								id="Context"
 								maxLength={300}
 								name="Context"
@@ -462,6 +468,7 @@ export function Playground() {
 							></textarea>
 							<p
 								className={`mt-1 text-sm ${determineTextColorBasedOnLength(context, 300)}`}
+								data-testid="context-counter"
 							>
 								Remaining {300 - context.length}/300 characters
 							</p>
@@ -482,6 +489,7 @@ export function Playground() {
 						</p>
 						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 							<MonacoEditor
+								data-testid="json-schema-editor"
 								editorDidMount={editor => (editorRef.current = editor)}
 								height={'500px'}
 								language="json"
@@ -503,7 +511,6 @@ export function Playground() {
 									selectOnLineNumbers: true,
 									matchBrackets: 'always',
 									quickSuggestions: true,
-									colorDecorators: true,
 									automaticLayout: true,
 									mouseWheelZoom: false,
 									formatOnPaste: true,
@@ -524,15 +531,26 @@ export function Playground() {
 							<div className={'absolute right-3 top-2'}>
 								<div className="flex items-center justify-end">
 									{isJsonValid ? (
-										<span className="text-sm text-green-600">Valid JSON</span>
+										<span
+											className="text-sm text-green-600"
+											data-testid="json-valid"
+										>
+											Valid JSON
+										</span>
 									) : (
-										<span className="text-sm text-red-600">Invalid JSON</span>
+										<span
+											className="text-sm text-red-600"
+											data-testid="json-invalid"
+										>
+											Invalid JSON
+										</span>
 									)}
 								</div>
 							</div>
 						</div>
 						<p
 							className={`mt-1 text-sm ${determineTextColorBasedOnLength(jsonSchema, 1000)}`}
+							data-testid="json-schema-counter"
 						>
 							Remaining {1000 - jsonSchema.length}/1000 characters
 						</p>
@@ -545,6 +563,7 @@ export function Playground() {
 									? 'cursor-not-allowed bg-slate-400'
 									: 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'
 							}`}
+							data-testid="analyze-button"
 							disabled={!isJsonValid || !image || userCredits === 0}
 							onClick={handleSubmit}
 							onMouseEnter={() =>
@@ -568,6 +587,7 @@ export function Playground() {
 						</label>
 						<select
 							className="block w-full rounded-md border-slate-300 focus:border-forvoyez_orange-500 focus:ring-forvoyez_orange-500"
+							data-testid="language-select"
 							id="tabs"
 							name="tabs"
 						>
@@ -579,6 +599,7 @@ export function Playground() {
 					<div className="hidden sm:block">
 						<div className="border-b border-slate-200">
 							<Tab.Group
+								data-testid="language-tabs"
 								onChange={index => setSelectedTab(previewLanguages[index])}
 							>
 								<Tab.List className="flex">
@@ -589,6 +610,7 @@ export function Playground() {
 													? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
 													: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
 											}
+											data-testid={`tab-${language.toLowerCase()}`}
 											key={language}
 										>
 											{language}
@@ -600,6 +622,7 @@ export function Playground() {
 										<Tab.Panel key={language}>
 											<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 												<MonacoEditor
+													data-testid={`editor-${language.toLowerCase()}`}
 													editorDidMount={editor =>
 														handleEditorDidMount(editor, index)
 													}
@@ -641,6 +664,7 @@ export function Playground() {
 												/>
 												<button
 													className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+													data-testid="copy-button"
 													onClick={copySelectedEditorContent}
 												>
 													{isPreviewCopied ? (
@@ -668,6 +692,7 @@ export function Playground() {
 					) : (
 						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
 							<MonacoEditor
+								data-testid="response-editor"
 								editorDidMount={editor => (responseRef.current = editor)}
 								height={'500px'}
 								language="json"
@@ -708,6 +733,7 @@ export function Playground() {
 							/>
 							<button
 								className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+								data-testid="response-copy-button"
 								onClick={() => {
 									copyToClipboard(JSON.stringify(response, null, 4))
 									setIsResponseCopied(true)
