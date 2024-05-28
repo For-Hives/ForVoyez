@@ -32,11 +32,10 @@ function classNames(...classes) {
 
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
-
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
-
 	const [currentSubscription, setCurrentSubscription] = useState(null)
+	const [urls, setUrls] = useState({})
 
 	const auth = useAuth()
 
@@ -49,22 +48,33 @@ export function ChangingPlansComponent() {
 	}, [frequency])
 
 	useEffect(() => {
-		getPlans().then(plans => {
-			const sortedPlans = sortPlans(plans)
+		const fetchPlansAndUrls = async () => {
+			const fetchedPlans = await getPlans()
+			const sortedPlans = sortPlans(fetchedPlans)
 			setPlans(sortedPlans)
-		})
-		checkSubscription()
-	}, [])
+			await checkSubscription()
+			const newUrls = {}
+			for (const plan of sortedPlans) {
+				if (currentSubscription && currentSubscription.planId === plan.id) {
+					newUrls[plan.id] = await getCustomerPortalLink()
+				} else {
+					newUrls[plan.id] = await getCheckoutURL(plan.variantId)
+				}
+			}
+			setUrls(newUrls)
+		}
+
+		fetchPlansAndUrls()
+	}, [currentSubscription])
 
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
-
 		if (sub) {
 			setCurrentSubscription(sub)
 		}
 	}
 
-	if (plans.length === 0) {
+	if (plans.length === 0 || Object.keys(urls).length === 0) {
 		return (
 			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -195,39 +205,41 @@ export function ChangingPlansComponent() {
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
 
-								{currentSubscription ? (
-									<div>
-										<Link
-											aria-describedby={tier.id}
-											className={classNames(
-												tier.mostPopular
-													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-											)}
-											data-testid={`subscribe-button-${tier.id}`}
-											href={await getCustomerPortalLink()}
-										>
-											{currentSubscription.planId === tier.id
-												? 'Manage my Subscription'
-												: 'Change Plan'}
-										</Link>
-									</div>
-								) : (
-									<Link
-										aria-describedby={tier.id}
-										className={classNames(
-											tier.mostPopular
-												? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+								{currentSubscription
+									? urls[tier.id] && (
+											<div>
+												<Link
+													aria-describedby={tier.id}
+													className={classNames(
+														tier.mostPopular
+															? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+															: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+														'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+													)}
+													data-testid={`subscribe-button-${tier.id}`}
+													href={urls[tier.id]}
+												>
+													{currentSubscription.planId === tier.id
+														? 'Manage my Subscription'
+														: 'Change Plan'}
+												</Link>
+											</div>
+										)
+									: urls[tier.id] && (
+											<Link
+												aria-describedby={tier.id}
+												className={classNames(
+													tier.mostPopular
+														? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+														: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+												)}
+												data-testid={`subscribe-button-${tier.id}`}
+												href={urls[tier.id]}
+											>
+												{tier.buttonText}
+											</Link>
 										)}
-										data-testid={`subscribe-button-${tier.id}`}
-										href={await getCheckoutURL(tier.variantId)}
-									>
-										{tier.buttonText}
-									</Link>
-								)}
 								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
 										<span className="text-xs text-slate-500">
