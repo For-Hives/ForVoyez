@@ -5,7 +5,7 @@ import { currentUser } from '@clerk/nextjs/server'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
 
-const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID
+const getStoreId = () => process.env.LEMON_SQUEEZY_STORE_ID
 
 export async function initLemonSqueezy() {
 	ls.lemonSqueezySetup({
@@ -18,6 +18,7 @@ export async function initLemonSqueezy() {
 
 export async function listProducts() {
 	await initLemonSqueezy()
+	const STORE_ID = getStoreId()
 
 	const { statusCode, error, data } = await ls.listProducts({
 		filter: { storeId: STORE_ID },
@@ -47,6 +48,7 @@ export async function listPrice(variantID) {
 export async function getCheckoutURL(variantId, embed = false) {
 	await initLemonSqueezy()
 
+	const STORE_ID = getStoreId()
 	const user = await currentUser()
 
 	if (!user) {
