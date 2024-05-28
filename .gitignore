@@ -48,7 +48,7 @@ bun.lockb
 
 # /!\ merci de ne pas remettre en ligne le fichier dev.db /!\
 prisma/dev.db
-
+test-results
 
 #public/animation_features/landing_art_forvoyez.riv
 #prisma/schema.prisma
@@ -60,4 +60,3 @@ prisma/dev.db
 
 output.txt
 large.txt
-
