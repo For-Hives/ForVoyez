@@ -72,7 +72,13 @@ test.describe('Plans Management Functionality', () => {
 
 		// Wait for the plans to be loaded
 		log('Waiting for plans to be loaded')
-		await page.waitForSelector('[data-testid="plans-loaded"]')
+		await page.waitForFunction(
+			() => {
+				const plans = document.querySelectorAll('[data-testid^="plan-"]')
+				return plans.length > 0
+			},
+			{ timeout: 20000 }
+		)
 
 		// Check if the plans are loaded and displayed correctly
 		log('Checking if the plans are loaded and displayed correctly')
@@ -88,7 +94,6 @@ test.describe('Plans Management Functionality', () => {
 
 		// Verify if navigation to the subscription management page occurs
 		// This can be done by checking the URL or a specific element on the new page
-		// Example:
 		await page.waitForURL('**/manage-subscription', { timeout: 15000 })
 		expect(page.url()).toContain('manage-subscription')
 
