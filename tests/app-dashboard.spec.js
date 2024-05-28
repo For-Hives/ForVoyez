@@ -81,17 +81,16 @@ test.describe('Dashboard Quick Links Functionality', () => {
 			await expect(linkLocator).toBeVisible()
 
 			log(`Clicking quick link: ${link.name}`)
-			const [newPage] = await Promise.all([
-				link.href.startsWith('http')
-					? page.waitForEvent('popup')
-					: page.waitForNavigation(),
-				linkLocator.click(),
-			])
-
 			if (link.href.startsWith('http')) {
+				const [newPage] = await Promise.all([
+					page.waitForEvent('popup'),
+					linkLocator.click(),
+				])
+				await newPage.waitForLoadState()
 				await expect(newPage).toHaveURL(link.href)
 				await newPage.close()
 			} else {
+				await Promise.all([page.waitForNavigation(), linkLocator.click()])
 				await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
 				await page.goto(`${NEXT_PUBLIC_URL}/app`)
 			}
