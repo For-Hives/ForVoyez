@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
 import * as clerk from '@clerk/nextjs/server'
 
@@ -17,12 +17,11 @@ vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/database.service')
 
 const STORE_ID = '1234'
-vi.stubEnv('LEMON_SQUEEZY_STORE_ID', STORE_ID)
 
 describe('Lemon Squeezy Service', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
-		process.env.LEMON_SQUEEZY_STORE_ID = STORE_ID
+		vi.stubEnv('LEMON_SQUEEZY_STORE_ID', STORE_ID)
 		process.env.LEMON_SQUEEZY_API_KEY = 'test-api-key'
 	})
 
