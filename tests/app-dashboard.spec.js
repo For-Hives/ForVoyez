@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
@@ -11,6 +11,12 @@ const log = message => {
 
 test.describe('Dashboard Quick Links Functionality', () => {
 	test.beforeEach(async ({ page }) => {
+		// ensure the URL starts with http:// or https://
+		if (!NEXT_PUBLIC_URL.startsWith('http://')) {
+			if (!NEXT_PUBLIC_URL.startsWith('https://')) {
+				NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
+			}
+		}
 		await page.goto(NEXT_PUBLIC_URL)
 
 		// Click on the sign-in button
