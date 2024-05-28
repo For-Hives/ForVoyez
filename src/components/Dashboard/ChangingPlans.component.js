@@ -1,8 +1,9 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
@@ -32,11 +33,14 @@ function classNames(...classes) {
 
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
+
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
+
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [urls, setUrls] = useState({})
-	const [loading, setLoading] = useState(true)
+
+	const router = useRouter()
+
 	const auth = useAuth()
 
 	useEffect(() => {
@@ -48,46 +52,33 @@ export function ChangingPlansComponent() {
 	}, [frequency])
 
 	useEffect(() => {
-		const fetchPlansAndUrls = async () => {
-			setLoading(true)
-			const cachedPlans = localStorage.getItem('plans')
-			if (cachedPlans) {
-				const parsedPlans = JSON.parse(cachedPlans)
-				setPlans(parsedPlans)
-			} else {
-				const fetchedPlans = await getPlans()
-				const sortedPlans = sortPlans(fetchedPlans)
-				setPlans(sortedPlans)
-				localStorage.setItem('plans', JSON.stringify(sortedPlans))
-			}
-			await checkSubscription()
-
-			const newUrls = {}
-			for (const plan of plans) {
-				if (currentSubscription && currentSubscription.planId === plan.id) {
-					newUrls[plan.id] = await getCustomerPortalLink()
-				} else {
-					newUrls[plan.id] = await getCheckoutURL(plan.variantId)
-				}
-			}
-
-			setUrls(newUrls)
-			setLoading(false)
-		}
-
-		fetchPlansAndUrls()
-	}, [currentSubscription, plans])
+		getPlans().then(plans => {
+			const sortedPlans = sortPlans(plans)
+			setPlans(sortedPlans)
+		})
+		checkSubscription()
+	}, [])
 
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
+
 		if (sub) {
 			setCurrentSubscription(sub)
 		}
 	}
 
-	if (loading) {
+	async function subscribe(variantId) {
+		try {
+			const url = await getCheckoutURL(variantId)
+			await router.push(url)
+		} catch (e) {
+			console.error(e)
+		}
+	}
+
+	if (plans.length === 0) {
 		return (
-			<div className={'py-20'} data-testid="plans-loading">
+			<div className={'py-20'}>
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="flex justify-center pb-20">
 						<div
@@ -123,13 +114,16 @@ export function ChangingPlansComponent() {
 		)
 	}
 
+	function manageSubscription() {
+		getCustomerPortalLink().then(url => router.push(url))
+	}
+
 	return (
 		<div className="py-20">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="flex justify-center">
 					<RadioGroup
 						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-slate-200"
-						data-testid="plans-frequency"
 						onChange={setFrequency}
 						value={frequency}
 					>
@@ -146,7 +140,6 @@ export function ChangingPlansComponent() {
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
-								data-testid={`plans-frequency-${option.value}`}
 								key={option.value}
 								value={option}
 							>
@@ -154,7 +147,7 @@ export function ChangingPlansComponent() {
 									<span className={'transition-none'}>{option.label}</span>
 									<div
 										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute 
-                    -right-20 -top-7 rounded-full border border-forvoyez_orange-500 bg-white/80 p-1 px-2.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
+										-right-20 -top-7 rounded-full border border-forvoyez_orange-500 bg-white/80 p-1 px-2.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
 									>
 										20%&nbsp;more&nbsp;tokens
 									</div>
@@ -177,7 +170,6 @@ export function ChangingPlansComponent() {
 										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8'
 								)}
-								data-testid={`plan-${tier.billingCycle}-${tier.id}`}
 								key={tier.id}
 							>
 								<div className="flex items-center justify-between gap-x-4">
@@ -216,41 +208,37 @@ export function ChangingPlansComponent() {
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
 
-								{currentSubscription
-									? urls[tier.id] && (
-											<div>
-												<Link
-													aria-describedby={tier.id}
-													className={classNames(
-														tier.mostPopular
-															? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-															: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-														'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-													)}
-													data-testid={`subscribe-button-${tier.id}`}
-													href={urls[tier.id]}
-												>
-													{currentSubscription.planId === tier.id
-														? 'Manage my Subscription'
-														: 'Change Plan'}
-												</Link>
-											</div>
-										)
-									: urls[tier.id] && (
-											<Link
-												aria-describedby={tier.id}
-												className={classNames(
-													tier.mostPopular
-														? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-														: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-												)}
-												data-testid={`subscribe-button-${tier.id}`}
-												href={urls[tier.id]}
-											>
-												{tier.buttonText}
-											</Link>
+								{currentSubscription ? (
+									<div>
+										<button
+											aria-describedby={tier.id}
+											className={classNames(
+												tier.mostPopular
+													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+											)}
+											onClick={() => manageSubscription()}
+										>
+											{currentSubscription.planId === tier.id
+												? 'Manage my Subscription'
+												: 'Change Plan'}
+										</button>
+									</div>
+								) : (
+									<button
+										aria-describedby={tier.id}
+										className={classNames(
+											tier.mostPopular
+												? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
+										onClick={() => subscribe(tier.variantId)}
+									>
+										{tier.buttonText}
+									</button>
+								)}
 								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
 										<span className="text-xs text-slate-500">
@@ -260,7 +248,6 @@ export function ChangingPlansComponent() {
 									) : (
 										<button
 											className={'group m-0 flex gap-1 p-0'}
-											data-testid="more-tokens-button"
 											onClick={() => setFrequency(frequencies[1])}
 										>
 											<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
@@ -290,7 +277,6 @@ export function ChangingPlansComponent() {
 					})}
 					<div
 						className={'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2'}
-						data-testid="plan-custom"
 						key="custom"
 					>
 						<div className="flex items-center justify-between gap-x-4">
@@ -322,7 +308,6 @@ export function ChangingPlansComponent() {
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 							)}
-							data-testid="subscribe-button-custom"
 							href="/contact"
 						>
 							Contact Us
