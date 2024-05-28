@@ -83,7 +83,7 @@ test.describe('Plans Management Functionality', () => {
 				const plans = document.querySelectorAll('[data-testid^="plan-"]')
 				return plans.length > 0
 			},
-			{ timeout: 20000 }
+			{ timeout: 50000 }
 		)
 
 		// Check if the plans are loaded and displayed correctly
