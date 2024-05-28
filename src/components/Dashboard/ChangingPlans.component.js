@@ -33,44 +33,47 @@ function classNames(...classes) {
 
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
-
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
-
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-
 	const router = useRouter()
-
 	const auth = useAuth()
 
 	useEffect(() => {
-		if (frequency.value === 'annually') {
-			setIsAnnually(true)
-		} else {
-			setIsAnnually(false)
-		}
+		setIsAnnually(frequency.value === 'annually')
 	}, [frequency])
 
 	useEffect(() => {
-		getPlans().then(plans => {
+		const fetchPlans = async () => {
+			const plans = await getPlans()
 			const sortedPlans = sortPlans(plans)
 			setPlans(sortedPlans)
-		})
-		checkSubscription()
-	}, [])
-
-	async function checkSubscription() {
-		const sub = await getSubscriptionFromUserId(auth.userId)
-
-		if (sub) {
-			setCurrentSubscription(sub)
 		}
-	}
 
-	async function subscribe(variantId) {
+		const fetchSubscription = async () => {
+			const sub = await getSubscriptionFromUserId(auth.userId)
+			if (sub) {
+				setCurrentSubscription(sub)
+			}
+		}
+
+		fetchPlans()
+		fetchSubscription()
+	}, [auth.userId])
+
+	const subscribe = async variantId => {
 		try {
 			const url = await getCheckoutURL(variantId)
 			await router.push(url)
+		} catch (e) {
+			console.error(e)
+		}
+	}
+
+	const manageSubscription = async () => {
+		try {
+			const url = await getCustomerPortalLink()
+			router.push(url)
 		} catch (e) {
 			console.error(e)
 		}
@@ -112,10 +115,6 @@ export function ChangingPlansComponent() {
 				</div>
 			</div>
 		)
-	}
-
-	function manageSubscription() {
-		getCustomerPortalLink().then(url => router.push(url))
 	}
 
 	return (
