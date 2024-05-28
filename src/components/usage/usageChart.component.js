@@ -70,7 +70,9 @@ export function UsageChartComponent() {
 						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
 				) : (
-					<p className="text-sm text-slate-600">No usage yet</p>
+					<p className="text-sm text-slate-600" data-testid="no-usage-data">
+						No usage yet
+					</p>
 				)}
 			</div>
 			{showTooltip && (
@@ -94,11 +96,15 @@ export function UsageChartComponent() {
 					</div>
 				</div>
 			)}
-			<div className="mt-8 h-[400px]">
+			<div className="mt-8 h-[400px]" data-testid="usage-chart-container">
 				{isLoadingUsage ? (
-					<SkeletonLoader />
+					<SkeletonLoader dataTestId="skeleton-loader" />
 				) : usage.length > 0 ? (
-					<ResponsiveContainer height="100%" width="100%">
+					<ResponsiveContainer
+						data-testid="usage-chart"
+						height="100%"
+						width="100%"
+					>
 						<AreaChart
 							data={usage}
 							margin={{
@@ -156,7 +162,9 @@ export function UsageChartComponent() {
 					</ResponsiveContainer>
 				) : (
 					<div className="flex h-full items-center justify-center">
-						<p className="text-sm text-slate-600">No usage data available.</p>
+						<p className="text-sm text-slate-600" data-testid="no-usage-data">
+							No usage data available.
+						</p>
 					</div>
 				)}
 			</div>
@@ -169,11 +177,18 @@ export function UsageChartComponent() {
 					the most.
 				</p>
 			</div>
-			<div className="mt-8 h-[400px]">
+			<div
+				className="mt-8 h-[400px]"
+				data-testid="usage-by-token-chart-container"
+			>
 				{isLoadingUsageByToken ? (
-					<SkeletonLoader />
+					<SkeletonLoader data-testid="skeleton-loader" />
 				) : usageByToken.length > 0 ? (
-					<ResponsiveContainer height="100%" width="100%">
+					<ResponsiveContainer
+						data-testid="usage-by-token-chart"
+						height="100%"
+						width="100%"
+					>
 						<BarChart
 							barSize={20}
 							data={usageByToken}
@@ -221,7 +236,10 @@ export function UsageChartComponent() {
 					</ResponsiveContainer>
 				) : (
 					<div className="flex h-full items-center justify-center">
-						<p className="text-sm text-slate-600">
+						<p
+							className="text-sm text-slate-600"
+							data-testid="no-usage-by-token-data"
+						>
 							No usage data available by token.
 						</p>
 					</div>
