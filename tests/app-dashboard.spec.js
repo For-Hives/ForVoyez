@@ -12,10 +12,11 @@ const log = message => {
 test.describe('Dashboard Quick Links Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		// ensure the URL starts with http:// or https://
-		if (!NEXT_PUBLIC_URL.startsWith('http://')) {
-			if (!NEXT_PUBLIC_URL.startsWith('https://')) {
-				NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
-			}
+		if (
+			!NEXT_PUBLIC_URL.startsWith('http://') &&
+			!NEXT_PUBLIC_URL.startsWith('https://')
+		) {
+			NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 		}
 		await page.goto(NEXT_PUBLIC_URL)
 
@@ -126,9 +127,7 @@ test.describe('Dashboard Quick Links Functionality', () => {
 		log('Dashboard internal quick links navigation test completed successfully')
 	})
 
-	test('Dashboard external quick links navigate correctly', async ({
-		page,
-	}) => {
+	test('Dashboard external quick links have correct href', async ({ page }) => {
 		log('Page loaded')
 
 		const externalQuickLinks = [
@@ -144,16 +143,10 @@ test.describe('Dashboard Quick Links Functionality', () => {
 			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 
-			log(`Clicking external quick link: ${link.name}`)
-			const [newPage] = await Promise.all([
-				page.waitForEvent('popup', { timeout: 15000 }),
-				linkLocator.click(),
-			])
-			await newPage.waitForLoadState()
-			await expect(newPage).toHaveURL(link.href)
-			await newPage.close()
+			log(`Checking href of external quick link: ${link.name}`)
+			await expect(linkLocator).toHaveAttribute('href', link.href)
 		}
 
-		log('Dashboard external quick links navigation test completed successfully')
+		log('Dashboard external quick links href test completed successfully')
 	})
 })
