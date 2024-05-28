@@ -172,6 +172,7 @@ export function ChangingPlansComponent() {
 										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8'
 								)}
+								data-testid={`plan-${tier.billingCycle}`}
 								key={tier.id}
 							>
 								<div className="flex items-center justify-between gap-x-4">
