@@ -16,7 +16,8 @@ vi.mock('@lemonsqueezy/lemonsqueezy.js')
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/database.service')
 
-const STORE_ID = '84282'
+const STORE_ID = '1234'
+vi.stubEnv('LEMON_SQUEEZY_STORE_ID', STORE_ID)
 
 describe('Lemon Squeezy Service', () => {
 	beforeEach(() => {
