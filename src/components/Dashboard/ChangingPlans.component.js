@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
@@ -39,8 +38,6 @@ export function ChangingPlansComponent() {
 
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 
-	const router = useRouter()
-
 	const auth = useAuth()
 
 	useEffect(() => {
@@ -64,15 +61,6 @@ export function ChangingPlansComponent() {
 
 		if (sub) {
 			setCurrentSubscription(sub)
-		}
-	}
-
-	async function subscribe(variantId) {
-		try {
-			const url = await getCheckoutURL(variantId)
-			await router.push(url)
-		} catch (e) {
-			console.error(e)
 		}
 	}
 
@@ -209,7 +197,7 @@ export function ChangingPlansComponent() {
 
 								{currentSubscription ? (
 									<div>
-										<button
+										<Link
 											aria-describedby={tier.id}
 											className={classNames(
 												tier.mostPopular
@@ -218,15 +206,15 @@ export function ChangingPlansComponent() {
 												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 											)}
 											data-testid={`subscribe-button-${tier.id}`}
-											onClick={() => manageSubscription()}
+											href={await getCustomerPortalLink()}
 										>
 											{currentSubscription.planId === tier.id
 												? 'Manage my Subscription'
 												: 'Change Plan'}
-										</button>
+										</Link>
 									</div>
 								) : (
-									<button
+									<Link
 										aria-describedby={tier.id}
 										className={classNames(
 											tier.mostPopular
@@ -235,10 +223,10 @@ export function ChangingPlansComponent() {
 											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
 										data-testid={`subscribe-button-${tier.id}`}
-										onClick={() => subscribe(tier.variantId)}
+										href={await getCheckoutURL(tier.variantId)}
 									>
 										{tier.buttonText}
-									</button>
+									</Link>
 								)}
 								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
