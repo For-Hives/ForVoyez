@@ -113,5 +113,26 @@ test.describe('Plans Management Functionality', () => {
 
 		expect(manageSubscriptionLink).toBeTruthy()
 		expect(changePlanLink).toBeTruthy()
+
+		// Check the visibility of the refill plans section
+		await page.waitForFunction(
+			() => {
+				const refillSection = document.querySelector(
+					'[data-testid="refill-plans-section"]'
+				)
+				return refillSection !== null
+			},
+			{ timeout: 50000 }
+		)
+
+		// Verify the presence of "Refill your credits" buttons
+		log('Verifying presence of "Refill your credits" buttons')
+		const refillButton = page.locator('a:has-text("Refill your credits")')
+		await expect(refillButton).toBeVisible()
+
+		// Verify the refill links are present and correct
+		log('Verifying the refill links are present and correct')
+		const refillLink = await refillButton.getAttribute('href')
+		expect(refillLink).toBeTruthy()
 	})
 })
