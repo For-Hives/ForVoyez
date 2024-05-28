@@ -50,15 +50,15 @@ export async function POST(request) {
 				},
 			})
 
-			if (user.credits <= 0) {
+			if (!user || user.credits <= 0) {
 				return new Response('Unauthorized, no credit left', {
-					statusText: 'Unauthorized',
+					statusText: 'Unauthorized, no credit left',
 					status: 401,
 				})
 			}
 		} catch (error) {
 			return new Response('Unauthorized, invalid token', {
-				statusText: 'Unauthorized',
+				statusText: 'Unauthorized, invalid token',
 				status: 401,
 			})
 		}
@@ -67,16 +67,16 @@ export async function POST(request) {
 
 		const file = formData.get('image')
 		if (!file) {
-			return new Response('No file uploaded', {
-				statusText: 'Bad Request',
+			return new Response('Bad Request, No file uploaded', {
+				statusText: 'Bad Request, No file uploaded',
 				status: 400,
 			})
 		}
 
 		// Check if the uploaded file is an image
 		if (!isValidImageFile(file)) {
-			return new Response('Invalid image file', {
-				statusText: 'Bad Request',
+			return new Response('Bad Request, Invalid image file', {
+				statusText: 'Bad Request, Invalid image file',
 				status: 400,
 			})
 		}
@@ -114,6 +114,9 @@ export async function POST(request) {
 		})
 	} catch (error) {
 		console.error('Error processing the request:', error)
-		return new Response('Internal Server Error', { status: 500 })
+		return new Response('Internal Server Error', {
+			statusText: 'Internal Server Error',
+			status: 500,
+		})
 	}
 }
