@@ -181,6 +181,9 @@ export default function TokenList() {
 												<td className="py-4 pl-4 pr-3 text-sm font-medium italic text-slate-900 sm:pl-6">
 													No tokens found, create one, and it will appear here
 												</td>
+												<td></td>
+												<td></td>
+												<td></td>
 											</tr>
 										)
 									}
