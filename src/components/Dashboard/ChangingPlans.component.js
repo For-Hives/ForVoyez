@@ -36,7 +36,6 @@ export function ChangingPlansComponent() {
 	const [isAnnually, setIsAnnually] = useState(false)
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 	const [urls, setUrls] = useState({})
-
 	const auth = useAuth()
 
 	useEffect(() => {
@@ -49,10 +48,18 @@ export function ChangingPlansComponent() {
 
 	useEffect(() => {
 		const fetchPlansAndUrls = async () => {
+			console.time('Fetching plans')
 			const fetchedPlans = await getPlans()
+			console.timeEnd('Fetching plans')
+
+			console.time('Sorting plans')
 			const sortedPlans = sortPlans(fetchedPlans)
+			console.timeEnd('Sorting plans')
+
 			setPlans(sortedPlans)
 			await checkSubscription()
+
+			console.time('Fetching URLs')
 			const newUrls = {}
 			for (const plan of sortedPlans) {
 				if (currentSubscription && currentSubscription.planId === plan.id) {
@@ -61,6 +68,8 @@ export function ChangingPlansComponent() {
 					newUrls[plan.id] = await getCheckoutURL(plan.variantId)
 				}
 			}
+			console.timeEnd('Fetching URLs')
+
 			setUrls(newUrls)
 		}
 
@@ -68,10 +77,12 @@ export function ChangingPlansComponent() {
 	}, [currentSubscription])
 
 	async function checkSubscription() {
+		console.time('Fetching subscription')
 		const sub = await getSubscriptionFromUserId(auth.userId)
 		if (sub) {
 			setCurrentSubscription(sub)
 		}
+		console.timeEnd('Fetching subscription')
 	}
 
 	if (plans.length === 0 || Object.keys(urls).length === 0) {
