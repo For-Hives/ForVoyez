@@ -7,7 +7,7 @@ import { prisma } from '@/services/prisma.service'
 export async function createUser() {
 	const user = await currentUser()
 
-	if (!user.id) {
+	if (!user || !user.id) {
 		throw new Error('You must be logged to create a user')
 	}
 
