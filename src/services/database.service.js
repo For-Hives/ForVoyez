@@ -1,9 +1,8 @@
 'use server'
-import { getVariant } from '@lemonsqueezy/lemonsqueezy.js'
 import { currentUser } from '@clerk/nextjs/server'
 
 import {
-	initLemonSqueezy,
+	getVariant,
 	listPrice,
 	listProducts,
 } from '@/services/lemonsqueezy.service'
@@ -40,8 +39,6 @@ export async function getPlans(filter = null) {
  * Only syncs variants of type 'subscription'.
  */
 export async function syncPlans() {
-	await initLemonSqueezy()
-
 	async function _addVariant(variant) {
 		if (!variant.variantId) {
 			console.error('Variant ID is undefined for variant:', variant)
@@ -266,4 +263,8 @@ export async function getCreditsFromUserId() {
 	})
 
 	return connectedUser.credits
+}
+
+export const TestingExports = {
+	getCurrentUser,
 }

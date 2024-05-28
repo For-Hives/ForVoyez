@@ -4,7 +4,6 @@ import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { currentUser } from '@clerk/nextjs/server'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
-// import {lemonSqueezySetup} from "@lemonsqueezy/lemonsqueezy.js";
 
 const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID
 
@@ -44,9 +43,7 @@ export async function listPrice(variantID) {
 	}
 }
 
-/**
- * This action will create a checkout on Lemon Squeezy.
- */
+// This action will create a checkout on Lemon Squeezy.
 export async function getCheckoutURL(variantId, embed = false) {
 	await initLemonSqueezy()
 
@@ -97,4 +94,14 @@ export async function getCustomerPortalLink() {
 	const customer = await ls.getCustomer(customerId)
 
 	return customer.data.data.attributes.urls.customer_portal
+}
+
+export async function getVariant(variantId) {
+	const { statusCode, error, data } = await ls.getVariant(variantId)
+
+	if (statusCode === 200) {
+		return data
+	} else {
+		throw new Error(error)
+	}
 }
