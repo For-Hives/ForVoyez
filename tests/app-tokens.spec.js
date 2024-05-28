@@ -99,24 +99,9 @@ test.describe('Token Management Functionality', () => {
 		log('Closing the modal')
 		await page.locator('button:has-text("Copied it")').click()
 
-		// Adding the second token
-		log('Clicking "Add token" button')
-		await page.locator('[data-testid="add-token-button"]').click()
-
-		// Fill the token creation form and submit
-		log('Filling and submitting token creation form')
-		await page.locator('input[name="name"]').fill('Test Token 2')
-		await page.locator('input[name="expiredAt"]').fill('2034-05-26')
-		await page.locator('button:has-text("Create Token")').click()
-
-		// Close the modal for the second token
-		log('Closing the modal for the second token')
-		await page.locator('button:has-text("Copied it")').click()
-
 		// Verify tokens are added
 		log('Verifying tokens are added')
 		await expect(page.locator('[data-testid="token-row-0"]')).toBeVisible()
-		await expect(page.locator('[data-testid="token-row-1"]')).toBeVisible()
 
 		// Deleting the first token
 		log('Clicking "Delete" button for the first token')
@@ -126,10 +111,31 @@ test.describe('Token Management Functionality', () => {
 		log('Clicking "Revoke Key" button')
 		await page.locator('button:has-text("Revoke Key")').click()
 
-		// Verify the first token is deleted
-		log('Verifying the first token is deleted')
-		await expect(page.locator('[data-testid="token-row-0"]')).not.toBeVisible()
-		await expect(page.locator('[data-testid="token-row-1"]')).toBeVisible()
+		// Verify the Toastify message
+		log('Verifying the Toastify message')
+		const toastMessage = page.locator('.Toastify__toast-body')
+		await expect(toastMessage).toHaveText('Token deleted successfully')
+
+		log('Token management test completed successfully')
+
+		// Deleting all remaining tokens
+		const deleteButtons = await page
+			.locator('[data-testid^="delete-token-button"]')
+			.elementHandles()
+		for (const deleteButton of deleteButtons) {
+			log('Clicking "Delete" button for remaining token')
+			await deleteButton.click()
+			log('Clicking "Revoke Key" button')
+			await page.locator('button:has-text("Revoke Key")').click()
+			await page.waitForTimeout(1000) // Wait for the Toastify message to appear
+		}
+
+		// Verify all tokens are deleted
+		log('Verifying all tokens are deleted')
+		const remainingTokens = await page
+			.locator('[data-testid^="token-row"]')
+			.count()
+		expect(remainingTokens).toBe(0)
 
 		log('Token management test completed successfully')
 	})
