@@ -17,7 +17,13 @@ function useInitialValue(value, condition = true) {
 	return condition ? initialValue : value
 }
 
-function NavLink({ isAnchorLink = false, active = false, children, href }) {
+function NavLink({
+	isAnchorLink = false,
+	active = false,
+	children,
+	testId,
+	href,
+}) {
 	return (
 		<Link
 			aria-current={active ? 'page' : undefined}
@@ -26,6 +32,7 @@ function NavLink({ isAnchorLink = false, active = false, children, href }) {
 				isAnchorLink ? 'pl-7' : 'pl-4',
 				active ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'
 			)}
+			data-testid={testId}
 			href={href}
 		>
 			<span className="truncate">{children}</span>
@@ -117,7 +124,11 @@ function NavigationGroup({ className, group }) {
 				<ul className="border-l border-transparent" role="list">
 					{group.links.map(link => (
 						<motion.li className="relative" key={link.href} layout="position">
-							<NavLink active={link.href === pathname} href={link.href}>
+							<NavLink
+								active={link.href === pathname}
+								href={link.href}
+								testId={link.testId}
+							>
 								{link.title}
 							</NavLink>
 						</motion.li>
@@ -131,25 +142,41 @@ function NavigationGroup({ className, group }) {
 export const dashboardNavigation = [
 	{
 		links: [
-			{ title: 'Home', href: '/app' },
-			{ href: 'https://doc.forvoyez.com/', title: 'Documentation' },
-			{ href: '/app/playground', title: 'Playground' },
+			{ testId: 'link-home', title: 'Home', href: '/app' },
+			{
+				href: 'https://doc.forvoyez.com/',
+				testId: 'link-documentation',
+				title: 'Documentation',
+			},
+			{
+				testId: 'link-playground',
+				href: '/app/playground',
+				title: 'Playground',
+			},
 		],
 		title: 'General',
 	},
 	{
 		links: [
-			{ href: '/app/tokens', title: 'API Keys' },
-			{ href: '/app/usage', title: 'Usage' },
-			{ href: '/app/plans', title: 'Plans' },
+			{ testId: 'link-api-keys', href: '/app/tokens', title: 'API Keys' },
+			{ testId: 'link-usage', href: '/app/usage', title: 'Usage' },
+			{ testId: 'link-plans', href: '/app/plans', title: 'Plans' },
 		],
 		title: 'App',
 	},
 	{
 		links: [
-			{ title: 'Help, FAQ & Contact', href: '/contact' },
-			{ title: 'Invoice & billing management', href: '/app/billing' },
-			{ title: 'Legal Information', href: '/app/legals' },
+			{ title: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
+			{
+				title: 'Invoice & billing management',
+				testId: 'link-billing',
+				href: '/app/billing',
+			},
+			{
+				title: 'Legal Information',
+				testId: 'link-legals',
+				href: '/app/legals',
+			},
 		],
 		title: 'Support',
 	},
