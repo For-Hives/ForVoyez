@@ -229,9 +229,7 @@ export function ChangingPlansComponent() {
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
 
-								{currentSubscription &&
-								!checkoutUrls?.length > 0 &&
-								!checkoutUrls[tier.variantId] ? (
+								{currentSubscription ? (
 									<div>
 										{customerPortalUrl ? (
 											<Link
@@ -243,7 +241,7 @@ export function ChangingPlansComponent() {
 													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 												)}
 												data-testid={`manage-subscription-${tier.id}`}
-												href={customerPortalUrl ?? ''}
+												href={customerPortalUrl}
 											>
 												{currentSubscription.planId === tier.id
 													? 'Manage my Subscription'
@@ -268,7 +266,7 @@ export function ChangingPlansComponent() {
 											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
 										data-testid={`subscribe-${tier.variantId}`}
-										href={checkoutUrls[tier.variantId]}
+										href={checkoutUrls[tier.variantId] || ''}
 									>
 										{tier.buttonText}
 									</Link>
