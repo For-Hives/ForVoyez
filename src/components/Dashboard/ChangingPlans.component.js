@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
@@ -36,6 +36,7 @@ export function ChangingPlansComponent() {
 	const [isAnnually, setIsAnnually] = useState(false)
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 	const [urls, setUrls] = useState({})
+	const [loading, setLoading] = useState(true)
 	const auth = useAuth()
 
 	useEffect(() => {
@@ -46,29 +47,36 @@ export function ChangingPlansComponent() {
 		}
 	}, [frequency])
 
-	useEffect(() => {
-		const fetchPlansAndUrls = async () => {
+	const fetchPlansAndUrls = useCallback(async () => {
+		setLoading(true)
+		const cachedPlans = localStorage.getItem('plans')
+		if (cachedPlans) {
+			const parsedPlans = JSON.parse(cachedPlans)
+			setPlans(parsedPlans)
+		} else {
 			const fetchedPlans = await getPlans()
-
 			const sortedPlans = sortPlans(fetchedPlans)
-
 			setPlans(sortedPlans)
-			await checkSubscription()
+			localStorage.setItem('plans', JSON.stringify(sortedPlans))
+		}
+		await checkSubscription()
 
-			const newUrls = {}
-			for (const plan of sortedPlans) {
-				if (currentSubscription && currentSubscription.planId === plan.id) {
-					newUrls[plan.id] = await getCustomerPortalLink()
-				} else {
-					newUrls[plan.id] = await getCheckoutURL(plan.variantId)
-				}
+		const newUrls = {}
+		for (const plan of plans) {
+			if (currentSubscription && currentSubscription.planId === plan.id) {
+				newUrls[plan.id] = await getCustomerPortalLink()
+			} else {
+				newUrls[plan.id] = await getCheckoutURL(plan.variantId)
 			}
-
-			setUrls(newUrls)
 		}
 
+		setUrls(newUrls)
+		setLoading(false)
+	}, [currentSubscription, plans])
+
+	useEffect(() => {
 		fetchPlansAndUrls()
-	}, [currentSubscription])
+	}, [])
 
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
@@ -77,7 +85,7 @@ export function ChangingPlansComponent() {
 		}
 	}
 
-	if (plans.length === 0 || Object.keys(urls).length === 0) {
+	if (loading) {
 		return (
 			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
