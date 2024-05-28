@@ -66,36 +66,40 @@ test.describe('Sidebar Navigation Functionality', () => {
 		log('Page loaded')
 
 		const sidebarLinks = [
-			{
-				testId: 'link-home',
-				href: '/app',
-				name: 'Home',
-			},
+			{ testId: 'nav-link-home', title: 'Home', href: '/app' },
 			{
 				href: 'https://doc.forvoyez.com/',
-				testId: 'link-documentation',
-				name: 'Documentation',
+				testId: 'nav-link-documentation',
+				title: 'Documentation',
 			},
 			{
-				testId: 'link-playground',
+				testId: 'nav-link-playground',
 				href: '/app/playground',
-				name: 'Playground',
+				title: 'Playground',
 			},
-			{ testId: 'link-api-keys', href: '/app/tokens', name: 'API Keys' },
-			{ testId: 'link-usage', href: '/app/usage', name: 'Usage' },
-			{ testId: 'link-plans', href: '/app/plans', name: 'Plans' },
-			{ name: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
+			{ testId: 'nav-link-api-keys', href: '/app/tokens', title: 'API Keys' },
+			{ testId: 'nav-link-usage', href: '/app/usage', title: 'Usage' },
+			{ testId: 'nav-link-plans', href: '/app/plans', title: 'Plans' },
 			{
-				name: 'Invoice & billing management',
-				testId: 'link-billing',
+				title: 'Help, FAQ & Contact',
+				testId: 'nav-link-help',
+				href: '/contact',
+			},
+			{
+				title: 'Invoice & billing management',
+				testId: 'nav-link-billing',
 				href: '/app/billing',
 			},
-			{ name: 'Legal Information', testId: 'link-legal', href: '/app/legals' },
+			{
+				title: 'Legal Information',
+				testId: 'nav-link-legals',
+				href: '/app/legals',
+			},
 		]
 
 		for (const link of sidebarLinks) {
-			log(`Checking sidebar link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
+			log(`Checking sidebar link: ${link.title}`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"]`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 			await expect(linkLocator).toHaveAttribute('href', link.href)
 		}
@@ -106,31 +110,39 @@ test.describe('Sidebar Navigation Functionality', () => {
 	test('Sidebar internal links navigate correctly', async ({ page }) => {
 		log('Page loaded')
 
-		const internalSidebarLinks = [
-			{ testId: 'link-home', href: '/app', name: 'Home' },
+		const internalLinks = [
+			{ testId: 'nav-link-home', title: 'Home', href: '/app' },
 			{
-				testId: 'link-playground',
+				testId: 'nav-link-playground',
 				href: '/app/playground',
-				name: 'Playground',
+				title: 'Playground',
 			},
-			{ testId: 'link-api-keys', href: '/app/tokens', name: 'API Keys' },
-			{ testId: 'link-usage', href: '/app/usage', name: 'Usage' },
-			{ testId: 'link-plans', href: '/app/plans', name: 'Plans' },
-			{ name: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
+			{ testId: 'nav-link-api-keys', href: '/app/tokens', title: 'API Keys' },
+			{ testId: 'nav-link-usage', href: '/app/usage', title: 'Usage' },
+			{ testId: 'nav-link-plans', href: '/app/plans', title: 'Plans' },
 			{
-				name: 'Invoice & billing management',
-				testId: 'link-billing',
+				title: 'Help, FAQ & Contact',
+				testId: 'nav-link-help',
+				href: '/contact',
+			},
+			{
+				title: 'Invoice & billing management',
+				testId: 'nav-link-billing',
 				href: '/app/billing',
 			},
-			{ name: 'Legal Information', testId: 'link-legal', href: '/app/legals' },
+			{
+				title: 'Legal Information',
+				testId: 'nav-link-legals',
+				href: '/app/legals',
+			},
 		]
 
-		for (const link of internalSidebarLinks) {
-			log(`Checking internal sidebar link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
+		for (const link of internalLinks) {
+			log(`Checking internal link: ${link.title}`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"]`)
 			await expect(linkLocator).toBeVisible()
 
-			log(`Clicking internal sidebar link: ${link.name}`)
+			log(`Clicking internal link: ${link.title}`)
 			await Promise.all([page.waitForNavigation(), linkLocator.click()])
 			await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
 
@@ -144,20 +156,20 @@ test.describe('Sidebar Navigation Functionality', () => {
 	test('Sidebar external links have correct href', async ({ page }) => {
 		log('Page loaded')
 
-		const externalSidebarLinks = [
+		const externalLinks = [
 			{
 				href: 'https://doc.forvoyez.com/',
-				testId: 'link-documentation',
-				name: 'Documentation',
+				testId: 'nav-link-documentation',
+				title: 'Documentation',
 			},
 		]
 
-		for (const link of externalSidebarLinks) {
-			log(`Checking external sidebar link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
+		for (const link of externalLinks) {
+			log(`Checking external link: ${link.title}`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"]`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 
-			log(`Checking href of external sidebar link: ${link.name}`)
+			log(`Checking href of external link: ${link.title}`)
 			await expect(linkLocator).toHaveAttribute('href', link.href)
 		}
 
