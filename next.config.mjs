@@ -1,4 +1,6 @@
-/** @type {import('next').NextConfig} */
+import MillionLint from '@million/lint'
+
+/** @type {import("next").NextConfig} */
 const nextConfig = {
 	images: {
 		remotePatterns: [
@@ -19,4 +21,4 @@ const nextConfig = {
 	reactStrictMode: true,
 }
 
-module.exports = nextConfig
+export default MillionLint.next({ rsc: true })(nextConfig)
