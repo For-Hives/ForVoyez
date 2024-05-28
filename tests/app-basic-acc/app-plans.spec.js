@@ -93,11 +93,23 @@ test.describe('Plans Management Functionality', () => {
 
 		// Try changing the plan
 		log('Attempting to change the plan')
-		const changePlanButton = page
-			.locator('button:has-text("Subscribe")')
-			.first()
+		const changePlanButton = page.locator('a:has-text("Subscribe")').first()
 
 		await changePlanButton.click()
-		await page.waitForTimeout(50000)
+
+		// Adding more specific logging for plan change process
+		log('Clicked on "Subscribe" button, waiting for URL change')
+		try {
+			await page.waitForURL('**/manage-subscription', { timeout: 15000 })
+			log('Navigation to manage-subscription page was successful')
+		} catch (error) {
+			log('Failed to navigate to manage-subscription page')
+			throw error
+		}
+
+		// wait for the subscription management page to load
+		log('Waiting for the subscription management page to load')
+		await page.waitForTimeout(15000)
+		log('Plan management test completed successfully')
 	})
 })
