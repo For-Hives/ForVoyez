@@ -19,8 +19,14 @@ import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPric
 import { sortPlans } from '@/helpers/sortPlans'
 
 const frequencies = [
-	{ priceSuffix: '/month', value: 'monthly', label: 'Monthly' },
 	{
+		testId: 'frequency-monthly',
+		priceSuffix: '/month',
+		value: 'monthly',
+		label: 'Monthly',
+	},
+	{
+		testId: 'frequency-annually',
 		priceSuffix: '/year',
 		value: 'annually',
 		label: 'Annually',
@@ -78,7 +84,7 @@ export function ChangingPlansComponent() {
 
 	if (plans.length === 0) {
 		return (
-			<div className={'py-20'}>
+			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="flex justify-center pb-20">
 						<div
@@ -119,7 +125,7 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="py-20">
+		<div className="py-20" data-testid="plans-loaded">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="flex justify-center">
 					<RadioGroup
@@ -140,6 +146,7 @@ export function ChangingPlansComponent() {
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
+								data-testid={option.testId}
 								key={option.value}
 								value={option}
 							>
@@ -170,6 +177,7 @@ export function ChangingPlansComponent() {
 										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8'
 								)}
+								data-testid={`plan-${tier.billingCycle}`}
 								key={tier.id}
 							>
 								<div className="flex items-center justify-between gap-x-4">
@@ -308,6 +316,7 @@ export function ChangingPlansComponent() {
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 							)}
+							data-testid="contact-us-link"
 							href="/contact"
 						>
 							Contact Us
