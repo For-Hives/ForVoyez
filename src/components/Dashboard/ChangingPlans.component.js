@@ -36,6 +36,8 @@ export function ChangingPlansComponent() {
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
 	const [currentSubscription, setCurrentSubscription] = useState(null)
+	const [checkoutUrls, setCheckoutUrls] = useState({})
+	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
 	const router = useRouter()
 	const auth = useAuth()
 
@@ -57,27 +59,24 @@ export function ChangingPlansComponent() {
 			}
 		}
 
-		fetchPlans()
-		fetchSubscription()
-	}, [auth.userId])
-
-	const subscribe = async variantId => {
-		try {
-			const url = await getCheckoutURL(variantId)
-			await router.push(url)
-		} catch (e) {
-			console.error(e)
+		const fetchCheckoutUrls = async plans => {
+			const urls = {}
+			if (!plans) return
+			for (const plan of plans) {
+				urls[plan.variantId] = await getCheckoutURL(plan.variantId)
+			}
+			setCheckoutUrls(urls)
 		}
-	}
 
-	const manageSubscription = async () => {
-		try {
+		const fetchCustomerPortalUrl = async () => {
 			const url = await getCustomerPortalLink()
-			router.push(url)
-		} catch (e) {
-			console.error(e)
+			setCustomerPortalUrl(url)
 		}
-	}
+
+		fetchPlans().then(plans => fetchCheckoutUrls(plans))
+		fetchSubscription()
+		fetchCustomerPortalUrl()
+	}, [auth.userId])
 
 	if (plans.length === 0) {
 		return (
@@ -209,7 +208,7 @@ export function ChangingPlansComponent() {
 
 								{currentSubscription ? (
 									<div>
-										<button
+										<Link
 											aria-describedby={tier.id}
 											className={classNames(
 												tier.mostPopular
@@ -217,15 +216,15 @@ export function ChangingPlansComponent() {
 													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 											)}
-											onClick={() => manageSubscription()}
+											href={customerPortalUrl ?? ''}
 										>
 											{currentSubscription.planId === tier.id
 												? 'Manage my Subscription'
 												: 'Change Plan'}
-										</button>
+										</Link>
 									</div>
 								) : (
-									<button
+									<Link
 										aria-describedby={tier.id}
 										className={classNames(
 											tier.mostPopular
@@ -233,10 +232,10 @@ export function ChangingPlansComponent() {
 												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
-										onClick={() => subscribe(tier.variantId)}
+										href={checkoutUrls[tier.variantId] ?? ''}
 									>
 										{tier.buttonText}
-									</button>
+									</Link>
 								)}
 								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
