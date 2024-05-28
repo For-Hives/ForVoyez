@@ -27,6 +27,7 @@ export function RefillPlansComponent() {
 	const [plans, setPlans] = useState([])
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 	const [checkoutUrls, setCheckoutUrls] = useState({})
+	const [isLoadingUrls, setIsLoadingUrls] = useState(true)
 
 	useEffect(() => {
 		const fetchPlans = async () => {
@@ -66,13 +67,14 @@ export function RefillPlansComponent() {
 				}
 			}
 			setCheckoutUrls(urls)
+			setIsLoadingUrls(false)
 		}
 
 		fetchPlans()
 		fetchSubscription()
 	}, [auth.userId])
 
-	if (plans.length === 0) {
+	if (plans.length === 0 || isLoadingUrls) {
 		return (
 			<>
 				<div className="animate-pulse">
@@ -174,7 +176,7 @@ export function RefillPlansComponent() {
 											</p>
 											<p className={''}>One time payment to refill</p>
 
-											{currentSubscription && (
+											{currentSubscription && checkoutUrls[tier.variantId] && (
 												<div>
 													<Link
 														aria-describedby={tier.id}
