@@ -10,14 +10,18 @@ const log = message => {
 }
 
 test.describe('Token Management Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		// ensure the URL starts with http:// or https://
+	test.beforeEach(async ({ context, page }) => {
+		// Ensure the URL starts with http:// or https://
 		if (
 			!NEXT_PUBLIC_URL.startsWith('http://') &&
 			!NEXT_PUBLIC_URL.startsWith('https://')
 		) {
 			NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 		}
+		// Grant clipboard permissions
+		await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
+			origin: NEXT_PUBLIC_URL,
+		})
 		await page.goto(NEXT_PUBLIC_URL)
 
 		// Click on the sign-in button
