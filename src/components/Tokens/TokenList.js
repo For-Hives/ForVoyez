@@ -71,6 +71,7 @@ export default function TokenList() {
 				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 					<button
 						className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+						data-testid="add-token-button"
 						onClick={openModal}
 						type="button"
 					>
@@ -122,7 +123,7 @@ export default function TokenList() {
 										// map over tokens and display them in a table
 										tokens && tokens.length > 0 ? (
 											tokens.map((token, index) => (
-												<tr key={index}>
+												<tr data-testid={`token-row-${index}`} key={index}>
 													<td className="overflow-x-visible whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
 														{
 															// display token name, and truncate if too long
@@ -169,6 +170,7 @@ export default function TokenList() {
 													<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
 														<button
 															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
+															data-testid={`delete-token-button-${index}`}
 															onClick={() => openDeleteModal(token)}
 														>
 															Delete
