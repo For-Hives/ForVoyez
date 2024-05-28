@@ -8,7 +8,9 @@ vi.mock('jose')
 vi.mock('crypto')
 
 describe('JWT Service', () => {
-	const payload = { name: 'Test User', id: 1 }
+	const expiredAt = new Date()
+	const payload = { expiredAt: expiredAt, name: 'Test User', id: 1 }
+
 	const token = 'mocked.jwt.token'
 	const secret = 'mysecret'
 
@@ -33,7 +35,7 @@ describe('JWT Service', () => {
 			})
 			expect(SignJWT.prototype.setIssuer).toHaveBeenCalledWith('ForVoyez')
 			expect(SignJWT.prototype.setAudience).toHaveBeenCalledWith('ForVoyez')
-			expect(SignJWT.prototype.setExpirationTime).toHaveBeenCalledWith('1 day')
+			expect(SignJWT.prototype.setExpirationTime).toHaveBeenCalledWith(expiredAt)
 			expect(SignJWT.prototype.sign).toHaveBeenCalledWith(secret)
 			expect(generatedToken).toBe(token)
 		})
@@ -55,9 +57,7 @@ describe('JWT Service', () => {
 		it('should throw an error for an invalid JWT token', async () => {
 			jwtVerify.mockRejectedValue(new Error('Token is invalid'))
 
-			await expect(verifyJwt(`Bearer ${token}`)).rejects.toThrow(
-				'Token is invalid'
-			)
+			await expect(verifyJwt(`Bearer ${token}`)).rejects.toThrow('Token is invalid')
 		})
 	})
 })
