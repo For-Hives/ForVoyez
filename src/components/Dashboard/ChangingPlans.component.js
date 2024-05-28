@@ -47,36 +47,36 @@ export function ChangingPlansComponent() {
 		}
 	}, [frequency])
 
-	const fetchPlansAndUrls = useCallback(async () => {
-		setLoading(true)
-		const cachedPlans = localStorage.getItem('plans')
-		if (cachedPlans) {
-			const parsedPlans = JSON.parse(cachedPlans)
-			setPlans(parsedPlans)
-		} else {
-			const fetchedPlans = await getPlans()
-			const sortedPlans = sortPlans(fetchedPlans)
-			setPlans(sortedPlans)
-			localStorage.setItem('plans', JSON.stringify(sortedPlans))
-		}
-		await checkSubscription()
-
-		const newUrls = {}
-		for (const plan of plans) {
-			if (currentSubscription && currentSubscription.planId === plan.id) {
-				newUrls[plan.id] = await getCustomerPortalLink()
-			} else {
-				newUrls[plan.id] = await getCheckoutURL(plan.variantId)
-			}
-		}
-
-		setUrls(newUrls)
-		setLoading(false)
-	}, [currentSubscription, plans])
-
 	useEffect(() => {
+		const fetchPlansAndUrls = async () => {
+			setLoading(true)
+			const cachedPlans = localStorage.getItem('plans')
+			if (cachedPlans) {
+				const parsedPlans = JSON.parse(cachedPlans)
+				setPlans(parsedPlans)
+			} else {
+				const fetchedPlans = await getPlans()
+				const sortedPlans = sortPlans(fetchedPlans)
+				setPlans(sortedPlans)
+				localStorage.setItem('plans', JSON.stringify(sortedPlans))
+			}
+			await checkSubscription()
+
+			const newUrls = {}
+			for (const plan of plans) {
+				if (currentSubscription && currentSubscription.planId === plan.id) {
+					newUrls[plan.id] = await getCustomerPortalLink()
+				} else {
+					newUrls[plan.id] = await getCheckoutURL(plan.variantId)
+				}
+			}
+
+			setUrls(newUrls)
+			setLoading(false)
+		}
+
 		fetchPlansAndUrls()
-	}, [])
+	}, [currentSubscription, plans])
 
 	async function checkSubscription() {
 		const sub = await getSubscriptionFromUserId(auth.userId)
