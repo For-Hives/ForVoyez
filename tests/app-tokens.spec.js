@@ -122,9 +122,9 @@ test.describe('Token Management Functionality', () => {
 		log('Clicking "Delete" button for the first token')
 		await page.locator('[data-testid="delete-token-button-0"]').click()
 
-		// Confirm deletion
-		log('Confirming token deletion')
-		await page.locator('button:has-text("Confirm")').click()
+		// Confirm deletion by clicking "Revoke Key"
+		log('Clicking "Revoke Key" button')
+		await page.locator('button:has-text("Revoke Key")').click()
 
 		// Verify the first token is deleted
 		log('Verifying the first token is deleted')
