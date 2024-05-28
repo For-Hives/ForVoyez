@@ -33,7 +33,7 @@ export async function blobToBase64(blob) {
 		}
 
 		// Load image with sharp
-		const image = sharp(await blob.arrayBuffer())
+		const image = sharp(await new Response(blob).arrayBuffer())
 
 		// Check image dimensions
 		const { height, width } = await image.metadata()
@@ -150,4 +150,8 @@ export async function getImageDescription(base64Image, data) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
 	}
+}
+
+export const TestingExports = {
+	extractKeywordsAndLimitContext,
 }
