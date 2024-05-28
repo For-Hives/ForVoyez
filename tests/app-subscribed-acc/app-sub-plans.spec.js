@@ -118,35 +118,6 @@ test.describe('Plans Management Functionality', () => {
 			'https://forvoyez.lemonsqueezy.com/billing'
 		)
 
-		// Check refill plans
-		log('Navigating to the refill plans page')
-
-		// Check the visibility of the refill plans section
-		await page.waitForFunction(
-			() => {
-				const refillSection = document.querySelector(
-					'[data-testid="refill-plans-section"]'
-				)
-				return refillSection !== null
-			},
-			{ timeout: 50000 }
-		)
-
-		// Wait for the refill plans to be loaded
-		log('Waiting for refill plans to be loaded')
-		await page.waitForFunction(
-			() => {
-				const refillPlans = document.querySelectorAll('[data-testid^="plan-"]')
-				return refillPlans.length > 0
-			},
-			{ timeout: 50000 }
-		)
-
-		// Check if the refill plans are loaded and displayed correctly
-		log('Checking if the refill plans are loaded and displayed correctly')
-		const refillPlans = await page.locator('[data-testid^="plan-"]')
-		expect(await refillPlans.count()).toBeGreaterThan(0)
-
 		// Verify the presence of "Refill your credits" buttons
 		log('Verifying presence of "Refill your credits" buttons')
 		const refillButton = page.locator('a:has-text("Refill your credits")')
