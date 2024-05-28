@@ -62,7 +62,7 @@ test.describe('Token Management Functionality', () => {
 		await page.goto(`${NEXT_PUBLIC_URL}/app/tokens`)
 	})
 
-	test('Add and delete tokens', async ({ page }) => {
+	test('Add, copy and delete tokens', async ({ page }) => {
 		log('Page loaded')
 
 		// Adding the first token
@@ -75,6 +75,26 @@ test.describe('Token Management Functionality', () => {
 		await page.locator('input[name="expiredAt"]').fill('2034-05-26')
 		await page.locator('button:has-text("Create Token")').click()
 
+		// Wait for the token value to appear and copy it
+		log('Waiting for token value to appear and copying it')
+		const tokenValueLocator = page.locator('input[name="token"]')
+		await tokenValueLocator.waitFor({ state: 'visible', timeout: 15000 })
+		const tokenValue = await tokenValueLocator.inputValue()
+
+		log('Clicking "Copy" button')
+		await page.locator('button:has-text("Copy")').click()
+
+		// Verify the token value is in the clipboard
+		log('Verifying the token value is in the clipboard')
+		const clipboardText = await page.evaluate(() =>
+			navigator.clipboard.readText()
+		)
+		expect(clipboardText).toBe(tokenValue)
+
+		// Close the modal
+		log('Closing the modal')
+		await page.locator('button:has-text("Copied it")').click()
+
 		// Adding the second token
 		log('Clicking "Add token" button')
 		await page.locator('[data-testid="add-token-button"]').click()
@@ -84,6 +104,10 @@ test.describe('Token Management Functionality', () => {
 		await page.locator('input[name="name"]').fill('Test Token 2')
 		await page.locator('input[name="expiredAt"]').fill('2034-05-26')
 		await page.locator('button:has-text("Create Token")').click()
+
+		// Close the modal for the second token
+		log('Closing the modal for the second token')
+		await page.locator('button:has-text("Copied it")').click()
 
 		// Verify tokens are added
 		log('Verifying tokens are added')
