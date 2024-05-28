@@ -9,7 +9,7 @@ const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
 }
 
-test.describe(+'Dashboard Quick Links Functionality', () => {
+test.describe('Dashboard Quick Links Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(NEXT_PUBLIC_URL)
 
@@ -77,7 +77,7 @@ test.describe(+'Dashboard Quick Links Functionality', () => {
 
 		for (const link of quickLinks) {
 			log(`Checking quick link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"]`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 			await expect(linkLocator).toHaveAttribute('href', link.href)
 		}
@@ -106,7 +106,7 @@ test.describe(+'Dashboard Quick Links Functionality', () => {
 
 		for (const link of internalQuickLinks) {
 			log(`Checking internal quick link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"]`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 
 			log(`Clicking internal quick link: ${link.name}`)
@@ -135,7 +135,7 @@ test.describe(+'Dashboard Quick Links Functionality', () => {
 
 		for (const link of externalQuickLinks) {
 			log(`Checking external quick link: ${link.name}`)
-			const linkLocator = page.locator(`[data-testid="${link.testId}"]`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 
 			log(`Clicking external quick link: ${link.name}`)

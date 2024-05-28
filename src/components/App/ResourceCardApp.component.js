@@ -70,6 +70,7 @@ export function ResourceCardAppComponent({ resource }) {
 				<ResourceIcon icon={resource.icon} />
 				<h3 className="mt-4 text-sm font-semibold leading-7 text-slate-900">
 					<Link href={resource.href}>
+						{' '}
 						<span className="absolute inset-0 rounded-2xl" />
 						{resource.name}
 					</Link>
