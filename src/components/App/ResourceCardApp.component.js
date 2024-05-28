@@ -60,6 +60,7 @@ export function ResourceCardAppComponent({ resource }) {
 	return (
 		<div
 			className="group relative flex rounded-2xl bg-slate-50 transition-shadow hover:shadow-md hover:shadow-slate-900/5"
+			data-testid={resource.testId}
 			key={resource.href}
 			onMouseMove={onMouseMove}
 		>

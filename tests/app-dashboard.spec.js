@@ -59,36 +59,40 @@ test.describe('Dashboard Quick Links Functionality', () => {
 		log('Page loaded')
 
 		const quickLinks = [
-			{ href: 'https://doc.forvoyez.com/', name: 'Documentation' },
-			{ href: '/app/playground', name: 'Playground' },
-			{ href: '/app/tokens', name: 'API Keys' },
-			{ href: '/app/usage', name: 'Usage' },
-			{ href: '/app/plans', name: 'Plans' },
-			{ name: 'Help, FAQ & Contact', href: '/contact' },
+			{
+				href: 'https://doc.forvoyez.com/',
+				testId: 'link-documentation',
+				name: 'Documentation',
+			},
+			{
+				testId: 'link-playground',
+				href: '/app/playground',
+				name: 'Playground',
+			},
+			{ testId: 'link-api-keys', href: '/app/tokens', name: 'API Keys' },
+			{ testId: 'link-usage', href: '/app/usage', name: 'Usage' },
+			{ testId: 'link-plans', href: '/app/plans', name: 'Plans' },
+			{ name: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
 		]
 
 		for (const link of quickLinks) {
 			log(`Checking quick link: ${link.name}`)
-			const linkLocator = page.locator(`a:has-text("${link.name}")`)
+			const linkLocator = page.locator(`[data-testid="${link.testId}"]`)
 			await expect(linkLocator).toBeVisible()
 
 			log(`Clicking quick link: ${link.name}`)
 			const [newPage] = await Promise.all([
-				page.waitForEvent('popup'),
+				link.href.startsWith('http')
+					? page.waitForEvent('popup')
+					: page.waitForNavigation(),
 				linkLocator.click(),
 			])
 
 			if (link.href.startsWith('http')) {
 				await expect(newPage).toHaveURL(link.href)
-			} else {
-				await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
-			}
-
-			// Close the new page if it's a popup
-			if (link.href.startsWith('http')) {
 				await newPage.close()
 			} else {
-				// Navigate back to the dashboard for the next iteration
+				await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
 				await page.goto(`${NEXT_PUBLIC_URL}/app`)
 			}
 		}
