@@ -25,18 +25,22 @@ export function UsageChartComponent() {
 	const [usageByToken, setUsageByToken] = useState([])
 	const [isLoadingUsage, setIsLoadingUsage] = useState(true)
 	const [isLoadingUsageByToken, setIsLoadingUsageByToken] = useState(true)
+	const [showTooltip, setShowTooltip] = useState(false)
 
 	const { userId } = useAuth()
 
 	useEffect(() => {
 		async function fetchUsage() {
-			const data = await getUsageForUser(userId)
+			const data = await getUsageForUser()
 			setUsage(data)
 			setIsLoadingUsage(false)
+			if (data.length === 0) {
+				setShowTooltip(true)
+			}
 		}
 
 		async function fetchUsageByToken() {
-			const data = await getUsageByToken(userId)
+			const data = await getUsageByToken()
 			const formattedData = data.map(entry => ({
 				token: entry.token,
 				used: entry.used,
@@ -69,6 +73,27 @@ export function UsageChartComponent() {
 					<p className="text-sm text-slate-600">No usage yet</p>
 				)}
 			</div>
+			{showTooltip && (
+				<div
+					className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8"
+					data-testid="usage-tooltip"
+				>
+					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
+						<p className="text-sm leading-6 text-white">
+							<strong className="font-semibold">Usage Data</strong>
+							<svg
+								aria-hidden="true"
+								className="mx-2 inline h-0.5 w-0.5 fill-current"
+								viewBox="0 0 2 2"
+							>
+								<circle cx="1" cy="1" r="1" />
+							</svg>
+							You need to have used the application at least once to see the
+							usage data.
+						</p>
+					</div>
+				</div>
+			)}
 			<div className="mt-8 h-[400px]">
 				{isLoadingUsage ? (
 					<SkeletonLoader />
