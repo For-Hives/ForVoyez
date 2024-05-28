@@ -69,8 +69,12 @@ export function ChangingPlansComponent() {
 		}
 
 		const fetchCustomerPortalUrl = async () => {
-			const url = await getCustomerPortalLink()
-			setCustomerPortalUrl(url)
+			try {
+				const url = await getCustomerPortalLink()
+				setCustomerPortalUrl(url)
+			} catch (error) {
+				console.error('Error fetching customer portal URL:', error)
+			}
 		}
 
 		fetchPlans().then(plans => fetchCheckoutUrls(plans))
@@ -208,20 +212,26 @@ export function ChangingPlansComponent() {
 
 								{currentSubscription ? (
 									<div>
-										<Link
-											aria-describedby={tier.id}
-											className={classNames(
-												tier.mostPopular
-													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-											)}
-											href={customerPortalUrl ?? ''}
-										>
-											{currentSubscription.planId === tier.id
-												? 'Manage my Subscription'
-												: 'Change Plan'}
-										</Link>
+										{customerPortalUrl ? (
+											<Link
+												aria-describedby={tier.id}
+												className={classNames(
+													tier.mostPopular
+														? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+														: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+												)}
+												href={customerPortalUrl}
+											>
+												{currentSubscription.planId === tier.id
+													? 'Manage my Subscription'
+													: 'Change Plan'}
+											</Link>
+										) : (
+											<p className="mt-6 text-sm text-red-500">
+												Customer portal URL not available.
+											</p>
+										)}
 									</div>
 								) : (
 									<Link
