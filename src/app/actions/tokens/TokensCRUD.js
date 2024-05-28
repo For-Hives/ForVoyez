@@ -12,7 +12,7 @@ function truncateToken(token) {
 }
 
 export async function createToken(token) {
-	const userId = (await currentUser()).id
+	const userId = (await currentUser())?.id
 
 	if (!userId) {
 		throw new Error('You must be logged in to create a token')
@@ -41,7 +41,7 @@ export async function createToken(token) {
 }
 
 export async function getAllToken() {
-	const userId = (await currentUser()).id
+	const userId = (await currentUser())?.id
 
 	if (!userId) {
 		throw new Error('You must be logged in to view tokens')
@@ -60,7 +60,7 @@ export async function getAllToken() {
 }
 
 export async function deleteToken(tokenId) {
-	const userId = (await currentUser()).id
+	const userId = (await currentUser())?.id
 
 	if (!userId) {
 		throw new Error('You must be logged in to delete a token')
