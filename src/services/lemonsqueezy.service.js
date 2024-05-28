@@ -76,6 +76,7 @@ export async function getCheckoutURL(variantId, embed = false) {
 	return checkout.data?.data.attributes.url
 }
 
+// server-side code
 export async function getCustomerPortalLink() {
 	await initLemonSqueezy()
 
@@ -89,7 +90,8 @@ export async function getCustomerPortalLink() {
 	const customerId = await getCustomerIdFromUser(user.id)
 
 	if (!customerId) {
-		throw new Error('Customer not found.')
+		console.warn('Customer not found.')
+		return null
 	}
 
 	// get customer object
