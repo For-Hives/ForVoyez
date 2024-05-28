@@ -142,14 +142,14 @@ function NavigationGroup({ className, group }) {
 export const dashboardNavigation = [
 	{
 		links: [
-			{ testId: 'link-home', title: 'Home', href: '/app' },
+			{ testId: 'nav-link-home', title: 'Home', href: '/app' },
 			{
 				href: 'https://doc.forvoyez.com/',
-				testId: 'link-documentation',
+				testId: 'nav-link-documentation',
 				title: 'Documentation',
 			},
 			{
-				testId: 'link-playground',
+				testId: 'nav-link-playground',
 				href: '/app/playground',
 				title: 'Playground',
 			},
@@ -158,23 +158,27 @@ export const dashboardNavigation = [
 	},
 	{
 		links: [
-			{ testId: 'link-api-keys', href: '/app/tokens', title: 'API Keys' },
-			{ testId: 'link-usage', href: '/app/usage', title: 'Usage' },
-			{ testId: 'link-plans', href: '/app/plans', title: 'Plans' },
+			{ testId: 'nav-link-api-keys', href: '/app/tokens', title: 'API Keys' },
+			{ testId: 'nav-link-usage', href: '/app/usage', title: 'Usage' },
+			{ testId: 'nav-link-plans', href: '/app/plans', title: 'Plans' },
 		],
 		title: 'App',
 	},
 	{
 		links: [
-			{ title: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
+			{
+				title: 'Help, FAQ & Contact',
+				testId: 'nav-link-help',
+				href: '/contact',
+			},
 			{
 				title: 'Invoice & billing management',
-				testId: 'link-billing',
+				testId: 'nav-link-billing',
 				href: '/app/billing',
 			},
 			{
 				title: 'Legal Information',
-				testId: 'link-legals',
+				testId: 'nav-link-legals',
 				href: '/app/legals',
 			},
 		],
