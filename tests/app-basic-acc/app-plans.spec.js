@@ -66,9 +66,15 @@ test.describe('Plans Management Functionality', () => {
 		log('Page loaded')
 
 		// Check the visibility of the plans section
-		const plansSection = page.locator('[data-testid="plans-section"]')
-		log('Checking visibility of plans section')
-		await expect(plansSection).toBeVisible()
+		await page.waitForFunction(
+			() => {
+				const plansSection = document.querySelector(
+					'[data-testid="plans-loading"]'
+				)
+				return plansSection !== null
+			},
+			{ timeout: 15000 }
+		)
 
 		// Wait for the plans to be loaded
 		log('Waiting for plans to be loaded')
@@ -88,15 +94,18 @@ test.describe('Plans Management Functionality', () => {
 		// Try changing the plan
 		log('Attempting to change the plan')
 		const changePlanButton = page
-			.locator('button:has-text("Change Plan")')
+			.locator('button:has-text("Subscribe")')
 			.first()
 		await changePlanButton.click()
 
 		// Verify if navigation to the subscription management page occurs
 		// This can be done by checking the URL or a specific element on the new page
+		// Example:
 		await page.waitForURL('**/manage-subscription', { timeout: 15000 })
 		expect(page.url()).toContain('manage-subscription')
 
+		// wait for the subscription management page to load
+		await page.waitForTimeout(15000)
 		log('Plan management test completed successfully')
 	})
 })
