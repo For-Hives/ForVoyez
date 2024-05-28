@@ -47,15 +47,24 @@ export function ChangingPlansComponent() {
 
 	useEffect(() => {
 		const fetchPlans = async () => {
-			const plans = await getPlans()
-			const sortedPlans = sortPlans(plans)
-			setPlans(sortedPlans)
+			try {
+				const plans = await getPlans()
+				const sortedPlans = sortPlans(plans)
+				setPlans(sortedPlans)
+				await fetchCheckoutUrls(sortedPlans)
+			} catch (error) {
+				console.error('Error fetching plans:', error)
+			}
 		}
 
 		const fetchSubscription = async () => {
-			const sub = await getSubscriptionFromUserId(auth.userId)
-			if (sub) {
-				setCurrentSubscription(sub)
+			try {
+				const sub = await getSubscriptionFromUserId(auth.userId)
+				if (sub) {
+					setCurrentSubscription(sub)
+				}
+			} catch (error) {
+				console.error('Error fetching subscription:', error)
 			}
 		}
 
@@ -63,7 +72,15 @@ export function ChangingPlansComponent() {
 			const urls = {}
 			if (!plans) return
 			for (const plan of plans) {
-				urls[plan.variantId] = await getCheckoutURL(plan.variantId)
+				try {
+					const url = await getCheckoutURL(plan.variantId)
+					urls[plan.variantId] = url
+				} catch (error) {
+					console.error(
+						`Error fetching checkout URL for variant ${plan.variantId}:`,
+						error
+					)
+				}
 			}
 			setCheckoutUrls(urls)
 		}
@@ -77,7 +94,7 @@ export function ChangingPlansComponent() {
 			}
 		}
 
-		fetchPlans().then(plans => fetchCheckoutUrls(plans))
+		fetchPlans()
 		fetchSubscription()
 		fetchCustomerPortalUrl()
 	}, [auth.userId])
@@ -121,7 +138,7 @@ export function ChangingPlansComponent() {
 	}
 
 	return (
-		<div className="py-20">
+		<div className="py-20" data-testid="plans-section">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="flex justify-center">
 					<RadioGroup
@@ -142,6 +159,7 @@ export function ChangingPlansComponent() {
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
+								data-testid={`frequency-option-${option.value}`}
 								key={option.value}
 								value={option}
 							>
@@ -172,7 +190,7 @@ export function ChangingPlansComponent() {
 										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8'
 								)}
-								data-testid={`plan-${tier.billingCycle}`}
+								data-testid={`plan-${tier.id}`}
 								key={tier.id}
 							>
 								<div className="flex items-center justify-between gap-x-4">
@@ -211,7 +229,9 @@ export function ChangingPlansComponent() {
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
 
-								{currentSubscription ? (
+								{currentSubscription &&
+								!checkoutUrls?.length > 0 &&
+								!checkoutUrls[tier.variantId] ? (
 									<div>
 										{customerPortalUrl ? (
 											<Link
@@ -222,14 +242,18 @@ export function ChangingPlansComponent() {
 														: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 												)}
-												href={customerPortalUrl}
+												data-testid={`manage-subscription-${tier.id}`}
+												href={customerPortalUrl ?? ''}
 											>
 												{currentSubscription.planId === tier.id
 													? 'Manage my Subscription'
 													: 'Change Plan'}
 											</Link>
 										) : (
-											<p className="mt-6 text-sm text-red-500">
+											<p
+												className="mt-6 text-sm text-red-500"
+												data-testid="customer-portal-unavailable"
+											>
 												Customer portal URL not available.
 											</p>
 										)}
@@ -243,7 +267,8 @@ export function ChangingPlansComponent() {
 												: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
-										href={checkoutUrls[tier.variantId] ?? ''}
+										data-testid={`subscribe-${tier.variantId}`}
+										href={checkoutUrls[tier.variantId]}
 									>
 										{tier.buttonText}
 									</Link>
@@ -257,6 +282,7 @@ export function ChangingPlansComponent() {
 									) : (
 										<button
 											className={'group m-0 flex gap-1 p-0'}
+											data-testid="get-more-tokens-button"
 											onClick={() => setFrequency(frequencies[1])}
 										>
 											<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
@@ -276,6 +302,7 @@ export function ChangingPlansComponent() {
 											<CheckIcon
 												aria-hidden="true"
 												className="h-6 w-5 flex-none text-forvoyez_orange-500"
+												data-testid={`feature-${feature}`}
 											/>
 											{feature}
 										</li>
@@ -286,6 +313,7 @@ export function ChangingPlansComponent() {
 					})}
 					<div
 						className={'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2'}
+						data-testid="plan-custom"
 						key="custom"
 					>
 						<div className="flex items-center justify-between gap-x-4">
@@ -317,6 +345,7 @@ export function ChangingPlansComponent() {
 								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 							)}
+							data-testid="contact-us-link"
 							href="/contact"
 						>
 							Contact Us
@@ -329,6 +358,7 @@ export function ChangingPlansComponent() {
 									<CheckIcon
 										aria-hidden="true"
 										className="h-6 w-5 flex-none text-forvoyez_orange-500"
+										data-testid={`feature-${feature}`}
 									/>
 									{feature}
 								</li>
