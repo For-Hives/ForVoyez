@@ -9,7 +9,7 @@ const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
 }
 
-test.describe('Dashboard Quick Links Functionality', () => {
+test.describe(+'Dashboard Quick Links Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(NEXT_PUBLIC_URL)
 
