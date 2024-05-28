@@ -120,7 +120,9 @@ test.describe('Plans Management Functionality', () => {
 
 		// Verify the presence of "Refill your credits" buttons
 		log('Verifying presence of "Refill your credits" buttons')
-		const refillButton = page.locator('a:has-text("Refill your credits")')
+		const refillButton = page
+			.locator('a:has-text("Refill your credits")')
+			.first()
 		await expect(refillButton).toBeVisible()
 
 		// Verify the refill links are present and correct
