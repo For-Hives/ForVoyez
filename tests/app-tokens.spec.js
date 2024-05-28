@@ -71,7 +71,8 @@ test.describe('Token Management Functionality', () => {
 
 		// Fill the token creation form and submit
 		log('Filling and submitting token creation form')
-		await page.locator('input[name="tokenName"]').fill('Test Token 1')
+		await page.locator('input[name="name"]').fill('Test Token 1')
+		await page.locator('input[name="expiredAt"]').fill('2034-05-26')
 		await page.locator('button:has-text("Create Token")').click()
 
 		// Adding the second token
@@ -80,7 +81,8 @@ test.describe('Token Management Functionality', () => {
 
 		// Fill the token creation form and submit
 		log('Filling and submitting token creation form')
-		await page.locator('input[name="tokenName"]').fill('Test Token 2')
+		await page.locator('input[name="name"]').fill('Test Token 2')
+		await page.locator('input[name="expiredAt"]').fill('2034-05-26')
 		await page.locator('button:has-text("Create Token")').click()
 
 		// Verify tokens are added
