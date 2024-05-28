@@ -38,6 +38,7 @@ export function ChangingPlansComponent() {
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 	const [checkoutUrls, setCheckoutUrls] = useState({})
 	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
+	const [loadingUrls, setLoadingUrls] = useState(true) // New state to track URL loading status
 	const router = useRouter()
 	const auth = useAuth()
 
@@ -83,6 +84,7 @@ export function ChangingPlansComponent() {
 				}
 			}
 			setCheckoutUrls(urls)
+			setLoadingUrls(false) // Set loading status to false once all URLs are fetched
 		}
 
 		const fetchCustomerPortalUrl = async () => {
@@ -99,7 +101,8 @@ export function ChangingPlansComponent() {
 		fetchCustomerPortalUrl()
 	}, [auth.userId])
 
-	if (plans.length === 0) {
+	if (plans.length === 0 || loadingUrls) {
+		// Check if URLs are still loading
 		return (
 			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -229,32 +232,23 @@ export function ChangingPlansComponent() {
 									Billed {isAnnually ? 'annually' : 'monthly'}
 								</p>
 
-								{currentSubscription ? (
+								{currentSubscription && customerPortalUrl ? (
 									<div>
-										{customerPortalUrl ? (
-											<Link
-												aria-describedby={tier.id}
-												className={classNames(
-													tier.mostPopular
-														? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-														: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-													'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
-												)}
-												data-testid={`manage-subscription-${tier.id}`}
-												href={customerPortalUrl}
-											>
-												{currentSubscription.planId === tier.id
-													? 'Manage my Subscription'
-													: 'Change Plan'}
-											</Link>
-										) : (
-											<p
-												className="mt-6 text-sm text-red-500"
-												data-testid="customer-portal-unavailable"
-											>
-												Customer portal URL not available.
-											</p>
-										)}
+										<Link
+											aria-describedby={tier.id}
+											className={classNames(
+												tier.mostPopular
+													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
+													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
+												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+											)}
+											data-testid={`manage-subscription-${tier.id}`}
+											href={customerPortalUrl ?? ''}
+										>
+											{currentSubscription.planId === tier.id
+												? 'Manage my Subscription'
+												: 'Change Plan'}
+										</Link>
 									</div>
 								) : (
 									<Link
@@ -266,9 +260,9 @@ export function ChangingPlansComponent() {
 											'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
 										)}
 										data-testid={`subscribe-${tier.variantId}`}
-										href={checkoutUrls[tier.variantId] || ''}
+										href={checkoutUrls[tier.variantId] ?? '#'}
 									>
-										{tier.buttonText}
+										{tier.buttonText || 'Subscribe'}
 									</Link>
 								)}
 								<div className={'mt-2 flex items-center'}>
