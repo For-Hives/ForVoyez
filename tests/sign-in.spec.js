@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
@@ -9,10 +9,16 @@ const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
 }
 
-test.describe('Sign-in Functionality', () => {
-	test('User can sign in successfully and access manage account', async ({
+test.describe('Sign-in - Sign-out Functionality', () => {
+	test('User can sign in successfully, access manage account, and sign out', async ({
 		page,
 	}) => {
+		// ensure the URL starts with http:// or https://
+		if (!NEXT_PUBLIC_URL.startsWith('http://')) {
+			if (!NEXT_PUBLIC_URL.startsWith('https://')) {
+				NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
+			}
+		}
 		await page.goto(NEXT_PUBLIC_URL)
 
 		log('Page loaded')
@@ -86,6 +92,7 @@ test.describe('Sign-in Functionality', () => {
 
 		// Check if redirected to the manage account page
 		log('Checking if redirected to the manage account page')
+		await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}/profile`)
 
 		// Check for the presence of the email address on the manage account page
 		const emailElement = page.locator(
@@ -95,5 +102,32 @@ test.describe('Sign-in Functionality', () => {
 		await expect(emailElement).toHaveText(TEST_EMAIL)
 
 		log('Sign-in and manage account test completed successfully')
+
+		// Go back to the home page
+		await page.goto(NEXT_PUBLIC_URL)
+
+		// Click the user button to open the profile dialog
+		log('Clicking user button to open profile dialog for sign-out')
+		await userButton.click()
+
+		// Check the "Sign out" button and click it
+		const signOutButton = userProfileDialog.locator(
+			'.cl-userButtonPopoverActionButton__signOut'
+		)
+		log('Checking presence of "Sign out" button')
+		await expect(signOutButton).toBeVisible()
+
+		log('Clicking "Sign out" button')
+		await signOutButton.click()
+
+		// Check if redirected to the home page after sign-out
+		log('Checking if redirected to the home page after sign-out')
+		await expect(page).toHaveURL(NEXT_PUBLIC_URL)
+
+		// Check the presence of the sign-in button to confirm sign-out
+		log('Checking presence of "Sign in" button to confirm sign-out')
+		await expect(signInButton).toBeVisible()
+
+		log('Sign-out test completed successfully')
 	})
 })
