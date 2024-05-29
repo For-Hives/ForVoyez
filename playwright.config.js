@@ -6,6 +6,6 @@ module.exports = {
 		actionTimeout: 100000,
 		headless: false,
 	},
-	testDir: './tests',
+	testDir: './tests/e2e',
 	timeout: 100000,
 }
