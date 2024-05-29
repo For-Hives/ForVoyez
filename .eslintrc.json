@@ -1,21 +1,21 @@
 {
 	"extends": [
 		"prettier",
-		"next/core-web-vitals",
-		"plugin:perfectionist/recommended-natural"
+		"plugin:perfectionist/recommended-natural",
+		"next/core-web-vitals"
 	],
-	"plugins": ["prettier", "no-only-tests"],
+	"plugins": ["no-only-tests", "perfectionist", "prettier"],
 	"rules": {
-		"prettier/prettier": "error",
 		"no-console": [
 			"error",
 			{
 				"allow": ["warn", "error", "info"]
 			}
 		],
+		"prettier/prettier": "error",
 		"no-only-tests/no-only-tests": "error",
 		"perfectionist/sort-objects": [
-			"error",
+			"warn",
 			{
 				"type": "line-length",
 				"order": "desc"
