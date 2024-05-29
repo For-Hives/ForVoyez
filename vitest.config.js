@@ -17,6 +17,7 @@ export default defineConfig({
 			],
 			provider: 'v8',
 		},
+		include: ['tests/unit/**/*.test.js'],
 		environment: 'jsdom',
 	},
 	resolve: {
