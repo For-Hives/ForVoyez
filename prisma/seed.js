@@ -4,39 +4,37 @@ const prisma = new PrismaClient()
 
 const userData = [
 	{
-		clerkId: 'clerk123',
-		credits: 100,
 		Token: {
 			create: [
 				{
-					createdAt: new Date(),
 					expiredAt: new Date(
 						new Date().setFullYear(new Date().getFullYear() + 1)
 					),
 					name: 'Personal Token',
+					createdAt: new Date(),
 				},
 			],
 		},
 		Usage: {
 			create: [
 				{
+					api: 'GET /api/data',
 					usedAt: new Date(),
 					used: 5,
-					api: 'GET /api/data',
 				},
 			],
 		},
+		clerkId: 'clerk123',
+		credits: 100,
 	},
 	{
-		clerkId: 'clerk456',
-		credits: 150,
 		Token: {
 			create: [
 				{
-					createdAt: new Date(),
 					expiredAt: new Date(
 						new Date().setFullYear(new Date().getFullYear() + 1)
 					),
+					createdAt: new Date(),
 					name: 'Work Token',
 				},
 			],
@@ -44,36 +42,38 @@ const userData = [
 		Usage: {
 			create: [
 				{
+					api: 'POST /api/modify',
 					usedAt: new Date(),
 					used: 10,
-					api: 'POST /api/modify',
 				},
 			],
 		},
+		clerkId: 'clerk456',
+		credits: 150,
 	},
 	{
-		clerkId: 'clerk789',
-		credits: 200,
 		Token: {
 			create: [
 				{
-					createdAt: new Date(),
 					expiredAt: new Date(
 						new Date().setFullYear(new Date().getFullYear() + 1)
 					),
 					name: 'Development Token',
+					createdAt: new Date(),
 				},
 			],
 		},
 		Usage: {
 			create: [
 				{
+					api: 'DELETE /api/resource',
 					usedAt: new Date(),
 					used: 20,
-					api: 'DELETE /api/resource',
 				},
 			],
 		},
+		clerkId: 'clerk789',
+		credits: 200,
 	},
 ]
 
