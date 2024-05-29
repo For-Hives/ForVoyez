@@ -40,12 +40,11 @@ export default function ClientLogicBilling() {
 
 			setLoadingMessage('Fetching your billing portal...')
 			const url = await getCustomerPortalLink()
-
-			if (url) {
+			if (url && router) {
 				router.replace(url)
 				setLoadingMessage('Redirecting to your billing home...')
 			} else {
-				throw new Error('Received null URL from getCustomerPortalLink')
+				throw new Error('Invalid URL or router')
 			}
 		} catch (error) {
 			console.error('Error during user redirect:', error) // Log the error for debugging
