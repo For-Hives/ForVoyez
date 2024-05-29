@@ -18,7 +18,8 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"test": "vitest",
-		"test:ui": "vitest --ui --coverage --coverage.enabled=true"
+		"test:ui": "vitest --ui --coverage --coverage.enabled=true",
+		"test:ci": "vitest --coverage --coverage.enabled=true"
 	},
 	"lint-staged": {
 		"*.js": [
