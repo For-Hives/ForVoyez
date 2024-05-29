@@ -3,6 +3,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { Resource } from '@opentelemetry/resources'
 import { NodeSDK } from '@opentelemetry/sdk-node'
+import { registerOTel } from '@vercel/otel'
 
 // Fonction pour créer l'exportateur OTLP basé sur l'environnement
 const createTraceExporter = () => {
@@ -19,12 +20,19 @@ const createTraceExporter = () => {
 	}
 }
 
-const sdk = new NodeSDK({
-	resource: new Resource({
-		[SEMRESATTRS_SERVICE_NAME]: 'next-app',
-	}),
-	spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter()),
+// const sdk = new NodeSDK({
+// 	resource: new Resource({
+// 		[SEMRESATTRS_SERVICE_NAME]: 'forvoyez-app',
+// 	}),
+// 	spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter()),
+// 	traceExporter: createTraceExporter(),
+// })
+
+// sdk.start()
+
+registerOTel({
 	traceExporter: createTraceExporter(),
+	serviceName: 'forvoyez-app',
 })
-sdk.start()
+
 console.info('Tracing initialized')
