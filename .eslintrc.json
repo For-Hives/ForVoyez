@@ -1,10 +1,10 @@
 {
 	"extends": [
 		"prettier",
-		"plugin:perfectionist/recommended-natural",
-		"next/core-web-vitals"
+		"next/core-web-vitals",
+		"plugin:perfectionist/recommended-natural"
 	],
-	"plugins": ["no-only-tests", "perfectionist", "prettier"],
+	"plugins": ["prettier", "no-only-tests", "perfectionist"],
 	"rules": {
 		"no-console": [
 			"error",
