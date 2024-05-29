@@ -8,20 +8,18 @@ import { useRouter } from 'next/navigation'
 import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
 export default function ClientLogicBilling() {
-	// Use the router to redirect the user to the billing portal
 	const router = useRouter()
 	const [loadingMessage, setLoadingMessage] = useState('Loading your data...')
 
-	// Simulate checking if the user has ever been subscribed based on an error message
 	async function hasEverBeenSubscribed() {
 		try {
-			await getCustomerPortalLink() // Attempt to get user details from Lemon Squeezy
-			return true // If details are fetched successfully, assume the user has subscribed before
+			await getCustomerPortalLink()
+			return true
 		} catch (error) {
 			if (error.message === 'customer not found') {
-				return false // User has never subscribed if "customer not found" error is returned
+				return false
 			}
-			throw error // Rethrow any other errors to be handled later
+			throw error
 		}
 	}
 
@@ -31,7 +29,6 @@ export default function ClientLogicBilling() {
 		try {
 			const hasSubscription = await hasEverBeenSubscribed()
 			if (!hasSubscription) {
-				// Use a unique toastId to prevent multiple toasts
 				if (!toast.isActive('subscription-toast')) {
 					toast.info(
 						'You must have been subscribed at least once to access this page.',
@@ -43,9 +40,12 @@ export default function ClientLogicBilling() {
 
 			setLoadingMessage('Fetching your billing portal...')
 			const url = await getCustomerPortalLink()
-			// Uncomment the next line for actual redirection
-			router.replace(url) // Redirect to billing portal if user has subscribed
-			setLoadingMessage('Redirecting to your billing home...')
+			if (url && router) {
+				router.replace(url)
+				setLoadingMessage('Redirecting to your billing home...')
+			} else {
+				throw new Error('Invalid URL or router')
+			}
 		} catch (error) {
 			if (!toast.isActive('data-load-error')) {
 				if (error.message === 'Customer not found.') {
@@ -53,19 +53,14 @@ export default function ClientLogicBilling() {
 						'You must have been subscribed at least once to access this page.',
 						{ toastId: 'data-load-error' }
 					)
-					router.push('/app/plans') // Redirect to dashboard if user has never subscribed
+					router.push('/app/plans')
 					return
 				}
 				toast.error(
-					'Failed to load data: ' +
-						error.message +
-						' ' +
-						'redirect to dashboard',
-					{
-						toastId: 'data-load-error',
-					}
+					'Failed to load data: ' + error.message + ' redirecting to dashboard',
+					{ toastId: 'data-load-error' }
 				)
-				router.push('/app') // Redirect to dashboard if data loading fails
+				router.push('/app')
 			}
 			setLoadingMessage('Failed to load data. Please try again later.')
 		}
@@ -73,7 +68,7 @@ export default function ClientLogicBilling() {
 
 	useEffect(() => {
 		handleUserRedirect()
-	}, []) // Empty dependency array ensures this effect runs only once when the component mounts
+	}, [])
 
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
