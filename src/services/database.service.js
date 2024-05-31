@@ -265,6 +265,6 @@ export async function getCreditsFromUserId() {
 	return connectedUser.credits
 }
 
-export const TestingExports = {
-	getCurrentUser,
-}
+// export const TestingExports = {
+// 	getCurrentUser,
+// }
