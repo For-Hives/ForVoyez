@@ -13,6 +13,7 @@ export default function ClientLogicBilling() {
 
 	async function hasEverBeenSubscribed() {
 		console.log('Checking if user has ever been subscribed...')
+		console.log('step 1')
 		try {
 			await getCustomerPortalLink()
 			return true
@@ -26,6 +27,7 @@ export default function ClientLogicBilling() {
 	}
 
 	async function handleUserRedirect() {
+		console.log('Handling user redirect...')
 		setLoadingMessage('Checking your subscription status...')
 
 		try {
