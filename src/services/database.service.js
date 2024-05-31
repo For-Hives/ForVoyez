@@ -107,16 +107,16 @@ export async function syncPlans() {
  */
 export async function getCustomerIdFromUser() {
 	const user = await currentUser()
+	const userPrisma = await prisma.user.findUnique({
+		select: { customerId: true },
+		where: { clerkId: user.id },
+	})
 	console.log('User get Customer Id:', user)
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
 
-	const sub = await prisma.subscription.findFirst({
-		where: { userId: user.id },
-	})
-
-	return sub?.customerId ?? null
+	return userPrisma?.customerId ?? null
 }
 
 /**
