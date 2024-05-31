@@ -113,6 +113,7 @@ export async function getCustomerIdFromUser() {
 	})
 	console.log('User get Customer Id:', user)
 	if (!user) {
+		console.log('hi !!!!')
 		throw new Error('User not authenticated')
 	}
 

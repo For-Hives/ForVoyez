@@ -82,6 +82,7 @@ export async function getCustomerPortalLink() {
 
 	const user = await currentUser()
 
+	console.log('##############################################')
 	console.log('User:', user)
 	if (!user) {
 		throw new Error('User is not authenticated.')
