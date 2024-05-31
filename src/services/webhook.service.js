@@ -82,11 +82,17 @@ async function processOrderCreated(parsed_webhook) {
 		// create a new user in the database if they don't exist
 		user = await prisma.user.create({
 			data: {
-				customerId: customerId, // Store the Lemon Squeezy customer ID
+				customerId: customerId,
 				email: customerEmail,
 				name: customerName,
 				clerkId: userId,
 			},
+		})
+	} else if (!user.customerId) {
+		// update the user's customerId if it's not already set
+		await prisma.user.update({
+			data: { customerId: customerId },
+			where: { clerkId: userId },
 		})
 	}
 
@@ -208,6 +214,11 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		return
 	}
 
+	if (!user.customerId) {
+		console.error('CustomerId not found for user:', user)
+		return
+	}
+
 	// Get the user's existing subscription (if any)
 	const existingSubscription = await prisma.subscription.findFirst({
 		where: {
@@ -289,6 +300,28 @@ async function processSubscriptionPaymentSuccess(webhook) {
 }
 
 async function processSubscriptionCreated(webhook) {
+	// Get the user based on the Clerk user ID
+	const user = await prisma.user.findUnique({
+		where: {
+			clerkId: webhook.meta.custom_data.user_id,
+		},
+	})
+
+	if (user) {
+		// Update the user's customerId if it's not already set
+		if (!user.customerId) {
+			await prisma.user.update({
+				data: { customerId: webhook.data.attributes.customer_id.toString() },
+				where: { clerkId: webhook.meta.custom_data.user_id },
+			})
+		}
+	} else {
+		console.error(
+			'User not found for userId:',
+			webhook.meta.custom_data.user_id
+		)
+	}
+
 	// link plan with variantId
 	const plan = await prisma.plan.findUnique({
 		where: {
