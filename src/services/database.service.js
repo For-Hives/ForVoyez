@@ -107,6 +107,7 @@ export async function syncPlans() {
  */
 export async function getCustomerIdFromUser() {
 	const user = await currentUser()
+	console.log('User get Customer Id:', user)
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
