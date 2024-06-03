@@ -419,6 +419,7 @@ export function Playground() {
 											</span>
 											<input
 												className="sr-only"
+												data-testid="upload-input"
 												id="image"
 												name="image"
 												onChange={handleImageChange}
