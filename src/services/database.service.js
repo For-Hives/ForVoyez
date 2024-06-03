@@ -186,27 +186,28 @@ export async function getUsageForUser() {
 		return []
 	}
 
+	let userCredits = user.credits
 	let hourlyCreditsLeft = {}
 
-	// Group usage data by hour and get the last value for each unique hour
+	// Group usage data by hour and calculate the remaining credits for each hour
 	usageData.forEach(usage => {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
-		hourlyCreditsLeft[dateHour] = {
-			creditsLeft: usage.used,
-			fullDate: usage.usedAt,
-			dateHour,
+		if (!hourlyCreditsLeft[dateHour]) {
+			hourlyCreditsLeft[dateHour] = {
+				creditsLeft: userCredits,
+				fullDate: usage.usedAt,
+				dateHour,
+			}
 		}
+		userCredits += usage.used
+		hourlyCreditsLeft[dateHour].creditsLeft = userCredits
 	})
 
 	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
 
 	// If there are less than 5 usage records, return all of them for better chart display
 	if (hourlyUsageArray.length <= 5) {
-		return usageData.map(u => ({
-			dateHour: u.usedAt.toISOString().slice(0, 13),
-			creditsLeft: u.used,
-			fullDate: u.usedAt,
-		}))
+		return hourlyUsageArray
 	}
 
 	return hourlyUsageArray
@@ -276,6 +277,7 @@ export async function getCreditsFromUserId() {
 	return connectedUser.credits
 }
 
+// fixme broken export
 // export const TestingExports = {
 // 	getCurrentUser,
 // }
