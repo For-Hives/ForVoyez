@@ -99,18 +99,31 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		await responseEditor.waitFor({ state: 'visible', timeout: 15000 })
 
 		// Wait for the response text to change
-		await page.waitForSelector('[data-testid="response-editor"] .view-lines', {
-			predicate: async viewLines => {
-				const text = await viewLines.textContent()
-				return !text.includes(
-					'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
-				)
-			},
-			timeout: 15000,
-		})
+		log('Waiting for the response text to change...')
+		try {
+			await page.waitForSelector(
+				'[data-testid="response-editor"] .view-lines',
+				{
+					predicate: async viewLines => {
+						const text = await viewLines.textContent()
+						log(`Current response text: "${text}"`)
+						return !text.includes(
+							'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
+						)
+					},
+					timeout: 15000,
+				}
+			)
+			log('Response text changed successfully')
+		} catch (error) {
+			log('Error waiting for the response text to change:')
+			console.error(error)
+			throw error
+		}
 
 		// Check that the response is displayed and not the initial message
 		const responseText = await responseEditor.textContent()
+		log(`Final response text: "${responseText}"`)
 		expect(responseText).not.toContain(
 			'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
 		)
