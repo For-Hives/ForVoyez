@@ -80,7 +80,9 @@ test.describe('Playground Functionality for Subscribed User', () => {
 
 		// Upload an image file
 		const imageInput = page.locator('[data-testid="upload-area"]')
-		await imageInput.setInputFiles('/public/1x1.webp')
+		// todo check imageInput click -> modal event
+		const uploadInput = page.locator('[data-testid="upload-input"]')
+		await uploadInput.setInputFiles('/public/1x1.webp')
 
 		// Fill in the context and JSON schema (if needed)
 		const contextInput = page.locator('[data-testid="context-input"]')
