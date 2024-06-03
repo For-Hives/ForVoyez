@@ -73,20 +73,22 @@ export function ChangingPlansComponent() {
 		const fetchCheckoutUrls = async plans => {
 			const urls = {}
 			if (!plans) return
-			await getCheckouts(plans)
-			// for (const plan of plans) {
-			// 	try {
-			// 		const url = await getCheckoutURL(plan.variantId)
-			// 		urls[plan.variantId] = url
-			// 	} catch (error) {
-			// 		console.error(
-			// 			`Error fetching checkout URL for variant ${plan.variantId}:`,
-			// 			error
-			// 		)
-			// 	}
-			// }
+
+			try {
+				const res = await getCheckouts()
+				const checkouts = res.data.data
+
+				for (const checkout of checkouts) {
+					const variantId = checkout.attributes.variant_id
+					const url = checkout.attributes.url
+					urls[variantId] = url
+				}
+			} catch (error) {
+				console.error('Error fetching checkouts:', error)
+			}
+
 			setCheckoutUrls(urls)
-			setLoadingUrls(false) // Set loading status to false once all URLs are fetched
+			setLoadingUrls(false)
 		}
 
 		const fetchCustomerPortalUrl = async () => {
