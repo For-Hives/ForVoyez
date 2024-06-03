@@ -111,7 +111,6 @@ export async function getCustomerIdFromUser() {
 		select: { customerId: true },
 		where: { clerkId: user.id },
 	})
-	// console.log('User get Customer Id:', user)
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
