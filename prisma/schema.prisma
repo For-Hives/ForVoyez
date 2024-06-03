@@ -31,15 +31,17 @@ model User {
 }
 
 model Usage {
-  id      String   @id @default(uuid())
-  user    User     @relation(fields: [userId], references: [clerkId])
-  userId  String
-  usedAt  DateTime @default(now())
-  used    Int
-  api     String   @default("describe")
-  token   Token?   @relation(fields: [tokenId], references: [id])
-  tokenId String?
-  reason  String?
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [clerkId])
+  userId          String
+  usedAt          DateTime @default(now())
+  used            Int
+  previousCredits Int
+  currentCredits  Int
+  api             String   @default("describe")
+  token           Token?   @relation(fields: [tokenId], references: [id])
+  tokenId         String?
+  reason          String?
 }
 
 model Plan {
