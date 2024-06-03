@@ -75,17 +75,9 @@ export function ChangingPlansComponent() {
 			if (!plans) return
 
 			try {
-				const res = await getCheckouts(plans)
-				const checkouts = res.data.data
+				const checkouts = await getCheckouts(plans)
 
-				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
-					const variantId = checkout.attributes.variant_id
-					const url = checkout.attributes.url
-					acc[variantId] = url
-					return acc
-				}, {})
-
-				setCheckoutUrls(urlsByVariantId)
+				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
 			}
