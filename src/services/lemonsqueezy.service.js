@@ -1,5 +1,5 @@
 'use server'
-import { createCheckout } from '@lemonsqueezy/lemonsqueezy.js'
+import { createCheckout, listCheckouts } from '@lemonsqueezy/lemonsqueezy.js'
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { currentUser } from '@clerk/nextjs/server'
 
@@ -42,6 +42,28 @@ export async function listPrice(variantID) {
 	} else {
 		throw new Error(error)
 	}
+}
+
+export async function getCheckouts() {
+	await initLemonSqueezy()
+
+	const STORE_ID = getStoreId()
+	const user = await currentUser()
+
+	if (!user) {
+		console.error('User is not authenticated.')
+		throw new Error('User is not authenticated.')
+	}
+
+	const res = await listCheckouts({
+		checkoutData: {
+			custom: {
+				user_id: user.id,
+			},
+		},
+	})
+	console.log(res)
+	console.log(res.data.data[0])
 }
 
 // This action will create a checkout on Lemon Squeezy.

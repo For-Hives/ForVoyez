@@ -9,6 +9,7 @@ import Link from 'next/link'
 
 import {
 	getCheckoutURL,
+	getCheckouts,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
 import {
@@ -52,7 +53,8 @@ export function ChangingPlansComponent() {
 				const plans = await getPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
-				await fetchCheckoutUrls(sortedPlans)
+				await getCheckouts()
+				// await fetchCheckoutUrls(sortedPlans)
 			} catch (error) {
 				console.error('Error fetching plans:', error)
 			}
@@ -72,17 +74,17 @@ export function ChangingPlansComponent() {
 		const fetchCheckoutUrls = async plans => {
 			const urls = {}
 			if (!plans) return
-			for (const plan of plans) {
-				try {
-					const url = await getCheckoutURL(plan.variantId)
-					urls[plan.variantId] = url
-				} catch (error) {
-					console.error(
-						`Error fetching checkout URL for variant ${plan.variantId}:`,
-						error
-					)
-				}
-			}
+			// for (const plan of plans) {
+			// 	try {
+			// 		const url = await getCheckoutURL(plan.variantId)
+			// 		urls[plan.variantId] = url
+			// 	} catch (error) {
+			// 		console.error(
+			// 			`Error fetching checkout URL for variant ${plan.variantId}:`,
+			// 			error
+			// 		)
+			// 	}
+			// }
 			setCheckoutUrls(urls)
 			setLoadingUrls(false) // Set loading status to false once all URLs are fetched
 		}
