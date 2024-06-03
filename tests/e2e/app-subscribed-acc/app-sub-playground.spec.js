@@ -81,8 +81,10 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		// Upload an image file
 		const imageInput = page.locator('[data-testid="upload-area"]')
 		// todo check imageInput click -> modal event
-		const uploadInput = page.locator('[data-testid="upload-input"]')
-		await uploadInput.setInputFiles('/public/1x1.webp')
+		const fileChooserPromise = page.waitForEvent('filechooser')
+		await imageInput.click()
+		const fileChooser = await fileChooserPromise
+		await fileChooser.setFiles('public/1x1.webp')
 
 		// Fill in the context and JSON schema (if needed)
 		const contextInput = page.locator('[data-testid="context-input"]')
@@ -96,8 +98,22 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		const responseEditor = page.locator('[data-testid="response-editor"]')
 		await responseEditor.waitFor({ state: 'visible', timeout: 15000 })
 
-		// Check that the response is displayed
-		const responseText = await responseEditor.innerText()
+		// Wait for the response text to change
+		await page.waitForSelector('[data-testid="response-editor"] .view-lines', {
+			predicate: async viewLines => {
+				const text = await viewLines.textContent()
+				return !text.includes(
+					'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
+				)
+			},
+			timeout: 15000,
+		})
+
+		// Check that the response is displayed and not the initial message
+		const responseText = await responseEditor.textContent()
+		expect(responseText).not.toContain(
+			'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
+		)
 		expect(responseText).toBeTruthy()
 
 		log('Image analysis completed successfully for subscribed user')
