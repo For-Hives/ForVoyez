@@ -177,7 +177,10 @@ export async function getUsageForUser() {
 	}
 
 	console.log('User:', user)
-	console.log('User credits:', user.credits)
+
+	// Get user credits from the database
+	let userCredits = await getCreditsFromUserId()
+	console.log('User credits:', userCredits)
 
 	// Fetch all usage data for the user, ordered by date
 	const usageData = await prisma.usage.findMany({
@@ -192,7 +195,6 @@ export async function getUsageForUser() {
 		return []
 	}
 
-	let userCredits = user.credits
 	let hourlyCreditsLeft = {}
 
 	console.log('Initial user credits:', userCredits)
