@@ -82,15 +82,12 @@ export async function getCustomerPortalLink() {
 
 	const user = await currentUser()
 
-	console.log('##############################################')
-	console.log('User:', user)
 	if (!user) {
 		throw new Error('User is not authenticated.')
 	}
 
 	// get user subscription using database.service
 	const customerId = await getCustomerIdFromUser(user.id)
-	console.log('Customer ID:', customerId)
 
 	if (!customerId) {
 		console.warn('Customer not found.')
