@@ -186,11 +186,8 @@ export async function getUsageForUser() {
 		throw new Error('User not authenticated')
 	}
 
-	console.log('User:', user)
-
 	// Get user credits from the database
 	let userCredits = await getCreditsFromUserId()
-	console.log('User credits:', userCredits)
 
 	// Fetch all usage data for the user, ordered by date
 	const usageData = await prisma.usage.findMany({
@@ -198,24 +195,17 @@ export async function getUsageForUser() {
 		orderBy: { usedAt: 'asc' },
 	})
 
-	console.log('Usage data:', usageData)
-
 	if (usageData.length === 0) {
-		console.log('No usage data found for the user')
 		return []
 	}
 
 	let hourlyCreditsLeft = {}
 
-	console.log('Initial user credits:', userCredits)
-
 	// Group usage data by hour and calculate the remaining credits for each hour
 	usageData.forEach(usage => {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
-		console.log('Processing usage for date hour:', dateHour)
 
 		if (!hourlyCreditsLeft[dateHour]) {
-			console.log('Creating new entry for date hour:', dateHour)
 			hourlyCreditsLeft[dateHour] = {
 				creditsLeft: usage.previousCredits,
 				fullDate: usage.usedAt,
@@ -224,28 +214,15 @@ export async function getUsageForUser() {
 		} else {
 			hourlyCreditsLeft[dateHour].creditsLeft = usage.previousCredits
 		}
-
-		console.log('Usage credits:', usage.used)
-		console.log('Previous credits:', usage.previousCredits)
-		console.log('Current credits:', usage.currentCredits)
-
-		console.log(
-			'Updated credits left for date hour:',
-			dateHour,
-			hourlyCreditsLeft[dateHour].creditsLeft
-		)
 	})
 
 	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
-	console.log('Hourly usage array:', hourlyUsageArray)
 
 	// If there are less than 5 usage records, return all of them for better chart display
 	if (hourlyUsageArray.length <= 5) {
-		console.log('Returning hourly usage array as is')
 		return hourlyUsageArray
 	}
 
-	console.log('Returning hourly usage array')
 	return hourlyUsageArray
 }
 
