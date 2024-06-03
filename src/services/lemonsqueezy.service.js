@@ -74,7 +74,10 @@ export async function getCheckouts(plans) {
 			size: 100,
 		},
 	})
+	console.log('check', check.data.meta)
+	// console.log('check.data',check.data.data)
 
+	// console.log('check', check.data.data)
 	return check
 }
 

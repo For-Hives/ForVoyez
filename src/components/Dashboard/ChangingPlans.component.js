@@ -79,12 +79,6 @@ export function ChangingPlansComponent() {
 				const res = await getCheckouts(plans)
 				const checkouts = res.data.data
 
-				console.log('Checkouts:', checkouts)
-				// for (const checkout of checkouts) {
-				// 	const variantId = checkout.attributes.variant_id
-				// 	const url = checkout.attributes.url
-				// 	urls[variantId] = url
-				// }
 				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
 					const variantId = checkout.attributes.variant_id
 					const url = checkout.attributes.url
