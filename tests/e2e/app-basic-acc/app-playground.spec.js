@@ -66,9 +66,7 @@ test.describe('Playground Functionality', () => {
 		log('Page loaded')
 
 		// Wait for the tooltip to appear
-		const tooltipLocator = page.locator(
-			'div.pointer-events-auto.flex.items-center.justify-between.gap-x-6.bg-gray-900.px-6.py-2.5.sm\\:rounded-xl.sm\\:py-3.sm\\:pl-4.sm\\:pr-3.5 p.text-sm.leading-6.text-white a[href="/app/plans"]'
-		)
+		const tooltipLocator = page.locator('[data-testid="tooltip-link"]')
 		log('Checking presence of the tooltip')
 		await expect(tooltipLocator).toBeVisible()
 
