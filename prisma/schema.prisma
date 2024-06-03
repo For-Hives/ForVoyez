@@ -36,8 +36,8 @@ model Usage {
   userId          String
   usedAt          DateTime @default(now())
   used            Int
-  previousCredits Int
-  currentCredits  Int
+  previousCredits Int @default(0)
+  currentCredits  Int @default(0)
   api             String   @default("describe")
   token           Token?   @relation(fields: [tokenId], references: [id])
   tokenId         String?
