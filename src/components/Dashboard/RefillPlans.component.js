@@ -67,7 +67,6 @@ export function RefillPlansComponent() {
 					return acc
 				}, {})
 
-				console.log('urlsByVariantId', urlsByVariantId)
 				setCheckoutUrls(urlsByVariantId)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
