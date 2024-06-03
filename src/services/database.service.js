@@ -106,7 +106,6 @@ export async function syncPlans() {
  * Throws an error if the user is not authenticated.
  */
 export async function getCustomerIdFromUser() {
-	console.log('-------------------------------------')
 	const user = await currentUser()
 	const userPrisma = await prisma.user.findUnique({
 		select: { customerId: true },
@@ -114,22 +113,16 @@ export async function getCustomerIdFromUser() {
 	})
 	// console.log('User get Customer Id:', user)
 	if (!user) {
-		console.log('hi !!!!')
 		throw new Error('User not authenticated')
 	}
-	console.log('User Prisma:', userPrisma)
-	console.log('User Prisma Customer Id:', userPrisma?.customerId)
 	if (!userPrisma?.customerId) {
-		console.log('hi !!!!')
-		console.log('user id', user.id)
 		let subscriptionClient = await prisma.subscription.findFirst({
 			where: { userId: user.id },
 		})
-		console.log('NOT SUB', !subscriptionClient?.customerId)
 		if (!subscriptionClient?.customerId) {
 			return null
 		}
-		const customerId = await prisma.user.update({
+		await prisma.user.update({
 			data: { customerId: Number(subscriptionClient.customerId) },
 			where: { clerkId: subscriptionClient.userId },
 		})

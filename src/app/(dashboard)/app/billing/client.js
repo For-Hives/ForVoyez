@@ -12,13 +12,10 @@ export default function ClientLogicBilling() {
 	const [loadingMessage, setLoadingMessage] = useState('Loading your data...')
 
 	async function hasEverBeenSubscribed() {
-		console.log('Checking if user has ever been subscribed...')
-		console.log('step 1')
 		try {
 			await getCustomerPortalLink()
 			return true
 		} catch (error) {
-			console.log('Error during hasEverBeenSubscribed:', error)
 			if (error.message === 'customer not found') {
 				return false
 			}
@@ -27,7 +24,6 @@ export default function ClientLogicBilling() {
 	}
 
 	async function handleUserRedirect() {
-		console.log('Handling user redirect...')
 		setLoadingMessage('Checking your subscription status...')
 
 		try {
@@ -62,12 +58,11 @@ export default function ClientLogicBilling() {
 					router.push('/app/plans')
 					return
 				}
-				console.log('Error message:', error.message)
-				toast.error(
-					'Failed to load data: ' + error.message + ' redirecting to dashboard',
+				toast.info(
+					'You must have been subscribed at least once to access this page.',
 					{ toastId: 'data-load-error' }
 				)
-				router.push('/app')
+				router.push('/app/plans')
 			}
 			setLoadingMessage('Failed to load data. Please try again later.')
 		}
