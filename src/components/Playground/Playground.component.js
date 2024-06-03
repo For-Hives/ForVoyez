@@ -691,9 +691,11 @@ export function Playground() {
 					{isProcessingResultApi ? (
 						<LoadAnimation />
 					) : (
-						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+						<div
+							className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
+							data-testid="response-editor"
+						>
 							<MonacoEditor
-								data-testid="response-editor"
 								editorDidMount={editor => (responseRef.current = editor)}
 								height={'500px'}
 								language="json"
