@@ -74,17 +74,9 @@ test.describe('Usage Chart Functionality for Subscribed User', () => {
 			'[data-testid="usage-chart-container"]'
 		)
 
-		if (await noUsageData.isVisible()) {
-			log('No usage data found')
-			await expect(usageTooltip).toBeVisible()
-			await expect(usageChartContainer).toContainText(
-				'No usage data available.'
-			)
-		} else {
-			log('Usage data found')
-			await expect(usageTooltip).toBeHidden()
-			await expect(usageChartContainer).toContainText('Credits Left')
-		}
+		log('Usage data found')
+		await expect(usageTooltip).toBeHidden()
+		await expect(usageChartContainer).toContainText('Credits Left')
 	})
 
 	test('Usage by token chart should display data for subscribed user', async ({
