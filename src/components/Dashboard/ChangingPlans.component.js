@@ -76,7 +76,7 @@ export function ChangingPlansComponent() {
 
 			// console.log(plans)
 			try {
-				const res = await getCheckouts(plans)
+				const res = await getCheckouts()
 				const checkouts = res.data.data
 
 				const urlsByVariantId = checkouts.reduce((acc, checkout) => {

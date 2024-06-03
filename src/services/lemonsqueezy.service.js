@@ -44,7 +44,7 @@ export async function listPrice(variantID) {
 	}
 }
 
-export async function getCheckouts(plans) {
+export async function getCheckouts() {
 	await initLemonSqueezy()
 
 	const STORE_ID = getStoreId()
@@ -54,8 +54,6 @@ export async function getCheckouts(plans) {
 		console.error('User is not authenticated.')
 		throw new Error('User is not authenticated.')
 	}
-
-	const variantIds = plans.map(plan => plan.variantId)
 
 	const check = await listCheckouts({
 		product_options: {
