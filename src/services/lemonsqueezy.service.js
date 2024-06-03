@@ -44,9 +44,10 @@ export async function listPrice(variantID) {
 	}
 }
 
-export async function getCheckouts() {
+export async function getCheckouts(plans) {
 	await initLemonSqueezy()
 
+	const STORE_ID = getStoreId()
 	const user = await currentUser()
 
 	if (!user) {
@@ -54,15 +55,27 @@ export async function getCheckouts() {
 		throw new Error('User is not authenticated.')
 	}
 
-	const res = await listCheckouts({
+	const variantIds = plans.map(plan => plan.variantId)
+
+	const check = await listCheckouts({
+		product_options: {
+			redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
+			enabled_variants: variantIds,
+		},
 		checkoutData: {
 			custom: {
 				user_id: user.id,
 			},
 		},
+		filter: {
+			storeId: STORE_ID,
+		},
+		page: {
+			size: 100,
+		},
 	})
-	console.log(res)
-	console.log(res.data.data[0])
+
+	return check
 }
 
 // This action will create a checkout on Lemon Squeezy.

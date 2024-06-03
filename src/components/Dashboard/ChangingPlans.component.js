@@ -74,19 +74,30 @@ export function ChangingPlansComponent() {
 			const urls = {}
 			if (!plans) return
 
+			// console.log(plans)
 			try {
-				const res = await getCheckouts()
+				const res = await getCheckouts(plans)
 				const checkouts = res.data.data
 
-				for (const checkout of checkouts) {
+				console.log('Checkouts:', checkouts)
+				// for (const checkout of checkouts) {
+				// 	const variantId = checkout.attributes.variant_id
+				// 	const url = checkout.attributes.url
+				// 	urls[variantId] = url
+				// }
+				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
 					const variantId = checkout.attributes.variant_id
 					const url = checkout.attributes.url
-					urls[variantId] = url
-				}
+					acc[variantId] = url
+					return acc
+				}, {})
+
+				console.log('urlsByVariantId', urlsByVariantId)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
 			}
 
+			console.log('URLs:', urls)
 			setCheckoutUrls(urls)
 			setLoadingUrls(false)
 		}
