@@ -8,6 +8,7 @@ import Link from 'next/link'
 
 import {
 	getCheckoutURL,
+	getCheckouts,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
 import {
@@ -53,20 +54,25 @@ export function RefillPlansComponent() {
 		}
 
 		const fetchCheckoutUrls = async plans => {
-			const urls = {}
 			if (!plans) return
-			for (const plan of plans) {
-				try {
-					const url = await getCheckoutURL(plan.variantId)
-					urls[plan.variantId] = url
-				} catch (error) {
-					console.error(
-						`Error fetching checkout URL for variant ${plan.variantId}:`,
-						error
-					)
-				}
+
+			try {
+				const res = await getCheckouts(plans)
+				const checkouts = res.data.data
+
+				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
+					const variantId = checkout.attributes.variant_id
+					const url = checkout.attributes.url
+					acc[variantId] = url
+					return acc
+				}, {})
+
+				console.log('urlsByVariantId', urlsByVariantId)
+				setCheckoutUrls(urlsByVariantId)
+			} catch (error) {
+				console.error('Error fetching checkouts:', error)
 			}
-			setCheckoutUrls(urls)
+
 			setIsLoadingUrls(false)
 		}
 
