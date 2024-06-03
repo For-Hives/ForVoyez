@@ -13,7 +13,7 @@ export default function ClientLogicPlans() {
 				grows. You can upgrade, downgrade, or cancel your plan at any time.
 			</p>
 			<ChangingPlansComponent />
-			<RefillPlansComponent />
+			{/*<RefillPlansComponent />*/}
 		</div>
 	)
 }
