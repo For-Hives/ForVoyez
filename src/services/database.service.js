@@ -140,13 +140,23 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 		throw new Error('Invalid credits value')
 	}
 
+	// Get the user's current credits
+	const user = await prisma.user.findUnique({
+		where: { clerkId: userId },
+	})
+
+	const previousCredits = user.credits
+	const currentCredits = previousCredits + credits
+
 	await prisma.user.update({
-		data: { credits: { increment: credits } },
+		data: { credits: currentCredits },
 		where: { clerkId: userId },
 	})
 
 	await prisma.usage.create({
 		data: {
+			previousCredits: previousCredits,
+			currentCredits: currentCredits,
 			userId: userId,
 			used: credits,
 			tokenId,
