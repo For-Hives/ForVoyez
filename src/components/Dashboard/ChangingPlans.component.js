@@ -194,7 +194,7 @@ export function ChangingPlansComponent() {
 						return (
 							<div
 								className={classNames(
-									tier.mostPopular
+									tier.mostPopular && !currentSubscription
 										? 'ring-2 ring-forvoyez_orange-500'
 										: 'ring-1 ring-slate-200',
 									'rounded-3xl p-8'
@@ -205,7 +205,7 @@ export function ChangingPlansComponent() {
 								<div className="flex items-center justify-between gap-x-4">
 									<h3
 										className={classNames(
-											tier.mostPopular
+											tier.mostPopular && !currentSubscription
 												? 'text-forvoyez_orange-500'
 												: 'text-slate-900',
 											'text-lg font-semibold leading-8'
@@ -214,7 +214,7 @@ export function ChangingPlansComponent() {
 									>
 										{tier.name}
 									</h3>
-									{tier.mostPopular ? (
+									{tier.mostPopular && !currentSubscription ? (
 										<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-center text-xs font-semibold leading-5 text-forvoyez_orange-500">
 											Most popular
 										</p>
@@ -243,7 +243,8 @@ export function ChangingPlansComponent() {
 										<Link
 											aria-describedby={tier.id}
 											className={classNames(
-												tier.mostPopular
+												(tier.mostPopular && !currentSubscription) ||
+													currentSubscription.planId === tier.id
 													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
 													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
 												'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
