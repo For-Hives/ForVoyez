@@ -72,8 +72,6 @@ export async function getCheckouts() {
 		},
 	})
 
-	console.log('check', check.data.meta)
-
 	return check
 }
 
