@@ -60,7 +60,6 @@ export async function getCheckouts(plans) {
 	const check = await listCheckouts({
 		product_options: {
 			redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
-			enabled_variants: variantIds,
 		},
 		checkoutData: {
 			custom: {
@@ -74,10 +73,9 @@ export async function getCheckouts(plans) {
 			size: 100,
 		},
 	})
-	console.log('check', check.data.meta)
-	// console.log('check.data',check.data.data)
 
-	// console.log('check', check.data.data)
+	console.log('check', check.data.meta)
+
 	return check
 }
 

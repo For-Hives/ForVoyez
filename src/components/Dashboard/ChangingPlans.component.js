@@ -48,33 +48,10 @@ export function ChangingPlansComponent() {
 	}, [frequency])
 
 	useEffect(() => {
-		const fetchPlans = async () => {
-			try {
-				const plans = await getPlans()
-				const sortedPlans = sortPlans(plans)
-				setPlans(sortedPlans)
-				await fetchCheckoutUrls(sortedPlans)
-			} catch (error) {
-				console.error('Error fetching plans:', error)
-			}
-		}
-
-		const fetchSubscription = async () => {
-			try {
-				const sub = await getSubscriptionFromUserId(auth.userId)
-				if (sub) {
-					setCurrentSubscription(sub)
-				}
-			} catch (error) {
-				console.error('Error fetching subscription:', error)
-			}
-		}
-
 		const fetchCheckoutUrls = async plans => {
 			const urls = {}
 			if (!plans) return
 
-			// console.log(plans)
 			try {
 				const res = await getCheckouts(plans)
 				const checkouts = res.data.data
@@ -87,22 +64,12 @@ export function ChangingPlansComponent() {
 				}, {})
 
 				console.log('urlsByVariantId', urlsByVariantId)
+				setCheckoutUrls(urlsByVariantId)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
 			}
 
-			console.log('URLs:', urls)
-			setCheckoutUrls(urls)
 			setLoadingUrls(false)
-		}
-
-		const fetchCustomerPortalUrl = async () => {
-			try {
-				const url = await getCustomerPortalLink()
-				setCustomerPortalUrl(url)
-			} catch (error) {
-				console.error('Error fetching customer portal URL:', error)
-			}
 		}
 
 		fetchPlans()
