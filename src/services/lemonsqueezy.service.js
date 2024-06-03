@@ -47,7 +47,6 @@ export async function listPrice(variantID) {
 export async function getCheckouts() {
 	await initLemonSqueezy()
 
-	const STORE_ID = getStoreId()
 	const user = await currentUser()
 
 	if (!user) {
