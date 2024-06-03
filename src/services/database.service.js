@@ -217,17 +217,18 @@ export async function getUsageForUser() {
 		if (!hourlyCreditsLeft[dateHour]) {
 			console.log('Creating new entry for date hour:', dateHour)
 			hourlyCreditsLeft[dateHour] = {
-				creditsLeft: userCredits,
+				creditsLeft: usage.previousCredits,
 				fullDate: usage.usedAt,
 				dateHour,
 			}
+		} else {
+			hourlyCreditsLeft[dateHour].creditsLeft = usage.previousCredits
 		}
 
 		console.log('Usage credits:', usage.used)
-		userCredits += usage.used
-		console.log('Updated user credits:', userCredits)
+		console.log('Previous credits:', usage.previousCredits)
+		console.log('Current credits:', usage.currentCredits)
 
-		hourlyCreditsLeft[dateHour].creditsLeft = userCredits
 		console.log(
 			'Updated credits left for date hour:',
 			dateHour,
