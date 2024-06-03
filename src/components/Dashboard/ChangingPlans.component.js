@@ -74,9 +74,8 @@ export function ChangingPlansComponent() {
 			const urls = {}
 			if (!plans) return
 
-			// console.log(plans)
 			try {
-				const res = await getCheckouts()
+				const res = await getCheckouts(plans)
 				const checkouts = res.data.data
 
 				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
