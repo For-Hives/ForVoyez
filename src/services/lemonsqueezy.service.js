@@ -80,7 +80,7 @@ export async function getCheckouts(plans) {
 				checkout.attributes.variant_id.toString() === plan.variantId.toString()
 		)
 
-		if (!existingCheckout) {
+		if (existingCheckout) {
 			checkoutUrls[plan.variantId] = existingCheckout.attributes.url
 		} else {
 			const newCheckout = await createCheckout(STORE_ID, plan.variantId, {
