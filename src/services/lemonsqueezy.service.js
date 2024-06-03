@@ -44,7 +44,7 @@ export async function listPrice(variantID) {
 	}
 }
 
-export async function getCheckouts() {
+export async function getCheckouts(plans) {
 	await initLemonSqueezy()
 
 	const STORE_ID = getStoreId()
@@ -72,39 +72,33 @@ export async function getCheckouts() {
 		},
 	})
 
-	return check
-}
+	const checkoutUrls = {}
 
-// This action will create a checkout on Lemon Squeezy.
-export async function getCheckoutURL(variantId, embed = false) {
-	await initLemonSqueezy()
+	for (const plan of plans) {
+		const existingCheckout = check.data.data.find(
+			checkout => checkout.attributes.variant_id === plan.variantId
+		)
 
-	const STORE_ID = getStoreId()
-	const user = await currentUser()
-
-	if (!user) {
-		console.error('User is not authenticated.')
-		throw new Error('User is not authenticated.')
+		if (existingCheckout) {
+			checkoutUrls[plan.variantId] = existingCheckout.attributes.url
+		} else {
+			const checkout = await createCheckout(STORE_ID, plan.variantId, {
+				productOptions: {
+					redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/billing/`,
+					receiptButtonText: 'Go to Dashboard',
+					enabledVariants: [plan.variantId], //
+				},
+				checkoutData: {
+					custom: {
+						user_id: user.id,
+					},
+				},
+			})
+			checkoutUrls[plan.variantId] = newCheckout.data.data.attributes.url
+		}
 	}
 
-	const checkout = await createCheckout(STORE_ID, variantId, {
-		productOptions: {
-			receiptButtonText: 'Go to Dashboard',
-			enabledVariants: [variantId], // redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/billing/`,
-		},
-		checkoutOptions: {
-			media: false,
-			logo: !embed,
-			embed,
-		},
-		checkoutData: {
-			custom: {
-				user_id: user.id,
-			},
-		},
-	})
-
-	return checkout.data?.data.attributes.url
+	return checkoutUrls
 }
 
 // server-side code

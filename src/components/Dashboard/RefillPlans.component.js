@@ -57,7 +57,7 @@ export function RefillPlansComponent() {
 			if (!plans) return
 
 			try {
-				const res = await getCheckouts()
+				const res = await getCheckouts(plans)
 				const checkouts = res.data.data
 
 				const urlsByVariantId = checkouts.reduce((acc, checkout) => {
