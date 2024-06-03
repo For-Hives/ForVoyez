@@ -79,7 +79,6 @@ export async function getCheckouts(plans) {
 			checkout =>
 				checkout.attributes.variant_id.toString() === plan.variantId.toString()
 		)
-		console.log('existingCheckout', !!existingCheckout)
 
 		if (existingCheckout) {
 			checkoutUrls[plan.variantId] = existingCheckout.attributes.url
@@ -100,7 +99,6 @@ export async function getCheckouts(plans) {
 		}
 	}
 
-	console.log('checkoutUrls', checkoutUrls)
 	return checkoutUrls
 }
 
