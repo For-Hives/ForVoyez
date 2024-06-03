@@ -186,7 +186,6 @@ export async function getUsageForUser() {
 		return []
 	}
 
-	let userCredits = user.credits
 	let hourlyCreditsLeft = {}
 
 	// Group usage data by hour and get the last value for each unique hour
@@ -197,7 +196,6 @@ export async function getUsageForUser() {
 			fullDate: usage.usedAt,
 			dateHour,
 		}
-		userCredits = hourlyCreditsLeft[dateHour].creditsLeft
 	})
 
 	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
