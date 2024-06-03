@@ -53,8 +53,7 @@ export function ChangingPlansComponent() {
 				const plans = await getPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
-				await getCheckouts()
-				// await fetchCheckoutUrls(sortedPlans)
+				await fetchCheckoutUrls(sortedPlans)
 			} catch (error) {
 				console.error('Error fetching plans:', error)
 			}
@@ -74,6 +73,7 @@ export function ChangingPlansComponent() {
 		const fetchCheckoutUrls = async plans => {
 			const urls = {}
 			if (!plans) return
+			await getCheckouts(plans)
 			// for (const plan of plans) {
 			// 	try {
 			// 		const url = await getCheckoutURL(plan.variantId)
