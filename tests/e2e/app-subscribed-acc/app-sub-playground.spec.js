@@ -80,7 +80,7 @@ test.describe('Playground Functionality for Subscribed User', () => {
 
 		// Upload an image file
 		const imageInput = page.locator('[data-testid="upload-area"]')
-		// todo check imageInput click -> modal event
+
 		const fileChooserPromise = page.waitForEvent('filechooser')
 		await imageInput.click()
 		const fileChooser = await fileChooserPromise
