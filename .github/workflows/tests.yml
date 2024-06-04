@@ -13,8 +13,26 @@ jobs:
       contents: read
       pull-requests: write
 
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
     steps:
       - uses: actions/checkout@v4
+      - name: 'Install Docker'
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io
+      - name: 'Build Docker Image'
+        run: docker build -t my-app .
+      - name: 'Run Docker Container'
+        run: docker run -d -p 3000:3000 --name my-app-container my-app
+      - name: 'Wait for the application to be ready'
+        run: |
+          while ! nc -z localhost 3000; do
+            sleep 1
+          done
       - name: 'Install Node'
         uses: actions/setup-node@v4
         with:
@@ -41,3 +59,6 @@ jobs:
       - name: 'Report Coverage'
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+      - name: 'Stop and remove Docker container'
+        if: always()
+        run: docker stop my-app-container && docker rm my-app-container
