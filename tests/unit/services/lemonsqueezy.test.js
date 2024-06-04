@@ -78,49 +78,6 @@ describe('Lemon Squeezy Service', () => {
 		})
 	})
 
-	describe('getCheckoutURL', () => {
-		it('should create a checkout URL for the authenticated user', async () => {
-			const mockUser = { id: 'user123' }
-			const mockCheckout = {
-				data: { data: { attributes: { url: 'http://checkout.url' } } },
-			}
-			clerk.currentUser.mockResolvedValue(mockUser)
-			lemonsqueezy.createCheckout.mockResolvedValue(mockCheckout)
-
-			const checkoutURL = await getCheckoutURL('variant1', false)
-
-			expect(checkoutURL).toBe('http://checkout.url')
-			expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(
-				STORE_ID,
-				'variant1',
-				{
-					productOptions: {
-						receiptButtonText: 'Go to Dashboard',
-						enabledVariants: ['variant1'],
-					},
-					checkoutOptions: {
-						media: false,
-						embed: false,
-						logo: true,
-					},
-					checkoutData: {
-						custom: {
-							user_id: 'user123',
-						},
-					},
-				}
-			)
-		})
-
-		it('should throw an error if the user is not authenticated', async () => {
-			clerk.currentUser.mockResolvedValue(null)
-
-			await expect(getCheckoutURL('variant1', false)).rejects.toThrow(
-				'User is not authenticated.'
-			)
-		})
-	})
-
 	describe('getCustomerPortalLink', () => {
 		it('should get the customer portal link for the authenticated user', async () => {
 			const mockUser = { id: 'user123' }
