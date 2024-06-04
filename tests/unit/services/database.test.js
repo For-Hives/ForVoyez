@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as clerk from '@clerk/nextjs/server'
 
 import {
+	TestingExports,
 	decrementCredit,
 	getCreditsFromUserId,
-	getCurrentUser,
 	getCustomerIdFromUser,
 	getPlans,
 	getSubscriptionFromUserId,
@@ -13,6 +13,9 @@ import {
 	syncPlans,
 	updateCredits,
 } from '@/services/database.service'
+
+const { getCurrentUser } = TestingExports
+
 import * as ls from '@/services/lemonsqueezy.service'
 
 import { prisma } from '/tests/unit/mocks/prisma.mock'
