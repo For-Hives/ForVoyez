@@ -10,9 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      # Required to checkout the code
       contents: read
-      # Required to put a comment into the pull-request
       pull-requests: write
 
     steps:
@@ -28,6 +26,8 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
+      - name: 'Install Playwright Browsers'
+        run: pnpm exec playwright install
       - name: 'Run Unit and Integration Tests'
         run: pnpm test:ci
       - name: 'Run ESLint'
