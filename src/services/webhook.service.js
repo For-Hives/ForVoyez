@@ -202,9 +202,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	const userId = webhook.meta.custom_data.user_id // Clerk user ID
 	const subscriptionId = webhook.data.attributes.subscription_id
 
-	console.log('User ID:', userId)
-	console.log('Subscription ID:', subscriptionId)
-
 	// Get the user based on the Clerk user ID
 	const user = await prisma.user.findUnique({
 		where: {
@@ -233,7 +230,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	})
 
 	if (existingSubscription) {
-		console.log('Existing subscription found:', existingSubscription)
 		if (existingSubscription.oldPlanId) {
 			const oldPlan = await prisma.plan.findUnique({
 				where: {
@@ -254,10 +250,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				const packageDifference =
 					newSubscription.plan.packageSize - oldPlan.packageSize
 
-				console.log(
-					'Updating credits with package difference:',
-					packageDifference
-				)
 				await updateCredits(
 					user.id,
 					packageDifference,
@@ -273,10 +265,6 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			})
 
 			if (newPlan) {
-				console.log(
-					'Updating credits with new plan package size:',
-					newPlan.packageSize
-				)
 				await updateCredits(
 					user.id,
 					newPlan.packageSize,
