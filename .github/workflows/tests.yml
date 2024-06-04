@@ -31,7 +31,9 @@ jobs:
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
       - name: 'Build Docker Image for Testing'
-        run: docker build -f Dockerfile.test -t my-app:test .
+        run: |
+          echo "NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}"
+          docker build -f Dockerfile.test -t my-app:test .
         env:
           NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
@@ -79,7 +81,9 @@ jobs:
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
       - name: 'Build Docker Image for Production'
-        run: docker build -f Dockerfile.test -t my-app:test .
+        run: |
+          echo "NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}"
+          docker build -f Dockerfile.test -t my-app:test .
         env:
           NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
