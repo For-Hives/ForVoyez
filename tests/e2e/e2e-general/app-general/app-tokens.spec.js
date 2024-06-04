@@ -1,5 +1,5 @@
 const { expect, test } = require('@playwright/test')
-const { signIn } = require('../../tests-utils')
+const { signIn, log } = require('../../tests-utils')
 require('dotenv').config()
 
 let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
@@ -10,7 +10,7 @@ test.describe('Playground Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		await signIn(
 			page,
-			`${NEXT_PUBLIC_URL}/app/playground`,
+			`app/playground`,
 			NEXT_PUBLIC_URL,
 			TEST_EMAIL,
 			TEST_PASSWORD

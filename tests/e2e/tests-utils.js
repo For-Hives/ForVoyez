@@ -61,5 +61,5 @@ export const signIn = async (
 
 	// Navigate to the plans page
 	log(`Navigating to the ${goto_url} page`)
-	await page.goto(goto_url)
+	await page.goto(`${NEXT_PUBLIC_URL}/${goto_url}`)
 }

@@ -10,7 +10,7 @@ test.describe('Billing Page Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		await signIn(
 			page,
-			`${NEXT_PUBLIC_URL}/app/billing`,
+			`app/billing`,
 			NEXT_PUBLIC_URL,
 			TEST_EMAIL,
 			TEST_PASSWORD
