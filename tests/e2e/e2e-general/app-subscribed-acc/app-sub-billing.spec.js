@@ -5,10 +5,6 @@ let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
 const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
 
-const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-}
-
 test.describe('Client Logic Billing Functionality for Subscribed User', () => {
 	test.beforeEach(async ({ page }) => {
 		// Ensure the URL starts with http:// or https://
