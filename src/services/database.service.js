@@ -289,3 +289,8 @@ export async function getCreditsFromUserId() {
 
 	return connectedUser.credits
 }
+
+// async
+export const TestingExports = {
+	getCurrentUser,
+}
