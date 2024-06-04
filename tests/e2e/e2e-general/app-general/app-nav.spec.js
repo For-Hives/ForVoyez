@@ -3,6 +3,12 @@ const { signIn, log } = require('../../tests-utils')
 require('dotenv').config()
 
 let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+if (
+	!NEXT_PUBLIC_URL.startsWith('http://') &&
+	!NEXT_PUBLIC_URL.startsWith('https://')
+) {
+	NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
+}
 // use sub to get access to every pages
 const TEST_EMAIL = process.env.TEST_EMAIL_SUB
 const TEST_PASSWORD = process.env.TEST_PASSWORD_SUB

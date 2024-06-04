@@ -1,8 +1,8 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-utils')
+const { getNextPublicUrl, log } = require('../../tests-utils')
 require('dotenv').config()
 
-let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+const NEXT_PUBLIC_URL = getNextPublicUrl()
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
