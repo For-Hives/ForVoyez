@@ -8,10 +8,8 @@ import {
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
-/**
- * Retrieves the authenticated user.
- */
-async function getCurrentUser() {
+// Function to retrieve the authenticated user
+export async function getCurrentUser() {
 	const user = await currentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
@@ -19,25 +17,16 @@ async function getCurrentUser() {
 	return user
 }
 
-/**
- * Retrieves plans from the database.
- * If a filter is specified, only returns plans matching the filter.
- * Otherwise, syncs plans with Lemon Squeezy before returning them.
- */
+// Function to retrieve plans from the database
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
-
 	if (filter) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
-
 	return plans
 }
 
-/**
- * Syncs product variants from Lemon Squeezy with the Plan model in the database.
- * Only syncs variants of type 'subscription'.
- */
+// Function to sync product variants with the Plan model in the database
 export async function syncPlans() {
 	async function _addVariant(variant) {
 		if (!variant.variantId) {
@@ -54,7 +43,6 @@ export async function syncPlans() {
 	const allProducts = await listProducts()
 	let allVariants = []
 
-	// Loop through all products and get their variants
 	for (const product of allProducts) {
 		const productVariants = product.relationships.variants.data
 		for (const variant of productVariants) {
@@ -67,12 +55,10 @@ export async function syncPlans() {
 		}
 	}
 
-	// Filter out subscription variants
 	const refillVariants = allVariants.filter(
 		v => !v.is_subscription && v.name !== 'Default'
 	)
 
-	// Add refill variants to the database
 	for (const variant of refillVariants) {
 		const variantPriceObject = await listPrice(variant.variantId)
 		const currentPriceObj = variantPriceObject.at(0)
@@ -100,11 +86,7 @@ export async function syncPlans() {
 	return refillVariants
 }
 
-/**
- * Retrieves the customer ID for the authenticated user.
- * Returns null if the user has no subscription.
- * Throws an error if the user is not authenticated.
- */
+// Function to retrieve the customer ID for the authenticated user
 export async function getCustomerIdFromUser() {
 	const user = await currentUser()
 	const userPrisma = await prisma.user.findUnique({
@@ -131,16 +113,12 @@ export async function getCustomerIdFromUser() {
 	return userPrisma?.customerId ?? null
 }
 
-/**
- * Updates the credits for the specified user.
- * Creates an entry in the Usage table to track usage.
- */
+// Function to update the credits for the specified user
 export async function updateCredits(userId, credits, tokenId, reason) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
 		throw new Error('Invalid credits value')
 	}
 
-	// Get the user's current credits
 	const user = await prisma.user.findUnique({
 		where: { clerkId: userId },
 	})
@@ -165,31 +143,21 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 	})
 }
 
-/**
- * Decrements the credits for the authenticated user.
- * and log the usage
- */
+// Function to decrement the credits for the authenticated user
 export async function decrementCredit(reason, tokenId = null) {
 	const user = await getCurrentUser()
 	await updateCredits(user.id, -1, tokenId, reason)
 }
 
-/**
- * Retrieves API usage for the authenticated user.
- * Returns usage data grouped by hour.
- * If less than 5 records, returns all usage data.
- * Throws an error if the user is not authenticated.
- */
+// Function to retrieve API usage for the authenticated user
 export async function getUsageForUser() {
 	const user = await currentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
 
-	// Get user credits from the database
 	let userCredits = await getCreditsFromUserId()
 
-	// Fetch all usage data for the user, ordered by date
 	const usageData = await prisma.usage.findMany({
 		where: { userId: user.id },
 		orderBy: { usedAt: 'asc' },
@@ -201,9 +169,8 @@ export async function getUsageForUser() {
 
 	let hourlyCreditsLeft = {}
 
-	// Group usage data by hour and calculate the remaining credits for each hour
 	usageData.forEach(usage => {
-		const dateHour = usage.usedAt.toISOString().slice(0, 13) // Format: YYYY-MM-DDTHH
+		const dateHour = usage.usedAt.toISOString().slice(0, 13)
 
 		if (!hourlyCreditsLeft[dateHour]) {
 			hourlyCreditsLeft[dateHour] = {
@@ -218,7 +185,6 @@ export async function getUsageForUser() {
 
 	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
 
-	// If there are less than 5 usage records, return all of them for better chart display
 	if (hourlyUsageArray.length <= 5) {
 		return hourlyUsageArray
 	}
@@ -226,39 +192,28 @@ export async function getUsageForUser() {
 	return hourlyUsageArray
 }
 
-/**
- * Retrieves API usage by token for the authenticated user.
- * Returns an array of objects containing the token name and the number of uses.
- * Throws an error if the user is not authenticated.
- */
+// Function to retrieve API usage by token for the authenticated user
 export async function getUsageByToken() {
 	const user = await currentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
 
-	// Fetch usage data for the user, including the associated token
 	const usageData = await prisma.usage.findMany({
 		where: { userId: user.id },
 		include: { token: true },
 	})
 
-	// Count the number of uses for each token
 	const usageByToken = usageData.reduce((acc, usage) => {
 		const tokenName = usage.token?.name ?? 'Playground'
 		acc[tokenName] = (acc[tokenName] ?? 0) + 1
 		return acc
 	}, {})
 
-	// Convert the object to an array of { token, used } pairs
 	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
 }
 
-/**
- * Retrieves the authenticated user's subscription.
- * Includes the plan associated with the subscription.
- * Throws an error if the user is not authenticated.
- */
+// Function to retrieve the authenticated user's subscription
 export async function getSubscriptionFromUserId() {
 	const user = await currentUser()
 	if (!user) {
@@ -271,11 +226,7 @@ export async function getSubscriptionFromUserId() {
 	})
 }
 
-/**
- * Retrieves the authenticated user's credits.
- * Throws an error if the user is not authenticated.
- * Returns the user's credits.
- */
+// Function to retrieve the authenticated user's credits
 export async function getCreditsFromUserId() {
 	const user = await currentUser()
 
@@ -288,9 +239,4 @@ export async function getCreditsFromUserId() {
 	})
 
 	return connectedUser.credits
-}
-
-// async
-export const TestingExports = {
-	getCurrentUser,
 }
