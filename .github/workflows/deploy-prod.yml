@@ -20,6 +20,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          dockerfile: Dockerfile.prod
           push: true
           tags: ${{ secrets.APP_IMAGE }}
       - name: Deploy on cap rover
