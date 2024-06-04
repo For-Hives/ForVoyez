@@ -8,7 +8,13 @@ const TEST_PASSWORD = process.env.TEST_PASSWORD
 
 test.describe('Playground Functionality', () => {
 	test.beforeEach(async ({ page }) => {
-		await signIn(page, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+		await signIn(
+			page,
+			`${NEXT_PUBLIC_URL}/app/playground`,
+			NEXT_PUBLIC_URL,
+			TEST_EMAIL,
+			TEST_PASSWORD
+		)
 	})
 
 	test('Check playground usage tooltip and redirection', async ({ page }) => {

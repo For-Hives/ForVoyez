@@ -16,7 +16,13 @@ const log = message => {
 
 test.describe('Plans Management Functionality', () => {
 	test.beforeEach(async ({ page }) => {
-		await signIn(page, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+		await signIn(
+			page,
+			`${NEXT_PUBLIC_URL}/app/plans`,
+			NEXT_PUBLIC_URL,
+			TEST_EMAIL,
+			TEST_PASSWORD
+		)
 	})
 
 	test('View and manage subscription plans', async ({ page }) => {
