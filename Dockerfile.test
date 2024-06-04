@@ -1,0 +1,104 @@
+# Dockerfile.test
+ARG NODE_VERSION=20
+
+FROM node:${NODE_VERSION}-slim as base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+WORKDIR /usr/src/app
+
+RUN corepack enable
+RUN apt update && apt install -y openssl
+
+# Define build arguments
+ARG NEXT_PUBLIC_URL
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG CLERK_SECRET_KEY
+ARG NEXT_PUBLIC_CLERK_SIGN_IN_URL
+ARG NEXT_PUBLIC_CLERK_SIGN_UP_URL
+ARG NEXT_PUBLIC_CLERK_SIGN_OUT_URL
+ARG MAILGUN_API_KEY
+ARG MAILGUN_API_URL
+ARG MAILGUN_PUBLIC_KEY
+ARG MAILGUN_DOMAIN
+ARG OPENAI_API_KEY
+ARG JWT_SECRET
+ARG LEMON_SQUEEZY_API_KEY
+ARG LEMON_SQUEEZY_STORE_ID
+ARG LEMON_SQUEEZY_WEBHOOK_SECRET
+ARG DATABASE_URL
+ARG TEST_EMAIL
+ARG TEST_PASSWORD
+ARG TEST_EMAIL_SUB
+ARG TEST_PASSWORD_SUB
+ARG ENABLE_TEST_LOGS
+
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
+
+RUN mkdir -p /tmp/dev
+
+COPY package.json pnpm-lock.yaml /tmp/dev/
+RUN cd /tmp/dev && pnpm install --frozen-lockfile  --verbose --ignore-scripts
+
+# install with --production (exclude devDependencies)
+RUN mkdir -p /tmp/prod
+COPY package.json pnpm-lock.yaml /tmp/prod/
+RUN cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts  && chmod -R 755 node_modules && chown -R node:node node_modules
+
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+
+COPY --from=install /tmp/dev/node_modules node_modules
+COPY . .
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+ENV CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+ENV NEXT_PUBLIC_CLERK_SIGN_IN_URL=${NEXT_PUBLIC_CLERK_SIGN_IN_URL}
+ENV NEXT_PUBLIC_CLERK_SIGN_UP_URL=${NEXT_PUBLIC_CLERK_SIGN_UP_URL}
+ENV NEXT_PUBLIC_CLERK_SIGN_OUT_URL=${NEXT_PUBLIC_CLERK_SIGN_OUT_URL}
+ENV MAILGUN_API_KEY=${MAILGUN_API_KEY}
+ENV MAILGUN_API_URL=${MAILGUN_API_URL}
+ENV MAILGUN_PUBLIC_KEY=${MAILGUN_PUBLIC_KEY}
+ENV MAILGUN_DOMAIN=${MAILGUN_DOMAIN}
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ENV JWT_SECRET=${JWT_SECRET}
+ENV LEMON_SQUEEZY_API_KEY=${LEMON_SQUEEZY_API_KEY}
+ENV LEMON_SQUEEZY_STORE_ID=${LEMON_SQUEEZY_STORE_ID}
+ENV LEMON_SQUEEZY_WEBHOOK_SECRET=${LEMON_SQUEEZY_WEBHOOK_SECRET}
+ENV DATABASE_URL=${DATABASE_URL}
+ENV TEST_EMAIL=${TEST_EMAIL}
+ENV TEST_PASSWORD=${TEST_PASSWORD}
+ENV TEST_EMAIL_SUB=${TEST_EMAIL_SUB}
+ENV TEST_PASSWORD_SUB=${TEST_PASSWORD_SUB}
+ENV ENABLE_TEST_LOGS=${ENABLE_TEST_LOGS}
+
+ENV NODE_ENV production
+
+RUN pnpm run prisma:generate
+RUN pnpm run build
+
+RUN chmod -R 777 /usr/src/app/.next/cache
+
+# copy production dependencies and source code into final image
+FROM base AS release
+
+COPY --from=install /tmp/prod/node_modules node_modules
+COPY --from=prerelease /usr/src/app/.next .next
+COPY --from=prerelease /usr/src/app/public public
+COPY --from=prerelease /usr/src/app/src src
+COPY --from=prerelease /usr/src/app/package.json .
+COPY --from=prerelease /usr/src/app/prisma prisma
+
+ENV NODE_ENV production
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+USER root
+
+EXPOSE 3000/tcp
+ENTRYPOINT [ "pnpm", "run", "launch" ]
