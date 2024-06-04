@@ -224,8 +224,16 @@ describe('Database Service', () => {
 		it('should return usage data for the authenticated user', async () => {
 			const mockUser = { id: 'user123', credits: 10 }
 			const mockUsageData = [
-				{ previousCredits: 10, usedAt: new Date(), used: 10 },
-				{ usedAt: new Date(), previousCredits: 8, used: 8 },
+				{
+					usedAt: new Date('2024-06-04T10:53:49.301Z'),
+					previousCredits: 10,
+					used: 10,
+				},
+				{
+					usedAt: new Date('2024-06-04T11:53:49.301Z'),
+					previousCredits: 8,
+					used: 8,
+				},
 			]
 			clerk.currentUser.mockResolvedValue(mockUser)
 			prisma.usage.findMany.mockResolvedValue(mockUsageData)
@@ -235,8 +243,16 @@ describe('Database Service', () => {
 
 			expect(usage).toEqual(
 				expect.arrayContaining([
-					expect.objectContaining({ creditsLeft: 10 }),
-					expect.objectContaining({ creditsLeft: 8 }),
+					expect.objectContaining({
+						fullDate: new Date('2024-06-04T10:53:49.301Z'),
+						dateHour: '2024-06-04T10',
+						creditsLeft: 10,
+					}),
+					expect.objectContaining({
+						fullDate: new Date('2024-06-04T11:53:49.301Z'),
+						dateHour: '2024-06-04T11',
+						creditsLeft: 8,
+					}),
 				])
 			)
 		})
