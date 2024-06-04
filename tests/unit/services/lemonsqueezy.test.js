@@ -4,6 +4,7 @@ import * as clerk from '@clerk/nextjs/server'
 
 import {
 	getCheckoutURL,
+	getCheckouts,
 	getCustomerPortalLink,
 	getVariant,
 	initLemonSqueezy,
@@ -75,6 +76,85 @@ describe('Lemon Squeezy Service', () => {
 			lemonsqueezy.listPrices.mockResolvedValue(mockError)
 
 			await expect(listPrice('variant1')).rejects.toThrow('Some error')
+		})
+	})
+
+	describe('getCheckouts', () => {
+		it('should create checkout URLs for the authenticated user', async () => {
+			const mockUser = { id: 'user123' }
+			const mockPlans = [{ variantId: 'variant1' }, { variantId: 'variant2' }]
+			const mockCheckouts = {
+				data: {
+					data: [
+						{
+							attributes: {
+								url: 'http://existing-checkout-url1',
+								variant_id: 'variant1',
+							},
+						},
+					],
+				},
+			}
+			const mockNewCheckout = {
+				data: {
+					data: {
+						attributes: {
+							url: 'http://new-checkout-url2',
+						},
+					},
+				},
+			}
+
+			clerk.currentUser.mockResolvedValue(mockUser)
+			lemonsqueezy.listCheckouts.mockResolvedValue(mockCheckouts)
+			lemonsqueezy.createCheckout.mockResolvedValue(mockNewCheckout)
+
+			const checkoutUrls = await getCheckouts(mockPlans)
+
+			expect(checkoutUrls).toEqual({
+				variant1: 'http://existing-checkout-url1',
+				variant2: 'http://new-checkout-url2',
+			})
+			expect(lemonsqueezy.listCheckouts).toHaveBeenCalledWith({
+				product_options: {
+					redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
+				},
+				checkoutData: {
+					custom: {
+						user_id: 'user123',
+					},
+				},
+				filter: {
+					storeId: STORE_ID,
+				},
+				page: {
+					size: 100,
+				},
+			})
+			expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(
+				STORE_ID,
+				'variant2',
+				{
+					productOptions: {
+						redirectUrl: `https://forvoyez.com/app/billing/`,
+						receiptButtonText: 'Go to Dashboard',
+						enabledVariants: ['variant2'],
+					},
+					checkoutData: {
+						custom: {
+							user_id: 'user123',
+						},
+					},
+				}
+			)
+		})
+
+		it('should throw an error if the user is not authenticated', async () => {
+			clerk.currentUser.mockResolvedValue(null)
+
+			await expect(getCheckouts([])).rejects.toThrow(
+				'User is not authenticated.'
+			)
 		})
 	})
 
