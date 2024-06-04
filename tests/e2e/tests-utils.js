@@ -4,3 +4,5 @@ export const log = message => {
 		console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
 	}
 }
+
+export const signIn = async (page, email, password) => {}
