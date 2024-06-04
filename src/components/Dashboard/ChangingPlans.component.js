@@ -8,7 +8,6 @@ import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getCheckoutURL,
 	getCheckouts,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
