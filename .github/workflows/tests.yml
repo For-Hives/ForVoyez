@@ -25,6 +25,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io
       - name: 'Build Docker Image'
+        env:
+          NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}
+          NEXT_PUBLIC_CLERK_SIGN_OUT_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_API_URL: ${{ secrets.MAILGUN_API_URL }}
+          MAILGUN_PUBLIC_KEY: ${{ secrets.MAILGUN_PUBLIC_KEY }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          LEMON_SQUEEZY_API_KEY: ${{ secrets.LEMON_SQUEEZY_API_KEY }}
+          LEMON_SQUEEZY_STORE_ID: ${{ secrets.LEMON_SQUEEZY_STORE_ID }}
+          LEMON_SQUEEZY_WEBHOOK_SECRET: ${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL_SUB: ${{ secrets.TEST_EMAIL_SUB }}
+          TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
+          ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
         run: docker build -t my-app .
       - name: 'Run Docker Container'
         run: docker run -d -p 3000:3000 --name my-app-container my-app
