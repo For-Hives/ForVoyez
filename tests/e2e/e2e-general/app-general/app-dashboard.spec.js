@@ -8,13 +8,7 @@ const TEST_PASSWORD = process.env.TEST_PASSWORD
 
 test.describe('Dashboard Quick Links Functionality', () => {
 	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/dashboard`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL,
-			TEST_PASSWORD
-		)
+		await signIn(page, `app/`, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
 	})
 
 	test('Dashboard quick links are present and correct', async ({ page }) => {
