@@ -1,4 +1,5 @@
 const { expect, test } = require('@playwright/test')
+const { log } = require('../../tests-utils')
 
 // Load environment variables
 require('dotenv').config()

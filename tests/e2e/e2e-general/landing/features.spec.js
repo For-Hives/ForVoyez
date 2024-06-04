@@ -1,4 +1,5 @@
 const { expect, test } = require('@playwright/test')
+const { log } = require('../../tests-utils')
 
 test('FeatureComponent elements are present and correct', async ({ page }) => {
 	await page.goto('/')
