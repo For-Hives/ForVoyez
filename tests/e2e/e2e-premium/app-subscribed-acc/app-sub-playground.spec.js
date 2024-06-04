@@ -10,7 +10,7 @@ test.describe('Playground Functionality for Subscribed User', () => {
 	test.beforeEach(async ({ page }) => {
 		await signIn(
 			page,
-			`${NEXT_PUBLIC_URL}/app/playground`,
+			`app/playground`,
 			NEXT_PUBLIC_URL,
 			TEST_EMAIL_SUB,
 			TEST_PASSWORD_SUB
