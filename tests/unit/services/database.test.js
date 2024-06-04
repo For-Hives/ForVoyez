@@ -177,17 +177,22 @@ describe('Database Service', () => {
 			const tokenId = 'token123'
 			const reason = 'test'
 
+			const mockUser = { id: 'user123', credits: 0 }
+			prisma.user.findUnique.mockResolvedValue(mockUser)
+
 			await updateCredits(userId, credits, tokenId, reason)
 
 			expect(prisma.user.update).toHaveBeenCalledWith({
-				data: { credits: { increment: credits } },
 				where: { clerkId: userId },
+				data: { credits: 10 },
 			})
 			expect(prisma.usage.create).toHaveBeenCalledWith({
 				data: {
+					previousCredits: 0,
+					currentCredits: 10,
+					userId: userId,
 					used: credits,
 					tokenId,
-					userId,
 					reason,
 				},
 			})
@@ -202,14 +207,15 @@ describe('Database Service', () => {
 
 	describe('decrementCredit', () => {
 		it('should decrement the credits of the authenticated user', async () => {
-			const mockUser = { id: 'user123' }
+			const mockUser = { id: 'user123', credits: 10 }
 			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.user.findUnique.mockResolvedValue(mockUser)
 
 			await decrementCredit('test reason')
 
 			expect(prisma.user.update).toHaveBeenCalledWith({
-				data: { credits: { increment: -1 } },
 				where: { clerkId: mockUser.id },
+				data: { credits: 9 },
 			})
 		})
 	})
@@ -218,11 +224,12 @@ describe('Database Service', () => {
 		it('should return usage data for the authenticated user', async () => {
 			const mockUser = { id: 'user123', credits: 10 }
 			const mockUsageData = [
-				{ usedAt: new Date(), used: 10 },
-				{ usedAt: new Date(), used: 8 },
+				{ previousCredits: 10, usedAt: new Date(), used: 10 },
+				{ usedAt: new Date(), previousCredits: 8, used: 8 },
 			]
 			clerk.currentUser.mockResolvedValue(mockUser)
 			prisma.usage.findMany.mockResolvedValue(mockUsageData)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
 
 			const usage = await getUsageForUser()
 
