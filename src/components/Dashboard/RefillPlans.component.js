@@ -1,20 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getCheckoutURL,
-	getCheckouts,
-	getCustomerPortalLink,
-} from '@/services/lemonsqueezy.service'
-import {
 	getPlans,
 	getSubscriptionFromUserId,
 } from '@/services/database.service'
+import { getCheckouts } from '@/services/lemonsqueezy.service'
 import { sortPlans } from '@/helpers/sortPlans'
 
 function classNames(...classes) {
