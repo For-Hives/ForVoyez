@@ -2,8 +2,9 @@ const { expect, test } = require('@playwright/test')
 require('dotenv').config()
 
 let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
-const TEST_EMAIL = process.env.TEST_EMAIL
-const TEST_PASSWORD = process.env.TEST_PASSWORD
+// use sub to get access to every pages
+const TEST_EMAIL = process.env.TEST_EMAIL_SUB
+const TEST_PASSWORD = process.env.TEST_PASSWORD_SUB
 
 const log = message => {
 	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
@@ -144,6 +145,7 @@ test.describe('Sidebar Navigation Functionality', () => {
 
 			log(`Clicking internal link: ${link.title}`)
 			await Promise.all([page.waitForNavigation(), linkLocator.click()])
+			log(`Checking URL after clicking internal link: ${link.title}`)
 			await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
 
 			// Go back to the dashboard for the next iteration
