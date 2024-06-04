@@ -79,7 +79,7 @@ jobs:
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
       - name: 'Build Docker Image for Production'
-        run: docker build -f Dockerfile.prod -t my-app:prod .
+        run: docker build -f Dockerfile.test -t my-app:test .
         env:
           NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
@@ -103,4 +103,4 @@ jobs:
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
       - name: 'Deploy'
-        run: docker run --rm my-app:prod pnpm run start
+        run: docker run --rm my-app:test pnpm run start
