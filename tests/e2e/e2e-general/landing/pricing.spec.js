@@ -1,9 +1,5 @@
 const { expect, test } = require('@playwright/test')
 
-const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-}
-
 test.describe('Pricing Component', () => {
 	test('Pricing section loads correctly', async ({ page }) => {
 		await page.goto('/')

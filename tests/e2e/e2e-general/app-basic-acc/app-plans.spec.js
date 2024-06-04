@@ -5,8 +5,12 @@ let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
+const ENABLE_TEST_LOGS = process.env.ENABLE_TEST_LOGS === 'true'
+
 const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
+	if (ENABLE_TEST_LOGS) {
+		console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
+	}
 }
 
 test.describe('Plans Management Functionality', () => {

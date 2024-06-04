@@ -5,10 +5,6 @@ let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
-const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-}
-
 test.describe('Sign-in - Sign-out Functionality', () => {
 	test('User can sign in successfully, access manage account, and sign out', async ({
 		page,

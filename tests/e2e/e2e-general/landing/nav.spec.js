@@ -1,9 +1,5 @@
 const { expect, test } = require('@playwright/test')
 
-const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-}
-
 test('Navbar elements are present and correct', async ({ page }) => {
 	await page.goto('/')
 

@@ -5,10 +5,6 @@ let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
-const log = message => {
-	console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-}
-
 test.describe('Legal Section Navigation Functionality', () => {
 	test.beforeEach(async ({ page }) => {
 		// ensure the URL starts with http:// or https://
