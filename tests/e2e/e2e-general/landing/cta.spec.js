@@ -1,10 +1,10 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-utils')
+const { getNextPublicUrl, log } = require('../../tests-utils')
 
 // Load environment variables
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+const NEXT_PUBLIC_URL = getNextPublicUrl()
 
 test.describe('CTA Component', () => {
 	test('CTA section loads correctly', async ({ page }) => {

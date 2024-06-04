@@ -1,5 +1,17 @@
 import { expect } from '@playwright/test'
 
+export const getNextPublicUrl = () => {
+	let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+
+	if (
+		!NEXT_PUBLIC_URL.startsWith('http://') &&
+		!NEXT_PUBLIC_URL.startsWith('https://')
+	) {
+		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
+	}
+	return NEXT_PUBLIC_URL
+}
+
 export const log = message => {
 	const ENABLE_TEST_LOGS = process.env.ENABLE_TEST_LOGS === 'true'
 	if (ENABLE_TEST_LOGS) {
