@@ -16,23 +16,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: 'Install Docker'
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-ce docker-ce-cli containerd.io
-      - name: 'Set up Node.js'
+      - name: 'Install Node'
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
       - uses: pnpm/action-setup@v4
         with:
           version: latest
-      - name: 'Install Dependencies'
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm install -g gulp prettier vitest
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+            - args: [--global, gulp, prettier, vitest]
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
+      - name: 'Run Unit Tests'
+        run: pnpm test:ci
+      - name: 'Report Coverage'
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+      - name: 'Lint Code'
+        run: pnpm lint
+      - name: 'Install Docker'
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io
       - name: 'Build Docker Image for Testing'
         run: |
           docker build -f Dockerfile.test -t my-app:test \
@@ -58,8 +65,10 @@ jobs:
             --build-arg TEST_PASSWORD_SUB=${{ secrets.TEST_PASSWORD_SUB }} \
             --build-arg ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
             .
-      - name: 'Run Tests'
-        run: docker run --rm --entrypoint="" my-app:test pnpm test:ci
+      - name: 'Run End-to-End Tests'
+        run: docker run --rm my-app:test pnpm test:e2e
+      - name: 'Run End-to-End Tests for Subscribed Users'
+        run: docker run --rm my-app:test pnpm test:e2e:premium
 
   deploy:
     runs-on: ubuntu-latest
