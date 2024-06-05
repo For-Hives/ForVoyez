@@ -1,4 +1,4 @@
-# Dockerfile.test
+# Dockerfile
 ARG NODE_VERSION=20
 
 FROM node:${NODE_VERSION}-slim as base
@@ -11,7 +11,15 @@ WORKDIR /usr/src/app
 RUN corepack enable
 RUN apt update && apt install -y openssl
 
-# Define build arguments
+# Install dependencies into temp directory
+COPY package.json pnpm-lock.yaml ./
+RUN echo "Installing all dependencies" && \
+    pnpm install --frozen-lockfile --verbose --ignore-scripts
+
+# Copy all (non-ignored) project files into the image
+COPY . .
+
+# Set environment variables for build
 ARG NEXT_PUBLIC_URL
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ARG CLERK_SECRET_KEY
@@ -34,29 +42,6 @@ ARG TEST_EMAIL_SUB
 ARG TEST_PASSWORD_SUB
 ARG ENABLE_TEST_LOGS
 
-# Install dependencies into temp directory
-FROM base AS install
-
-RUN mkdir -p /tmp/dev
-
-COPY package.json pnpm-lock.yaml /tmp/dev/
-RUN echo "Installing development dependencies" && \
-    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
-
-# Install with --production (exclude devDependencies)
-RUN mkdir -p /tmp/prod
-COPY package.json pnpm-lock.yaml /tmp/prod/
-RUN echo "Installing production dependencies" && \
-    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
-
-# Copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS prerelease
-
-COPY --from=install /tmp/dev/node_modules node_modules
-COPY . .
-
-# Set environment variables for build
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
 ENV CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
@@ -79,8 +64,6 @@ ENV TEST_EMAIL_SUB=${TEST_EMAIL_SUB}
 ENV TEST_PASSWORD_SUB=${TEST_PASSWORD_SUB}
 ENV ENABLE_TEST_LOGS=${ENABLE_TEST_LOGS}
 
-RUN echo "Environment variables set"
-
 ENV NODE_ENV production
 
 RUN echo "Checking if Prisma CLI is installed" && \
@@ -94,22 +77,6 @@ RUN echo "Building Next.js application" && \
 
 RUN chmod -R 777 /usr/src/app/.next/cache
 
-# Copy production dependencies and source code into final image
-FROM base AS release
-
-COPY --from=install /tmp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/.next .next
-COPY --from=prerelease /usr/src/app/public public
-COPY --from=prerelease /usr/src/app/src src
-COPY --from=prerelease /usr/src/app/package.json .
-COPY --from=prerelease /usr/src/app/prisma prisma
-
-ENV NODE_ENV production
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
-
-USER root
-
+# Expose port and set entry point for the application
 EXPOSE 3000/tcp
-
-RUN echo "Starting the application"
 ENTRYPOINT ["pnpm", "run", "launch"]
