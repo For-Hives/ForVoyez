@@ -45,30 +45,22 @@ export async function syncPlans() {
 		let allVariants = []
 
 		for (const product of allProducts) {
-			// Check if product.relationships.variants.data exists
 			if (
 				!product.relationships ||
 				!product.relationships.variants ||
 				!product.relationships.variants.data
 			) {
-				console.error('Product has no variants:', product)
 				continue
 			}
 
 			const productVariants = product.relationships.variants.data
 			for (const variant of productVariants) {
 				const variantDetails = await getVariant(variant.id)
-
-				// Check if variantDetails.data.data.attributes exists
 				if (
 					!variantDetails.data ||
 					!variantDetails.data.data ||
 					!variantDetails.data.data.attributes
 				) {
-					console.error(
-						'Variant details are missing attributes:',
-						variantDetails
-					)
 					continue
 				}
 
@@ -88,7 +80,6 @@ export async function syncPlans() {
 			const variantPriceObject = await listPrice(variant.variantId)
 			const currentPriceObj = variantPriceObject?.[0]
 
-			// Ensure currentPriceObj and its attributes are defined
 			if (!currentPriceObj || !currentPriceObj.attributes) {
 				console.error('Price object is missing attributes:', currentPriceObj)
 				continue
