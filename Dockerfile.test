@@ -34,21 +34,20 @@ ARG TEST_EMAIL_SUB
 ARG TEST_PASSWORD_SUB
 ARG ENABLE_TEST_LOGS
 
-# Log build arguments
-RUN echo "NEXT_PUBLIC_URL (starter file dockerfile): ${NEXT_PUBLIC_URL}"
-
 # Install dependencies into temp directory
 FROM base AS install
 
 RUN mkdir -p /tmp/dev
 
 COPY package.json pnpm-lock.yaml /tmp/dev/
-RUN cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
+RUN echo "Installing development dependencies" && \
+    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
 
 # Install with --production (exclude devDependencies)
 RUN mkdir -p /tmp/prod
 COPY package.json pnpm-lock.yaml /tmp/prod/
-RUN cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
+RUN echo "Installing production dependencies" && \
+    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
 
 # Copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
@@ -80,14 +79,15 @@ ENV TEST_EMAIL_SUB=${TEST_EMAIL_SUB}
 ENV TEST_PASSWORD_SUB=${TEST_PASSWORD_SUB}
 ENV ENABLE_TEST_LOGS=${ENABLE_TEST_LOGS}
 
-# Log environment variables
-RUN echo "NEXT_PUBLIC_URL (end file dockerfile): ${NEXT_PUBLIC_URL}"
+RUN echo "Environment variables set"
 
 ENV NODE_ENV production
 
-RUN npm install -g pnpm
-RUN pnpm run prisma:generate
-RUN pnpm run build
+RUN echo "Generating Prisma client" && \
+    pnpm run prisma:generate
+
+RUN echo "Building Next.js application" && \
+    pnpm run build
 
 RUN chmod -R 777 /usr/src/app/.next/cache
 
@@ -107,4 +107,6 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 USER root
 
 EXPOSE 3000/tcp
+
+RUN echo "Starting the application"
 ENTRYPOINT ["pnpm", "run", "launch"]
