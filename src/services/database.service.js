@@ -45,9 +45,33 @@ export async function syncPlans() {
 		let allVariants = []
 
 		for (const product of allProducts) {
+			// Check if product.relationships.variants.data exists
+			if (
+				!product.relationships ||
+				!product.relationships.variants ||
+				!product.relationships.variants.data
+			) {
+				console.error('Product has no variants:', product)
+				continue
+			}
+
 			const productVariants = product.relationships.variants.data
 			for (const variant of productVariants) {
 				const variantDetails = await getVariant(variant.id)
+
+				// Check if variantDetails.data.data.attributes exists
+				if (
+					!variantDetails.data ||
+					!variantDetails.data.data ||
+					!variantDetails.data.data.attributes
+				) {
+					console.error(
+						'Variant details are missing attributes:',
+						variantDetails
+					)
+					continue
+				}
+
 				allVariants.push({
 					...variantDetails.data.data.attributes,
 					productName: product.attributes.name,
@@ -62,13 +86,18 @@ export async function syncPlans() {
 
 		for (const variant of refillVariants) {
 			const variantPriceObject = await listPrice(variant.variantId)
-			const currentPriceObj = variantPriceObject.at(0)
+			const currentPriceObj = variantPriceObject?.[0]
 
-			const isUsageBased =
-				currentPriceObj?.attributes.usage_aggregation !== null
-			const packageSize = currentPriceObj?.attributes.package_size
+			// Ensure currentPriceObj and its attributes are defined
+			if (!currentPriceObj || !currentPriceObj.attributes) {
+				console.error('Price object is missing attributes:', currentPriceObj)
+				continue
+			}
+
+			const isUsageBased = currentPriceObj.attributes.usage_aggregation !== null
+			const packageSize = currentPriceObj.attributes.package_size
 			const price = isUsageBased
-				? currentPriceObj?.attributes.unit_price_decimal
+				? currentPriceObj.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 			const priceString = price?.toString() ?? ''
 
