@@ -90,7 +90,11 @@ jobs:
             .
       - name: 'Start Docker Container'
         run: |
-          docker run -d --name my-app-container -p 3000:3000 my-app:test pnpm run start
+          docker run -d --name my-app-container -p 3000:3000 my-app:test
+      - name: 'Build the application'
+        run: pnpm build
+      - name: 'Start the application'
+        run: pnpm start
       - name: 'Wait for the application to be ready'
         run: sleep 30
       - name: 'Run E2E Tests'
