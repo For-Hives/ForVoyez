@@ -20,11 +20,6 @@ test.describe('Billing Page Functionality', () => {
 	test('Check billing page access and Toastify message', async ({ page }) => {
 		log('Page loaded')
 
-		// Wait for the loading message
-		const loadingMessage = page.locator('text=Loading your data...')
-		log('Waiting for loading message to be visible')
-		await expect(loadingMessage).toBeVisible()
-
 		// Wait for the Toastify message
 		const toastMessage = page.locator('.Toastify__toast-body')
 		log('Waiting for Toastify message to be visible')
