@@ -118,11 +118,18 @@ jobs:
       - name: 'Wait for the application to be ready'
         run: |
           echo "Waiting for the application to be ready..."
-          sleep 30
-          until curl -s http://localhost:3000 > /dev/null; do
+          end=$((SECONDS+120))
+          while [ $SECONDS -lt $end ]; do
+            if curl -s http://localhost:3000 > /dev/null; then
+              echo "Application is up!"
+              exit 0
+            fi
             echo "Waiting for the application to be up..."
             sleep 5
           done
+          echo "Application did not start in time"
+          docker logs my-app-container
+          exit 1
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
         env:
