@@ -87,7 +87,7 @@ jobs:
             .
       - name: 'Start Docker Container'
         run: |
-          docker run -d --name my-app-container -p 3000:3000 my-app:test pnpm run start
+          docker run -d --name my-app-container --rm --entrypoint="" -p 3000:3000 my-app:test pnpm run start
       - name: 'Check Docker Container Logs'
         run: |
           echo "Checking Docker container logs..."
