@@ -87,7 +87,29 @@ jobs:
             .
       - name: 'Start Docker Container'
         run: |
-          docker run -d --name my-app-container --rm --entrypoint="" -p 3000:3000 my-app:test pnpm run start
+          docker run -d --name my-app-container -p 3000:3000 \
+            -e NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
+            -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
+            -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_OUT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }} \
+            -e MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
+            -e MAILGUN_API_URL=${{ secrets.MAILGUN_API_URL }} \
+            -e MAILGUN_PUBLIC_KEY=${{ secrets.MAILGUN_PUBLIC_KEY }} \
+            -e MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }} \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e LEMON_SQUEEZY_API_KEY=${{ secrets.LEMON_SQUEEZY_API_KEY }} \
+            -e LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
+            -e LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -e TEST_EMAIL=${{ secrets.TEST_EMAIL }} \
+            -e TEST_PASSWORD=${{ secrets.TEST_PASSWORD }} \
+            -e TEST_EMAIL_SUB=${{ secrets.TEST_EMAIL_SUB }} \
+            -e TEST_PASSWORD_SUB=${{ secrets.TEST_PASSWORD_SUB }} \
+            -e ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
+            my-app:test pnpm run start
       - name: 'Check Docker Container Logs'
         run: |
           echo "Checking Docker container logs..."
@@ -103,6 +125,12 @@ jobs:
           done
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
+        env:
+          NEXT_PUBLIC_URL: http://localhost:3000
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL_SUB: ${{ secrets.TEST_EMAIL_SUB }}
+          TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
       - name: 'Stop and remove Docker Container'
         run: |
           docker stop my-app-container
