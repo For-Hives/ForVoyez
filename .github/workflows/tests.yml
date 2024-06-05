@@ -88,6 +88,11 @@ jobs:
       - name: 'Start Docker Container'
         run: |
           docker run -d --name my-app-container -p 3000:3000 my-app:test pnpm run start
+      - name: 'Check Docker Container Logs'
+        run: |
+          echo "Checking Docker container logs..."
+          sleep 10
+          docker logs my-app-container
       - name: 'Wait for the application to be ready'
         run: |
           echo "Waiting for the application to be ready..."
@@ -98,8 +103,6 @@ jobs:
           done
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
-        env:
-          NEXT_PUBLIC_URL: http://localhost:3000
       - name: 'Stop and remove Docker Container'
         run: |
           docker stop my-app-container
