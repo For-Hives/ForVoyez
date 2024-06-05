@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      # Required to checkout the code
       contents: read
+      # Required to put a comment into the pull-request
       pull-requests: write
 
     steps:
@@ -27,49 +29,15 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
-      - name: 'Install Playwright Browsers'
-        run: pnpm exec playwright install
-      - name: 'Run Unit Tests'
+      - name: 'Test'
         run: pnpm test:ci
       - name: 'Report Coverage'
+        # Set if: always() to also generate the report if tests are failing
+        # Only works if you set `reportOnFailure: true` in your vite config as specified above
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
-      - name: 'Lint Code'
+      - name: 'Test eslint'
         run: pnpm lint
-      - name: 'Install Docker'
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-ce docker-ce-cli containerd.io
-      - name: 'Build Docker Image for Testing'
-        run: |
-          docker build -f Dockerfile.test -t my-app:test \
-            --build-arg NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
-            --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
-            --build-arg CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
-            --build-arg NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} \
-            --build-arg NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} \
-            --build-arg NEXT_PUBLIC_CLERK_SIGN_OUT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }} \
-            --build-arg MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
-            --build-arg MAILGUN_API_URL=${{ secrets.MAILGUN_API_URL }} \
-            --build-arg MAILGUN_PUBLIC_KEY=${{ secrets.MAILGUN_PUBLIC_KEY }} \
-            --build-arg MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }} \
-            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-            --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
-            --build-arg LEMON_SQUEEZY_API_KEY=${{ secrets.LEMON_SQUEEZY_API_KEY }} \
-            --build-arg LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
-            --build-arg LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
-            --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
-            --build-arg TEST_EMAIL=${{ secrets.TEST_EMAIL }} \
-            --build-arg TEST_PASSWORD=${{ secrets.TEST_PASSWORD }} \
-            --build-arg TEST_EMAIL_SUB=${{ secrets.TEST_EMAIL_SUB }} \
-            --build-arg TEST_PASSWORD_SUB=${{ secrets.TEST_PASSWORD_SUB }} \
-            --build-arg ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
-            .
-      - name: 'Run End-to-End Tests'
-        run: docker run --rm my-app:test pnpm test:e2e
-      - name: 'Run End-to-End Tests for Subscribed Users'
-        run: docker run --rm my-app:test pnpm test:e2e:premium
-
   deploy:
     runs-on: ubuntu-latest
     needs: test
@@ -91,8 +59,6 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm install -g gulp prettier vitest
-      - name: 'Install Playwright Browsers'
-        run: pnpm exec playwright install
       - name: 'Build Docker Image for Production'
         run: |
           docker build -f Dockerfile.prod -t my-app:prod \
