@@ -41,13 +41,13 @@ RUN mkdir -p /tmp/dev
 
 COPY package.json pnpm-lock.yaml /tmp/dev/
 RUN echo "Installing development dependencies" && \
-    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
+    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts --include-dev
 
 # Install with --production (exclude devDependencies)
 RUN mkdir -p /tmp/prod
 COPY package.json pnpm-lock.yaml /tmp/prod/
 RUN echo "Installing production dependencies" && \
-    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
+    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts --include-dev && chmod -R 755 node_modules && chown -R node:node node_modules
 
 # Copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image

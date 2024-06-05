@@ -57,7 +57,7 @@ jobs:
             --build-arg ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
             .
       - name: 'Run Tests'
-        run: docker run --rm my-app:test pnpm test:ci
+        run: docker run --rm --entrypoint="" my-app:test pnpm test:ci
 
   deploy:
     runs-on: ubuntu-latest
@@ -106,4 +106,4 @@ jobs:
             --build-arg ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
             .
       - name: 'Deploy'
-        run: docker run --rm my-app:prod pnpm run start
+        run: docker run --rm --entrypoint="" my-app:prod pnpm run start
