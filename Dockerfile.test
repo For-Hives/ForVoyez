@@ -38,7 +38,6 @@ ARG ENABLE_TEST_LOGS
 RUN echo "NEXT_PUBLIC_URL (starter file dockerfile): ${NEXT_PUBLIC_URL}"
 
 # install dependencies into temp directory
-# this will cache them and speed up future builds
 FROM base AS install
 
 RUN mkdir -p /tmp/dev
