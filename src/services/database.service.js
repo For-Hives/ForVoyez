@@ -40,50 +40,56 @@ export async function syncPlans() {
 		})
 	}
 
-	const allProducts = await listProducts()
-	let allVariants = []
+	try {
+		const allProducts = await listProducts()
+		let allVariants = []
 
-	for (const product of allProducts) {
-		const productVariants = product.relationships.variants.data
-		for (const variant of productVariants) {
-			const variantDetails = await getVariant(variant.id)
-			allVariants.push({
-				...variantDetails.data.data.attributes,
-				productName: product.attributes.name,
-				variantId: variant.id,
+		for (const product of allProducts) {
+			const productVariants = product.relationships.variants.data
+			for (const variant of productVariants) {
+				const variantDetails = await getVariant(variant.id)
+				allVariants.push({
+					...variantDetails.data.data.attributes,
+					productName: product.attributes.name,
+					variantId: variant.id,
+				})
+			}
+		}
+
+		const refillVariants = allVariants.filter(
+			v => !v.is_subscription && v.name !== 'Default'
+		)
+
+		for (const variant of refillVariants) {
+			const variantPriceObject = await listPrice(variant.variantId)
+			const currentPriceObj = variantPriceObject.at(0)
+
+			const isUsageBased =
+				currentPriceObj?.attributes.usage_aggregation !== null
+			const packageSize = currentPriceObj?.attributes.package_size
+			const price = isUsageBased
+				? currentPriceObj?.attributes.unit_price_decimal
+				: currentPriceObj.attributes.unit_price
+			const priceString = price?.toString() ?? ''
+
+			await _addVariant({
+				productId: variant.product_id.toString(),
+				description: variant.description,
+				productName: variant.productName,
+				variantId: variant.variantId,
+				price: parseInt(priceString),
+				variantEnabled: true,
+				name: variant.name,
+				billingCycle: null,
+				packageSize,
 			})
 		}
+
+		return refillVariants
+	} catch (error) {
+		console.error('Error syncing plans:', error)
+		throw error
 	}
-
-	const refillVariants = allVariants.filter(
-		v => !v.is_subscription && v.name !== 'Default'
-	)
-
-	for (const variant of refillVariants) {
-		const variantPriceObject = await listPrice(variant.variantId)
-		const currentPriceObj = variantPriceObject.at(0)
-
-		const isUsageBased = currentPriceObj?.attributes.usage_aggregation !== null
-		const packageSize = currentPriceObj?.attributes.package_size
-		const price = isUsageBased
-			? currentPriceObj?.attributes.unit_price_decimal
-			: currentPriceObj.attributes.unit_price
-		const priceString = price?.toString() ?? ''
-
-		await _addVariant({
-			productId: variant.product_id.toString(),
-			description: variant.description,
-			productName: variant.productName,
-			variantId: variant.variantId,
-			price: parseInt(priceString),
-			variantEnabled: true,
-			name: variant.name,
-			billingCycle: null,
-			packageSize,
-		})
-	}
-
-	return refillVariants
 }
 
 // Function to retrieve the customer ID for the authenticated user
@@ -156,7 +162,7 @@ export async function decrementCredit(reason, tokenId = null) {
 
 // Function to retrieve API usage for the authenticated user
 export async function getUsageForUser() {
-	const user = await currentUser()
+	const user = await getCurrentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
@@ -202,7 +208,7 @@ export async function getUsageForUser() {
 
 // Function to retrieve API usage by token for the authenticated user
 export async function getUsageByToken() {
-	const user = await currentUser()
+	const user = await getCurrentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
@@ -223,7 +229,7 @@ export async function getUsageByToken() {
 
 // Function to retrieve the authenticated user's subscription
 export async function getSubscriptionFromUserId() {
-	const user = await currentUser()
+	const user = await getCurrentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
@@ -236,8 +242,7 @@ export async function getSubscriptionFromUserId() {
 
 // Function to retrieve the authenticated user's credits
 export async function getCreditsFromUserId() {
-	const user = await currentUser()
-
+	const user = await getCurrentUser()
 	if (!user) {
 		throw new Error('User not authenticated')
 	}
@@ -246,5 +251,5 @@ export async function getCreditsFromUserId() {
 		where: { clerkId: user.id },
 	})
 
-	return connectedUser.credits
+	return connectedUser?.credits
 }

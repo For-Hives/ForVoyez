@@ -4,8 +4,9 @@ export async function GET() {
 	try {
 		const result = await syncPlans()
 
-		if (!result || !result.attributes) {
-			throw new Error('Attributes are missing in the syncPlans result')
+		// Check if the result is valid
+		if (!result) {
+			throw new Error('No result returned from syncPlans')
 		}
 
 		return new Response('Plans have been synced', { status: 200 })
