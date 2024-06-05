@@ -1,11 +1,16 @@
-import { cookies } from 'next/headers'
-
 import { syncPlans } from '@/services/database.service'
 
 export async function GET() {
-	await syncPlans()
+	try {
+		const result = await syncPlans()
 
-	return new Response('Plans has been Sync', {
-		status: 200,
-	})
+		if (!result || !result.attributes) {
+			throw new Error('Attributes are missing in the syncPlans result')
+		}
+
+		return new Response('Plans have been synced', { status: 200 })
+	} catch (error) {
+		console.error('Error syncing plans:', error.message)
+		return new Response('Failed to sync plans', { status: 500 })
+	}
 }
