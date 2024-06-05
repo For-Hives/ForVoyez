@@ -31,6 +31,8 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm install -g gulp prettier vitest
+      - name: 'Install Playwright Browsers'
+        run: pnpm exec playwright install
       - name: 'Build Docker Image for Testing'
         run: |
           docker build -f Dockerfile.test -t my-app:test \
@@ -80,6 +82,8 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm install -g gulp prettier vitest
+      - name: 'Install Playwright Browsers'
+        run: pnpm exec playwright install
       - name: 'Build Docker Image for Production'
         run: |
           docker build -f Dockerfile.prod -t my-app:prod \
