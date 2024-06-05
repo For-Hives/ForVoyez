@@ -41,13 +41,13 @@ RUN mkdir -p /tmp/dev
 
 COPY package.json pnpm-lock.yaml /tmp/dev/
 RUN echo "Installing development dependencies" && \
-    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts -D
+    cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
 
 # Install with --production (exclude devDependencies)
 RUN mkdir -p /tmp/prod
 COPY package.json pnpm-lock.yaml /tmp/prod/
 RUN echo "Installing production dependencies" && \
-    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts -D && chmod -R 755 node_modules && chown -R node:node node_modules
+    cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
 
 # Copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
@@ -82,6 +82,9 @@ ENV ENABLE_TEST_LOGS=${ENABLE_TEST_LOGS}
 RUN echo "Environment variables set"
 
 ENV NODE_ENV production
+
+RUN echo "Checking if Prisma CLI is installed" && \
+    ls -la /usr/src/app/node_modules/.bin/prisma
 
 RUN echo "Generating Prisma client" && \
     pnpm run prisma:generate
