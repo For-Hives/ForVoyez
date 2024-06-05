@@ -25,17 +25,20 @@ export function UsageChartComponent() {
 	const [usageByToken, setUsageByToken] = useState([])
 	const [isLoadingUsage, setIsLoadingUsage] = useState(true)
 	const [isLoadingUsageByToken, setIsLoadingUsageByToken] = useState(true)
-	const [showTooltip, setShowTooltip] = useState(false)
+	const [showTooltip, setShowTooltip] = useState(true)
 
 	const { userId } = useAuth()
 
 	useEffect(() => {
 		async function fetchUsage() {
-			const data = await getUsageForUser()
-			setUsage(data)
-			setIsLoadingUsage(false)
-			if (data.length === 0) {
-				setShowTooltip(true)
+			try {
+				const data = await getUsageForUser()
+				setUsage(data)
+				if (data.length === 0) {
+					setShowTooltip(true)
+				}
+			} catch (error) {
+				console.error('Error fetching usage data:', error)
 			}
 		}
 
@@ -46,12 +49,16 @@ export function UsageChartComponent() {
 				used: entry.used,
 			}))
 			setUsageByToken(formattedData)
-			setIsLoadingUsageByToken(false)
 		}
 
 		if (userId) {
 			fetchUsage()
 			fetchUsageByToken()
+			Promise.all([fetchUsage(), fetchUsageByToken()]).finally(() => {
+				setIsLoadingUsage(false)
+				setIsLoadingUsageByToken(false)
+				showTooltip(false)
+			})
 		}
 	}, [userId])
 
