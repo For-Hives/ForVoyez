@@ -35,7 +35,7 @@
 		"@lemonsqueezy/lemonsqueezy.js": "3.0.0",
 		"@monaco-editor/react": "4.6.0",
 		"@prisma/client": "5.15.0",
-		"@rive-app/react-canvas": "4.10.0",
+		"@rive-app/react-canvas": "4.11.0",
 		"@tailwindcss/forms": "0.5.7",
 		"clsx": "2.1.1",
 		"form-data": "4.0.0",
