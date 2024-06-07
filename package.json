@@ -22,7 +22,7 @@
 		"test:ci": "vitest --coverage --coverage.enabled=true",
 		"test:e2e": "playwright test",
 		"test:e2e:general": "playwright test tests/e2e/e2e-general",
-		"test:e2e:premium": "playwright test tests/e2e/e2e-premium"
+		"test:e2e:sub": "playwright test tests/e2e/e2e-sub"
 	},
 	"lint-staged": {
 		"*.js": [
