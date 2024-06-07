@@ -27,8 +27,6 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
-      - name: 'Install Playwright Browsers'
-        run: pnpm exec playwright install
       - name: 'Run Unit Tests'
         run: pnpm test:ci
       - name: 'Report Coverage'
