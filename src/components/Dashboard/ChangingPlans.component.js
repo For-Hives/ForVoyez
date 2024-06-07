@@ -38,7 +38,7 @@ export function ChangingPlansComponent() {
 	const [currentSubscription, setCurrentSubscription] = useState(null)
 	const [checkoutUrls, setCheckoutUrls] = useState({})
 	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
-	const [loadingUrls, setLoadingUrls] = useState(true) // New state to track URL loading status
+	const [loadingUrls, setLoadingUrls] = useState(true)
 	const router = useRouter()
 	const auth = useAuth()
 
