@@ -84,7 +84,7 @@ jobs:
             .
       - name: 'Start Docker Container'
         run: |
-          docker run -d --entrypoint="" --name forvoyez-container -p 3000:3000 \
+          docker run -d --name forvoyez-container -p 3000:3000 \
             -e NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
             -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
             -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
