@@ -79,4 +79,4 @@ RUN chmod -R 777 /usr/src/app/.next/cache
 
 # Expose port and set entry point for the application
 EXPOSE 3000/tcp
-ENTRYPOINT ["pnpm", "run", "launch"]
+ENTRYPOINT ["pnpm", "run", "start"]
