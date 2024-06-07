@@ -107,15 +107,10 @@ jobs:
             -e TEST_PASSWORD_SUB=${{ secrets.TEST_PASSWORD_SUB }} \
             -e ENABLE_TEST_LOGS=${{ secrets.ENABLE_TEST_LOGS }} \
             forvoyez:test pnpm run start
-      - name: 'Check Docker Container Logs'
-        run: |
-          echo "Checking Docker container logs..."
-          sleep 10
-          docker logs forvoyez-container
       - name: 'Wait for the application to be ready'
         run: |
           echo "Waiting for the application to be ready..."
-          end=$((SECONDS+120))
+          end=$((SECONDS+10))
           while [ $SECONDS -lt $end ]; do
             if curl -s http://localhost:3000 > /dev/null; then
               echo "Application is up!"
