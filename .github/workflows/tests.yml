@@ -1,4 +1,4 @@
-name: 'Test and Deploy'
+name: 'Test'
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - '*'
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
 
     permissions:
