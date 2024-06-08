@@ -17,6 +17,10 @@ ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized 
 - 🧪 Interactive API playground for testing and experimentation
 - 📚 Comprehensive documentation and code examples
 
+## Stats of the project
+
+![Alt](https://repobeats.axiom.co/api/embed/17af2432e9de75f50d1ef3a3a31033d157ace915.svg "Repobeats analytics image")
+
 ## Getting Started
 
 To get started with ForVoyez, follow these steps:
