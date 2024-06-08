@@ -39,7 +39,6 @@ export function ChangingPlansComponent() {
 	const [checkoutUrls, setCheckoutUrls] = useState({})
 	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
 	const [loadingUrls, setLoadingUrls] = useState(true)
-	const router = useRouter()
 	const auth = useAuth()
 
 	useEffect(() => {
