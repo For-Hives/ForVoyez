@@ -33,6 +33,40 @@ describe('Lemon Squeezy Service', () => {
 				apiKey: 'test-api-key',
 			})
 		})
+
+		it('should handle errors during initialization', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+			const mockError = new Error('Initialization error')
+
+			// Mock lemonsqueezySetup to call the onError callback
+			lemonsqueezy.lemonSqueezySetup.mockImplementationOnce(({ onError }) => {
+				onError(mockError)
+			})
+
+			await expect(initLemonSqueezy()).rejects.toThrow('Initialization error')
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(mockError)
+			consoleErrorSpy.mockRestore()
+		})
+
+		it('should handle errors thrown by onError', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+			const mockError = new Error('Initialization error')
+
+			// Mock lemonsqueezySetup to throw an error
+			lemonsqueezy.lemonSqueezySetup.mockImplementationOnce(() => {
+				throw mockError
+			})
+
+			await expect(initLemonSqueezy()).rejects.toThrow('Initialization error')
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(mockError)
+			consoleErrorSpy.mockRestore()
+		})
 	})
 
 	describe('listProducts', () => {
