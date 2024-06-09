@@ -207,7 +207,6 @@ export async function getUsageForUser() {
 	if (hourlyUsageArray.length <= 5) {
 		return hourlyUsageArray
 	}
-
 	return hourlyUsageArray
 }
 
