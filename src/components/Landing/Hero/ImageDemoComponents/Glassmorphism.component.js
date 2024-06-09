@@ -23,8 +23,7 @@ export function GlassmorphismComponent({ caption, title, alt }) {
 		<div>
 			<div
 				className={
-					`${initialized ? '!opacity-100 hover:!opacity-0' : '!opacity-0'} shadow-[0 4px 30px rgba(0, 0, 0, 0.1)] glassmorphism-animation absolute 
-					left-0 top-0 h-full w-full rounded-lg bg-white/75 backdrop-blur-lg transition-all ` +
+					`${initialized ? '!opacity-100 hover:!opacity-0' : '!opacity-0'} shadow-[0 4px 30px rgba(0, 0, 0, 0.1)] glassmorphism-animation absolute left-0 top-0 h-full w-full rounded-lg bg-white/75 backdrop-blur-lg transition-all ` +
 					'z-50 border border-white/75'
 				}
 			>

@@ -8,11 +8,11 @@ export default function JwtModal({ setJwtModalOpen, jwtToken }) {
 	}
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-slate-600 bg-opacity-50  ">
-			<div className="w-3/4 rounded-lg bg-white p-8 shadow-lg ">
+		<div className="fixed inset-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
+			<div className="w-3/4 rounded-lg bg-white p-8 shadow-lg">
 				<h2 className="text-lg font-semibold">Your JWT Token</h2>
 				<div className="relative mb-4 mt-4 w-full">
-					<pre className="overflow-x-auto rounded bg-slate-100 p-2 text-sm text-slate-800 ">
+					<pre className="overflow-x-auto rounded bg-slate-100 p-2 text-sm text-slate-800">
 						<code>{jwtToken}</code>
 					</pre>
 					<button
