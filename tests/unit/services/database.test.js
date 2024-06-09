@@ -76,6 +76,154 @@ describe('Database Service', () => {
 	})
 
 	describe('syncPlans', () => {
+		it('should log an error if variant ID is undefined', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+
+			ls.listProducts.mockResolvedValue([
+				{
+					relationships: {
+						variants: {
+							data: [{ id: undefined }],
+						},
+					},
+					attributes: { name: 'Product1' },
+				},
+			])
+			ls.getVariant.mockResolvedValue({
+				data: {
+					data: {
+						attributes: {
+							is_subscription: false,
+							product_id: 'product1',
+							name: 'Variant1',
+						},
+					},
+				},
+			})
+			ls.listPrice.mockResolvedValue([
+				{
+					attributes: {
+						usage_aggregation: null,
+						unit_price: 100,
+					},
+				},
+			])
+
+			await syncPlans()
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'Variant ID is undefined for variant:',
+				expect.any(Object)
+			)
+
+			consoleErrorSpy.mockRestore()
+		})
+
+		it('should continue if product relationships variants data is missing', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+
+			ls.listProducts.mockResolvedValue([
+				{
+					attributes: { name: 'Product1' },
+					relationships: {},
+				},
+			])
+
+			await syncPlans()
+
+			expect(ls.getVariant).not.toHaveBeenCalled()
+
+			consoleErrorSpy.mockRestore()
+		})
+
+		it('should continue if variant details attributes are missing', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+
+			ls.listProducts.mockResolvedValue([
+				{
+					relationships: {
+						variants: {
+							data: [{ id: 'variant1' }],
+						},
+					},
+					attributes: { name: 'Product1' },
+				},
+			])
+			ls.getVariant.mockResolvedValue({
+				data: {
+					data: {},
+				},
+			})
+
+			await syncPlans()
+
+			expect(ls.listPrice).not.toHaveBeenCalled()
+
+			consoleErrorSpy.mockRestore()
+		})
+
+		it('should log an error if currentPriceObj or its attributes are missing', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+
+			ls.listProducts.mockResolvedValue([
+				{
+					relationships: {
+						variants: {
+							data: [{ id: 'variant1' }],
+						},
+					},
+					attributes: { name: 'Product1' },
+				},
+			])
+			ls.getVariant.mockResolvedValue({
+				data: {
+					data: {
+						attributes: {
+							is_subscription: false,
+							product_id: 'product1',
+							name: 'Variant1',
+						},
+					},
+				},
+			})
+			ls.listPrice.mockResolvedValue([{}])
+
+			await syncPlans()
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'Price object is missing attributes:',
+				expect.any(Object)
+			)
+
+			consoleErrorSpy.mockRestore()
+		})
+
+		it('should log and throw an error if an exception occurs during sync', async () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {})
+			const mockError = new Error('Sync error')
+
+			ls.listProducts.mockRejectedValue(mockError)
+
+			await expect(syncPlans()).rejects.toThrow('Sync error')
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'Error syncing plans:',
+				mockError
+			)
+
+			consoleErrorSpy.mockRestore()
+		})
+
 		it('should sync plans with Lemon Squeezy', async () => {
 			ls.initLemonSqueezy.mockResolvedValue()
 			ls.listProducts.mockResolvedValue([

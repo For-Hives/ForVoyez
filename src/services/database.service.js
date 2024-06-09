@@ -125,7 +125,6 @@ export async function getCustomerIdFromUser() {
 		})
 		return subscriptionClient.customerId
 	}
-
 	return userPrisma?.customerId ?? null
 }
 
