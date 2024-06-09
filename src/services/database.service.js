@@ -166,18 +166,12 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 // Function to decrement the credits for the authenticated user
 export async function decrementCredit(reason, tokenId = null) {
 	const user = await getCurrentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
 	await updateCredits(user.id, -1, tokenId, reason)
 }
 
 // Function to retrieve API usage for the authenticated user
 export async function getUsageForUser() {
 	const user = await getCurrentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
 
 	const userCredits = await getCreditsFromUserId()
 	if (!userCredits) {
@@ -221,9 +215,6 @@ export async function getUsageForUser() {
 // Function to retrieve API usage by token for the authenticated user
 export async function getUsageByToken() {
 	const user = await getCurrentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
 
 	const usageData = await prisma.usage.findMany({
 		where: { userId: user.id },
@@ -242,9 +233,6 @@ export async function getUsageByToken() {
 // Function to retrieve the authenticated user's subscription
 export async function getSubscriptionFromUserId() {
 	const user = await getCurrentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
 
 	return prisma.subscription.findFirst({
 		where: { userId: user.id },
@@ -255,9 +243,6 @@ export async function getSubscriptionFromUserId() {
 // Function to retrieve the authenticated user's credits
 export async function getCreditsFromUserId() {
 	const user = await getCurrentUser()
-	if (!user) {
-		throw new Error('User not authenticated')
-	}
 
 	const connectedUser = await prisma.user.findFirst({
 		where: { clerkId: user.id },
