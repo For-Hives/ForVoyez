@@ -79,7 +79,6 @@ export async function getCheckoutsLinks(plans) {
 	return checkoutUrls
 }
 
-// server-side code
 export async function getCustomerPortalLink() {
 	await initLemonSqueezy()
 
