@@ -52,11 +52,7 @@ export async function syncPlans() {
 			const productVariants = product.relationships.variants.data
 			for (const variant of productVariants) {
 				const variantDetails = await getVariant(variant.id)
-				if (
-					!variantDetails.data ||
-					!variantDetails.data.data ||
-					!variantDetails.data.data.attributes
-				) {
+				if (!variantDetails?.data?.data?.attributes) {
 					continue
 				}
 
