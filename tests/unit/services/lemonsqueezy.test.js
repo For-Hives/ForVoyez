@@ -3,7 +3,6 @@ import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
 import * as clerk from '@clerk/nextjs/server'
 
 import {
-	getCheckoutURL,
 	getCheckoutsLinks,
 	getCustomerPortalLink,
 	getVariant,
