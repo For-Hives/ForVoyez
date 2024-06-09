@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
@@ -36,9 +35,8 @@ export function ChangingPlansComponent() {
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [checkoutUrls, setCheckoutUrls] = useState({})
+	const [checkoutUrls, setCheckoutUrls] = useState(null)
 	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
-	const [loadingUrls, setLoadingUrls] = useState(true)
 	const auth = useAuth()
 
 	useEffect(() => {
@@ -69,18 +67,14 @@ export function ChangingPlansComponent() {
 		}
 
 		const fetchCheckoutUrls = async plans => {
-			const urls = {}
 			if (!plans) return
 
 			try {
 				const checkouts = await getCheckouts(plans)
-
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
 			}
-
-			setLoadingUrls(false)
 		}
 
 		const fetchCustomerPortalUrl = async () => {
@@ -97,7 +91,7 @@ export function ChangingPlansComponent() {
 		fetchCustomerPortalUrl()
 	}, [auth.userId])
 
-	if (plans.length === 0 || loadingUrls) {
+	if (plans.length === 0 || !checkoutUrls) {
 		// Check if URLs are still loading
 		return (
 			<div className={'py-20'} data-testid="plans-loading">
