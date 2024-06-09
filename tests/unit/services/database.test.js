@@ -413,6 +413,79 @@ describe('Database Service', () => {
 			)
 		})
 
+		it('should update creditsLeft when dateHour already exists', async () => {
+			const mockUser = { id: 'user123', credits: 10 }
+			const mockUsageData = [
+				{
+					usedAt: new Date('2024-06-04T10:53:49.301Z'),
+					previousCredits: 10,
+					used: 2,
+				},
+				{
+					usedAt: new Date('2024-06-04T10:55:49.301Z'),
+					previousCredits: 8,
+					used: 1,
+				},
+			]
+			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.usage.findMany.mockResolvedValue(mockUsageData)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
+
+			const usage = await getUsageForUser()
+
+			expect(usage).toEqual([
+				expect.objectContaining({
+					fullDate: new Date('2024-06-04T10:53:49.301Z'),
+					dateHour: '2024-06-04T10',
+					creditsLeft: 8,
+				}),
+			])
+		})
+
+		it('should return hourlyUsageArray when its length is less than or equal to 5', async () => {
+			const mockUser = { id: 'user123', credits: 10 }
+			const mockUsageData = [
+				{
+					usedAt: new Date('2024-06-04T10:53:49.301Z'),
+					previousCredits: 10,
+					used: 2,
+				},
+				{
+					usedAt: new Date('2024-06-04T11:53:49.301Z'),
+					previousCredits: 8,
+					used: 1,
+				},
+				{
+					usedAt: new Date('2024-06-04T12:53:49.301Z'),
+					previousCredits: 7,
+					used: 1,
+				},
+			]
+			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.usage.findMany.mockResolvedValue(mockUsageData)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
+
+			const usage = await getUsageForUser()
+
+			expect(usage.length).toBeLessThanOrEqual(5)
+		})
+
+		it('should return hourlyUsageArray when its length is greater than 5', async () => {
+			const mockUser = { id: 'user123', credits: 10 }
+			const mockUsageData = Array.from({ length: 10 }, (_, i) => ({
+				usedAt: new Date(`2024-06-04T${10 + i}:53:49.301Z`),
+				previousCredits: 10 - i,
+				used: 1,
+			}))
+			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.usage.findMany.mockResolvedValue(mockUsageData)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
+
+			const usage = await getUsageForUser()
+
+			expect(usage.length).toBeGreaterThan(5)
+		})
+
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.currentUser.mockResolvedValue(null)
 
