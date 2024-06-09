@@ -7,12 +7,18 @@ import { getCustomerIdFromUser } from '@/services/database.service'
 const getStoreId = () => process.env.LEMON_SQUEEZY_STORE_ID
 
 export async function initLemonSqueezy() {
-	ls.lemonSqueezySetup({
-		onError(error) {
-			console.error(error)
-		},
-		apiKey: process.env.LEMON_SQUEEZY_API_KEY,
-	})
+	try {
+		ls.lemonSqueezySetup({
+			onError(error) {
+				console.error(error)
+				throw error
+			},
+			apiKey: process.env.LEMON_SQUEEZY_API_KEY,
+		})
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
 }
 
 export async function listProducts() {
