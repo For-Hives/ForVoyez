@@ -4,7 +4,7 @@ import * as clerk from '@clerk/nextjs/server'
 
 import {
 	getCheckoutURL,
-	getCheckouts,
+	getCheckoutsLinks,
 	getCustomerPortalLink,
 	getVariant,
 	initLemonSqueezy,
@@ -109,7 +109,7 @@ describe('Lemon Squeezy Service', () => {
 			lemonsqueezy.listCheckouts.mockResolvedValue(mockCheckouts)
 			lemonsqueezy.createCheckout.mockResolvedValue(mockNewCheckout)
 
-			const checkoutUrls = await getCheckouts(mockPlans)
+			const checkoutUrls = await getCheckoutsLinks(mockPlans)
 
 			expect(checkoutUrls).toEqual({
 				variant1: 'http://existing-checkout-url1',
@@ -152,7 +152,7 @@ describe('Lemon Squeezy Service', () => {
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.currentUser.mockResolvedValue(null)
 
-			await expect(getCheckouts([])).rejects.toThrow(
+			await expect(getCheckoutsLinks([])).rejects.toThrow(
 				'User is not authenticated.'
 			)
 		})

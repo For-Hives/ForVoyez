@@ -8,7 +8,7 @@ import {
 	getPlans,
 	getSubscriptionFromUserId,
 } from '@/services/database.service'
-import { getCheckouts } from '@/services/lemonsqueezy.service'
+import { getCheckoutsLinks } from '@/services/lemonsqueezy.service'
 import { sortPlans } from '@/helpers/sortPlans'
 
 function classNames(...classes) {
@@ -49,7 +49,7 @@ export function RefillPlansComponent() {
 			if (!plans) return
 
 			try {
-				const checkouts = await getCheckouts(plans)
+				const checkouts = await getCheckoutsLinks(plans)
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
