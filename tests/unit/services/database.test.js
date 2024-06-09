@@ -76,62 +76,8 @@ describe('Database Service', () => {
 	})
 
 	describe('syncPlans', () => {
-		beforeEach(() => {
-			vi.resetAllMocks()
-		})
-
-		it('should log an error if variant ID is undefined', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
-
-			// Mocking listProducts to return products with variants having undefined variantId
-			ls.listProducts.mockResolvedValue([
-				{
-					relationships: {
-						variants: {
-							data: [{ id: undefined }],
-						},
-					},
-					attributes: { name: 'Product1' },
-				},
-			])
-			ls.getVariant.mockResolvedValue({
-				data: {
-					data: {
-						attributes: {
-							is_subscription: false,
-							product_id: 'product1',
-							name: 'Variant1',
-						},
-					},
-				},
-			})
-			ls.listPrice.mockResolvedValue([
-				{
-					attributes: {
-						usage_aggregation: null,
-						unit_price: 100,
-					},
-				},
-			])
-
-			await syncPlans()
-
-			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'Variant ID is undefined for variant:',
-				expect.any(Object)
-			)
-
-			consoleErrorSpy.mockRestore()
-		})
-
-		it('should proceed without logging error if variant ID is defined', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
-
-			// Mocking listProducts to return products with variants having defined variantId
+		it('should sync plans with Lemon Squeezy', async () => {
+			ls.initLemonSqueezy.mockResolvedValue()
 			ls.listProducts.mockResolvedValue([
 				{
 					relationships: {
@@ -164,9 +110,32 @@ describe('Database Service', () => {
 
 			await syncPlans()
 
-			expect(consoleErrorSpy).not.toHaveBeenCalled()
-
-			consoleErrorSpy.mockRestore()
+			expect(ls.listProducts).toHaveBeenCalled()
+			expect(prisma.plan.upsert).toHaveBeenCalledWith({
+				update: {
+					productName: 'Product1',
+					description: undefined,
+					packageSize: undefined,
+					productId: 'product1',
+					variantId: 'variant1',
+					variantEnabled: true,
+					billingCycle: null,
+					name: 'Variant1',
+					price: 100,
+				},
+				create: {
+					productName: 'Product1',
+					description: undefined,
+					packageSize: undefined,
+					productId: 'product1',
+					variantId: 'variant1',
+					variantEnabled: true,
+					billingCycle: null,
+					name: 'Variant1',
+					price: 100,
+				},
+				where: { variantId: 'variant1' },
+			})
 		})
 	})
 
