@@ -1,5 +1,5 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-utils')
+const { log } = require('../../tests-helpers')
 
 test.describe('Pricing Component', () => {
 	test('Pricing section loads correctly', async ({ page }) => {

@@ -4,7 +4,7 @@ import * as clerk from '@clerk/nextjs/server'
 import {
 	decrementCredit,
 	getCreditsFromUserId,
-	getCurrentUser, // Import getCurrentUser directly
+	getCurrentUser,
 	getCustomerIdFromUser,
 	getPlans,
 	getSubscriptionFromUserId,

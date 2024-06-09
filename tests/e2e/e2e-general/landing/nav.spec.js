@@ -1,5 +1,5 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-utils')
+const { log } = require('../../tests-helpers')
 
 test('Navbar elements are present and correct', async ({ page }) => {
 	await page.goto('/')
