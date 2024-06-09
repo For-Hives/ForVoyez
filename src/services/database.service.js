@@ -45,11 +45,7 @@ export async function syncPlans() {
 		let allVariants = []
 
 		for (const product of allProducts) {
-			if (
-				!product.relationships ||
-				!product.relationships.variants ||
-				!product.relationships.variants.data
-			) {
+			if (!product?.relationships?.variants?.data) {
 				continue
 			}
 
