@@ -351,6 +351,14 @@ describe('Database Service', () => {
 				updateCredits('user123', 'invalid', 'token123', 'test')
 			).rejects.toThrow('Invalid credits value')
 		})
+
+		it('should throw an error if the user is not found', async () => {
+			prisma.user.findUnique.mockResolvedValue(null)
+
+			await expect(
+				updateCredits('user123', 10, 'token123', 'test')
+			).rejects.toThrow('User not found')
+		})
 	})
 
 	describe('decrementCredit', () => {
@@ -409,6 +417,25 @@ describe('Database Service', () => {
 			clerk.currentUser.mockResolvedValue(null)
 
 			await expect(getUsageForUser()).rejects.toThrow('User not authenticated')
+		})
+
+		it('should throw an error if user credits are not found', async () => {
+			const mockUser = { id: 'user123' }
+			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.user.findFirst.mockResolvedValue({ credits: null })
+
+			await expect(getUsageForUser()).rejects.toThrow('User credits not found')
+		})
+
+		it('should return an empty array if there is no usage data', async () => {
+			const mockUser = { id: 'user123', credits: 10 }
+			clerk.currentUser.mockResolvedValue(mockUser)
+			prisma.usage.findMany.mockResolvedValue([])
+			prisma.user.findFirst.mockResolvedValue(mockUser)
+
+			const usage = await getUsageForUser()
+
+			expect(usage).toEqual([])
 		})
 	})
 
