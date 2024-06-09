@@ -1,5 +1,5 @@
 const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-utils')
+const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
 require('dotenv').config()
 
 const NEXT_PUBLIC_URL = getNextPublicUrl()
