@@ -1,5 +1,4 @@
 'use server'
-import { createCheckout, listCheckouts } from '@lemonsqueezy/lemonsqueezy.js'
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { currentUser } from '@clerk/nextjs/server'
 
@@ -55,7 +54,7 @@ export async function getCheckouts(plans) {
 		throw new Error('User is not authenticated.')
 	}
 
-	const check = await listCheckouts({
+	const check = await ls.listCheckouts({
 		product_options: {
 			redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
 		},
@@ -83,7 +82,7 @@ export async function getCheckouts(plans) {
 		if (existingCheckout) {
 			checkoutUrls[plan.variantId] = existingCheckout.attributes.url
 		} else {
-			const newCheckout = await createCheckout(STORE_ID, plan.variantId, {
+			const newCheckout = await ls.createCheckout(STORE_ID, plan.variantId, {
 				productOptions: {
 					redirectUrl: `https://forvoyez.com/app/billing/`,
 					receiptButtonText: 'Go to Dashboard',
