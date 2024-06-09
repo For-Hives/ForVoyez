@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
@@ -17,13 +16,11 @@ function classNames(...classes) {
 }
 
 export function RefillPlansComponent() {
-	const router = useRouter()
 	const auth = useAuth()
 
 	const [plans, setPlans] = useState([])
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [checkoutUrls, setCheckoutUrls] = useState({})
-	const [isLoadingUrls, setIsLoadingUrls] = useState(true)
+	const [checkoutUrls, setCheckoutUrls] = useState(null)
 
 	useEffect(() => {
 		const fetchPlans = async () => {
@@ -53,20 +50,17 @@ export function RefillPlansComponent() {
 
 			try {
 				const checkouts = await getCheckouts(plans)
-
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
 			}
-
-			setIsLoadingUrls(false)
 		}
 
 		fetchPlans()
 		fetchSubscription()
 	}, [auth.userId])
 
-	if (plans.length === 0 || isLoadingUrls) {
+	if (plans.length === 0 || !checkoutUrls) {
 		return (
 			<>
 				<div className="animate-pulse">
