@@ -78,23 +78,20 @@ describe('Lemon Squeezy Service', () => {
 		})
 	})
 
-	describe('getCheckouts', () => {
+	describe('getCheckoutsLinks', () => {
 		it('should create checkout URLs for the authenticated user', async () => {
 			const mockUser = { id: 'user123' }
 			const mockPlans = [{ variantId: 'variant1' }, { variantId: 'variant2' }]
-			const mockCheckouts = {
+			const mockNewCheckout1 = {
 				data: {
-					data: [
-						{
-							attributes: {
-								url: 'http://existing-checkout-url1',
-								variant_id: 'variant1',
-							},
+					data: {
+						attributes: {
+							url: 'http://new-checkout-url1',
 						},
-					],
+					},
 				},
 			}
-			const mockNewCheckout = {
+			const mockNewCheckout2 = {
 				data: {
 					data: {
 						attributes: {
@@ -105,31 +102,34 @@ describe('Lemon Squeezy Service', () => {
 			}
 
 			clerk.currentUser.mockResolvedValue(mockUser)
-			lemonsqueezy.listCheckouts.mockResolvedValue(mockCheckouts)
-			lemonsqueezy.createCheckout.mockResolvedValue(mockNewCheckout)
+			lemonsqueezy.createCheckout.mockResolvedValueOnce(mockNewCheckout1)
+			lemonsqueezy.createCheckout.mockResolvedValueOnce(mockNewCheckout2)
 
 			const checkoutUrls = await getCheckoutsLinks(mockPlans)
 
 			expect(checkoutUrls).toEqual({
-				variant1: 'http://existing-checkout-url1',
+				variant1: 'http://new-checkout-url1',
 				variant2: 'http://new-checkout-url2',
 			})
-			expect(lemonsqueezy.listCheckouts).toHaveBeenCalledWith({
-				product_options: {
-					redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
-				},
-				checkoutData: {
-					custom: {
-						user_id: 'user123',
+
+			expect(lemonsqueezy.createCheckout).toHaveBeenCalledTimes(2)
+			expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(
+				STORE_ID,
+				'variant1',
+				{
+					productOptions: {
+						redirectUrl: `https://forvoyez.com/app/billing/`,
+						receiptButtonText: 'Go to Dashboard',
+						enabledVariants: ['variant1'],
 					},
-				},
-				filter: {
-					storeId: STORE_ID,
-				},
-				page: {
-					size: 100,
-				},
-			})
+					checkoutData: {
+						custom: {
+							user_id: 'user123',
+						},
+					},
+					expiresAt: expect.any(Date),
+				}
+			)
 			expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(
 				STORE_ID,
 				'variant2',
@@ -144,6 +144,7 @@ describe('Lemon Squeezy Service', () => {
 							user_id: 'user123',
 						},
 					},
+					expiresAt: expect.any(Date),
 				}
 			)
 		})
