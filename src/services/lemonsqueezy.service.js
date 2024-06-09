@@ -54,48 +54,26 @@ export async function getCheckoutsLinks(plans) {
 		throw new Error('User is not authenticated.')
 	}
 
-	const check = await ls.listCheckouts({
-		product_options: {
-			redirectUrl: `${process.env.NEXT_PUBLIC_URL}/app/playground`,
-		},
-		checkoutData: {
-			custom: {
-				user_id: user.id,
-			},
-		},
-		filter: {
-			storeId: STORE_ID,
-		},
-		page: {
-			size: 100,
-		},
-	})
-
 	const checkoutUrls = {}
 
 	for (const plan of plans) {
-		const existingCheckout = check.data.data.find(
-			checkout =>
-				checkout.attributes.variant_id.toString() === plan.variantId.toString()
-		)
-
-		if (existingCheckout) {
-			checkoutUrls[plan.variantId] = existingCheckout.attributes.url
-		} else {
-			const newCheckout = await ls.createCheckout(STORE_ID, plan.variantId, {
-				productOptions: {
-					redirectUrl: `https://forvoyez.com/app/billing/`,
-					receiptButtonText: 'Go to Dashboard',
-					enabledVariants: [plan.variantId], //
+		const newCheckout = await ls.createCheckout(STORE_ID, plan.variantId, {
+			productOptions: {
+				redirectUrl: `https://forvoyez.com/app/billing/`,
+				receiptButtonText: 'Go to Dashboard',
+				enabledVariants: [plan.variantId], //
+			},
+			checkoutData: {
+				custom: {
+					user_id: user.id,
 				},
-				checkoutData: {
-					custom: {
-						user_id: user.id,
-					},
-				},
-			})
-			checkoutUrls[plan.variantId] = newCheckout.data.data.attributes.url
-		}
+			},
+			// 2 hours (7 200 000 ms = 2 hours)
+			// the checkout will expire after 2 hours, to prevent the user from using an old checkout link
+			// and avoid too many checkouts url in the system
+			expiresAt: new Date(Date.now() + 7200000),
+		})
+		checkoutUrls[plan.variantId] = newCheckout.data.data.attributes.url
 	}
 
 	return checkoutUrls
