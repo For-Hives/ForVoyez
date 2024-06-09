@@ -199,27 +199,30 @@ async function processSubscriptionPlanChanged(webhook) {
 // private function to process the webhook "subscription_payment_success", to add credits to the user,
 // used in case of subscription payment success
 async function processSubscriptionPaymentSuccess(webhook) {
-	const userId = webhook.meta.custom_data.user_id // Clerk user ID
+	// Extract the Clerk user ID and Lemon Squeezy subscription ID from the webhook data
+	const userId = webhook.meta.custom_data.user_id
 	const subscriptionId = webhook.data.attributes.subscription_id
 
-	// Get the user based on the Clerk user ID
+	// Find the user in the database based on the Clerk user ID
 	const user = await prisma.user.findUnique({
 		where: {
 			clerkId: userId,
 		},
 	})
 
+	// If the user is not found, log an error and return
 	if (!user) {
 		console.error('User not found for userId:', userId)
 		return
 	}
 
+	// If the user doesn't have a customerId, log an error and return
 	if (!user.customerId) {
 		console.error('CustomerId not found for user:', user)
 		return
 	}
 
-	// Get the user's existing subscription (if any)
+	// Find the user's existing subscription (if any) in the database
 	const existingSubscription = await prisma.subscription.findFirst({
 		where: {
 			userId: user.id,
@@ -229,14 +232,18 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		},
 	})
 
+	// If an existing subscription is found
 	if (existingSubscription) {
+		// If the existing subscription has an oldPlanId (indicating a plan change)
 		if (existingSubscription.oldPlanId) {
+			// Retrieve the old plan from the database using the oldPlanId
 			const oldPlan = await prisma.plan.findUnique({
 				where: {
 					id: existingSubscription.oldPlanId,
 				},
 			})
 
+			// Find the new subscription associated with the current Lemon Squeezy subscription ID
 			const newSubscription = await prisma.subscription.findFirst({
 				where: {
 					lemonSqueezyId: subscriptionId.toString(),
@@ -246,10 +253,13 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				},
 			})
 
+			// If both the old plan and new subscription are found
 			if (oldPlan && newSubscription) {
+				// Calculate the difference in package size between the new and old plans
 				const packageDifference =
 					newSubscription.plan.packageSize - oldPlan.packageSize
 
+				// Update the user's credits based on the package difference and log the reason
 				await updateCredits(
 					user.id,
 					packageDifference,
@@ -258,13 +268,16 @@ async function processSubscriptionPaymentSuccess(webhook) {
 				)
 			}
 		} else {
+			// If there is no oldPlanId, retrieve the current plan from the database
 			const newPlan = await prisma.plan.findUnique({
 				where: {
 					id: existingSubscription.planId,
 				},
 			})
 
+			// If the current plan is found
 			if (newPlan) {
+				// Update the user's credits based on the current plan's package size and log the reason
 				await updateCredits(
 					user.id,
 					newPlan.packageSize,
@@ -274,6 +287,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			}
 		}
 	} else {
+		// If no existing subscription is found, find the subscription associated with the current Lemon Squeezy subscription ID
 		const sub = await prisma.subscription.findFirst({
 			where: {
 				lemonSqueezyId: subscriptionId.toString(),
@@ -283,7 +297,9 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			},
 		})
 
+		// If the subscription is found
 		if (sub) {
+			// Update the user's credits based on the new subscription's plan package size and log the reason
 			await updateCredits(
 				user.id,
 				sub.plan.packageSize ?? 0,
