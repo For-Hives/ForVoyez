@@ -1,5 +1,3 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
 ARG NODE_VERSION=20
 
 FROM node:${NODE_VERSION}-slim as base
