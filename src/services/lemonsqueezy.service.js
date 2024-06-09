@@ -43,7 +43,7 @@ export async function listPrice(variantID) {
 	}
 }
 
-export async function getCheckouts(plans) {
+export async function getCheckoutsLinks(plans) {
 	await initLemonSqueezy()
 
 	const STORE_ID = getStoreId()

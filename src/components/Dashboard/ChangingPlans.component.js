@@ -7,7 +7,7 @@ import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getCheckouts,
+	getCheckoutsLinks,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
 import {
@@ -70,7 +70,7 @@ export function ChangingPlansComponent() {
 			if (!plans) return
 
 			try {
-				const checkouts = await getCheckouts(plans)
+				const checkouts = await getCheckoutsLinks(plans)
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
