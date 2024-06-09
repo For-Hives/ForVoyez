@@ -2,11 +2,11 @@ import { createHmac, timingSafeEqual } from 'crypto'
 
 import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
-const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
+const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
 export async function POST(request) {
 	try {
-		if (!secret) {
+		if (!WEBHOOK_SECRET) {
 			return new Response('Lemon Squeezy Webhook Secret not set in .env', {
 				status: 500,
 			})
@@ -15,7 +15,7 @@ export async function POST(request) {
 		// check if the request come from lemonsqueezy servers #Security
 		const rawBody = await request.text()
 
-		const hmac = createHmac('sha256', secret)
+		const hmac = createHmac('sha256', WEBHOOK_SECRET)
 		const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
 		const signature = Buffer.from(
 			request.headers.get('X-Signature') ?? '',
