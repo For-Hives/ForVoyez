@@ -61,8 +61,7 @@ export function HeroComponent() {
 							</p>
 							<div className="mt-10 flex items-center gap-x-6">
 								<Link
-									className="z-40 rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-forvoyez_orange-600
-											 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+									className="z-40 rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm text-white shadow-sm transition-all hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
 									href="/app"
 								>
 									Get started
