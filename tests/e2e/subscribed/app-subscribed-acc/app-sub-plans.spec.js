@@ -1,20 +1,11 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
-const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
-
 test.describe('Plans Management Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/plans`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL_SUB,
-			TEST_PASSWORD_SUB
-		)
+	test.beforeEach('redirect to plans', async ({ page }) => {
+		await page.goto('/app/plans')
+		await expect(page).toHaveURL('/app/plans')
 	})
 
 	test('View and manage subscription plans as subscribed user', async ({

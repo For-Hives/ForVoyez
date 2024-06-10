@@ -2,19 +2,10 @@ const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL = process.env.TEST_EMAIL
-const TEST_PASSWORD = process.env.TEST_PASSWORD
-
 test.describe('Playground Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/playground`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL,
-			TEST_PASSWORD
-		)
+	test.beforeEach('redirect to playground', async ({ page }) => {
+		await page.goto('/app/playground')
+		await expect(page).toHaveURL('/app/playground')
 	})
 
 	test('Check playground usage tooltip and redirection', async ({ page }) => {

@@ -1,20 +1,11 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
-const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
-
 test.describe('Playground Functionality for Subscribed User', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/playground`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL_SUB,
-			TEST_PASSWORD_SUB
-		)
+	test.beforeEach('redirect to playground', async ({ page }) => {
+		await page.goto('/app/playground')
+		await expect(page).toHaveURL('/app/playground')
 	})
 
 	test('Playground should not display usage tooltip for subscribed user', async ({

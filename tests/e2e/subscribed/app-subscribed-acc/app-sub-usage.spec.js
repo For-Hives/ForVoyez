@@ -1,20 +1,11 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
-const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
-
 test.describe('Usage Chart Functionality for Subscribed User', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/usage`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL_SUB,
-			TEST_PASSWORD_SUB
-		)
+	test.beforeEach('redirect to usage', async ({ page }) => {
+		await page.goto('/app/usage')
+		await expect(page).toHaveURL('/app/usage')
 	})
 
 	test('Usage chart should display data for subscribed user', async ({
