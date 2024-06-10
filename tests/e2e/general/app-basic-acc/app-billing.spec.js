@@ -1,4 +1,4 @@
-const { expect, test } = require('@playwright/test')
+const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
