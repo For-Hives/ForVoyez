@@ -101,6 +101,7 @@ jobs:
           TEST_EMAIL_SUB: ${{ secrets.TEST_EMAIL_SUB }}
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
+          LEMON_SQUEEZY_API_KEY: ${{ secrets.LEMON_SQUEEZY_API_KEY }}
       - name: 'Stop and remove Docker Container'
         run: |
           docker stop forvoyez-container
