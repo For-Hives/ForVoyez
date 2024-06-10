@@ -2,7 +2,6 @@ const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
@@ -83,7 +82,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 
 		// Check if redirected to the manage account page
 		log('Checking if redirected to the manage account page')
-		await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}/profile`)
+		await expect(page).toHaveURL(`${getNextPublicUrl()}/profile`)
 
 		// Check for the presence of the email address on the manage account page
 		const emailElement = page.locator(
@@ -95,7 +94,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		log('Sign-in and manage account test completed successfully')
 
 		// Go back to the home page
-		await page.goto(NEXT_PUBLIC_URL)
+		await page.goto(getNextPublicUrl())
 
 		// Click the user button to open the profile dialog
 		log('Clicking user button to open profile dialog for sign-out')
@@ -113,7 +112,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 
 		// Check if redirected to the home page after sign-out
 		log('Checking if redirected to the home page after sign-out')
-		await expect(page).toHaveURL(NEXT_PUBLIC_URL)
+		await expect(page).toHaveURL(getNextPublicUrl())
 
 		// Check the presence of the sign-in button to confirm sign-out
 		log('Checking presence of "Sign in" button to confirm sign-out')

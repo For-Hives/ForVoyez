@@ -2,8 +2,6 @@ const { expect, test } = require('../../auth/fixtures')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-
 test.describe('Playground Functionality', () => {
 	test.beforeEach('redirect to playground', async ({ page }) => {
 		await page.goto('/app/playground')
@@ -28,7 +26,7 @@ test.describe('Playground Functionality', () => {
 		// Click the link and verify redirection
 		log('Clicking the link to check redirection')
 		await Promise.all([page.waitForNavigation(), tooltipLocator.click()])
-		await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}/app/plans`)
+		await expect(page).toHaveURL(`${getNextPublicUrl()}/app/plans`)
 
 		log('Playground usage tooltip and redirection test completed successfully')
 	})

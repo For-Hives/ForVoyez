@@ -2,10 +2,6 @@ const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
-const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
-
 test.describe('Client Logic Billing Functionality for Subscribed User', () => {
 	test.beforeEach('redirect to billing', async ({ page }) => {
 		await page.goto('/app/billing')

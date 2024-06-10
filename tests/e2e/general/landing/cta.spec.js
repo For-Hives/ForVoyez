@@ -31,7 +31,7 @@ test.describe('CTA Component', () => {
 	})
 
 	test('CTA links are present and functional', async ({ page }) => {
-		await page.goto(NEXT_PUBLIC_URL)
+		await page.goto(getNextPublicUrl())
 
 		log('Page loaded')
 
@@ -46,13 +46,13 @@ test.describe('CTA Component', () => {
 
 		// Check if redirected to the sign-in page
 		await expect(page).toHaveURL(
-			new RegExp(`${NEXT_PUBLIC_URL}/sign-in\\?redirect_url=.*%2Fapp`)
+			new RegExp(`${getNextPublicUrl()}/sign-in\\?redirect_url=.*%2Fapp`)
 		)
 
 		// Optionally, you can add steps to sign in here if needed
 
 		// Go back to the home page
-		await page.goto(NEXT_PUBLIC_URL)
+		await page.goto(getNextPublicUrl())
 
 		// Check the visibility and functionality of the "Learn more" link
 		const learnMoreLink = page.locator('[data-testid="cta-learn-more-link"]')
