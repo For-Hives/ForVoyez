@@ -5,7 +5,6 @@ const { getNextPublicUrl, signIn } = require('../tests-helpers')
 
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 const SUBSCRIBED_USER_EMAIL = process.env.SUBSCRIBED_USER_EMAIL
@@ -40,12 +39,12 @@ module.exports = {
 				if (isSubscribedMode) {
 					await signIn(
 						page,
-						NEXT_PUBLIC_URL,
+						getNextPublicUrl(),
 						SUBSCRIBED_USER_EMAIL,
 						SUBSCRIBED_USER_PASSWORD
 					)
 				} else {
-					await signIn(page, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+					await signIn(page, getNextPublicUrl(), TEST_EMAIL, TEST_PASSWORD)
 				}
 
 				await page.context().storageState({ path: fileName })

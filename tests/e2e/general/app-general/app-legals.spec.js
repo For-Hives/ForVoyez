@@ -1,5 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
-const { log } = require('../../tests-helpers')
+const { getNextPublicUrl, log } = require('../../tests-helpers')
 require('dotenv').config()
 
 test.describe('Legal Section Navigation Functionality', () => {
@@ -67,10 +67,10 @@ test.describe('Legal Section Navigation Functionality', () => {
 
 			log(`Clicking legal link: ${link.name}`)
 			await Promise.all([page.waitForNavigation(), linkLocator.click()])
-			await expect(page).toHaveURL(`${NEXT_PUBLIC_URL}${link.href}`)
+			await expect(page).toHaveURL(`${getNextPublicUrl()}${link.href}`)
 
 			// Go back to the legal page for the next iteration
-			await page.goto(`${NEXT_PUBLIC_URL}/app/legals`)
+			await page.goto(`${getNextPublicUrl()}/app/legals`)
 		}
 
 		log('Legal internal links navigation test completed successfully')
