@@ -1,22 +1,11 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL = process.env.TEST_EMAIL
-const TEST_PASSWORD = process.env.TEST_PASSWORD
-
-const ENABLE_TEST_LOGS = process.env.ENABLE_TEST_LOGS === 'true'
-
-const log = message => {
-	if (ENABLE_TEST_LOGS) {
-		console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
-	}
-}
-
 test.describe('Plans Management Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(page, `app/plans`, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+	test.beforeEach('redirect to plans', async ({ page }) => {
+		await page.goto('/app/plans')
+		await expect(page).toHaveURL('/app/plans')
 	})
 
 	test('View and manage subscription plans', async ({ page }) => {
