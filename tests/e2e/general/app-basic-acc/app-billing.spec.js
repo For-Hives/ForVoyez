@@ -1,20 +1,12 @@
 const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL = process.env.TEST_EMAIL
-const TEST_PASSWORD = process.env.TEST_PASSWORD
-
 test.describe('Billing Page Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/billing`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL,
-			TEST_PASSWORD
-		)
+	test('authenticated test', async ({ page }) => {
+		// The page is already authenticated.
+		await page.goto('/billing')
+		await expect(page).toHaveURL('/billing')
 	})
 
 	test('Check billing page access and Toastify message', async ({ page }) => {
