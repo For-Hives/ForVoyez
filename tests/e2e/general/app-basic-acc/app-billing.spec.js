@@ -4,7 +4,6 @@ require('dotenv').config()
 
 test.describe('Billing Page Functionality', () => {
 	test.beforeEach('redirect to billing', async ({ page }) => {
-		// The page is already authenticated.
 		await page.goto('/app/billing')
 		await expect(page).toHaveURL('/app/billing')
 	})
