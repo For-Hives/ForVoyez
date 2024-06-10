@@ -21,7 +21,6 @@ export const log = message => {
 
 export const signIn = async (
 	page,
-	goto_url,
 	NEXT_PUBLIC_URL,
 	TEST_EMAIL,
 	TEST_PASSWORD
@@ -70,8 +69,4 @@ export const signIn = async (
 	const userButton = page.locator('.cl-userButtonTrigger')
 	log('Waiting for user button to be visible after sign-in')
 	await userButton.waitFor({ state: 'visible', timeout: 15000 })
-
-	// Navigate to the plans page
-	log(`Navigating to the ${goto_url} page`)
-	await page.goto(`${NEXT_PUBLIC_URL}/${goto_url}`)
 }
