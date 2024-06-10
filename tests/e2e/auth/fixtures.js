@@ -14,7 +14,7 @@ module.exports = {
 	test: baseTest.extend({
 		// Authenticate once per worker with a worker-scoped fixture.
 		workerStorageState: [
-			async ({}, use) => {
+			async ({ browser }, use) => {
 				// Use parallelIndex as a unique identifier for each worker.
 				const id = baseTest.info().parallelIndex
 				const fileName = path.resolve(
