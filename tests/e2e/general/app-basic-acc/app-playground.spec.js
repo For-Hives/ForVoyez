@@ -1,6 +1,8 @@
 const { expect, test } = require('../../auth/fixtures')
-const { log } = require('../../tests-helpers')
+const { getNextPublicUrl, log } = require('../../tests-helpers')
 require('dotenv').config()
+
+const NEXT_PUBLIC_URL = getNextPublicUrl()
 
 test.describe('Playground Functionality', () => {
 	test.beforeEach('redirect to playground', async ({ page }) => {
