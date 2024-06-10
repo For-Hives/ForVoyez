@@ -7,8 +7,8 @@ require('dotenv').config()
 
 const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
-const SUBSCRIBED_USER_EMAIL = process.env.SUBSCRIBED_USER_EMAIL
-const SUBSCRIBED_USER_PASSWORD = process.env.SUBSCRIBED_USER_PASSWORD
+const TEST_EMAIL_SUB = process.env.TEST_EMAIL_SUB
+const TEST_PASSWORD_SUB = process.env.TEST_PASSWORD_SUB
 
 module.exports = {
 	...require('@playwright/test'),
