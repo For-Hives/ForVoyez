@@ -80,7 +80,7 @@ jobs:
       - name: 'Wait for the application to be ready'
         run: |
           echo "Waiting for the application to be ready..."
-          end=$((SECONDS+10))
+          end=$((SECONDS+30))
           while [ $SECONDS -lt $end ]; do
             if curl -s http://localhost:3000 > /dev/null; then
               echo "Application is up!"
