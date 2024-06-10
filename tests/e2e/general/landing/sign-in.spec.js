@@ -1,6 +1,5 @@
 const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
-require('dotenv').config()
 
 const TEST_EMAIL = () => process.env.TEST_EMAIL
 const TEST_PASSWORD = () => process.env.TEST_PASSWORD
