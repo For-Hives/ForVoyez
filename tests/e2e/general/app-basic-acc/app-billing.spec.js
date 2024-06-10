@@ -5,11 +5,13 @@ require('dotenv').config()
 test.describe('Billing Page Functionality', () => {
 	test('authenticated test', async ({ page }) => {
 		// The page is already authenticated.
-		await page.goto('/billing')
-		await expect(page).toHaveURL('/billing')
+		await page.goto('/app/billing')
+		await expect(page).toHaveURL('/app/billing')
 	})
 
 	test('Check billing page access and Toastify message', async ({ page }) => {
+		await page.goto('/app/billing')
+		await expect(page).toHaveURL('/app/billing')
 		log('Page loaded')
 
 		// Wait for the Toastify message
