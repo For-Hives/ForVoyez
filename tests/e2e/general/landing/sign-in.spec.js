@@ -1,8 +1,8 @@
 const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 
-const TEST_EMAIL = () => process.env.TEST_EMAIL
-const TEST_PASSWORD = () => process.env.TEST_PASSWORD
+const TEST_EMAIL = process.env.TEST_EMAIL
+const TEST_PASSWORD = process.env.TEST_PASSWORD
 
 test.describe('Sign-in - Sign-out Functionality', () => {
 	test('User can sign in successfully, access manage account, and sign out', async ({
