@@ -1,11 +1,6 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
-
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-// use sub to get access to every pages
-const TEST_EMAIL = process.env.TEST_EMAIL_SUB
-const TEST_PASSWORD = process.env.TEST_PASSWORD_SUB
 
 test.describe('Sidebar Navigation Functionality', () => {
 	test.beforeEach(async ({ page }) => {

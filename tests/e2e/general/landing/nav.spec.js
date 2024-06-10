@@ -1,8 +1,8 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-helpers')
+const { getNextPublicUrl, log } = require('../../tests-helpers')
 
 test('Navbar elements are present and correct', async ({ page }) => {
-	await page.goto('/')
+	await page.goto(getNextPublicUrl())
 
 	log('Page loaded')
 
