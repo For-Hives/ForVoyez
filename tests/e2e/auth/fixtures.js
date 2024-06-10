@@ -1,7 +1,7 @@
 const { test: baseTest, expect } = require('@playwright/test')
 const fs = require('fs')
 const path = require('path')
-const { getNextPublicUrl, signIn } = require('../tests-helpers')
+const { getNextPublicUrl, signIn, log } = require('../tests-helpers')
 
 const TEST_EMAIL = () => process.env.TEST_EMAIL
 const TEST_PASSWORD = () => process.env.TEST_PASSWORD
@@ -34,6 +34,9 @@ module.exports = {
 				const page = await browser.newPage({ storageState: undefined })
 
 				// Perform authentication steps based on the mode
+				log(
+					`Authenticating in ${isSubscribedMode ? 'subscribed' : 'basic'} mode`
+				)
 				if (isSubscribedMode) {
 					await signIn(
 						page,
