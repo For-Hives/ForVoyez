@@ -54,6 +54,10 @@ jobs:
           pnpm install --frozen-lockfile
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
+      - name: Expose GitHub Runtime for cache env
+        uses: crazy-max/ghaction-github-runtime@v3
+      - name: Set up Docker Buildx engine
+        uses: docker/setup-buildx-action@v3
       - name: 'Build Docker Image for testing'
         run: |
           docker buildx build -t forvoyez:test \
