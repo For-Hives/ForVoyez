@@ -1,6 +1,5 @@
 const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
-require('dotenv').config()
 
 test.describe('CTA Component', () => {
 	test('CTA section loads correctly', async ({ page }) => {

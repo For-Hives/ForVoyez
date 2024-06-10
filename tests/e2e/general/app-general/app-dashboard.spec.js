@@ -1,6 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
-require('dotenv').config()
 
 test.describe('Dashboard Quick Links Functionality', () => {
 	test.beforeEach('redirect to app', async ({ page }) => {

@@ -1,6 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
-require('dotenv').config()
 
 test.describe('Plans Management Functionality', () => {
 	test.beforeEach('redirect to plans', async ({ page }) => {

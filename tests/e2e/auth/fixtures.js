@@ -3,8 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const { getNextPublicUrl, signIn } = require('../tests-helpers')
 
-require('dotenv').config()
-
 const TEST_EMAIL = () => process.env.TEST_EMAIL
 const TEST_PASSWORD = () => process.env.TEST_PASSWORD
 const TEST_EMAIL_SUB = () => process.env.TEST_EMAIL_SUB

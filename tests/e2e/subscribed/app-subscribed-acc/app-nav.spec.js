@@ -1,6 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
-require('dotenv').config()
 
 test.describe('Sidebar Navigation Functionality', () => {
 	test.beforeEach('redirect to app', async ({ page }) => {

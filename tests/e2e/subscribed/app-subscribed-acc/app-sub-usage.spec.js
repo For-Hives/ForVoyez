@@ -1,6 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
-require('dotenv').config()
 
 test.describe('Usage Chart Functionality for Subscribed User', () => {
 	test.beforeEach('redirect to usage', async ({ page }) => {
