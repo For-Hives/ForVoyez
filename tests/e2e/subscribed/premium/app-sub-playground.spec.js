@@ -30,7 +30,7 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		const fileChooserPromise = page.waitForEvent('filechooser')
 		await imageInput.click()
 		const fileChooser = await fileChooserPromise
-		await fileChooser.setFiles('public/1x1.webp')
+		await fileChooser.setFiles('./tests/e2e/resources/1x1.webp')
 
 		// Fill in the context and JSON schema (if needed)
 		const contextInput = page.locator('[data-testid="context-input"]')

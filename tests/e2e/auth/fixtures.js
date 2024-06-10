@@ -40,8 +40,8 @@ module.exports = {
 					await signIn(
 						page,
 						getNextPublicUrl(),
-						SUBSCRIBED_USER_EMAIL,
-						SUBSCRIBED_USER_PASSWORD
+						TEST_EMAIL_SUB,
+						TEST_PASSWORD_SUB
 					)
 				} else {
 					await signIn(page, getNextPublicUrl(), TEST_EMAIL, TEST_PASSWORD)
