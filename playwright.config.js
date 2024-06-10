@@ -4,5 +4,5 @@ module.exports = {
 		headless: true,
 	},
 	testDir: './tests/e2e',
-	workers: 3,
+	workers: 5,
 }
