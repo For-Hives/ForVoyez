@@ -3,8 +3,9 @@ const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
 test.describe('Usage Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(page, `app/usage`, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+	test.beforeEach('redirect to usage', async ({ page }) => {
+		await page.goto('/app/usage')
+		await expect(page).toHaveURL('/app/usage')
 	})
 
 	test('Check usage data and display logic', async ({ page }) => {

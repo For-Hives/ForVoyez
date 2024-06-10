@@ -3,8 +3,9 @@ const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
 test.describe('Sidebar Navigation Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(page, `app`, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+	test.beforeEach('redirect to app', async ({ page }) => {
+		await page.goto('/app')
+		await expect(page).toHaveURL('/app')
 	})
 
 	test('Sidebar links are present and correct', async ({ page }) => {

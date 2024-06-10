@@ -3,8 +3,9 @@ const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
 test.describe('Legal Section Navigation Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(page, `app/legals`, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD)
+	test.beforeEach('redirect to legals', async ({ page }) => {
+		await page.goto('/app/legals')
+		await expect(page).toHaveURL('/app/legals')
 	})
 
 	test('Legal links are present and correct', async ({ page }) => {

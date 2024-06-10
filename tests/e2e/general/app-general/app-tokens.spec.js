@@ -3,14 +3,9 @@ const { log } = require('../../tests-helpers')
 require('dotenv').config()
 
 test.describe('Playground Functionality', () => {
-	test.beforeEach(async ({ page }) => {
-		await signIn(
-			page,
-			`app/playground`,
-			NEXT_PUBLIC_URL,
-			TEST_EMAIL,
-			TEST_PASSWORD
-		)
+	test.beforeEach('redirect to playground', async ({ page }) => {
+		await page.goto('/app/playground')
+		await expect(page).toHaveURL('/app/playground')
 	})
 
 	test('Check playground usage tooltip and redirection', async ({ page }) => {
