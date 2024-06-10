@@ -54,14 +54,18 @@ jobs:
           pnpm install --frozen-lockfile
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
-      - name: Set up Docker Buildx driver
-        uses: docker/setup-buildx-action@v3
-      - name: 'Build Docker Image'
+      - name: 'Build Docker Image for testing'
+        run: |
+          docker buildx build -t forvoyez:test \
+          --cache-to type=gha,url=...,token=...,scope=image \
+          --cache-from type=gha,url=...,token=...,scope=image .
+
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false
-          tags: "forvoyez:test"
+          push: true
+          tags: "<registry>/<image>:latest"
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: 'Start Docker Container'
