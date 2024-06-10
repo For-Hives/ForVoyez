@@ -1,10 +1,6 @@
-const { expect, test } = require('@playwright/test')
-const { getNextPublicUrl, signIn, log } = require('../../tests-helpers')
+const { expect, test } = require('../../auth/fixtures')
+const { log } = require('../../tests-helpers')
 require('dotenv').config()
-
-const NEXT_PUBLIC_URL = getNextPublicUrl()
-const TEST_EMAIL = process.env.TEST_EMAIL
-const TEST_PASSWORD = process.env.TEST_PASSWORD
 
 test.describe('Legal Section Navigation Functionality', () => {
 	test.beforeEach(async ({ page }) => {

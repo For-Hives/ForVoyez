@@ -1,8 +1,8 @@
-// tests/home.spec.js
 const { expect, test } = require('@playwright/test')
+const { getNextPublicUrl } = require('../../tests-helpers')
 
 test('Home page loads correctly', async ({ page }) => {
-	await page.goto('/')
+	await page.goto(getNextPublicUrl())
 
 	// Check if the page title is correct
 	const title = await page.title()

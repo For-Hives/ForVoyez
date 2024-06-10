@@ -10,13 +10,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 	test('User can sign in successfully, access manage account, and sign out', async ({
 		page,
 	}) => {
-		// ensure the URL starts with http:// or https://
-		if (!NEXT_PUBLIC_URL.startsWith('http://')) {
-			if (!NEXT_PUBLIC_URL.startsWith('https://')) {
-				NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
-			}
-		}
-		await page.goto(NEXT_PUBLIC_URL)
+		await page.goto(getNextPublicUrl())
 
 		log('Page loaded')
 

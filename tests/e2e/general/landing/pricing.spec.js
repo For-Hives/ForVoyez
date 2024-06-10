@@ -1,9 +1,9 @@
 const { expect, test } = require('@playwright/test')
-const { log } = require('../../tests-helpers')
+const { getNextPublicUrl, log } = require('../../tests-helpers')
 
 test.describe('Pricing Component', () => {
 	test('Pricing section loads correctly', async ({ page }) => {
-		await page.goto('/')
+		await page.goto(getNextPublicUrl())
 
 		log('Page loaded')
 
