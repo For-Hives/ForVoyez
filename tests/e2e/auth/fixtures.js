@@ -16,9 +16,9 @@ module.exports = {
 		workerStorageState: [
 			async ({}, use) => {
 				// Use parallelIndex as a unique identifier for each worker.
-				const id = test.info().parallelIndex
+				const id = baseTest.info().parallelIndex
 				const fileName = path.resolve(
-					test.info().project.outputDir,
+					baseTest.info().project.outputDir,
 					`.auth/${id}.json`
 				)
 
