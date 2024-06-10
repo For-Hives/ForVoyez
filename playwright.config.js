@@ -1,8 +1,22 @@
 module.exports = {
+	projects: [
+		{
+			testDir: './tests/e2e/general',
+			testMatch: /.*\.spec\.js/,
+			name: 'default',
+			retries: 2,
+			workers: 5,
+		},
+		{
+			testDir: './tests/e2e/subscribed',
+			testMatch: /.*\.spec\.js/,
+			name: 'subscribed',
+			retries: 2,
+			workers: 5,
+		},
+	],
 	use: {
 		baseURL: 'http://localhost:3000',
-		headless: false,
+		headless: true,
 	},
-	testDir: './tests/e2e',
-	workers: 5,
 }
