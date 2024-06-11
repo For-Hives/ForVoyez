@@ -188,7 +188,7 @@ const planData = [
 	},
 ]
 
-// subscription data
+// subscription dataz
 const subscriptionData = [
 	{
 		renewsAt: new Date('2024-06-20 12:12:28.000'),
