@@ -411,7 +411,7 @@ async function main() {
 		const user = await prisma.user.create({
 			data: u,
 		})
-		console.info(`Created user with id: ${user.id}`)
+		console.info(`Created user with id: ${user.clerkId}`)
 	}
 
 	for (const p of planData) {
