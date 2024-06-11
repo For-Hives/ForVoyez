@@ -24,6 +24,14 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
+      - name: 'Set up test database'
+        run: |
+         docker run --name test-db -e POSTGRES_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} -e POSTGRES_DB=forvoyez -p 5432:5432 -d postgres
+         docker run --link test-db:postgres --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
+      - name: 'Run database migrations'
+        run: pnpm prisma migrate dev
+      - name: 'Seed test data'
+        run: pnpm prisma db seed
       - name: 'Run Unit Tests'
         run: pnpm test:ci
       - name: 'Report Coverage'
