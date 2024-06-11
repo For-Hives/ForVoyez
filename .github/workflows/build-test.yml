@@ -76,6 +76,7 @@ jobs:
             -e LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
             -e LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
             -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -e TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} \
             forvoyez:test
       - name: 'Wait for the application to be ready'
         run: |
