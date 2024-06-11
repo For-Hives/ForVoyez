@@ -58,5 +58,7 @@ test-results
 #pnpm-lock.yaml
 #.riv
 
+.env*
+
 output.txt
 large.txt
