@@ -5,14 +5,14 @@ module.exports = {
 			testMatch: /.*\.spec\.js/,
 			name: 'default',
 			retries: 2,
-			workers: 5,
+			workers: 2,
 		},
 		{
 			testDir: './tests/e2e/subscribed',
 			testMatch: /.*\.spec\.js/,
 			name: 'subscribed',
 			retries: 2,
-			workers: 5,
+			workers: 2,
 		},
 	],
 	use: {
