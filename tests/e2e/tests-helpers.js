@@ -1,3 +1,4 @@
+import { setupClerkTestingToken } from '@clerk/testing/playwright'
 import { expect } from '@playwright/test'
 
 export const getNextPublicUrl = () => {
@@ -31,6 +32,8 @@ export const signIn = async (
 	) {
 		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 	}
+	await setupClerkTestingToken({ page })
+
 	await page.goto(NEXT_PUBLIC_URL)
 
 	// Click on the sign-in button
