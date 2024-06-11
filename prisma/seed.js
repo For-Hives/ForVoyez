@@ -184,7 +184,45 @@ const planData = [
 	},
 ]
 
-// subscription
+// subscription data
+const subscriptionData = [
+	{
+		renewsAt: new Date('2024-06-20T12:12:28.000Z'),
+		endsAt: new Date('2023-05-20T12:48:11.000Z'),
+		userId: 'user_2gjNZVkDVIWtaev3UO0Kal4hjGS',
+		email: 'andy.cinquin@gmail.com',
+		statusFormatted: 'Cancelled',
+		lemonSqueezyId: 383422,
+		name: 'Andy Cinquin',
+		status: 'cancelled',
+		isUsageBased: false,
+		customerId: 2893681,
+		trialEndsAt: null,
+		orderId: 2719863,
+		isPaused: false,
+		oldPlanId: 5,
+		planId: 7,
+		id: 10,
+	},
+	{
+		renewsAt: new Date('2024-06-28T14:51:52.000Z'),
+		userId: 'user_2h6GYOvlTOlyK2w0OaqnyRLf8TW',
+		email: 'cinquin.andy@gmail.com',
+		statusFormatted: 'Active',
+		lemonSqueezyId: 393961,
+		name: 'Andy Cinquin',
+		isUsageBased: false,
+		customerId: 2837049,
+		trialEndsAt: null,
+		orderId: 2779820,
+		status: 'active',
+		isPaused: false,
+		oldPlanId: null,
+		endsAt: null,
+		planId: 5,
+		id: 11,
+	},
+]
 
 // token (not need)
 // usage
