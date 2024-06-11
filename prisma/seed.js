@@ -191,8 +191,8 @@ const planData = [
 // subscription dataz
 const subscriptionData = [
 	{
-		renewsAt: new Date('2024-06-20 12:12:28.000'),
-		endsAt: new Date('2023-05-20 12:48:11.000'),
+		renewsAt: new Date('2024-06-20 12:12:28.000').toISOString(),
+		endsAt: new Date('2023-05-20 12:48:11.000').toISOString(),
 		userId: 'user_2gjNZVkDVIWtaev3UO0Kal4hjGS',
 		email: 'andy.cinquin@gmail.com',
 		statusFormatted: 'Cancelled',
@@ -208,7 +208,7 @@ const subscriptionData = [
 		id: 10,
 	},
 	{
-		renewsAt: new Date('2024-06-28 14:51:52.000'),
+		renewsAt: new Date('2024-06-28 14:51:52.000').toISOString(),
 		userId: 'user_2h6GYOvlTOlyK2w0OaqnyRLf8TW',
 		email: 'cinquin.andy@gmail.com',
 		statusFormatted: 'Active',
@@ -220,7 +220,6 @@ const subscriptionData = [
 		status: 'active',
 		isPaused: false,
 		oldPlanId: null,
-		endsAt: null,
 		planId: '5',
 		id: 11,
 	},
