@@ -413,6 +413,28 @@ async function main() {
 		})
 		console.info(`Created user with id: ${user.id}`)
 	}
+
+	for (const p of planData) {
+		const plan = await prisma.plan.create({
+			data: p,
+		})
+		console.info(`Created plan with id: ${plan.id}`)
+	}
+
+	for (const s of subscriptionData) {
+		const subscription = await prisma.subscription.create({
+			data: s,
+		})
+		console.info(`Created subscription with id: ${subscription.id}`)
+	}
+
+	for (const u of usageData) {
+		const usage = await prisma.usage.create({
+			data: u,
+		})
+		console.info(`Created usage with id: ${usage.id}`)
+	}
+
 	console.info(`Seeding finished.`)
 }
 
