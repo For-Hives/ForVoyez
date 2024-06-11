@@ -30,10 +30,12 @@ jobs:
          docker run --link test-db:postgres --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
       - name: 'Run database migrations'
         run: pnpm prisma migrate dev
-        env: ${{ secrets.DATABASE_URL }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: 'Seed test data'
         run: pnpm prisma db seed
-        env: ${{ secrets.DATABASE_URL }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: 'Run Unit Tests'
         run: pnpm test:ci
       - name: 'Report Coverage'
