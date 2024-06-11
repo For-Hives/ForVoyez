@@ -14,7 +14,10 @@ RUN apt update && apt install -y openssl
 # Install PostgreSQL and PostgreSQL client
 FROM base AS test-db
 
-ENV POSTGRES_PASSWORD=$TEST_DB_PASSWORD
+ARG DATABASE_URL
+ARG TEST_DB_PASSWORD
+ENV DATABASE_URL=$DATABASE_URL
+ENV TEST_DB_PASSWORD=$TEST_DB_PASSWORD
 ENV POSTGRES_DB=forvoyez
 
 RUN apt-get update && apt-get install -y postgresql postgresql-client
