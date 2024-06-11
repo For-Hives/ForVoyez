@@ -193,7 +193,7 @@ const subscriptionData = [
 	{
 		renewsAt: new Date('2024-06-20 12:12:28.000').toISOString(),
 		endsAt: new Date('2023-05-20 12:48:11.000').toISOString(),
-		userId: 'user_2gjNZVkDVIWtaev3UO0Kal4hjGS',
+		userId: 'user_2f5PvrOEUZJ6gG2M2pSlbi8HHMh',
 		email: 'andy.cinquin@gmail.com',
 		statusFormatted: 'Cancelled',
 		lemonSqueezyId: '383422',
