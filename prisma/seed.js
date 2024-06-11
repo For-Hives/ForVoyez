@@ -203,8 +203,8 @@ const subscriptionData = [
 		isUsageBased: false,
 		orderId: 2719863,
 		isPaused: false,
-		oldPlanId: '5',
-		planId: '7',
+		oldPlanId: 5,
+		planId: 7,
 		id: 10,
 	},
 	{
@@ -219,8 +219,7 @@ const subscriptionData = [
 		orderId: 2779820,
 		status: 'active',
 		isPaused: false,
-		oldPlanId: null,
-		planId: '5',
+		planId: 5,
 		id: 11,
 	},
 ]
