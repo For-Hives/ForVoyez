@@ -32,7 +32,12 @@ export const signIn = async (
 	) {
 		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 	}
-	await setupClerkTestingToken({ page })
+	await setupClerkTestingToken({
+		options: {
+			frontendApiUrl: process.env.NEXT_PUBLIC_URL,
+		},
+		page,
+	})
 
 	await page.goto(NEXT_PUBLIC_URL)
 
