@@ -10,6 +10,19 @@ WORKDIR /usr/src/app
 RUN corepack enable
 RUN apt update && apt install -y openssl
 
+# configure test database
+# install pgsql client
+FROM base AS test-db
+
+ENV POSTGRES_PASSWORD=$TEST_DB_PASSWORD
+
+RUN apt-get update && apt-get install -y postgresql-client
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+COPY prisma/schema.prisma /docker-entrypoint-initdb.d/
+COPY prisma/seed.js /docker-entrypoint-initdb.d/
+
+RUN chmod +x /docker-entrypoint-initdb.d/*
 
 # install dependencies into temp directory
 # this will cache them and speed up future builds
