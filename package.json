@@ -97,4 +97,5 @@
 		"prisma",
 		"sharp"
 	]
+    "@clerk/testing": "^1.1.6",
 }
