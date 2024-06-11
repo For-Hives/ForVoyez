@@ -56,7 +56,7 @@ jobs:
         run: pnpm exec playwright install
       - name: 'Build Docker Image for testing'
         run: |
-          docker build -f Dockerfile -t forvoyez:test .
+          docker build --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} -f Dockerfile -t forvoyez:test .
       - name: 'Start Docker Container'
         run: |
           docker run -d --name forvoyez-container -p 3000:3000 \
