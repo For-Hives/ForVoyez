@@ -2,14 +2,18 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-// base data for users
+// user data
 const userData = [
 	{
+		createdAt: new Date('2024-06-09 18:07:57.199'),
+		updatedAt: new Date('2024-06-09 18:07:57.198'),
 		clerkId: 'user_2f5PvrOEUZJ6gG2M2pSlbi8HHMh',
 		customerId: 0,
 		credits: 0,
 	},
 	{
+		createdAt: new Date('2024-05-28 14:39:24.773'),
+		updatedAt: new Date('2024-06-10 12:34:55.015'),
 		clerkId: 'user_2h6GYOvlTOlyK2w0OaqnyRLf8TW',
 		customerId: 2837049,
 		credits: 5980,
