@@ -26,7 +26,7 @@ const planData = [
 		features: `[""100 credits*/month"",""Basic metadata generation"",""Community support"",""Classic image formats (JPEG, PNG, WebP)"",""Full HD image support (up to 1080p)"",""Limited access to playground""]`,
 		description:
 			'<p>Perfect for small projects, freelancers, and personal use.</p>',
-		createAt: new Date('2024-05-14 12:09:59.457'),
+		createdAt: new Date('2024-05-14 12:09:59.457'),
 		productName: 'Credit Refill (Starter)',
 		buttonText: 'Subscribe',
 		billingCycle: 'month',
@@ -43,7 +43,7 @@ const planData = [
 		features: `["All Starter plan features","1,000 credits*/month","Advanced metadata generation","Priority support","Full access to playground","Ultra HD image support (up to 4K)"]`,
 		description:
 			'<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
-		createAt: new Date('2024-05-14 12:10:01.054'),
+		createdAt: new Date('2024-05-14 12:10:01.054'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
 		billingCycle: 'month',
@@ -60,7 +60,7 @@ const planData = [
 		features: `["120 credits*/month","Basic metadata generation","Community support","Classic image formats (JPEG, PNG, WebP)","Full HD image support (up to 1080p)","Limited access to playground"]`,
 		description:
 			'<p>Perfect for small projects, freelancers, and personal use.</p>',
-		createAt: new Date('2024-05-14 12:10:00.343'),
+		createdAt: new Date('2024-05-14 12:10:00.343'),
 		productName: 'Credit refill (Starter)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -74,7 +74,7 @@ const planData = [
 		planId: 3,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:14.566'),
+		createdAt: new Date('2024-05-20 14:12:14.566'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -90,7 +90,7 @@ const planData = [
 		price: 299,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:14.915'),
+		createdAt: new Date('2024-05-20 14:12:14.915'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -106,7 +106,7 @@ const planData = [
 		price: 999,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:15.284'),
+		createdAt: new Date('2024-05-20 14:12:15.284'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -122,7 +122,7 @@ const planData = [
 		price: 2999,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:16.784'),
+		createdAt: new Date('2024-05-20 14:12:16.784'),
 		productName: 'Credit Refill (Starter)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -138,7 +138,7 @@ const planData = [
 		price: 299,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:17.178'),
+		createdAt: new Date('2024-05-20 14:12:17.178'),
 		productName: 'Credit Refill (Starter)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -154,7 +154,7 @@ const planData = [
 		price: 999,
 	},
 	{
-		createAt: new Date('2024-05-20 14:12:17.504'),
+		createdAt: new Date('2024-05-20 14:12:17.504'),
 		productName: 'Credit Refill (Starter)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
@@ -173,7 +173,7 @@ const planData = [
 		features: `["All Starter plan features","1,200 credits*/month","Advanced metadata generation","Priority support","Full access to playground","Ultra HD image support (up to 4K)"]`,
 		description:
 			'<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
-		createAt: new Date('2024-05-14 12:10:01.667'),
+		createdAt: new Date('2024-05-14 12:10:01.667'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
 		variantEnabled: true,
