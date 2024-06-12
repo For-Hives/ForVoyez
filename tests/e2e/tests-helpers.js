@@ -1,4 +1,3 @@
-import { setupClerkTestingToken } from '@clerk/testing/playwright'
 import { expect } from '@playwright/test'
 
 export const getNextPublicUrl = () => {
@@ -32,14 +31,6 @@ export const signIn = async (
 	) {
 		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 	}
-	// fixme uncomment after the production release
-	await setupClerkTestingToken({
-		options: {
-			frontendApiUrl: process.env.NEXT_PUBLIC_URL,
-		},
-		page,
-	})
-
 	await page.goto(NEXT_PUBLIC_URL)
 
 	// Click on the sign-in button

@@ -1,4 +1,5 @@
 const { test: baseTest, expect } = require('@playwright/test')
+require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
 const { getNextPublicUrl, signIn, log } = require('../tests-helpers')
