@@ -67,7 +67,7 @@ jobs:
         run: |
           docker run -d --name forvoyez-container -p 3000:3000 \
             -e NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
-            -e CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} \
+            -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
             -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
             -e NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} \
             -e NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} \
