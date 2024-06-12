@@ -81,7 +81,7 @@ jobs:
             -e LEMON_SQUEEZY_API_KEY=${{ secrets.LEMON_SQUEEZY_API_KEY }} \
             -e LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
             -e LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
-            -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez \
             --network test-network \
             forvoyez:test
       - name: 'Wait for the application to be ready'
