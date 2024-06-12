@@ -38,7 +38,7 @@
 		"@headlessui/react": "2.0.4",
 		"@heroicons/react": "2.1.3",
 		"@hookform/resolvers": "3.6.0",
-		"@lemonsqueezy/lemonsqueezy.js": "3.0.0",
+		"@lemonsqueezy/lemonsqueezy.js": "3.1.2",
 		"@monaco-editor/react": "4.6.0",
 		"@prisma/client": "5.15.0",
 		"@rive-app/react-canvas": "4.11.3",
