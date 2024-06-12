@@ -99,6 +99,14 @@ jobs:
           echo "Application did not start in time"
           docker logs forvoyez-container
           exit 1
+      - name: 'Run prisma db migrate'
+        run: pnpm prisma:db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: 'Run prisma db seed'
+        run: pnpm prisma:db:seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
         env:
