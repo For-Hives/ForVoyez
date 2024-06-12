@@ -3,6 +3,7 @@ module.exports = {
 		{
 			testDir: './tests/e2e/general',
 			testMatch: /.*\.spec\.js/,
+			name: 'default',
 			retries: 2,
 			workers: 2,
 		},
