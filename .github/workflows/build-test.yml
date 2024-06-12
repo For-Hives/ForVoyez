@@ -99,10 +99,10 @@ jobs:
           echo "Application did not start in time"
           docker logs forvoyez-container
           exit 1
-      - name: 'Run prisma db migrate'
-        run: docker exec forvoyez-container pnpm prisma:migrate
-      - name: 'Run prisma db seed'
-        run: docker exec forvoyez-container pnpm prisma:seed
+#      - name: 'Run prisma db migrate'
+#        run: docker exec forvoyez-container pnpm prisma:migrate
+#      - name: 'Run prisma db seed'
+#        run: docker exec forvoyez-container pnpm prisma:seed
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
         env:
