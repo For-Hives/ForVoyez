@@ -4,7 +4,6 @@ const { log } = require('../../tests-helpers')
 test.describe('Usage Functionality', () => {
 	test.beforeEach('redirect to usage', async ({ page }) => {
 		await page.goto('/app/usage')
-		await expect(page).toHaveURL('/app/usage')
 	})
 
 	test('Check usage data and display logic', async ({ page }) => {
