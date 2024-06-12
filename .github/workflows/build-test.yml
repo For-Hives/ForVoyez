@@ -63,8 +63,6 @@ jobs:
       - name: 'Run prisma db migrate and seed'
         run: |
           docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "
-            cp package.json pnpm-lock.yaml /app/ &&
-            cp -R prisma/. /app/prisma &&
             npm install -g pnpm &&
             pnpm install &&
             pnpm run prisma:migrate &&
