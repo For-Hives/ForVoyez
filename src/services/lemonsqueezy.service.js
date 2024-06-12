@@ -98,8 +98,7 @@ export async function getCustomerPortalLink() {
 	const customerId = await getCustomerIdFromUser(user.id)
 
 	if (!customerId) {
-		console.info('Customer not found.')
-		return null
+		throw new Error('Customer not found.')
 	}
 
 	// get customer object
