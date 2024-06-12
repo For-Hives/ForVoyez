@@ -34,6 +34,8 @@ COPY . .
 ENV NODE_ENV production
 
 RUN pnpm run prisma:generate
+RUN pnpm run prisma:migrate
+RUN pnpm run prisma:seed
 RUN pnpm run build
 
 RUN chmod -R 777 /usr/src/app/.next/cache
