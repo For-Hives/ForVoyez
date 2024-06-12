@@ -32,6 +32,7 @@ COPY --from=install /tmp/dev/node_modules node_modules
 COPY . .
 
 ENV NODE_ENV production
+ENV DATABASE_URL="${DATABASE_URL}"
 
 RUN pnpm run prisma:generate
 RUN pnpm run prisma:migrate
