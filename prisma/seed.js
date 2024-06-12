@@ -23,7 +23,7 @@ const userData = [
 // plan
 const planData = [
 	{
-		features: `[""100 credits*/month"",""Basic metadata generation"",""Community support"",""Classic image formats (JPEG, PNG, WebP)"",""Full HD image support (up to 1080p)"",""Limited access to playground""]`,
+		features: `["100 credits*/month","Basic metadata generation","Community support","Classic image formats (JPEG, PNG, WebP)","Full HD image support (up to 1080p)","Limited access to playground"]`,
 		description:
 			'<p>Perfect for small projects, freelancers, and personal use.</p>',
 		createdAt: new Date('2024-05-14 12:09:59.457'),
