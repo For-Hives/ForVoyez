@@ -69,7 +69,7 @@ jobs:
             -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez \
             --network test-network \
             forvoyez:test \
-            sh -c "pnpm run prisma:migrate"
+            sh -c "npx prisma migrate dev"
 
       - name: 'Seed Database'
         run: |
@@ -77,7 +77,7 @@ jobs:
             -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez \
             --network test-network \
             forvoyez:test \
-            sh -c "pnpm run prisma:seed"
+            sh -c "npx prisma db seed"
       - name: 'Start Docker Container'
         run: |
           docker run -d --name forvoyez-container -p 3000:3000 \
