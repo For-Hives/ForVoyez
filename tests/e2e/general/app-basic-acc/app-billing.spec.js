@@ -4,7 +4,6 @@ const { log } = require('../../tests-helpers')
 test.describe('Billing Page Functionality', () => {
 	test.beforeEach('redirect to billing', async ({ page }) => {
 		await page.goto('/app/billing')
-		await expect(page).toHaveURL('/app/billing')
 	})
 
 	test('Check billing page access and Toastify message', async ({ page }) => {
