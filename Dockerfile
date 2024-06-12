@@ -17,16 +17,16 @@ FROM base AS install
 RUN mkdir -p /tmp/dev
 
 COPY package.json pnpm-lock.yaml /tmp/dev/
-RUN cd /tmp/dev && pnpm install --frozen-lockfile --verbose --ignore-scripts
+RUN cd /tmp/dev && pnpm install --frozen-lockfile  --verbose --ignore-scripts
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /tmp/prod
 COPY package.json pnpm-lock.yaml /tmp/prod/
-RUN cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts && chmod -R 755 node_modules && chown -R node:node node_modules
+RUN cd /tmp/prod && pnpm install --frozen-lockfile --production --ignore-scripts  && chmod -R 755 node_modules && chown -R node:node node_modules
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
-FROM test-db AS prerelease
+FROM base AS prerelease
 
 COPY --from=install /tmp/dev/node_modules node_modules
 COPY . .
@@ -34,13 +34,12 @@ COPY . .
 ENV NODE_ENV production
 
 RUN pnpm run prisma:generate
-RUN service postgresql start && pnpm run prisma:migrate && pnpm run prisma:seed
 RUN pnpm run build
 
 RUN chmod -R 777 /usr/src/app/.next/cache
 
 # copy production dependencies and source code into final image
-FROM test-db AS release
+FROM base AS release
 
 COPY --from=install /tmp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/.next .next
@@ -55,4 +54,4 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 USER root
 
 EXPOSE 3000/tcp
-ENTRYPOINT service postgresql start && pnpm run launch
+ENTRYPOINT [ "pnpm", "run", "launch" ]
