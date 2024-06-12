@@ -10,21 +10,6 @@ WORKDIR /usr/src/app
 RUN corepack enable
 RUN apt update && apt install -y openssl
 
-# Configure test database
-# Install PostgreSQL and PostgreSQL client
-FROM base AS test-db
-
-ARG DATABASE_URL
-ARG TEST_DB_PASSWORD
-ENV DATABASE_URL=$DATABASE_URL
-ENV TEST_DB_PASSWORD=$TEST_DB_PASSWORD
-ENV POSTGRES_DB=forvoyez
-
-RUN apt-get update && apt-get install -y postgresql postgresql-client
-RUN service postgresql start && \
-    su postgres -c "createdb forvoyez" && \
-    su postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD '$TEST_DB_PASSWORD';\""
-
 # install dependencies into temp directory
 # this will cache them and speed up future builds
 FROM base AS install

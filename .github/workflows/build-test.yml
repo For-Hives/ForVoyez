@@ -54,9 +54,18 @@ jobs:
           pnpm install --frozen-lockfile
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
+      - name: 'Create Docker network'
+        run: docker network create test-network
+      - name: 'Set up test database'
+        run: |
+          docker run --name test-db -e POSTGRES_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} -e POSTGRES_DB=forvoyez -p 5432:5432 --network test-network -d postgres
+          docker run --link test-db:postgres --network test-network --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
       - name: 'Build Docker Image for testing'
         run: |
-          docker build --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} -f Dockerfile -t forvoyez:test .
+          docker build -f Dockerfile -t forvoyez:test .
+      - name: 'Run database migrations and seeding'
+        run: |
+          docker run --name forvoyez-container -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez --network test-network forvoyez:test sh -c "pnpm prisma migrate dev && pnpm prisma db seed"
       - name: 'Start Docker Container'
         run: |
           docker run -d --name forvoyez-container -p 3000:3000 \
@@ -75,8 +84,8 @@ jobs:
             -e LEMON_SQUEEZY_API_KEY=${{ secrets.LEMON_SQUEEZY_API_KEY }} \
             -e LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
             -e LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
-            -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-            -e TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} \
+            -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez \
+            --network test-network \
             forvoyez:test
       - name: 'Wait for the application to be ready'
         run: |
@@ -102,7 +111,10 @@ jobs:
           TEST_EMAIL_SUB: ${{ secrets.TEST_EMAIL_SUB }}
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
-      - name: 'Stop and remove Docker Container'
+          CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      - name: 'Stop and remove Docker Containers'
         run: |
           docker stop forvoyez-container
           docker rm forvoyez-container
+          docker stop test-db
+          docker rm test-db
