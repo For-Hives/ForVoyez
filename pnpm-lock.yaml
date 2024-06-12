@@ -12,8 +12,8 @@ importers:
         specifier: 5.1.4
         version: 5.1.4(next@14.2.3(@babel/core@7.24.6)(@playwright/test@1.44.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@flaticon/flaticon-uicons':
-        specifier: 3.2.1
-        version: 3.2.1
+        specifier: 3.3.0
+        version: 3.3.0
       '@headlessui/react':
         specifier: 2.0.4
         version: 2.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -486,8 +486,8 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@flaticon/flaticon-uicons@3.2.1':
-    resolution: {integrity: sha512-eLHbrC15uwtTXqBtPMEXcYvb0M1lYmTINkQe46NgEx5EkJKrKSjbziD08rvSGDih3r0tYEYoRz3Gjz6F5NaDHQ==}
+  '@flaticon/flaticon-uicons@3.3.0':
+    resolution: {integrity: sha512-unjcOWue7Ec85F4zq1jJIB2jF41Tlog8LxPtZXMqUdD6Ipm41oCnv/1RrTounFyuBh4uvYpL2a0jEJvwgrxZxw==}
 
   '@floating-ui/core@1.6.2':
     resolution: {integrity: sha512-+2XpQV9LLZeanU4ZevzRnGFg2neDeKHgFLjP6YLW+tly0IvrhqT4u8enLGjLH3qeh85g19xY5rsAusfwTdn5lg==}
@@ -3844,7 +3844,7 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@flaticon/flaticon-uicons@3.2.1':
+  '@flaticon/flaticon-uicons@3.3.0':
     optionalDependencies:
       esbuild-linux-64: 0.14.54
 
