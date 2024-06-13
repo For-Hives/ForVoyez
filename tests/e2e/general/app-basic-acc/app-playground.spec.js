@@ -24,7 +24,7 @@ test.describe('Playground Functionality', () => {
 
 		// Click the link and verify redirection
 		log('Clicking the link to check redirection')
-		await tooltipLocator.click()
+		await tooltipLocator.click({ force: true })
 		await expect(page).toHaveURL(`${getNextPublicUrl()}/app/plans`)
 
 		log('Playground usage tooltip and redirection test completed successfully')
