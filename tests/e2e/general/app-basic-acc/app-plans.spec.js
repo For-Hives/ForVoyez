@@ -1,5 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
-const { log } = require('../../tests-helpers')
+const { logClient, log } = require('../../tests-helpers')
 
 test.describe('Plans Management Functionality', () => {
 	test.beforeEach('redirect to plans', async ({ page }) => {
@@ -7,7 +7,8 @@ test.describe('Plans Management Functionality', () => {
 		await expect(page).toHaveURL('/app/plans')
 	})
 
-	test('View and manage subscription plans', async ({ page }) => {
+	test('View and manage subscription plans', async ({ page }, testInfo) => {
+		const logStream = logClient(page, testInfo)
 		log('Page loaded')
 
 		// Check the visibility of the plans section
@@ -52,5 +53,7 @@ test.describe('Plans Management Functionality', () => {
 		const currentURL = page.url()
 		log(`Navigated to URL: ${currentURL}`)
 		expect(currentURL).toContain('lemonsqueezy.com/checkout')
+
+		await logStream.end()
 	})
 })
