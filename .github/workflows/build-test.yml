@@ -123,6 +123,12 @@ jobs:
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
           CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      - name: 'Upload Test Artifacts'
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: test-results
       - name: 'Upload Failed Test Videos'
         if: failure()
         uses: actions/upload-artifact@v4
