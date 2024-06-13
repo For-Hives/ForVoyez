@@ -33,6 +33,9 @@
 		"*.json": "prettier --write",
 		"*.css": "prettier --write"
 	},
+	"prisma": {
+		"seed": "prisma/seed.js"
+	},
 	"dependencies": {
 		"@clerk/nextjs": "5.1.5",
 		"@flaticon/flaticon-uicons": "3.3.0",
