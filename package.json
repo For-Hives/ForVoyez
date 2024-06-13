@@ -34,7 +34,7 @@
 		"*.css": "prettier --write"
 	},
 	"prisma": {
-		"seed": "prisma/seed.js"
+		"seed": "node prisma/seed.js"
 	},
 	"dependencies": {
 		"@clerk/nextjs": "5.1.5",
