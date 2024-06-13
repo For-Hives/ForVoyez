@@ -1,5 +1,5 @@
 const { expect, test } = require('../../auth/fixtures')
-const { getNextPublicUrl, logClient, log } = require('../../tests-helpers')
+const { getNextPublicUrl, log } = require('../../tests-helpers')
 
 test.describe('Playground Functionality', () => {
 	test.beforeEach('redirect to playground', async ({ page }) => {
@@ -7,10 +7,7 @@ test.describe('Playground Functionality', () => {
 		await expect(page).toHaveURL('/app/playground')
 	})
 
-	test('Check playground usage tooltip and redirection', async ({
-		page,
-	}, testInfo) => {
-		const logStream = logClient(page, testInfo)
+	test('Check playground usage tooltip and redirection', async ({ page }) => {
 		log('Page loaded')
 
 		// Wait for the tooltip to appear
@@ -27,11 +24,9 @@ test.describe('Playground Functionality', () => {
 
 		// Click the link and verify redirection
 		log('Clicking the link to check redirection')
-		await Promise.all([page.waitForNavigation(), tooltipLocator.click()])
+		await tooltipLocator.click()
 		await expect(page).toHaveURL(`${getNextPublicUrl()}/app/plans`)
 
 		log('Playground usage tooltip and redirection test completed successfully')
-
-		await logStream.end()
 	})
 })
