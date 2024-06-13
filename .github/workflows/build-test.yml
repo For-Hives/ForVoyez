@@ -129,6 +129,12 @@ jobs:
         with:
           name: test-artifacts
           path: test-results
+      - name: 'Upload Combined Logs'
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-logs
+          path: logs/combined-logs.txt
       - name: 'Upload Failed Test Videos'
         if: failure()
         uses: actions/upload-artifact@v4
