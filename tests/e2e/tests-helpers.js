@@ -1,4 +1,6 @@
 import { expect } from '@playwright/test'
+const fs = require('fs')
+const path = require('path')
 
 export const getNextPublicUrl = () => {
 	let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
@@ -69,4 +71,24 @@ export const signIn = async (
 	const userButton = page.locator('.cl-userButtonTrigger')
 	log('Waiting for user button to be visible after sign-in')
 	await userButton.waitFor({ state: 'visible', timeout: 15000 })
+}
+
+export const logClient = async (page, testInfo) => {
+	const logFile = path.join(__dirname, 'client-logs.txt')
+	const logStream = fs.createWriteStream(logFile, { flags: 'a' })
+
+	page.on('console', msg => {
+		const type = msg.type()
+		const text = msg.text()
+		const logLine = `[${type}] ${text}\n`
+		logStream.write(logLine)
+	})
+
+	testInfo.attachments.push({
+		contentType: 'text/plain',
+		name: 'client-logs',
+		path: logFile,
+	})
+
+	return logStream
 }
