@@ -74,19 +74,20 @@ export const signIn = async (
 }
 
 export const logClient = async (page, testInfo) => {
-	const logFile = path.join(__dirname, 'client-logs.txt')
+	const logFile = path.join(testInfo.outputDir, 'combined-logs.txt')
 	const logStream = fs.createWriteStream(logFile, { flags: 'a' })
 
+	// Capture client-side logs
 	page.on('console', msg => {
 		const type = msg.type()
 		const text = msg.text()
-		const logLine = `[${type}] ${text}\n`
+		const logLine = `[CLIENT] [${type}] ${text}\n`
 		logStream.write(logLine)
 	})
 
 	testInfo.attachments.push({
 		contentType: 'text/plain',
-		name: 'client-logs',
+		name: 'combined-logs',
 		path: logFile,
 	})
 
