@@ -33,6 +33,7 @@ export function UsageChartComponent() {
 		async function fetchUsage() {
 			try {
 				const data = await getUsageForUser()
+				console.log('Usage data:', data)
 				setUsage(data)
 			} catch (error) {
 				console.error('Error fetching usage data:', error)
@@ -62,6 +63,14 @@ export function UsageChartComponent() {
 			})
 		}
 	}, [userId])
+
+	useEffect(() => {
+		if (usage.length === 0 && usageByToken.length === 0) {
+			setShowTooltip(true)
+		} else {
+			setShowTooltip(false)
+		}
+	}, [usage, usageByToken])
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
