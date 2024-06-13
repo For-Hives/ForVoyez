@@ -18,10 +18,12 @@ module.exports = {
 		},
 	],
 	use: {
+		reporter: [['html', { outputFolder: 'test-results', open: 'never' }]],
 		baseURL: 'http://localhost:3000',
 		video: 'retain-on-failure',
 		outputDir: 'test-results',
 		trace: 'on-first-retry',
+		console: 'verbose',
 		headless: true,
 	},
 }
