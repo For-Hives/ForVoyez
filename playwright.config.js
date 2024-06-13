@@ -17,6 +17,8 @@ module.exports = {
 	],
 	use: {
 		baseURL: 'http://localhost:3000',
+		video: 'retain-on-failure',
+		trace: 'on-first-retry',
 		headless: true,
 	},
 }
