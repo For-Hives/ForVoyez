@@ -23,6 +23,7 @@ export async function getPlans(filter = null) {
 	if (filter) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
+	console.info('********************** Plans:', plans)
 	return plans
 }
 
