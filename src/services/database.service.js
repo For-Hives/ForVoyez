@@ -8,8 +8,6 @@ import {
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
-import { info } from '../../logger'
-
 // Function to retrieve the authenticated user
 export async function getCurrentUser() {
 	const user = await currentUser()
