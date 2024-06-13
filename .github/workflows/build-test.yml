@@ -106,6 +106,13 @@ jobs:
           echo "Application did not start in time"
           docker logs forvoyez-container
           exit 1
+      - name: 'Check Database Connection'
+        run: |
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "
+            npm install -g pnpm &&
+            pnpm install &&
+            node check-db-connection.js
+          "
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
         env:
