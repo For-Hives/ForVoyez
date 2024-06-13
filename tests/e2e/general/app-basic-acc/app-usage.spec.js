@@ -1,12 +1,13 @@
 const { expect, test } = require('../../auth/fixtures')
-const { log } = require('../../tests-helpers')
+const { logClient, log } = require('../../tests-helpers')
 
 test.describe('Usage Functionality', () => {
 	test.beforeEach('redirect to usage', async ({ page }) => {
 		await page.goto('/app/usage')
 	})
 
-	test('Check usage data and display logic', async ({ page }) => {
+	test('Check usage data and display logic', async ({ page }, testInfo) => {
+		const logStream = logClient(page, testInfo)
 		log('Page loaded')
 
 		// Check the presence of the loading skeleton
@@ -53,5 +54,7 @@ test.describe('Usage Functionality', () => {
 			await expect(areaChart).toBeVisible()
 			await expect(barChart).toBeVisible()
 		}
+
+		await logStream.end()
 	})
 })
