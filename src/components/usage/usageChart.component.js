@@ -33,7 +33,6 @@ export function UsageChartComponent() {
 		async function fetchUsage() {
 			try {
 				const data = await getUsageForUser()
-				console.log('Usage data:', data)
 				setUsage(data)
 			} catch (error) {
 				console.error('Error fetching usage data:', error)
