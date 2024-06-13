@@ -72,24 +72,3 @@ export const signIn = async (
 	log('Waiting for user button to be visible after sign-in')
 	await userButton.waitFor({ state: 'visible', timeout: 15000 })
 }
-
-export const logClient = async (page, testInfo) => {
-	const logFile = path.join(testInfo.outputDir, 'combined-logs.txt')
-	const logStream = fs.createWriteStream(logFile, { flags: 'a' })
-
-	// Capture client-side logs
-	page.on('console', msg => {
-		const type = msg.type()
-		const text = msg.text()
-		const logLine = `[CLIENT] [${type}] ${text}\n`
-		logStream.write(logLine)
-	})
-
-	testInfo.attachments.push({
-		contentType: 'text/plain',
-		name: 'combined-logs',
-		path: logFile,
-	})
-
-	return logStream
-}
