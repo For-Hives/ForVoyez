@@ -121,7 +121,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-failure-videos
-          path: tests/e2e/**/test-results/**/video.webm
+          path: test-results/**/video.webm
       - name: 'Stop and remove Docker Containers'
         run: |
           docker stop forvoyez-container
