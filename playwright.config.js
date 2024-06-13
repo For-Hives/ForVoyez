@@ -24,6 +24,6 @@ module.exports = {
 		outputDir: 'test-results',
 		trace: 'on-first-retry',
 		console: 'verbose',
-		headless: false,
+		headless: true,
 	},
 }
