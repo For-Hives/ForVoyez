@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-// FIXME replace the href social links with the correct ones
 const navigation = {
 	social: [
 		{
@@ -14,8 +13,8 @@ const navigation = {
 					/>
 				</svg>
 			),
+			href: 'https://discord.gg/ErnvEwHexQ',
 			name: 'Discord',
-			href: '#',
 		},
 		{
 			icon: props => (
