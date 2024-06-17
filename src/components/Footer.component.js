@@ -27,8 +27,8 @@ const navigation = {
 					/>
 				</svg>
 			),
+			href: 'https://facebook.com/forvoyez',
 			name: 'Facebook',
-			href: '#',
 		},
 		{
 			icon: props => (
@@ -40,8 +40,8 @@ const navigation = {
 					/>
 				</svg>
 			),
+			href: 'https://instagram.com/forvoyez',
 			name: 'Instagram',
-			href: '#',
 		},
 		{
 			icon: props => (
