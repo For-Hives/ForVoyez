@@ -19,6 +19,8 @@ export async function sendEmail(data) {
 	} = data
 
 	// FIXME change the email address to the correct one
+	// paid option to get the real email address (to contact@forvoyez)
+	// ill redirect the mails if needed to the correct email address
 	try {
 		await mg.messages.create(process.env.MAILGUN_DOMAIN, {
 			text: `
