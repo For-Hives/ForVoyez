@@ -53,8 +53,8 @@ const navigation = {
 					/>
 				</svg>
 			),
+			href: 'https://github.com/For-Hives/ForVoyez',
 			name: 'GitHub',
-			href: '#',
 		},
 		{
 			icon: props => (
