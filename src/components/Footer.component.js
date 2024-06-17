@@ -66,8 +66,8 @@ const navigation = {
 					/>
 				</svg>
 			),
+			href: 'https://www.linkedin.com/company/forvoyez',
 			name: 'LinkedIn',
-			href: '#',
 		},
 	],
 	main: [
