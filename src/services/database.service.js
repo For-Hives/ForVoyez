@@ -52,12 +52,12 @@ export async function syncPlans() {
 			const productVariants = product.relationships.variants.data
 			for (const variant of productVariants) {
 				const variantDetails = await getVariant(variant.id)
-				if (!variantDetails?.data?.data?.attributes) {
+				if (!variantDetails?.data?.attributes) {
 					continue
 				}
 
 				allVariants.push({
-					...variantDetails.data.data.attributes,
+					...variantDetails.data.attributes,
 					productName: product.attributes.name,
 					variantId: variant.id,
 				})
@@ -66,6 +66,10 @@ export async function syncPlans() {
 
 		const refillVariants = allVariants.filter(
 			v => !v.is_subscription && v.name !== 'Default'
+		)
+
+		const baseVariants = allVariants.filter(
+			v => v.is_subscription && v.name !== 'Default'
 		)
 
 		for (const variant of refillVariants) {
@@ -78,6 +82,9 @@ export async function syncPlans() {
 			}
 
 			const isUsageBased = currentPriceObj.attributes.usage_aggregation !== null
+			const interval = variant.is_subscription
+				? currentPriceObj?.attributes.renewal_interval_unit
+				: null
 			const packageSize = currentPriceObj.attributes.package_size
 			const price = isUsageBased
 				? currentPriceObj.attributes.unit_price_decimal
@@ -90,12 +97,46 @@ export async function syncPlans() {
 				productName: variant.productName,
 				variantId: variant.variantId,
 				price: parseInt(priceString),
+				billingCycle: interval,
 				variantEnabled: true,
 				name: variant.name,
-				billingCycle: null,
 				packageSize,
 			})
 		}
+		console.info('refills variants are synced')
+
+		for (const variant of baseVariants) {
+			const variantPriceObject = await listPrice(variant.variantId)
+			const currentPriceObj = variantPriceObject?.[0]
+
+			if (!currentPriceObj || !currentPriceObj.attributes) {
+				console.error('Price object is missing attributes:', currentPriceObj)
+				continue
+			}
+
+			const isUsageBased = currentPriceObj.attributes.usage_aggregation !== null
+			const interval = variant.is_subscription
+				? currentPriceObj?.attributes.renewal_interval_unit
+				: null
+			const packageSize = currentPriceObj.attributes.package_size
+			const price = isUsageBased
+				? currentPriceObj.attributes.unit_price_decimal
+				: currentPriceObj.attributes.unit_price
+			const priceString = price?.toString() ?? ''
+
+			await _addVariant({
+				productId: variant.product_id.toString(),
+				description: variant.description,
+				productName: variant.productName,
+				variantId: variant.variantId,
+				price: parseInt(priceString),
+				name: variant.productName,
+				billingCycle: interval,
+				variantEnabled: true,
+				packageSize,
+			})
+		}
+		console.info('base variants are synced')
 
 		return refillVariants
 	} catch (error) {
