@@ -1,5 +1,3 @@
-import ClientLogicBilling from '@/app/(dashboard)/app/billing/page'
-
 export const metadata = {
 	description:
 		'Manage your ForVoyez subscription, update payment methods, and view your billing history.',
@@ -9,6 +7,6 @@ export const metadata = {
 	title: 'Billing - ForVoyez',
 }
 
-export default function BillingPage() {
-	return <ClientLogicBilling />
+export default function Layout({ children }) {
+	return <>{children}</>
 }

@@ -52,7 +52,7 @@ const legalResources = [
 	},
 ]
 
-export default function ClientLogicLegals() {
+export default function LegalsPage() {
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
 			<h1 className="mb-8 text-3xl font-bold">Legal Information</h1>

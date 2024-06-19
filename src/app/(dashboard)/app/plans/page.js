@@ -3,7 +3,7 @@
 import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
 import { RefillPlansComponent } from '@/components/Dashboard/RefillPlans.component'
 
-export default function ClientLogicPlans() {
+export default function PlansPage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
 			<h1 className="text-xl font-bold text-slate-800">Available Plans</h1>

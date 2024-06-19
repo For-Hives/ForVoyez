@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 
 import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
-export default function ClientLogicBilling() {
+export default function BillingPage() {
 	const router = useRouter()
 	const [loadingMessage, setLoadingMessage] = useState('Loading your data...')
 

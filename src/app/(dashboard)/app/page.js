@@ -101,7 +101,7 @@ const configResources = [
 	},
 ]
 
-export default function ClientLogicDashboard() {
+export default function AppPage() {
 	useEffect(() => {
 		createUser()
 	}, [])
