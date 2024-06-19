@@ -9,7 +9,7 @@ export const metadata = {
 	title: 'Usage Statistics - ForVoyez',
 }
 
-export default function PlansPage() {
+export default function UsagePage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
 			<h1 className="text-xl font-bold text-slate-800">API Usage</h1>
