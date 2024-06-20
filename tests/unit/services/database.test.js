@@ -93,12 +93,10 @@ describe('Database Service', () => {
 			])
 			ls.getVariant.mockResolvedValue({
 				data: {
-					data: {
-						attributes: {
-							is_subscription: false,
-							product_id: 'product1',
-							name: 'Variant1',
-						},
+					attributes: {
+						is_subscription: false,
+						product_id: 'product1',
+						name: 'Variant1',
 					},
 				},
 			})
@@ -185,12 +183,10 @@ describe('Database Service', () => {
 			])
 			ls.getVariant.mockResolvedValue({
 				data: {
-					data: {
-						attributes: {
-							is_subscription: false,
-							product_id: 'product1',
-							name: 'Variant1',
-						},
+					attributes: {
+						is_subscription: false,
+						product_id: 'product1',
+						name: 'Variant1',
 					},
 				},
 			})
@@ -238,12 +234,10 @@ describe('Database Service', () => {
 			])
 			ls.getVariant.mockResolvedValue({
 				data: {
-					data: {
-						attributes: {
-							is_subscription: false,
-							product_id: 'product1',
-							name: 'Variant1',
-						},
+					attributes: {
+						is_subscription: false,
+						product_id: 'product1',
+						name: 'Variant1',
 					},
 				},
 			})
@@ -517,7 +511,10 @@ describe('Database Service', () => {
 			const mockUser = { id: 'user123' }
 			const mockUsageData = [
 				{ token: { name: 'Token1' }, userId: 'user123' },
-				{ token: { name: 'Token1' }, userId: 'user123' },
+				{
+					token: { name: 'Token1' },
+					userId: 'user123',
+				},
 				{ token: { name: 'Token2' }, userId: 'user123' },
 			]
 			clerk.currentUser.mockResolvedValue(mockUser)
