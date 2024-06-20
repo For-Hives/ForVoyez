@@ -1,6 +1,6 @@
 {
 	"name": "forvoyez",
-	"version": "0.9955.2",
+	"version": "0.9955.3",
 	"private": false,
 	"scripts": {
 		"dev": "next dev -H 0.0.0.0",
