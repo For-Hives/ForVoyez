@@ -122,7 +122,7 @@ export function FooterComponent() {
 			<p className="mt-10 text-center text-xs leading-5 text-slate-500">
 				&copy; {new Date().getFullYear()} ForVoyez. All rights reserved.
 			</p>
-			<p className="text-center text-xs leading-5 text-slate-500">
+			<p className="text-center text-xs text-slate-500">
 				Version: {version}
 			</p>
 		</footer>

@@ -59,7 +59,7 @@ export function LayoutAppComponent({ children }) {
 										</Link>
 									</div>
 								)}
-								<p className="pt-8 text-center text-xs leading-5 text-slate-500">
+								<p className="pt-8 text-left text-xs text-slate-500">
 									Version: {version}
 								</p>
 							</div>
