@@ -3,7 +3,7 @@ name: Build and Deploy on prod
 on:
   push:
     tags:
-      - 'v*.*'
+      - 'v*.*.*'
 
 jobs:
   build-and-push:
@@ -15,6 +15,11 @@ jobs:
       - name: Get the version from the tag
         id: get_tag_version
         run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "forvoyez@forvoyez.com"
+          git config --global user.name "ForVoyez"
 
       - name: Update package.json version
         run: |
