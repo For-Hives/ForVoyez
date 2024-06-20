@@ -246,7 +246,7 @@ export function PricingComponent() {
 
 						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 							{JSON.parse(
-								'["All Growth plan features","Unlimited credits*","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
+								'["All Growth plan features","Unlimited image descriptions*","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
 							).map(feature => (
 								<li className="flex gap-x-3" key={feature}>
 									<CheckIcon
