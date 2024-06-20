@@ -3,7 +3,7 @@ name: Build and Deploy on prod
 on:
   push:
     tags:
-      - v*
+      - 'v*.*.*'
 
 jobs:
   build-and-push:
@@ -11,6 +11,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Get the version from the tag
+        id: get_tag_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+
+      - name: Update package.json version
+        run: |
+          npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
+          git add package.json
+          git commit -m "⬆️VERSION⬆️ ❇️${GITHUB_REF#refs/tags/v}❇️"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main # Change this if you use a different branch
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:

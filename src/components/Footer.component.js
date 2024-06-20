@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import version from '@/helpers/version'
+
 const navigation = {
 	social: [
 		{
@@ -119,6 +121,9 @@ export function FooterComponent() {
 			</div>
 			<p className="mt-10 text-center text-xs leading-5 text-slate-500">
 				&copy; {new Date().getFullYear()} ForVoyez. All rights reserved.
+			</p>
+			<p className="text-center text-xs leading-5 text-slate-500">
+				Version: {version}
 			</p>
 		</footer>
 	)
