@@ -185,7 +185,7 @@ export function RefillPlansComponent() {
 							</div>
 							<p className={'mt-4 w-full text-right text-slate-600'}>
 								<span className={'font-bold'}>1 credit</span>&nbsp;=&nbsp;
-								<span className={'font-bold'}>1 image</span> analysis*
+								<span className={'font-bold'}>1 image</span> descriptions*
 							</p>
 						</div>
 					</div>
