@@ -11,6 +11,7 @@ import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp
 import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'
+import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {
 	const { user } = useUser()
@@ -42,21 +43,26 @@ export function LayoutAppComponent({ children }) {
 								<HeaderDashboard />
 								<NavigationAppComponent className="hidden h-full lg:mt-10 lg:block" />
 							</div>
-							{user && (
-								<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
-									<UserButton
-										afterSignOutUrl="/"
-										appearance="ghost"
-										userProfileMode="navigation"
-										userProfileUrl="/profile"
-									/>
-									<Link className={'h-full w-full'} href="/profile">
-										<span className="text-sm font-medium text-slate-900">
-											{user.firstName} {user.lastName}
-										</span>
-									</Link>
-								</div>
-							)}
+							<div>
+								{user && (
+									<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
+										<UserButton
+											afterSignOutUrl="/"
+											appearance="ghost"
+											userProfileMode="navigation"
+											userProfileUrl="/profile"
+										/>
+										<Link className={'h-full w-full'} href="/profile">
+											<span className="text-sm font-medium text-slate-900">
+												{user.firstName} {user.lastName}
+											</span>
+										</Link>
+									</div>
+								)}
+								<p className="pt-8 text-center text-xs leading-5 text-slate-500">
+									Version: {version}
+								</p>
+							</div>
 						</div>
 					</motion.header>
 					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8 lg:pt-0">
