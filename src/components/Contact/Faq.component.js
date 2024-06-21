@@ -45,6 +45,10 @@ const faqs = [
 		answer: `Our support team is here to help! If you have any questions, issues, or feedback, please don't hesitate to reach out through our contact form or by emailing support@forvoyez.com. We strive to respond to all inquiries within 24 hours.`,
 		question: 'How can I get support if I have any issues or questions?',
 	},
+	{
+		answer: `ForVoyez utilizes OpenAI's powerful AI models to process and generate metadata for your images. As a result, the image data you submit through our API is processed on OpenAI's servers, which are located in the United States. We want to ensure our users are aware of this aspect of our service for data privacy and compliance considerations. Rest assured that we take data privacy seriously and handle all information in accordance with our privacy policy and applicable data protection laws.`,
+		question: 'How is my data processed and where is it stored?',
+	},
 ]
 
 export function FaqComponent() {
