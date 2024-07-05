@@ -39,7 +39,7 @@
 	"dependencies": {
 		"@clerk/nextjs": "5.1.6",
 		"@flaticon/flaticon-uicons": "3.3.1",
-		"@headlessui/react": "2.1.1",
+		"@headlessui/react": "2.1.2",
 		"@heroicons/react": "2.1.4",
 		"@hookform/resolvers": "3.6.0",
 		"@lemonsqueezy/lemonsqueezy.js": "3.2.0",
