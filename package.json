@@ -63,7 +63,7 @@
 		"react-toastify": "10.0.5",
 		"react-type-animation": "3.2.0",
 		"recharts": "2.12.7",
-		"sharp": "0.33.4",
+		"sharp": "0.33.5",
 		"yup": "1.4.0",
 		"zustand": "4.5.5"
 	},
