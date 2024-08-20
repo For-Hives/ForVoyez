@@ -82,7 +82,7 @@
 		"eslint-plugin-no-only-tests": "3.3.0",
 		"eslint-plugin-perfectionist": "2.11.0",
 		"eslint-plugin-prettier": "5.2.1",
-		"husky": "9.1.4",
+		"husky": "9.1.5",
 		"jsdom": "24.1.1",
 		"lint-staged": "15.2.9",
 		"postcss": "8.4.41",
