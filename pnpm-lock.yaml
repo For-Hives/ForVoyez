@@ -51,8 +51,8 @@ importers:
         specifier: 11.3.28
         version: 11.3.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       jose:
-        specifier: 5.6.3
-        version: 5.6.3
+        specifier: 5.7.0
+        version: 5.7.0
       mailgun.js:
         specifier: 10.2.3
         version: 10.2.3
@@ -2291,8 +2291,8 @@ packages:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
 
-  jose@5.6.3:
-    resolution: {integrity: sha512-1Jh//hEEwMhNYPDDLwXHa2ePWgWiFNNUadVmguAAw2IJ6sj9mNxV5tGXJNqlMkJAybF6Lgw1mISDxTePP/187g==}
+  jose@5.7.0:
+    resolution: {integrity: sha512-3P9qfTYDVnNn642LCAqIKbTGb9a1TBxZ9ti5zEVEr48aDdflgRjhspWFb6WM4PzAfFbGMJYC4+803v8riCRAKw==}
 
   js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
@@ -5824,7 +5824,7 @@ snapshots:
 
   jiti@1.21.6: {}
 
-  jose@5.6.3: {}
+  jose@5.7.0: {}
 
   js-cookie@3.0.5: {}
 
