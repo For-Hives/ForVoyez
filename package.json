@@ -93,7 +93,7 @@
 		"vitest": "2.0.5",
 		"vitest-mock-extended": "2.0.2",
 		"dotenv": "16.4.5",
-		"@playwright/test": "1.46.1"
+		"@playwright/test": "1.47.0"
 	},
 	"trustedDependencies": [
 		"@clerk/shared",
