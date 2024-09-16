@@ -48,7 +48,7 @@
 		"@rive-app/react-canvas": "4.14.0",
 		"@tailwindcss/forms": "0.5.9",
 		"clsx": "2.1.1",
-		"date-fns": "3.6.0",
+		"date-fns": "4.0.0",
 		"form-data": "4.0.0",
 		"framer-motion": "11.5.4",
 		"jose": "5.9.2",
