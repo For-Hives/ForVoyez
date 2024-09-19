@@ -114,8 +114,12 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
+			// $0.150 / 1M input tokens for gpt-4o-mini
+			model: 'gpt-4o-2024-08-06',
+			// Use the latest GPT model for better results
+			// from gpt-4o (5$/ 1M tokens) to gpt-4o-2024-08-06 (2.5$/ 1M tokens)
+			// maybe test to go to "gpt-4o-mini" -> divide by 10 the cost
 			max_tokens: 1000,
-			model: 'gpt-4o',
 			n: 1,
 		})
 
@@ -139,7 +143,11 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
-			model: 'gpt-3.5-turbo-0125',
+			// Use the latest GPT model for better results
+			// from gpt-3.5-turbo (0.006$ / 1M tokens) to
+			// $0.50 / 1M tokens for gpt-3.5-turbo-0125
+			// $0.150 / 1M input tokens for gpt-4o-mini
+			model: 'gpt-4o-mini',
 			max_tokens: 1500,
 			stop: null,
 			n: 1,
