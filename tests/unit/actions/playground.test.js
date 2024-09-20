@@ -82,7 +82,7 @@ describe('describePlaygroundAction', () => {
 		formData.append('image', mockFile)
 		formData.append(
 			'data',
-			JSON.stringify({ context: 'Test Context', schema: {} })
+			JSON.stringify({ context: 'Test Context', language: 'fr', schema: {} })
 		)
 
 		const result = await describePlaygroundAction(formData)
@@ -93,6 +93,51 @@ describe('describePlaygroundAction', () => {
 		})
 		expect(decrementCredit).toHaveBeenCalledWith(
 			'describe from PlaygroundAction'
+		)
+		expect(getImageDescription).toHaveBeenCalledWith(
+			mockBase64Image,
+			expect.objectContaining({
+				context: 'Test Context',
+				language: 'fr',
+				schema: {},
+			})
+		)
+	})
+
+	it('should use default language if not provided', async () => {
+		const mockUser = { id: 'user123' }
+		const mockFile = new Blob(['image content'], { type: 'image/png' })
+		const mockBase64Image = 'base64ImageString'
+		const mockDescription = {
+			title: 'Image Title',
+			caption: 'Caption',
+			alt: 'Alt Text',
+		}
+
+		currentUser.mockResolvedValue(mockUser)
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		blobToBase64.mockResolvedValue(mockBase64Image)
+		getImageDescription.mockResolvedValue(mockDescription)
+
+		const formData = new FormData()
+		formData.append('image', mockFile)
+		formData.append(
+			'data',
+			JSON.stringify({ context: 'Test Context', schema: {} })
+		)
+
+		await describePlaygroundAction(formData)
+
+		expect(getImageDescription).toHaveBeenCalledWith(
+			mockBase64Image,
+			expect.objectContaining({
+				context: 'Test Context',
+				language: 'en',
+				schema: {},
+			})
 		)
 	})
 })
