@@ -84,6 +84,7 @@ export async function POST(request) {
 		const data = JSON.parse(formData.get('data') || '{}')
 		const schema = data.schema || {}
 		const context = data.context || ''
+		const language = data.language || 'en' // Default language is English
 
 		// Validate the schema if provided
 		if (schema && !isValidSchema(schema)) {
