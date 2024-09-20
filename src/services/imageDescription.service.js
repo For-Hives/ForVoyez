@@ -101,6 +101,11 @@ export async function getImageDescription(base64Image, data) {
 			data.context || 'No additional context provided.'
 		)
 
+		// Define the model to be used
+		const modelUsed = 'gpt-4o-mini'
+
+		const language = data.language || 'en' // Default language is English
+
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
 			messages: [
@@ -118,11 +123,7 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
-			// $0.150 / 1M input tokens for gpt-4o-mini
-			model: 'gpt-4o-mini',
-			// Use the latest GPT model for better results
-			// from gpt-4o (5$/ 1M tokens) to gpt-4o-2024-08-06 (2.5$/ 1M tokens)
-			// maybe test to go to "gpt-4o-mini" -> divide by 10 the cost
+			model: modelUsed,
 			max_tokens: 1000,
 			n: 1,
 		})
@@ -147,18 +148,34 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
-			// Use the latest GPT model for better results
-			// from gpt-3.5-turbo (0.006$ / 1M tokens) to
-			// $0.50 / 1M tokens for gpt-3.5-turbo-0125
+			model: modelUsed,
 			response_format: { type: 'json_object' },
-			// $0.150 / 1M input tokens for gpt-4o-mini
-			model: 'gpt-4o-mini',
 			max_tokens: 1500,
 			stop: null,
 			n: 1,
 		})
 
-		return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
+		// Translate the response only if the language is not English
+		if (language === 'en') {
+			return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
+		}
+
+		// Translate the response to the requested language
+		const languageTransform = await openai.chat.completions.create({
+			messages: [
+				{
+					content: `Please translate the following text to ${language}. ${seoResponse.choices[0].message.content}`,
+					role: 'user',
+				},
+			],
+			model: modelUsed,
+			max_tokens: 1500,
+			n: 1,
+		})
+
+		return JSON.parse(
+			languageTransform.choices[0].message.content.trim() || '{}'
+		)
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
