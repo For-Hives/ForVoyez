@@ -150,6 +150,7 @@ export async function getImageDescription(base64Image, data) {
 			// Use the latest GPT model for better results
 			// from gpt-3.5-turbo (0.006$ / 1M tokens) to
 			// $0.50 / 1M tokens for gpt-3.5-turbo-0125
+			response_format: { type: 'json_object' },
 			// $0.150 / 1M input tokens for gpt-4o-mini
 			model: 'gpt-4o-mini',
 			max_tokens: 1500,
