@@ -60,5 +60,11 @@ test-results
 
 .env*
 
-output.txt
-large.txt
+#output.txt
+#large.txt
+#coverage
+#prisma
+#tests
+#pnpm-lock.yaml
+#.riv
+#.css
