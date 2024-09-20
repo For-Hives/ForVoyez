@@ -84,7 +84,7 @@ export async function POST(request) {
 		const data = JSON.parse(formData.get('data') || '{}')
 		const schema = data.schema || {}
 		const context = data.context || ''
-		const language = data.language || 'en' // Default language is English
+		const language = formData.get('language') || 'en' // Default language is English
 
 		// Validate the schema if provided
 		if (schema && !isValidSchema(schema)) {
@@ -97,6 +97,7 @@ export async function POST(request) {
 		const base64Image = await blobToBase64(file)
 
 		const descriptionResult = await getImageDescription(base64Image, {
+			language,
 			context,
 			schema,
 		})
