@@ -1,4 +1,5 @@
 const HTTP_EXAMPLE = (
+	languageToTranslate,
 	image,
 	context,
 	jsonSchema,
@@ -18,10 +19,12 @@ Content-Disposition: form-data; name="data"
 
 {
   "context": "${context || 'No context provided'}",
+  "language": "${languageToTranslate || 'en'}",
   "schema": ${formatJsonSchema(jsonSchema)}}
 -----011000010111000001101001--`
 
 const CURL_EXAMPLE = (
+	languageToTranslate,
 	image,
 	context,
 	jsonSchema,
@@ -30,9 +33,12 @@ const CURL_EXAMPLE = (
   'https://forvoyez.com/api/describe' \\
   -H 'Authorization: Bearer <user-token>' \\
   -F 'image=@"${image ? image.name : 'example.jpg'}"' \\
-  -F 'data={"context":"${context || 'No context provided'}","schema":${formatJsonSchema(jsonSchema)}}'`
+  -F 'data={"context":"${context || 'No context provided'}",
+	"language":"${languageToTranslate || 'en'}",
+  "schema":${formatJsonSchema(jsonSchema)}}'`
 
 const JAVASCRIPT_EXAMPLE = (
+	languageToTranslate,
 	image,
 	context,
 	jsonSchema,
@@ -41,6 +47,7 @@ const JAVASCRIPT_EXAMPLE = (
 form.append('image', ${image ? 'imageFile' : 'null'});
 form.append('data', JSON.stringify({
   context: '${context || 'No context provided'}',
+  language: '${languageToTranslate || 'en'}',
   schema: ${formatJsonSchema(jsonSchema)}
 }));
 
@@ -54,7 +61,13 @@ fetch('https://forvoyez.com/api/describe', {
   .then(response => response.json())
   .catch(error => console.error('Error:', error));`
 
-const PHP_EXAMPLE = (image, context, jsonSchema, formatJsonSchema) => `<?php
+const PHP_EXAMPLE = (
+	languageToTranslate,
+	image,
+	context,
+	jsonSchema,
+	formatJsonSchema
+) => `<?php
 $curl = curl_init();
 curl_setopt_array($curl, array(
   CURLOPT_URL => 'https://forvoyez.com/api/describe',
@@ -69,6 +82,7 @@ curl_setopt_array($curl, array(
     'image'=> new CURLFile('${image ? image.name : 'example.jpg'}'),
     'data' => json_encode(array(
       'context' => '${context || 'No context provided'}',
+      'language' => '${languageToTranslate || 'en'}',
       'schema' => json_decode('${formatJsonSchema(jsonSchema)}')
     ))
   ),
@@ -81,7 +95,13 @@ $response = curl_exec($curl);
 curl_close($curl);
 echo $response;`
 
-const PYTHON_EXAMPLE = (image, context, jsonSchema, formatJsonSchema) => {
+const PYTHON_EXAMPLE = (
+	languageToTranslate,
+	image,
+	context,
+	jsonSchema,
+	formatJsonSchema
+) => {
 	const imageFile = image ? `'${image.name}'` : '"example.jpg"'
 	const contextValue = context || 'No context provided'
 	const schemaValue = formatJsonSchema(jsonSchema)
@@ -94,6 +114,7 @@ files = {
 payload = {
     'data': {
         'context': '${contextValue}',
+        'language': '${languageToTranslate || 'en'}',
         'schema': ${schemaValue}
     }
 }
@@ -106,6 +127,7 @@ print(response.json())`
 }
 
 export const getPreviewCode = (
+	languageToTranslate,
 	language,
 	image,
 	context,
@@ -114,15 +136,45 @@ export const getPreviewCode = (
 ) => {
 	switch (language) {
 		case 'HTTP':
-			return HTTP_EXAMPLE(image, context, jsonSchema, formatJsonSchema)
+			return HTTP_EXAMPLE(
+				languageToTranslate,
+				image,
+				context,
+				jsonSchema,
+				formatJsonSchema
+			)
 		case 'cURL':
-			return CURL_EXAMPLE(image, context, jsonSchema, formatJsonSchema)
+			return CURL_EXAMPLE(
+				languageToTranslate,
+				image,
+				context,
+				jsonSchema,
+				formatJsonSchema
+			)
 		case 'JavaScript':
-			return JAVASCRIPT_EXAMPLE(image, context, jsonSchema, formatJsonSchema)
+			return JAVASCRIPT_EXAMPLE(
+				languageToTranslate,
+				image,
+				context,
+				jsonSchema,
+				formatJsonSchema
+			)
 		case 'PHP':
-			return PHP_EXAMPLE(image, context, jsonSchema, formatJsonSchema)
+			return PHP_EXAMPLE(
+				languageToTranslate,
+				image,
+				context,
+				jsonSchema,
+				formatJsonSchema
+			)
 		case 'Python':
-			return PYTHON_EXAMPLE(image, context, jsonSchema, formatJsonSchema)
+			return PYTHON_EXAMPLE(
+				languageToTranslate,
+				image,
+				context,
+				jsonSchema,
+				formatJsonSchema
+			)
 		default:
 			return ''
 	}
