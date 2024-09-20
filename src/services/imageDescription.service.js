@@ -3,6 +3,13 @@ import sharp from 'sharp'
 
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
+// Define the model to be used
+// Use the latest GPT model for better results
+// from gpt-3.5-turbo (0.006$ / 1M tokens) to
+// $0.50 / 1M tokens for gpt-3.5-turbo-0125
+// $0.150 / 1M input tokens for gpt-4o-mini
+const modelUsed = 'gpt-4o-mini'
+
 function initOpenAI() {
 	// ! Be careful, if you return directly the OpenAI instance, it will not work. !
 	const openai = new OpenAI({
@@ -49,8 +56,6 @@ export async function blobToBase64(blob) {
 		// Optimize image
 		const optimizedImage = await image.webp({ quality: 50 }).toBuffer()
 
-		// log the new size
-
 		const bytes = new Uint8Array(optimizedImage)
 		return Buffer.from(bytes).toString('base64')
 	} catch (error) {
@@ -70,11 +75,7 @@ async function extractKeywordsAndLimitContext(context) {
 					role: 'user',
 				},
 			],
-			// Use the latest GPT model for better results
-			// from gpt-3.5-turbo (0.006$ / 1M tokens) to
-			// $0.50 / 1M tokens for gpt-3.5-turbo-0125
-			// $0.150 / 1M input tokens for gpt-4o-mini
-			model: 'gpt-4o-mini',
+			model: modelUsed,
 			max_tokens: 150,
 			n: 1,
 		})
@@ -100,9 +101,6 @@ export async function getImageDescription(base64Image, data) {
 		const cleanedContext = await extractKeywordsAndLimitContext(
 			data.context || 'No additional context provided.'
 		)
-
-		// Define the model to be used
-		const modelUsed = 'gpt-4o-mini'
 
 		const language = data.language || 'en' // Default language is English
 
@@ -148,8 +146,8 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
-			model: modelUsed,
 			response_format: { type: 'json_object' },
+			model: modelUsed,
 			max_tokens: 1500,
 			stop: null,
 			n: 1,
