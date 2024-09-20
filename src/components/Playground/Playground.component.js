@@ -32,6 +32,7 @@ export function Playground() {
 	const [imageSize, setImageSize] = useState(0)
 
 	const [context, setContext] = useState('')
+	const [languageToTranslate, setLanguageToTranslate] = useState('')
 	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(
 		'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
@@ -61,13 +62,13 @@ export function Playground() {
 
 		const formData = new FormData()
 		formData.append('image', image)
-		formData.append(
-			'data',
-			JSON.stringify({
-				schema: jsonSchema || defaultJsonTemplateSchema,
-				context,
-			})
-		)
+		const dataObject = {
+			schema: jsonSchema || defaultJsonTemplateSchema,
+			language: languageToTranslate,
+			context: context,
+		}
+
+		formData.append('data', JSON.stringify(dataObject))
 
 		setIsProcessingResultApi(true)
 		apiResponseRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -475,6 +476,30 @@ export function Playground() {
 							</p>
 						</div>
 					</div>
+					<div className={'mb-4'}>
+						<label
+							className="block text-sm font-medium leading-6 text-slate-900"
+							htmlFor="languageToTranslate"
+						>
+							Language (Optional)
+						</label>
+						<p className="mt-1 text-sm italic text-slate-500">
+							Specify the language for the generated metadata. You can select
+							from the list or enter a custom language code.
+						</p>
+						<div className="mt-2">
+							<input
+								className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+								id="languageToTranslate"
+								maxLength={25}
+								name="languageToTranslate"
+								onChange={e => setLanguageToTranslate(e.target.value)}
+								placeholder="Enter language code (e.g., en, fr, es)"
+								type="text"
+								value={languageToTranslate}
+							/>
+						</div>
+					</div>
 					<div>
 						<label
 							className="block text-sm font-medium leading-6 text-slate-900"
@@ -655,6 +680,7 @@ export function Playground() {
 													}}
 													theme="vs-light"
 													value={getPreviewCode(
+														languageToTranslate,
 														language,
 														image,
 														context,
