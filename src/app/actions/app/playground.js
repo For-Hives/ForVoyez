@@ -37,11 +37,13 @@ export async function describePlaygroundAction(formData) {
 	const data = JSON.parse(formData.get('data') || '{}')
 	const schema = data.schema || {}
 	const context = data.context || ''
+	const language = data.language || 'en' // Default language is English
 
 	const base64Image = await blobToBase64(file)
 
 	// Get image description using base64 encoded image
 	const description = await getImageDescription(base64Image, {
+		language,
 		context,
 		schema,
 	})
