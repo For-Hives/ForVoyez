@@ -37,7 +37,7 @@
 		"seed": "node prisma/seed.js"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "5.6.1",
+		"@clerk/nextjs": "5.6.2",
 		"@flaticon/flaticon-uicons": "3.3.1",
 		"@headlessui/react": "2.1.8",
 		"@heroicons/react": "2.1.5",
