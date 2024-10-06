@@ -12,7 +12,8 @@ import { prisma } from '@/services/prisma.service'
 export async function getCurrentUser() {
 	const user = await currentUser()
 	if (!user) {
-		throw new Error('User not authenticated')
+		// todo: reactivating this to have a better error handling, right now it's flooding the logs
+		// throw new Error('User not authenticated')
 	}
 	return user
 }
@@ -206,6 +207,7 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 // Function to decrement the credits for the authenticated user
 export async function decrementCredit(reason, tokenId = null) {
 	const user = await getCurrentUser()
+	// console.log("user here  ", user)
 	await updateCredits(user.id, -1, tokenId, reason)
 }
 
