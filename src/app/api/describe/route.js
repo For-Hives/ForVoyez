@@ -2,7 +2,7 @@ import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
-import { decrementCredit } from '@/services/database.service'
+import { decrementCreditFromAPI } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -110,10 +110,9 @@ export async function POST(request) {
 			schema,
 		})
 
-		console.info(`User ${payload.userId} used 1 credit`)
-
 		// update the user credit
-		decrementCredit(
+		decrementCreditFromAPI(
+			payload.userId,
 			'decrement token from Describe Action',
 			authorization.replace('Bearer ', '')
 		)

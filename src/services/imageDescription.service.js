@@ -152,27 +152,7 @@ export async function getImageDescription(base64Image, data) {
 			n: 1,
 		})
 
-		// Translate the response only if the language is not English
-		if (language === 'en') {
-			return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
-		}
-
-		// Translate the response to the requested language
-		const languageTransform = await openai.chat.completions.create({
-			messages: [
-				{
-					content: `Please translate the following text to ${language}. ${seoResponse.choices[0].message.content}`,
-					role: 'user',
-				},
-			],
-			model: modelUsed,
-			max_tokens: 1500,
-			n: 1,
-		})
-
-		return JSON.parse(
-			languageTransform.choices[0].message.content.trim() || '{}'
-		)
+		return JSON.parse(seoResponse.choices[0].message.content.trim())
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
