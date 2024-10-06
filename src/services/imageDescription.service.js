@@ -174,7 +174,7 @@ function getSeoPrompt(result, cleanedContext, data, language, keywords) {
 
 		Additional Context: ${cleanedContext}.
 		
-		${keywords === null ? '' : `The final data should contains theses keywords, the user ask for theses keyword to be part of the response : ${keywords}`}
+		${keywords === null ? '' : `The anwsers must contains theses keywords : "${keywords}". the user ask for theses keyword to be part of the response and alternative text.`}
 
 		Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
 		Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
