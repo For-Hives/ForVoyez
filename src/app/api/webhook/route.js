@@ -6,7 +6,9 @@ const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
 export async function POST(request) {
 	try {
+		console.info('webhook request received')
 		if (!WEBHOOK_SECRET) {
+			console.error('Lemon Squeezy Webhook Secret not set in .env')
 			return new Response('Lemon Squeezy Webhook Secret not set in .env', {
 				status: 500,
 			})
@@ -23,6 +25,7 @@ export async function POST(request) {
 		)
 
 		if (!timingSafeEqual(digest, signature)) {
+			console.error('webhook not authorized')
 			return new Response(`Webhook not authorized`, {
 				status: 401,
 			})

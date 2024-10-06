@@ -13,6 +13,7 @@ export async function saveWebhooks(webhooks) {
 		},
 	})
 
+	console.info('webhook saved in the database')
 	return webhook.id
 }
 
@@ -29,6 +30,13 @@ export async function processWebhook(id) {
 
 	// process the webhook
 	const parsed_webhook = JSON.parse(webhook.body)
+
+	console.info(
+		'processing webhook : ',
+		webhook.eventName.toString(),
+		' || content : ',
+		webhook.body.toString()
+	)
 
 	// switch
 	switch (webhook.eventName) {
