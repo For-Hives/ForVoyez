@@ -12,7 +12,8 @@ import { prisma } from '@/services/prisma.service'
 export async function getCurrentUser() {
 	const user = await currentUser()
 	if (!user) {
-		throw new Error('User not authenticated')
+		// todo: reactivating this to have a better error handling, right now it's flooding the logs
+		// throw new Error('User not authenticated')
 	}
 	return user
 }
@@ -170,7 +171,7 @@ export async function getCustomerIdFromUser() {
 }
 
 // Function to update the credits for the specified user
-export async function updateCredits(userId, credits, tokenId, reason) {
+export async function updateCredits(userId, credits, tokenJwt, reason) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
 		throw new Error('Invalid credits value')
 	}
@@ -191,6 +192,14 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 		where: { clerkId: userId },
 	})
 
+	let tokenId = null
+	if (tokenJwt) {
+		// console.log(tokenJwt)
+		tokenId = await prisma.token.findFirst({
+			where: { jwt: tokenJwt },
+		}).id
+	}
+
 	await prisma.usage.create({
 		data: {
 			previousCredits: previousCredits,
@@ -204,9 +213,16 @@ export async function updateCredits(userId, credits, tokenId, reason) {
 }
 
 // Function to decrement the credits for the authenticated user
-export async function decrementCredit(reason, tokenId = null) {
+export async function decrementCredit(reason, tokenJwt = null) {
 	const user = await getCurrentUser()
-	await updateCredits(user.id, -1, tokenId, reason)
+	await updateCredits(user.id, -1, tokenJwt, reason)
+	console.info(`User ${user.id} used 1 credit`)
+}
+
+// Function to decrement the credits for the authenticated user from the API ( dont have access to the currentuser object)
+export async function decrementCreditFromAPI(userId, reason, tokenJwt = null) {
+	await updateCredits(userId, -1, tokenJwt, reason)
+	console.info(`User ${userId} used 1 credit`)
 }
 
 // Function to retrieve API usage for the authenticated user
