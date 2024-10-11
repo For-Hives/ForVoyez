@@ -62,7 +62,7 @@
 		"react-monaco-editor": "0.56.2",
 		"react-toastify": "10.0.5",
 		"react-type-animation": "3.2.0",
-		"recharts": "2.12.7",
+		"recharts": "2.13.0",
 		"sharp": "0.33.5",
 		"yup": "1.4.0",
 		"zustand": "4.5.5"
