@@ -102,8 +102,6 @@ export async function getImageDescription(base64Image, data) {
 			data.context || 'No additional context provided.'
 		)
 
-		const language = data.language || 'en' // Default language is English
-
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
 			messages: [
@@ -128,14 +126,7 @@ export async function getImageDescription(base64Image, data) {
 
 		const result = vision.choices[0].message.content
 
-		const keywords = data.keywords === '' ? null : data.keywords
-		const seoPrompt = getSeoPrompt(
-			result,
-			cleanedContext,
-			data,
-			language,
-			keywords
-		)
+		const seoPrompt = getSeoPrompt(result, cleanedContext, data)
 
 		// Generate alt text, caption, and title for the image
 		const seoResponse = await openai.chat.completions.create({
@@ -161,11 +152,11 @@ export async function getImageDescription(base64Image, data) {
 
 export const TestingExports = {
 	extractKeywordsAndLimitContext,
+	getSeoPrompt,
 }
 
 // Function to generate the SEO prompt
-function getSeoPrompt(result, cleanedContext, data, language, keywords) {
-	// console.log(keywords)
+function getSeoPrompt(result, cleanedContext, data) {
 	return `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context. The goal is to create a title, alternative text, and caption that are not only informative and engaging but also search engine friendly.
 		Image Description: ${result}
 
@@ -174,10 +165,10 @@ function getSeoPrompt(result, cleanedContext, data, language, keywords) {
 
 		Additional Context: ${cleanedContext}.
 		
-		${keywords === null ? '' : `The anwsers must contains theses keywords : "${keywords}". the user ask for theses keyword to be part of the response and alternative text.`}
+		${data.keywords === '' ? '' : `The anwsers must contains theses keywords : "${data.keywords}". the user ask for theses keyword to be part of the response and alternative text.`}
 
 		Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
 		Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
 		
-		The language of the output should be in ${language}.`
+		The language of the output should be in ${data.language ?? 'en'}.`
 }

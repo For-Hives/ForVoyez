@@ -5,7 +5,10 @@ import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
-import { decrementCredit } from '@/services/database.service'
+import {
+	decrementCredit,
+	decrementCreditFromAPI,
+} from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 
 vi.mock('@/services/imageDescription.service')
@@ -136,7 +139,8 @@ describe('describe API', () => {
 
 			expect(response.status).toBe(200)
 			expect(result).toEqual(mockDescription)
-			expect(decrementCredit).toHaveBeenCalledWith(
+			expect(decrementCreditFromAPI).toHaveBeenCalledWith(
+				mockUser.id,
 				'decrement token from Describe Action',
 				'validtoken'
 			)

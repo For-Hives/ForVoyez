@@ -61,8 +61,8 @@ export async function POST(request) {
 			console.error(
 				'Unauthorized, invalid token : ',
 				error,
-				' user : ',
-				payload.userId
+				' for : ',
+				authorization
 			)
 			return new Response('Unauthorized, invalid token', {
 				statusText: 'Unauthorized, invalid token',

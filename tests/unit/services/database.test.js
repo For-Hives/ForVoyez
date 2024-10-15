@@ -320,7 +320,10 @@ describe('Database Service', () => {
 			const reason = 'test'
 
 			const mockUser = { id: 'user123', credits: 0 }
+			const mockToken = { id: 'token123' }
+
 			prisma.user.findUnique.mockResolvedValue(mockUser)
+			prisma.token.findUnique.mockResolvedValue(mockToken)
 
 			await updateCredits(userId, credits, tokenId, reason)
 
@@ -328,6 +331,7 @@ describe('Database Service', () => {
 				where: { clerkId: userId },
 				data: { credits: 10 },
 			})
+
 			expect(prisma.usage.create).toHaveBeenCalledWith({
 				data: {
 					previousCredits: 0,

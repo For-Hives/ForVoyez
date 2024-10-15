@@ -12,8 +12,7 @@ import { prisma } from '@/services/prisma.service'
 export async function getCurrentUser() {
 	const user = await currentUser()
 	if (!user) {
-		// todo: reactivating this to have a better error handling, right now it's flooding the logs
-		// throw new Error('User not authenticated')
+		throw new Error('User not authenticated')
 	}
 	return user
 }
@@ -192,21 +191,20 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 		where: { clerkId: userId },
 	})
 
-	let tokenId = null
+	let token = null
 	if (tokenJwt) {
-		// console.log(tokenJwt)
-		tokenId = await prisma.token.findFirst({
+		token = await prisma.token.findUnique({
 			where: { jwt: tokenJwt },
-		}).id
+		})
 	}
 
 	await prisma.usage.create({
 		data: {
 			previousCredits: previousCredits,
 			currentCredits: currentCredits,
+			tokenId: token?.id,
 			userId: userId,
 			used: credits,
-			tokenId,
 			reason,
 		},
 	})
