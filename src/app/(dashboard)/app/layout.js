@@ -1,5 +1,3 @@
-import Script from 'next/script'
-
 import { LayoutAppComponent } from '@/components/App/LayoutApp.component'
 
 export const metadata = {
