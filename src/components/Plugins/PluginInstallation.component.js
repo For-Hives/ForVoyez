@@ -31,7 +31,7 @@ export function PluginInstallationComponent() {
 				<div className="mt-10 text-center">
 					<a
 						className="inline-block rounded-md bg-forvoyez_orange-500 px-6 py-3 text-sm text-white shadow-sm hover:bg-forvoyez_orange-600"
-						href="/download"
+						href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 					>
 						Download Plugin
 					</a>
