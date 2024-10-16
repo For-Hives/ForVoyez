@@ -1,6 +1,4 @@
 'use client'
-import { useState } from 'react'
-
 import { ImageDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoBottomMobileComponent'
 import { TextDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/TextDemoBottomMobileComponent'
 import { ImageDemoTopMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoTopMobileComponent'

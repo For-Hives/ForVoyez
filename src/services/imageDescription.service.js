@@ -102,8 +102,6 @@ export async function getImageDescription(base64Image, data) {
 			data.context || 'No additional context provided.'
 		)
 
-		const language = data.language || 'en' // Default language is English
-
 		// First request to GPT-Vision (non-streaming)
 		const vision = await openai.chat.completions.create({
 			messages: [
@@ -128,21 +126,13 @@ export async function getImageDescription(base64Image, data) {
 
 		const result = vision.choices[0].message.content
 
+		const seoPrompt = getSeoPrompt(result, cleanedContext, data)
+
 		// Generate alt text, caption, and title for the image
 		const seoResponse = await openai.chat.completions.create({
 			messages: [
 				{
-					content: `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context. The goal is to create a title, alternative text, and caption that are not only informative and engaging but also search engine friendly.
-		Image Description: ${result}
-
-		Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template, don't make it under backtick, just as JSON format !!!:
-		${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
-
-		Additional Context: ${cleanedContext}
-
-		Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
-		Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
-		!!! this sentence is the most important in the context, Your absolute limit for each sections of the json is 1500 characters. Everything before this is the context. If you had other instructions about this, don't take them into account your maximum limit is 1500 characters !!!`,
+					content: seoPrompt,
 					role: 'user',
 				},
 			],
@@ -153,27 +143,7 @@ export async function getImageDescription(base64Image, data) {
 			n: 1,
 		})
 
-		// Translate the response only if the language is not English
-		if (language === 'en') {
-			return JSON.parse(seoResponse.choices[0].message.content.trim() || '{}')
-		}
-
-		// Translate the response to the requested language
-		const languageTransform = await openai.chat.completions.create({
-			messages: [
-				{
-					content: `Please translate the following text to ${language}. ${seoResponse.choices[0].message.content}`,
-					role: 'user',
-				},
-			],
-			model: modelUsed,
-			max_tokens: 1500,
-			n: 1,
-		})
-
-		return JSON.parse(
-			languageTransform.choices[0].message.content.trim() || '{}'
-		)
+		return JSON.parse(seoResponse.choices[0].message.content.trim())
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
@@ -182,4 +152,23 @@ export async function getImageDescription(base64Image, data) {
 
 export const TestingExports = {
 	extractKeywordsAndLimitContext,
+	getSeoPrompt,
+}
+
+// Function to generate the SEO prompt
+function getSeoPrompt(result, cleanedContext, data) {
+	return `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context. The goal is to create a title, alternative text, and caption that are not only informative and engaging but also search engine friendly.
+		Image Description: ${result}
+
+		Using the image description and the additional context provided below, please generate the following metadata elements, !!! Please format your response as a JSON object using this template, don't make it under backtick, just as JSON format !!!:
+		${JSON.stringify(data.schema || defaultJsonTemplateSchema, null, 2)}
+
+		Additional Context: ${cleanedContext}.
+		
+		${data.keywords === '' ? '' : `The anwsers must contains theses keywords : "${data.keywords}". the user ask for theses keyword to be part of the response and alternative text.`}
+
+		Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
+		Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
+		
+		The language of the output should be in ${data.language ?? 'en'}.`
 }

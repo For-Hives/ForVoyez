@@ -2,7 +2,7 @@ import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
-import { decrementCredit } from '@/services/database.service'
+import { decrementCreditFromAPI } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -51,12 +51,19 @@ export async function POST(request) {
 			})
 
 			if (!user || user.credits <= 0) {
+				console.error('Unauthorized, no credit left, user : ', payload.userId)
 				return new Response('Unauthorized, no credit left', {
 					statusText: 'Unauthorized, no credit left',
 					status: 401,
 				})
 			}
 		} catch (error) {
+			console.error(
+				'Unauthorized, invalid token : ',
+				error,
+				' for : ',
+				authorization
+			)
 			return new Response('Unauthorized, invalid token', {
 				statusText: 'Unauthorized, invalid token',
 				status: 401,
@@ -81,9 +88,9 @@ export async function POST(request) {
 			})
 		}
 
-		const data = JSON.parse(formData.get('data') || '{}')
-		const schema = data.schema || {}
-		const context = data.context || ''
+		const schema = formData.get('schema') || {}
+		const context = formData.get('context') || ''
+		const keywords = formData.get('keywords') || ''
 		const language = formData.get('language') || 'en' // Default language is English
 
 		// Validate the schema if provided
@@ -98,14 +105,14 @@ export async function POST(request) {
 
 		const descriptionResult = await getImageDescription(base64Image, {
 			language,
+			keywords,
 			context,
 			schema,
 		})
 
-		console.info(`User ${payload.userId} used 1 credit`)
-
 		// update the user credit
-		decrementCredit(
+		decrementCreditFromAPI(
+			payload.userId,
 			'decrement token from Describe Action',
 			authorization.replace('Bearer ', '')
 		)
