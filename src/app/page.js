@@ -11,6 +11,7 @@ export default function Home() {
 			<NavbarComponent />
 			<main>
 				<HeroComponent />
+				BOOM
 				<FeatureComponent />
 				<PricingComponent />
 				<CtaComponent />
