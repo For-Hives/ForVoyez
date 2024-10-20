@@ -1,3 +1,5 @@
+'use client'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -36,7 +38,12 @@ export function HeroSectionComponent() {
 			<div className="overflow-hidden">
 				<div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
 					<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
-						<div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
+						<motion.div
+							animate={{ opacity: 1, y: 0 }}
+							className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl"
+							initial={{ opacity: 0, y: 20 }}
+							transition={{ duration: 0.5 }}
+						>
 							<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
 								Automate Alt Text for WordPress Images
 							</h1>
@@ -46,12 +53,17 @@ export function HeroSectionComponent() {
 								text, titles, and captions automatically.
 							</p>
 							<div className="mt-10 flex items-center gap-x-6">
-								<Link
-									className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
-									href="/download-plugin"
+								<motion.div
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
 								>
-									Download Now
-								</Link>
+									<Link
+										className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+										href="/download-plugin"
+									>
+										Download Now
+									</Link>
+								</motion.div>
 								<Link
 									className="text-sm font-semibold leading-6 text-slate-900"
 									href="#how-it-works"
@@ -59,14 +71,20 @@ export function HeroSectionComponent() {
 									Learn more <span aria-hidden="true">→</span>
 								</Link>
 							</div>
-						</div>
-						<div className="relative mt-20 flex w-full max-w-xl shrink-0 md:mt-0 xl:max-w-2xl">
+						</motion.div>
+						<motion.div
+							animate={{ opacity: 1, scale: 1 }}
+							className="relative mt-20 flex w-full max-w-xl shrink-0 md:mt-0 xl:max-w-2xl"
+							initial={{ opacity: 0, scale: 0.8 }}
+							transition={{ duration: 0.5, delay: 0.2 }}
+						>
 							<Image
+								alt="ForVoyez WordPress Plugin Interface"
 								height={500}
 								src={'/images/plugins/forvoyez_wordpress.png'}
 								width={500}
 							/>
-						</div>
+						</motion.div>
 					</div>
 				</div>
 			</div>
