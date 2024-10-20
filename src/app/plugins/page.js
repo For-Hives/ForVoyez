@@ -14,10 +14,9 @@ export default function WordPressPluginPage() {
 				<FeatureHighlightsComponent />
 				<HowItWorksComponent />
 				<TestimonialsComponent />
-				{/*<PricingPlugin />*/}
-				{/*<FaqPlugin />*/}
-				{/*<CtaPlugin />*/}
-				{/*<SupportDocPlugin />*/}
+				{/*todo: <PricingPlugin />*/}
+				{/*todo: <FaqPlugin />*/}
+				{/*todo: <CtaPlugin />*/}
 			</main>
 			<FooterComponent />
 		</div>
