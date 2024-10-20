@@ -1,4 +1,5 @@
 import { FeatureHighlightsComponent } from '@/components/Plugins/FeatureHighlights.component'
+import { TestimonialsComponent } from '@/components/Plugins/Testimonials.component'
 import { HeroSectionComponent } from '@/components/Plugins/HeroSection.component'
 import { HowItWorksComponent } from '@/components/Plugins/HowItWorks.component'
 import { NavbarComponent } from '@/components/Navbar.component'
@@ -12,9 +13,7 @@ export default function WordPressPluginPage() {
 				<HeroSectionComponent />
 				<FeatureHighlightsComponent />
 				<HowItWorksComponent />
-				{/*<DetailedBenefitsPlugin />*/}
-				{/*<DemoPlugin />*/}
-				{/*<TestimonialsPlugin />*/}
+				<TestimonialsComponent />
 				{/*<PricingPlugin />*/}
 				{/*<FaqPlugin />*/}
 				{/*<CtaPlugin />*/}
