@@ -4,35 +4,30 @@ import MonacoEditor from 'react-monaco-editor'
 
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { Tab } from '@headlessui/react'
 import Link from 'next/link'
 
-import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
+import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { getCreditsFromUserId } from '@/services/database.service'
 
 export function Playground() {
-	const previewLanguages = ['HTTP', 'cURL', 'JavaScript', 'PHP', 'Python']
-
 	const [userCredits, setUserCredits] = useState(0)
 	const [showTooltip, setShowTooltip] = useState(false)
 
-	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
-
-	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
 	const [isResponseCopied, setIsResponseCopied] = useState(false)
 
 	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
+	const [languageToTranslate, setLanguageToTranslate] = useState('')
 	const [requestPreviewValue] = useState('')
 	const [image, setImage] = useState(null)
 	const [imagePreview, setImagePreview] = useState(null)
 	const [imageSize, setImageSize] = useState(0)
 
 	const [context, setContext] = useState('')
-	const [languageToTranslate, setLanguageToTranslate] = useState('')
+
 	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(
 		'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
@@ -88,13 +83,6 @@ export function Playground() {
 		} finally {
 			setIsProcessingResultApi(false)
 		}
-	}
-
-	const copySelectedEditorContent = () => {
-		const content = getSelectedEditorContent()
-		copyToClipboard(content)
-		setIsPreviewCopied(true)
-		setTimeout(() => setIsPreviewCopied(false), 2000)
 	}
 
 	const copyToClipboard = content => {
@@ -183,21 +171,6 @@ export function Playground() {
 	const isValidFileType = file => {
 		const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 		return validTypes.includes(file.type)
-	}
-
-	const formatJsonSchema = jsonSchema => {
-		if (!jsonSchema || jsonSchema.trim() === '') {
-			return 'No schema provided'
-		}
-
-		try {
-			const parsedJsonSchema = JSON.parse(jsonSchema)
-			return JSON.stringify(parsedJsonSchema, null, 4)
-				.replace(/\n/g, '\n    ')
-				.replace(/\n    \}/g, '\n    }\n')
-		} catch (error) {
-			return 'Invalid JSON'
-		}
 	}
 
 	const getSelectedEditorContent = () => {
@@ -352,11 +325,7 @@ export function Playground() {
 							designated area.`}
 						</p>
 						<div
-							className={`mt-2 flex w-full cursor-auto justify-center rounded-lg border border-dashed ${
-								isDraggingOver
-									? 'border-forvoyez_orange-600 bg-forvoyez_orange-50'
-									: 'border-slate-900/25'
-							}`}
+							className={`mt-2 flex w-full cursor-auto justify-center rounded-lg border border-dashed ${isDraggingOver ? 'border-forvoyez_orange-600 bg-forvoyez_orange-50' : 'border-slate-900/25'}`}
 							onDragEnter={handleDragEnter}
 							onDragLeave={handleDragLeave}
 							onDragOver={e => e.preventDefault()}
@@ -545,11 +514,7 @@ export function Playground() {
 
 					<div>
 						<button
-							className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
-								!isJsonValid || !image || userCredits === 0
-									? 'cursor-not-allowed bg-slate-400'
-									: 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'
-							}`}
+							className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !image || userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
 							data-testid="analyze-button"
 							disabled={!isJsonValid || !image || userCredits === 0}
 							onClick={handleSubmit}
@@ -559,78 +524,16 @@ export function Playground() {
 						</button>
 					</div>
 				</div>
-				<div className={'flex flex-col'}>
-					<h3>Request Preview</h3>
-					<p className="mt-1 text-sm italic text-slate-500">
-						{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
-					</p>
-					<div className="sm:hidden">
-						<label className="sr-only" htmlFor="tabs">
-							Select a language
-						</label>
-						<select
-							className="block w-full rounded-md border-slate-300 focus:border-forvoyez_orange-500 focus:ring-forvoyez_orange-500"
-							data-testid="language-select"
-							id="tabs"
-							name="tabs"
-						>
-							{previewLanguages.map(language => (
-								<option key={language}>{language}</option>
-							))}
-						</select>
-					</div>
-					<div className="hidden sm:block">
-						<div className="border-b border-slate-200">
-							<Tab.Group
-								data-testid="language-tabs"
-								onChange={index => setSelectedTab(previewLanguages[index])}
-							>
-								<Tab.List className="flex">
-									{previewLanguages.map(language => (
-										<Tab
-											className={({ selected }) =>
-												selected
-													? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
-													: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
-											}
-											data-testid={`tab-${language.toLowerCase()}`}
-											key={language}
-										>
-											{language}
-										</Tab>
-									))}
-								</Tab.List>
-								<Tab.Panels>
-									{previewLanguages.map((language, index) => (
-										<Tab.Panel key={language}>
-											<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-												{getPreviewCode(
-													languageToTranslate,
-													language,
-													image,
-													context,
-													jsonSchema,
-													formatJsonSchema
-												)}
-												<button
-													className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
-													data-testid="copy-button"
-													onClick={copySelectedEditorContent}
-												>
-													{isPreviewCopied ? (
-														<CheckIcon className="h-5 w-5 text-green-500" />
-													) : (
-														<ClipboardIcon className="h-5 w-5" />
-													)}
-												</button>
-											</div>
-										</Tab.Panel>
-									))}
-								</Tab.Panels>
-							</Tab.Group>
-						</div>
-					</div>
-				</div>
+
+				{/*   -------------------------------------------------------------------------- SEPARATE HERE -------------------------------------------------------------------------- */}
+				{/*(languageToTranslate, image,context,jsonSchema)*/}
+				<PlaygroundPreviewCode
+					context={context}
+					image={image}
+					jsonSchema={jsonSchema}
+					languageToTranslate={languageToTranslate}
+				/>
+
 				<div className={'flex flex-col xl:col-span-2'} ref={apiResponseRef}>
 					<h3>API Response</h3>
 					<p className="mt-1 text-sm italic text-slate-500">
