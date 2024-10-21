@@ -59,9 +59,9 @@ export function PluginComponent() {
 						ForVoyez Auto Alt Text for Images
 					</p>
 					<p className="mt-6 text-lg leading-8 text-gray-600">
-						Enhance your website's accessibility and SEO effortlessly. Our
-						powerful WordPress plugin leverages AI technology to automatically
-						generate high-quality metadata for your images.
+						{`Enhance your website's accessibility and SEO effortlessly. Our
+							powerful WordPress plugin leverages AI technology to automatically
+							generate high-quality metadata for your images.`}
 					</p>
 				</div>
 				<div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">

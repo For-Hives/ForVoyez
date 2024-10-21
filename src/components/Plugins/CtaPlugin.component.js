@@ -32,9 +32,9 @@ export function CtaPluginComponent() {
 							Start using ForVoyez today.
 						</h2>
 						<p className="mt-6 text-lg leading-8 text-gray-100">
-							Enhance your website's accessibility and search engine performance
-							with our free, AI-powered alt text generator. Join thousands of
-							satisfied WordPress users and start optimizing your images now.
+							{`Enhance your website's accessibility and search engine performance
+								with our free, AI-powered alt text generator. Join thousands of
+								satisfied WordPress users and start optimizing your images now.`}
 						</p>
 						<div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
 							<Link

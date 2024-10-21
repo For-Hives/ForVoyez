@@ -60,9 +60,9 @@ export function FeatureHighlightsComponent() {
 						Everything you need to optimize your WordPress images
 					</p>
 					<p className="mt-6 text-lg leading-8 text-gray-600">
-						Our plugin offers a comprehensive set of features to streamline your
-						image optimization workflow and boost your website's SEO and
-						accessibility.
+						{`Our plugin offers a comprehensive set of features to streamline your
+							image optimization workflow and boost your website's SEO and
+							accessibility.`}
 					</p>
 				</div>
 				<div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
