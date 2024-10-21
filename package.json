@@ -56,6 +56,7 @@
 		"next": "15.0.0",
 		"openai": "4.68.3",
 		"prisma": "5.21.1",
+		"prismjs": "^1.29.0",
 		"react": "19.0.0-rc-65a56d0e-20241020",
 		"react-dom": "19.0.0-rc-65a56d0e-20241020",
 		"react-hook-form": "7.53.1",
