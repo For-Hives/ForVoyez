@@ -1,4 +1,4 @@
-@import '~@flaticon/flaticon-uicons/css/all/all.css';
+@import '@flaticon/flaticon-uicons/css/all/all.css';
 
 @tailwind base;
 @tailwind components;
