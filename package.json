@@ -14,7 +14,7 @@
 		"prisma:migrate": "prisma migrate dev",
 		"prisma:generate": "prisma generate",
 		"prisma:seed": "prisma db seed",
-		"lint": "next lint --fix ./",
+		"lint": "next lint",
 		"lint:fix": "next lint --fix",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
