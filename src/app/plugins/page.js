@@ -2,6 +2,7 @@ import { FeatureHighlightsComponent } from '@/components/Plugins/FeatureHighligh
 import { TestimonialsComponent } from '@/components/Plugins/Testimonials.component'
 import { HeroSectionComponent } from '@/components/Plugins/HeroSection.component'
 import { HowItWorksComponent } from '@/components/Plugins/HowItWorks.component'
+import { FaqPluginComponent } from '@/components/Plugins/FaqPlugin.component'
 import { NavbarComponent } from '@/components/Navbar.component'
 import { FooterComponent } from '@/components/Footer.component'
 
@@ -14,8 +15,7 @@ export default function WordPressPluginPage() {
 				<FeatureHighlightsComponent />
 				<HowItWorksComponent />
 				<TestimonialsComponent />
-				{/*todo: <PricingPlugin />*/}
-				{/*todo: <FaqPlugin />*/}
+				<FaqPluginComponent />
 				{/*todo: <CtaPlugin />*/}
 			</main>
 			<FooterComponent />
