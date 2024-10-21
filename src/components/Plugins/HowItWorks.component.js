@@ -41,8 +41,8 @@ export function HowItWorksComponent() {
 								How It Works
 							</p>
 							<p className="mt-6 text-lg leading-8 text-gray-600">
-								Our plugin simplifies the process of optimizing your WordPress
-								images for better SEO and accessibility. Here's how it works:
+								{`Our plugin simplifies the process of optimizing your WordPress
+									images for better SEO and accessibility. Here's how it works:`}
 							</p>
 							<dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
 								{features.map(feature => (
