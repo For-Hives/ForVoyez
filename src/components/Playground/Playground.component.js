@@ -514,46 +514,6 @@ export function Playground() {
 							return the default schema.`}
 						</p>
 						<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-							{/*<MonacoEditor*/}
-							{/*	data-testid="json-schema-editor"*/}
-							{/*	editorDidMount={editor => (editorRef.current = editor)}*/}
-							{/*	height={'500px'}*/}
-							{/*	language="json"*/}
-							{/*	onChange={handleEditorChange}*/}
-							{/*	onMount={editor => {*/}
-							{/*		editorRef.current = editor*/}
-							{/*		resizeEditor(editor)*/}
-							{/*	}}*/}
-							{/*	options={{*/}
-							{/*		scrollbar: {*/}
-							{/*			handleMouseWheel: false,*/}
-							{/*		},*/}
-							{/*		fontFamily: 'var(--font-jost)',*/}
-							{/*		autoClosingBrackets: 'always',*/}
-							{/*		minimap: { enabled: false },*/}
-							{/*		scrollBeyondLastLine: false,*/}
-							{/*		renderLineHighlight: 'all',*/}
-							{/*		// Add these options for syntax highlighting*/}
-							{/*		selectOnLineNumbers: true,*/}
-							{/*		matchBrackets: 'always',*/}
-							{/*		quickSuggestions: true,*/}
-							{/*		automaticLayout: true,*/}
-							{/*		mouseWheelZoom: false,*/}
-							{/*		formatOnPaste: true,*/}
-							{/*		formatOnType: true,*/}
-							{/*		lineNumbers: 'on',*/}
-							{/*		contextmenu: true,*/}
-							{/*		autoIndent: true,*/}
-							{/*		readOnly: false,*/}
-							{/*		wordWrap: 'on',*/}
-							{/*		folding: true,*/}
-							{/*		fontSize: 14,*/}
-							{/*		tabSize: 4,*/}
-							{/*	}}*/}
-							{/*	theme="vs-light"*/}
-							{/*	value={jsonSchema}*/}
-							{/*	width={'100%'}*/}
-							{/*/>*/}
 							{jsonSchema}
 							<div className={'absolute right-3 top-2'}>
 								<div className="flex items-center justify-end">
@@ -644,49 +604,6 @@ export function Playground() {
 									{previewLanguages.map((language, index) => (
 										<Tab.Panel key={language}>
 											<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-												{/*<MonacoEditor*/}
-												{/*	data-testid={`editor-${language.toLowerCase()}`}*/}
-												{/*	editorDidMount={editor =>*/}
-												{/*		handleEditorDidMount(editor, index)*/}
-												{/*	}*/}
-												{/*	language={language.toLowerCase()}*/}
-												{/*	options={{*/}
-												{/*		scrollbar: {*/}
-												{/*			handleMouseWheel: false,*/}
-												{/*		},*/}
-												{/*		fontFamily: 'var(--font-jost)',*/}
-												{/*		autoClosingBrackets: 'always',*/}
-												{/*		minimap: { enabled: false },*/}
-												{/*		scrollBeyondLastLine: false,*/}
-												{/*		renderLineHighlight: 'all',*/}
-												{/*		// Add these options for syntax highlighting*/}
-												{/*		selectOnLineNumbers: true,*/}
-												{/*		matchBrackets: 'always',*/}
-												{/*		quickSuggestions: true,*/}
-												{/*		automaticLayout: true,*/}
-												{/*		mouseWheelZoom: false,*/}
-												{/*		formatOnPaste: true,*/}
-												{/*		formatOnType: true,*/}
-												{/*		contextmenu: true,*/}
-												{/*		autoIndent: true,*/}
-												{/*		readOnly: false,*/}
-												{/*		wordWrap: 'on',*/}
-												{/*		folding: true,*/}
-												{/*		fontSize: 14,*/}
-												{/*		tabSize: 4,*/}
-												{/*	}}*/}
-												{/*	theme="vs-light"*/}
-												{/*	value={getPreviewCode(*/}
-												{/*		languageToTranslate,*/}
-												{/*		language,*/}
-												{/*		image,*/}
-												{/*		context,*/}
-												{/*		jsonSchema,*/}
-												{/*		formatJsonSchema*/}
-												{/*	)}*/}
-												{/*	width={'100%'}*/}
-												{/*/>*/}
-
 												{getPreviewCode(
 													languageToTranslate,
 													language,
@@ -727,45 +644,6 @@ export function Playground() {
 							className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
 							data-testid="response-editor"
 						>
-							{/*<MonacoEditor*/}
-							{/*	editorDidMount={editor => (responseRef.current = editor)}*/}
-							{/*	height={'500px'}*/}
-							{/*	language="json"*/}
-							{/*	onMount={editor => {*/}
-							{/*		responseRef.current = editor*/}
-							{/*		resizeEditor(editor)*/}
-							{/*	}}*/}
-							{/*	options={{*/}
-							{/*		scrollbar: {*/}
-							{/*			handleMouseWheel: false,*/}
-							{/*		},*/}
-							{/*		fontFamily: 'var(--font-jost)',*/}
-							{/*		autoClosingBrackets: 'always',*/}
-							{/*		minimap: { enabled: false },*/}
-							{/*		scrollBeyondLastLine: false,*/}
-							{/*		renderLineHighlight: 'all',*/}
-							{/*		// Add these options for syntax highlighting*/}
-							{/*		selectOnLineNumbers: true,*/}
-							{/*		matchBrackets: 'always',*/}
-							{/*		quickSuggestions: true,*/}
-							{/*		colorDecorators: true,*/}
-							{/*		automaticLayout: true,*/}
-							{/*		mouseWheelZoom: false,*/}
-							{/*		formatOnPaste: true,*/}
-							{/*		formatOnType: true,*/}
-							{/*		lineNumbers: 'on',*/}
-							{/*		contextmenu: true,*/}
-							{/*		autoIndent: true,*/}
-							{/*		wordWrap: 'on',*/}
-							{/*		readOnly: true,*/}
-							{/*		folding: true,*/}
-							{/*		fontSize: 14,*/}
-							{/*		tabSize: 4,*/}
-							{/*	}}*/}
-							{/*	theme="vs-light"*/}
-							{/*	value={JSON.stringify(response, null, 4)}*/}
-							{/*	width={'100%'}*/}
-							{/*/>*/}
 							{JSON.stringify(response, null, 4)}
 							<button
 								className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
