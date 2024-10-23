@@ -592,9 +592,6 @@ export function Playground() {
 							data-testid="analyze-button"
 							disabled={!isJsonValid || !image || userCredits === 0}
 							onClick={handleSubmit}
-							onMouseEnter={() =>
-								setShowTooltip(userCredits.toString() === '0')
-							}
 							type="button"
 						>
 							Analyze your image
