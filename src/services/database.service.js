@@ -175,7 +175,7 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 		throw new Error('Invalid credits value')
 	}
 
-	const user = await prisma.user.findUnique({
+	const user = await prisma.user.findFirst({
 		where: { clerkId: userId },
 	})
 
@@ -193,7 +193,7 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 
 	let token = null
 	if (tokenJwt) {
-		token = await prisma.token.findUnique({
+		token = await prisma.token.findFirst({
 			where: { jwt: tokenJwt },
 		})
 	}
