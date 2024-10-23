@@ -595,7 +595,6 @@ export function Playground() {
 							onMouseEnter={() =>
 								setShowTooltip(userCredits.toString() === '0')
 							}
-							onMouseLeave={() => setShowTooltip(false)}
 							type="button"
 						>
 							Analyze your image
