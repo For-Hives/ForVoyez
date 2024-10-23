@@ -17,7 +17,7 @@ export async function POST(request) {
 		// check if the request come from lemonsqueezy servers #Security
 		const rawBody = await request.text()
 
-		const hmac = createHmac('sha256', WEBHOOK_SECRET)
+		const hmac = createHmac('sha256', WEBHOOK_SECRET())
 		const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
 		const signature = Buffer.from(
 			request.headers.get('X-Signature') ?? '',
