@@ -2,6 +2,7 @@ import { syncPlans } from '@/services/database.service'
 
 export async function GET() {
 	try {
+		console.info('Plan Syncing Started')
 		const result = await syncPlans()
 
 		// Check if the result is valid

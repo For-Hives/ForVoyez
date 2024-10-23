@@ -322,8 +322,8 @@ describe('Database Service', () => {
 			const mockUser = { id: 'user123', credits: 0 }
 			const mockToken = { id: 'token123' }
 
-			prisma.user.findUnique.mockResolvedValue(mockUser)
-			prisma.token.findUnique.mockResolvedValue(mockToken)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
+			prisma.token.findFirst.mockResolvedValue(mockToken)
 
 			await updateCredits(userId, credits, tokenId, reason)
 
@@ -363,7 +363,7 @@ describe('Database Service', () => {
 		it('should decrement the credits of the authenticated user', async () => {
 			const mockUser = { id: 'user123', credits: 10 }
 			clerk.currentUser.mockResolvedValue(mockUser)
-			prisma.user.findUnique.mockResolvedValue(mockUser)
+			prisma.user.findFirst.mockResolvedValue(mockUser)
 
 			await decrementCredit('test reason')
 
