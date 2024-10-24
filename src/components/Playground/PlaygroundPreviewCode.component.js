@@ -1,22 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { Tab } from '@headlessui/react'
+import Prism from 'prismjs'
 
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
 
+import 'prismjs/components/prism-markup-templating'
+import 'prismjs/themes/prism-tomorrow.min.css'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-python'
+import 'prismjs/components/prism-markup'
+import 'prismjs/components/prism-json'
+import 'prismjs/components/prism-bash'
+import 'prismjs/components/prism-http'
+import 'prismjs/components/prism-php'
+
 export default function PlaygroundPreviewCode(params) {
-	const previewLanguages = ['HTTP', 'cURL', 'JavaScript', 'PHP', 'Python']
-
+	const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
-
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
+	const [mounted, setMounted] = useState(false) // Pour savoir si le composant est monté
+
+	// Utiliser useEffect pour Prism et éviter les problèmes d'hydratation
+	useEffect(() => {
+		setMounted(true) // Assure que le composant est monté avant l'application de Prism.js
+		if (mounted) {
+			Prism.highlightAll()
+		}
+	}, [mounted, selectedTab, params])
 
 	const formatJsonSchema = jsonSchema => {
 		if (!jsonSchema || jsonSchema.trim() === '') {
 			return 'No schema provided'
 		}
-
 		try {
 			const parsedJsonSchema = JSON.parse(jsonSchema)
 			return JSON.stringify(parsedJsonSchema, null, 4)
@@ -26,6 +43,7 @@ export default function PlaygroundPreviewCode(params) {
 			return 'Invalid JSON'
 		}
 	}
+
 	const copySelectedEditorContent = () => {
 		const content = getSelectedEditorContent()
 		copyToClipboard(content)
@@ -33,14 +51,18 @@ export default function PlaygroundPreviewCode(params) {
 		setTimeout(() => setIsPreviewCopied(false), 2000)
 	}
 
+	if (!mounted) {
+		return null // Pendant le SSR, ne retourne rien
+	}
+
 	return (
-		<div className={'flex flex-col'}>
+		<div className={'flex hidden flex-col sm:block'}>
 			<h3>Request Preview</h3>
 			<p className="mt-1 text-sm italic text-slate-500">
 				{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
 			</p>
 
-			<div className="hidden sm:block">
+			<div className="">
 				<div className="border-b border-slate-200">
 					<Tab.Group
 						data-testid="language-tabs"
@@ -65,14 +87,22 @@ export default function PlaygroundPreviewCode(params) {
 							{previewLanguages.map((language, index) => (
 								<Tab.Panel key={language}>
 									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-										{getPreviewCode(
-											params.languageToTranslate,
-											language,
-											params.image,
-											params.context,
-											params.jsonSchema,
-											formatJsonSchema
-										)}
+										<pre
+											className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()} rounded-md`}
+										>
+											<code
+												className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()}`}
+											>
+												{getPreviewCode(
+													params.languageToTranslate,
+													language,
+													params.image,
+													params.context,
+													params.jsonSchema,
+													formatJsonSchema
+												)}
+											</code>
+										</pre>
 										<button
 											className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
 											data-testid="copy-button"
