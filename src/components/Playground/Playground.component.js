@@ -1,7 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import MonacoEditor from 'react-monaco-editor'
-
+import { useEffect, useRef, useState } from 'react' // import MonacoEditor from 'react-monaco-editor'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
@@ -525,14 +523,16 @@ export function Playground() {
 					</div>
 				</div>
 
-				{/*   -------------------------------------------------------------------------- SEPARATE HERE -------------------------------------------------------------------------- */}
-				{/*(languageToTranslate, image,context,jsonSchema)*/}
+				{/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+
 				<PlaygroundPreviewCode
 					context={context}
 					image={image}
 					jsonSchema={jsonSchema}
 					languageToTranslate={languageToTranslate}
 				/>
+
+				{/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
 
 				<div className={'flex flex-col xl:col-span-2'} ref={apiResponseRef}>
 					<h3>API Response</h3>
