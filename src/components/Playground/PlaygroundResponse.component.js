@@ -36,7 +36,9 @@ export default function PlaygroundResponse(props) {
 					className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
 					data-testid="response-editor"
 				>
-					{JSON.stringify(props.response, null, 4)}
+					{props.response && JSON.stringify(props.response, null, 4)}
+					{props.response == null && 'No response yet.'}
+
 					<button
 						className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
 						data-testid="response-copy-button"

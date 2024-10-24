@@ -45,16 +45,15 @@ const JAVASCRIPT_EXAMPLE = (
 	formatJsonSchema
 ) => `const form = new FormData();
 form.append('image', ${image ? 'imageFile' : 'null'});
-form.append('data', JSON.stringify({
-  context: '${context || 'No context provided'}',
-  language: '${languageToTranslate || 'en'}',
-  schema: ${formatJsonSchema(jsonSchema)}
-}));
+${context ? `form.append('context', '${context}');` : ''}
+${languageToTranslate ? `form.append('language', '${languageToTranslate}');` : ''}
+${jsonSchema ? `form.append('schema', ${formatJsonSchema(jsonSchema)});` : ''}
+form.append('keywords', 'example, image, metadata');
 
 fetch('https://forvoyez.com/api/describe', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer <user-token>'
+    'Authorization': 'Bearer **********************'
   },
   body: form
 })
