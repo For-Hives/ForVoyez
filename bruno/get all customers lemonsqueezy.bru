@@ -1,0 +1,17 @@
+meta {
+  name: get all customers lemonsqueezy
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://api.lemonsqueezy.com/v1/customers
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/vnd.api+json
+  Authorization: Bearer {{lemon}}
+  Content-Type: application/vnd.api+json
+}
