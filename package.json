@@ -3,7 +3,7 @@
 	"version": "1.2.0",
 	"private": false,
 	"scripts": {
-		"dev": "next dev -H 0.0.0.0",
+		"dev": "next dev -H 0.0.0.0 --turbo",
 		"build": "next build",
 		"start": "next start",
 		"launch": "prisma generate && prisma migrate deploy && next start",
@@ -37,7 +37,7 @@
 		"seed": "node prisma/seed.js"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "5.7.5",
+		"@clerk/nextjs": "6.0.1",
 		"@flaticon/flaticon-uicons": "3.3.1",
 		"@headlessui/react": "2.1.10",
 		"@heroicons/react": "2.1.5",
