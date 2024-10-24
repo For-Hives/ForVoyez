@@ -24,7 +24,7 @@ export function Playground() {
 
 	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(null)
-	const responseRef = useRef(null)
+
 	const apiResponseRef = useRef(null)
 
 	const handleSubmit = async e => {
@@ -143,6 +143,13 @@ export function Playground() {
 							processingResultApi={isProcessingResultApi}
 							response={response}
 						/>
+
+						<p className={'text-md my-4 text-slate-500'}>
+							remaining credits: &nbsp;
+							<span className={'font-semibold text-slate-900'}>
+								{userCredits}
+							</span>
+						</p>
 					</div>
 
 					<PlaygroundPreviewCode
