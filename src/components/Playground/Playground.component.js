@@ -1,12 +1,12 @@
 'use client'
-import { useEffect, useRef, useState } from 'react' // import MonacoEditor from 'react-monaco-editor'
+import { useEffect, useRef, useState } from 'react'
+
 import { describePlaygroundAction } from '@/app/actions/app/playground'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 
 import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
+import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.component'
 import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
-import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { getCreditsFromUserId } from '@/services/database.service'
 
@@ -14,7 +14,7 @@ export function Playground() {
 	const [userCredits, setUserCredits] = useState(0)
 	const [showTooltip, setShowTooltip] = useState(false)
 
-	const [isResponseCopied, setIsResponseCopied] = useState(false)
+	const [imageSize, setImageSize] = useState(0)
 
 	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
 	const [languageToTranslate, setLanguageToTranslate] = useState('')
@@ -23,9 +23,7 @@ export function Playground() {
 	const [context, setContext] = useState('')
 
 	const [jsonSchema, setJsonSchema] = useState('')
-	const [response, setResponse] = useState(
-		'Waiting for an image to be analyzed... Please upload an image and click the Analyze your image button.'
-	)
+	const [response, setResponse] = useState(null)
 	const responseRef = useRef(null)
 	const apiResponseRef = useRef(null)
 
@@ -70,26 +68,6 @@ export function Playground() {
 			)
 		} finally {
 			setIsProcessingResultApi(false)
-		}
-	}
-
-	const copyToClipboard = content => {
-		if (navigator.clipboard) {
-			navigator.clipboard.writeText(content).catch(err => {
-				console.error('Failed to copy:', err)
-			})
-		} else {
-			// Fallback to older execCommand approach
-			const textarea = document.createElement('textarea')
-			textarea.value = content
-			document.body.appendChild(textarea)
-			textarea.select()
-			try {
-				document.execCommand('copy')
-			} catch (err) {
-				console.error('Failed to copy with execCommand:', err)
-			}
-			document.body.removeChild(textarea)
 		}
 	}
 
@@ -147,6 +125,7 @@ export function Playground() {
 					languageToTranslate={languageToTranslate}
 					setContext={setContext}
 					setImage={setImage}
+					setImageSize={setImageSize}
 					setJsonSchema={setJsonSchema}
 					setLanguageToTranslate={setLanguageToTranslate}
 					userCredits={userCredits}
@@ -160,32 +139,10 @@ export function Playground() {
 						<p className="mt-1 text-sm italic text-slate-500">
 							{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
 						</p>
-
-						{isProcessingResultApi ? (
-							<LoadAnimation />
-						) : (
-							<div
-								className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
-								data-testid="response-editor"
-							>
-								{JSON.stringify(response, null, 4)}
-								<button
-									className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
-									data-testid="response-copy-button"
-									onClick={() => {
-										copyToClipboard(JSON.stringify(response, null, 4))
-										setIsResponseCopied(true)
-										setTimeout(() => setIsResponseCopied(false), 2000)
-									}}
-								>
-									{isResponseCopied ? (
-										<CheckIcon className="h-5 w-5 text-green-500" />
-									) : (
-										<ClipboardIcon className="h-5 w-5" />
-									)}
-								</button>
-							</div>
-						)}
+						<PlaygroundResponse
+							processingResultApi={isProcessingResultApi}
+							response={response}
+						/>
 					</div>
 
 					<PlaygroundPreviewCode
