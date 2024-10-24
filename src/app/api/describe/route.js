@@ -115,7 +115,9 @@ export async function POST(request) {
 			payload.userId,
 			'decrement token from Describe Action',
 			authorization.replace('Bearer ', '')
-		)
+		).then(() => {
+			console.info(`User ${payload.userId} used 1 credit`)
+		})
 
 		return new Response(JSON.stringify(descriptionResult), {
 			headers: { 'Content-Type': 'application/json' },
