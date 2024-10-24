@@ -220,7 +220,6 @@ export async function decrementCredit(reason, tokenJwt = null) {
 // Function to decrement the credits for the authenticated user from the API ( dont have access to the currentuser object)
 export async function decrementCreditFromAPI(userId, reason, tokenJwt = null) {
 	await updateCredits(userId, -1, tokenJwt, reason)
-	console.info(`User ${userId} used 1 credit`)
 }
 
 // Function to retrieve API usage for the authenticated user
