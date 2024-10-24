@@ -7,7 +7,6 @@ export default function PlaygroundForm(props) {
 	const [isDraggingOver, setIsDraggingOver] = useState(false)
 
 	const [imagePreview, setImagePreview] = useState(null)
-	const [imageSize, setImageSize] = useState(0)
 
 	const [uploadError, setUploadError] = useState(null)
 	const [isJsonValid, setIsJsonValid] = useState(true)
@@ -35,7 +34,7 @@ export default function PlaygroundForm(props) {
 		if (file && isValidFileType(file)) {
 			props.setImage(file)
 			setImagePreview(URL.createObjectURL(file))
-			setImageSize(file.size)
+			props.setImageSize(file.size)
 			setUploadError(null)
 		} else {
 			setUploadError('Please drop a valid image file (PNG, Webp, JPG, GIF)')
@@ -75,9 +74,9 @@ export default function PlaygroundForm(props) {
 	const handleImageChange = e => {
 		const file = e.target.files[0]
 		if (file && isValidFileType(file)) {
-			setImage(file)
+			props.setImage(file)
 			setImagePreview(URL.createObjectURL(file))
-			setImageSize(file.size)
+			props.setImageSize(file.size)
 			setUploadError(null)
 		} else {
 			setUploadError('Please select a valid image file (PNG, Webp, JPG, GIF)')
@@ -87,7 +86,7 @@ export default function PlaygroundForm(props) {
 	const handleResetImage = () => {
 		props.setImage(null)
 		setImagePreview(null)
-		setImageSize(0)
+		props.setImageSize(0)
 		setUploadError(null)
 	}
 
@@ -403,7 +402,7 @@ export default function PlaygroundForm(props) {
 
 			<div>
 				<button
-					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!props.jsonValid || !props.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
+					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
 					data-testid="analyze-button"
 					disabled={!isJsonValid || !props.image || props.userCredits === 0}
 					onClick={props.handleSubmit}
