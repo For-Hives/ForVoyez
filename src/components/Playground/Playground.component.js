@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react' // import MonacoEditor from 'react-monaco-editor'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { Tab } from '@headlessui/react'
 import Link from 'next/link'
 
 import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
@@ -156,84 +155,45 @@ export function Playground() {
 				{/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
 
 				<div className="flex hidden flex-col sm:block">
-					<Tab.Group data-testid="playgrounds-tabs">
-						<Tab.List className="flex">
-							<Tab
-								className={({ selected }) =>
-									selected
-										? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
-										: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
-								}
-								data-testid={`tab-result`}
-								key={'Result'}
-							>
-								Result
-							</Tab>
-							<Tab
-								className={({ selected }) =>
-									selected
-										? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
-										: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
-								}
-								data-testid={`tab-result`}
-								key={'CodePreview'}
-							>
-								Code Preview
-							</Tab>
-						</Tab.List>
-						<Tab.Panels>
-							<Tab.Panel key={'Result'}>
-								<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-									<div
-										className={'flex hidden flex-col sm:block'}
-										ref={apiResponseRef}
-									>
-										<h3>API Response</h3>
-										<p className="mt-1 text-sm italic text-slate-500">
-											{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
-										</p>
+					<div className={'flex hidden flex-col sm:block'} ref={apiResponseRef}>
+						<h3>API Response</h3>
+						<p className="mt-1 text-sm italic text-slate-500">
+							{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
+						</p>
 
-										{isProcessingResultApi ? (
-											<LoadAnimation />
-										) : (
-											<div
-												className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
-												data-testid="response-editor"
-											>
-												{JSON.stringify(response, null, 4)}
-												<button
-													className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
-													data-testid="response-copy-button"
-													onClick={() => {
-														copyToClipboard(JSON.stringify(response, null, 4))
-														setIsResponseCopied(true)
-														setTimeout(() => setIsResponseCopied(false), 2000)
-													}}
-												>
-													{isResponseCopied ? (
-														<CheckIcon className="h-5 w-5 text-green-500" />
-													) : (
-														<ClipboardIcon className="h-5 w-5" />
-													)}
-												</button>
-											</div>
-										)}
-									</div>
-								</div>
-							</Tab.Panel>
+						{isProcessingResultApi ? (
+							<LoadAnimation />
+						) : (
+							<div
+								className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
+								data-testid="response-editor"
+							>
+								{JSON.stringify(response, null, 4)}
+								<button
+									className="absolute right-2 top-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+									data-testid="response-copy-button"
+									onClick={() => {
+										copyToClipboard(JSON.stringify(response, null, 4))
+										setIsResponseCopied(true)
+										setTimeout(() => setIsResponseCopied(false), 2000)
+									}}
+								>
+									{isResponseCopied ? (
+										<CheckIcon className="h-5 w-5 text-green-500" />
+									) : (
+										<ClipboardIcon className="h-5 w-5" />
+									)}
+								</button>
+							</div>
+						)}
+					</div>
 
-							<Tab.Panel key={'CodePreview'}>
-								<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-									<PlaygroundPreviewCode
-										context={context}
-										image={image}
-										jsonSchema={jsonSchema}
-										languageToTranslate={languageToTranslate}
-									/>
-								</div>
-							</Tab.Panel>
-						</Tab.Panels>
-					</Tab.Group>
+					<PlaygroundPreviewCode
+						context={context}
+						image={image}
+						jsonSchema={jsonSchema}
+						languageToTranslate={languageToTranslate}
+					/>
 				</div>
 			</div>
 		</>
