@@ -2,30 +2,30 @@
 import Image from 'next/image'
 
 const featuredTestimonial = {
-	body: "ForVoyez's WordPress plugin has revolutionized our image SEO strategy. The AI-generated alt text is not only accurate but also SEO-optimized, saving us countless hours of manual work.",
 	author: {
+		imageUrl: '/images/plugins/testimonials/sarah.png',
 		logoUrl: '/images/plugins/logo-tell-me.png',
-		imageUrl: '/images/plugins/sarah.webp',
-		handle: 'sarahjohnson',
 		name: 'Sarah Johnson',
+		handle: 'sarahj85',
 	},
+	body: 'The bulk image processing is amazing. We optimized thousands of product images really quickly, which has been a big help for our e-commerce site.',
 }
 
 const testimonials = [
 	[
 		[
 			{
-				body: "The automated alt text generation has dramatically improved our site's accessibility. Our visually impaired users have noticed the difference.",
+				body: "The automatic alt text feature has really helped our visually impaired users. We've gotten some positive feedback from them.",
 				author: {
-					imageUrl: '/images/plugins/michael.webp',
-					handle: 'michaelchen',
+					imageUrl: '/images/plugins/testimonials/michael.png',
 					name: 'Michael Chen',
+					handle: 'kazor',
 				},
 			},
 			{
-				body: "As a photographer, I was skeptical about AI-generated descriptions. But ForVoyez's plugin has consistently produced accurate and SEO-friendly alt text for my portfolio.",
+				body: "ForVoyez's plugin has saved us a ton of time on image optimization. It’s pretty handy, and the descriptions are usually well-optimized for SEO.",
 				author: {
-					imageUrl: '/images/plugins/emma.webp',
+					imageUrl: '/images/plugins/testimonials/emma.png',
 					name: 'Emma Rodriguez',
 					handle: 'emmashots',
 				},
@@ -35,8 +35,8 @@ const testimonials = [
 			{
 				body: "The plugin's bulk processing feature allowed us to optimize thousands of product images in a matter of hours. It's been a game-changer for our e-commerce site.",
 				author: {
-					imageUrl: '/images/plugins/alex.webp',
-					handle: 'alextan',
+					imageUrl: '/images/plugins/testimonials/alex.png',
+					handle: 'leesin',
 					name: 'Alex Tan',
 				},
 			},
@@ -45,20 +45,20 @@ const testimonials = [
 	[
 		[
 			{
-				body: "ForVoyez's multi-language support has helped us reach a global audience. Our international SEO has improved significantly since we started using the plugin.",
 				author: {
-					imageUrl: '/images/plugins/sophie.webp',
-					handle: 'sophiedubois',
+					imageUrl: '/images/plugins/testimonials/sophie.png',
+					handle: 'sophie.dubois33',
 					name: 'Sophie Dubois',
 				},
+				body: 'We love that we can customize the alt text to fit our brand voice. It helps keep things consistent without too much effort.',
 			},
 		],
 		[
 			{
-				body: "The customizable output formats allow us to tailor the alt text to our brand voice. It's like having an SEO expert and a copywriter rolled into one plugin.",
+				body: 'The multi-language support has helped us reach an international audience. We’ve noticed a nice boost in SEO, especially for non-English markets.',
 				author: {
-					imageUrl: '/images/plugins/david.webp',
-					handle: 'davidlee',
+					imageUrl: '/images/plugins/testimonials/david.png',
+					handle: 'septuar',
 					name: 'David Lee',
 				},
 			},
@@ -101,8 +101,8 @@ export function TestimonialsComponent() {
 						</blockquote>
 						<figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
 							<Image
-								alt=""
-								className="h-10 w-10 flex-none rounded-full bg-gray-50"
+								alt={featuredTestimonial.author.name + ' profile picture'}
+								className="h-10 w-10 flex-none rounded-full bg-gray-50 object-cover"
 								height={40}
 								src={featuredTestimonial.author.imageUrl}
 								width={40}
@@ -150,7 +150,7 @@ export function TestimonialsComponent() {
 											<figcaption className="mt-6 flex items-center gap-x-4">
 												<Image
 													alt=""
-													className="h-10 w-10 rounded-full bg-gray-50"
+													className="h-10 w-10 rounded-full bg-gray-50 object-cover"
 													height={40}
 													src={testimonial.author.imageUrl}
 													width={40}
