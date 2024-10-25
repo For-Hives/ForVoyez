@@ -60,7 +60,7 @@ describe('JWT Service', () => {
 			jwtVerify.mockRejectedValue(new Error('Token is invalid'))
 
 			await expect(verifyJwt(`Bearer ${token}`)).rejects.toThrow(
-				'Token is invalid'
+				'Token is not signed by the server'
 			)
 		})
 	})
