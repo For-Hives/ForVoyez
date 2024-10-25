@@ -67,13 +67,14 @@ const JAVASCRIPT_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema
+	formatJsonSchema,
+	keywords
 ) => `const form = new FormData();
 form.append('image', ${image ? 'imageFile' : 'null'});
 ${context ? `form.append('context', '${context}');` : ''}
 ${languageToTranslate ? `form.append('language', '${languageToTranslate}');` : ''}
 ${jsonSchema ? `form.append('schema', ${formatJsonSchema(jsonSchema)});` : ''}
-form.append('keywords', 'example, image, metadata');
+${keywords ? `form.append('keywords', '${keywords}');` : ''}
 
 fetch('https://forvoyez.com/api/describe', {
   method: 'POST',
@@ -90,7 +91,8 @@ const PHP_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema
+	formatJsonSchema,
+	keywords
 ) => `<?php
 $curl = curl_init();
 curl_setopt_array($curl, array(
@@ -104,11 +106,10 @@ curl_setopt_array($curl, array(
   CURLOPT_CUSTOMREQUEST => 'POST',
   CURLOPT_POSTFIELDS => array(
     'image'=> new CURLFile('${image ? image.name : 'example.jpg'}'),
-    'data' => json_encode(array(
-      'context' => '${context || 'No context provided'}',
-      'language' => '${languageToTranslate || 'en'}',
-      'schema' => json_decode('${formatJsonSchema(jsonSchema)}')
-    ))
+    ${context ? "'context' => '" + context + "'," : ''}
+    ${languageToTranslate ? "'language' => '" + languageToTranslate + "'," : ''}
+    ${keywords ? "'keywords' => '" + keywords + "'," : ''}
+    ${jsonSchema ? "'schema' => json_encode(" + formatJsonSchema(jsonSchema) + ')' : ''}
   ),
   CURLOPT_HTTPHEADER => array(
     'Authorization: Bearer <user-token>'
@@ -124,7 +125,8 @@ const PYTHON_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema
+	formatJsonSchema,
+	keywords
 ) => {
 	const imageFile = image ? `'${image.name}'` : '"example.jpg"'
 	const contextValue = context || 'No context provided'
