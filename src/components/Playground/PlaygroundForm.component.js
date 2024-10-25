@@ -263,6 +263,80 @@ export default function PlaygroundForm(props) {
 					</>
 				)}
 			</Disclosure>
+			<Disclosure as="div" className="" key="keywordsfield">
+				{({ open }) => (
+					<>
+						<dt>
+							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+								<label
+									className="block text-sm font-medium leading-6 text-slate-900"
+									htmlFor="comment"
+								>
+									Keywords (Optional)
+								</label>
+								<span className="ml-6 flex h-7 items-center">
+									<motion.svg
+										animate={{ rotate: open ? 180 : 0 }}
+										className="h-6 w-6"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="1.5"
+										viewBox="0 0 24 24"
+									>
+										<path
+											d="M19 9l-7 7-7-7"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+									</motion.svg>
+								</span>
+							</Disclosure.Button>
+						</dt>
+						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+							<motion.p
+								animate={{ opacity: 1, y: 0 }}
+								className="text-base leading-7 text-gray-600"
+								exit={{ opacity: 0, y: -10 }}
+								initial={{ opacity: 0, y: -10 }}
+							>
+								<div>
+									<p className="mt-1 text-sm italic text-slate-500">
+										{`Provide additional keywords to force the API to include them in the generated metadata. 
+										This can be useful to ensure that specific terms are included in the title, 
+										alternative text, or caption of the analyzed image.
+										They must be separated by commas.`}
+									</p>
+									<div className="mt-2">
+										<textarea
+											className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+											data-testid="keywords-input"
+											id="Keywords"
+											maxLength={300}
+											name="Keywords"
+											onChange={e =>
+												props.setFormData({
+													...props.formData,
+													keywords: e.target.value,
+												})
+											}
+											placeholder="Cat, Dog, Animal"
+											rows="1"
+											value={props.formData.keywords}
+										></textarea>
+										<p
+											className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.context, 200)}`}
+											data-testid="context-counter"
+										>
+											Remaining {200 - props.formData.context.length}/200
+											characters
+										</p>
+									</div>
+								</div>
+							</motion.p>
+						</Disclosure.Panel>
+					</>
+				)}
+			</Disclosure>
 
 			<Disclosure as="div" className="" key="languagefield">
 				{({ open }) => (

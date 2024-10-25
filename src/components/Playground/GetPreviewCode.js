@@ -158,7 +158,8 @@ export const getPreviewCode = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema
+	formatJsonSchema,
+	keywords
 ) => {
 	switch (language) {
 		case 'HTTP':
@@ -167,7 +168,8 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema
+				formatJsonSchema,
+				keywords
 			)
 		case 'cURL':
 			return CURL_EXAMPLE(
@@ -175,7 +177,8 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema
+				formatJsonSchema,
+				keywords
 			)
 		case 'JavaScript':
 			return JAVASCRIPT_EXAMPLE(
@@ -183,7 +186,8 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema
+				formatJsonSchema,
+				keywords
 			)
 		case 'PHP':
 			return PHP_EXAMPLE(
@@ -191,7 +195,8 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema
+				formatJsonSchema,
+				keywords
 			)
 		case 'Python':
 			return PYTHON_EXAMPLE(
@@ -199,7 +204,8 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema
+				formatJsonSchema,
+				keywords
 			)
 		default:
 			return ''

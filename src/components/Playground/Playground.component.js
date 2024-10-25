@@ -46,6 +46,7 @@ export function Playground() {
 		const dataObject = {
 			schema: formData.jsonSchema || defaultJsonTemplateSchema,
 			language: formData.languageToTranslate,
+			keywords: formData.keywords,
 			context: formData.context,
 		}
 
