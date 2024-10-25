@@ -3,29 +3,10 @@ import { useState } from 'react'
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
+import copyToClipboard from '@/helpers/copyToClipboard'
 
 export default function PlaygroundResponse(props) {
 	const [isResponseCopied, setIsResponseCopied] = useState(false)
-
-	const copyToClipboard = content => {
-		if (navigator.clipboard) {
-			navigator.clipboard.writeText(content).catch(err => {
-				console.error('Failed to copy:', err)
-			})
-		} else {
-			// Fallback to older execCommand approach
-			const textarea = document.createElement('textarea')
-			textarea.value = content
-			document.body.appendChild(textarea)
-			textarea.select()
-			try {
-				document.execCommand('copy')
-			} catch (err) {
-				console.error('Failed to copy with execCommand:', err)
-			}
-			document.body.removeChild(textarea)
-		}
-	}
 
 	return (
 		<div className="">
@@ -33,7 +14,7 @@ export default function PlaygroundResponse(props) {
 				<LoadAnimation />
 			) : (
 				<div
-					className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
+					className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300"
 					data-testid="response-editor"
 				>
 					{props.response && JSON.stringify(props.response, null, 4)}

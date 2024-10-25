@@ -12,8 +12,8 @@ export default function PlaygroundForm(props) {
 	const [isJsonValid, setIsJsonValid] = useState(true)
 
 	useEffect(() => {
-		setIsJsonValid(validateJson(props.jsonSchema))
-	}, [props.jsonSchema])
+		setIsJsonValid(validateJson(props.formData.jsonSchema))
+	}, [props.formData.jsonSchema])
 
 	const validateJson = json => {
 		if (!json || json.trim() === '') {
@@ -32,9 +32,8 @@ export default function PlaygroundForm(props) {
 		setIsDraggingOver(false)
 		const file = e.dataTransfer.files[0]
 		if (file && isValidFileType(file)) {
-			props.setImage(file)
+			props.setFormData({ ...props.formData, image: file })
 			setImagePreview(URL.createObjectURL(file))
-			props.setImageSize(file.size)
 			setUploadError(null)
 		} else {
 			setUploadError('Please drop a valid image file (PNG, Webp, JPG, GIF)')
@@ -74,9 +73,8 @@ export default function PlaygroundForm(props) {
 	const handleImageChange = e => {
 		const file = e.target.files[0]
 		if (file && isValidFileType(file)) {
-			props.setImage(file)
+			props.setFormData({ ...props.formData, image: file })
 			setImagePreview(URL.createObjectURL(file))
-			props.setImageSize(file.size)
 			setUploadError(null)
 		} else {
 			setUploadError('Please select a valid image file (PNG, Webp, JPG, GIF)')
@@ -84,9 +82,9 @@ export default function PlaygroundForm(props) {
 	}
 
 	const handleResetImage = () => {
-		props.setImage(null)
+		props.setFormData({ ...props.formData, image: null })
+
 		setImagePreview(null)
-		props.setImageSize(0)
 		setUploadError(null)
 	}
 
@@ -220,7 +218,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -241,16 +239,22 @@ export default function PlaygroundForm(props) {
 											id="Context"
 											maxLength={300}
 											name="Context"
-											onChange={e => props.setContext(e.target.value)}
+											onChange={e =>
+												props.setFormData({
+													...props.formData,
+													context: e.target.value,
+												})
+											}
 											placeholder="Enter your context here..."
 											rows="4"
-											value={props.context}
+											value={props.formData.context}
 										></textarea>
 										<p
-											className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.context, 300)}`}
+											className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.context, 300)}`}
 											data-testid="context-counter"
 										>
-											Remaining {300 - props.context.length}/300 characters
+											Remaining {300 - props.formData.context.length}/300
+											characters
 										</p>
 									</div>
 								</div>
@@ -289,7 +293,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -308,11 +312,14 @@ export default function PlaygroundForm(props) {
 											maxLength={25}
 											name="languageToTranslate"
 											onChange={e =>
-												props.setLanguageToTranslate(e.target.value)
+												props.setFormData({
+													...props.formData,
+													languageToTranslate: e.target.value,
+												})
 											}
 											placeholder="Enter language code (e.g., en, fr, es)"
 											type="text"
-											value={props.languageToTranslate}
+											value={props.formData.languageToTranslate}
 										/>
 									</div>
 								</div>
@@ -351,7 +358,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -365,8 +372,8 @@ export default function PlaygroundForm(props) {
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 									</p>
-									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 py-2.5 pl-0.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
-										{props.jsonSchema}
+									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+										{props.formData.jsonSchema}
 										<div className={'absolute right-3 top-2'}>
 											<div className="flex items-center justify-end">
 												{isJsonValid ? (
@@ -388,10 +395,11 @@ export default function PlaygroundForm(props) {
 										</div>
 									</div>
 									<p
-										className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.jsonSchema, 1000)}`}
+										className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.jsonSchema, 1000)}`}
 										data-testid="json-schema-counter"
 									>
-										Remaining {1000 - props.jsonSchema.length}/1000 characters
+										Remaining {1000 - props.formData.jsonSchema.length}/1000
+										characters
 									</p>
 								</div>
 							</motion.p>
@@ -402,9 +410,11 @@ export default function PlaygroundForm(props) {
 
 			<div>
 				<button
-					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
+					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.formData.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
 					data-testid="analyze-button"
-					disabled={!isJsonValid || !props.image || props.userCredits === 0}
+					disabled={
+						!isJsonValid || !props.formData.image || props.userCredits === 0
+					}
 					onClick={props.handleSubmit}
 					type="button"
 				>

@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from 'react'
 
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
@@ -6,6 +7,7 @@ import { motion } from 'framer-motion'
 import Prism from 'prismjs'
 
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
+import copyToClipboard from '@/helpers/copyToClipboard'
 
 import 'prismjs/components/prism-markup-templating'
 import 'prismjs/themes/prism-tomorrow.min.css'
@@ -19,18 +21,15 @@ import 'prismjs/components/prism-php'
 
 export default function PlaygroundPreviewCode(params) {
 	const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
+
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
-	const [mounted, setMounted] = useState(false) // Pour savoir si le composant est monté
 	const [disclosureOpen, setDisclosureOpen] = useState(false)
 
-	// Utiliser useEffect pour Prism et éviter les problèmes d'hydratation
+	// Utiliser useEffect pour Prism et éviter les problèmes d'hydratation ( vite fait, marche pas bien)
 	useEffect(() => {
-		setMounted(true) // Assure que le composant est monté avant l'application de Prism.js
-		if (mounted) {
-			Prism.highlightAll()
-		}
-	}, [mounted, selectedTab, params, disclosureOpen])
+		Prism.highlightAll()
+	}, [selectedTab, params, disclosureOpen])
 
 	const formatJsonSchema = jsonSchema => {
 		if (!jsonSchema || jsonSchema.trim() === '') {
@@ -53,12 +52,15 @@ export default function PlaygroundPreviewCode(params) {
 		setTimeout(() => setIsPreviewCopied(false), 2000)
 	}
 
-	if (!mounted) {
-		return null // Pendant le SSR, ne retourne rien
+	function getSelectedEditorContent() {
+		const editor = document.querySelector(
+			`.language-${selectedTab.toLowerCase()} code`
+		)
+		return editor.textContent
 	}
 
 	return (
-		<Disclosure as="div" className="" key="code preview">
+		<Disclosure as="div" className="hidden sm:block" key="code preview">
 			{({ open }) => {
 				setDisclosureOpen(open)
 
@@ -130,11 +132,11 @@ export default function PlaygroundPreviewCode(params) {
 																	className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()}`}
 																>
 																	{getPreviewCode(
-																		params.languageToTranslate,
+																		params.formData.languageToTranslate,
 																		language,
-																		params.image,
-																		params.context,
-																		params.jsonSchema,
+																		params.formData.image,
+																		params.formData.context,
+																		params.formData.jsonSchema,
 																		formatJsonSchema
 																	)}
 																</code>

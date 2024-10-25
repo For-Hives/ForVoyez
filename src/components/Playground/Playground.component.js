@@ -14,48 +14,48 @@ export function Playground() {
 	const [userCredits, setUserCredits] = useState(0)
 	const [showTooltip, setShowTooltip] = useState(false)
 
-	const [imageSize, setImageSize] = useState(0)
+	const [formData, setFormData] = useState({
+		jsonSchema: JSON.stringify(defaultJsonTemplateSchema, null, 4),
+		languageToTranslate: '',
+		keywords: '',
+		image: null,
+		context: '',
+	})
 
 	const [isProcessingResultApi, setIsProcessingResultApi] = useState(false)
-	const [languageToTranslate, setLanguageToTranslate] = useState('')
-	const [image, setImage] = useState(null)
-
-	const [context, setContext] = useState('')
-
-	const [jsonSchema, setJsonSchema] = useState('')
 	const [response, setResponse] = useState(null)
 
 	const apiResponseRef = useRef(null)
 
-	const handleSubmit = async e => {
+	async function handleSubmit(e) {
 		e.preventDefault()
 
-		if (!image) {
+		if (!formData.image) {
 			setUploadError('Please select an image')
 			return
 		}
 
 		// 10 * 1024 * 1024
-		if (imageSize > 10485760) {
+		if (formData.image.size > 10485760) {
 			setUploadError('Image size should not exceed 10MB')
 			return
 		}
 
-		const formData = new FormData()
-		formData.append('image', image)
+		const formDataObject = new FormData()
+		formDataObject.append('image', formData.image)
 		const dataObject = {
-			schema: jsonSchema || defaultJsonTemplateSchema,
-			language: languageToTranslate,
-			context: context,
+			schema: formData.jsonSchema || defaultJsonTemplateSchema,
+			language: formData.languageToTranslate,
+			context: formData.context,
 		}
 
-		formData.append('data', JSON.stringify(dataObject))
+		formDataObject.append('data', JSON.stringify(dataObject))
 
 		setIsProcessingResultApi(true)
 		apiResponseRef.current?.scrollIntoView({ behavior: 'smooth' })
 
 		try {
-			const response = await describePlaygroundAction(formData)
+			const response = await describePlaygroundAction(formDataObject)
 			if (response.status === 200) {
 				setResponse(response.data)
 			} else {
@@ -72,23 +72,11 @@ export function Playground() {
 	}
 
 	useEffect(() => {
-		// get the value for defaultJsonTemplateSchema from the constants file
-		// then, set a '\n' at the second and last - 1 character
-		const value = JSON.stringify(defaultJsonTemplateSchema, null, 4)
-		setJsonSchema(value)
-	}, [])
-
-	useEffect(() => {
-		getCreditsFromUserId().then(credits => setUserCredits(credits))
-	}, [])
-
-	useEffect(() => {
-		if (userCredits === 0) {
-			setShowTooltip(true)
-		} else {
-			setShowTooltip(false)
-		}
-	}, [userCredits])
+		getCreditsFromUserId().then(credits => {
+			setUserCredits(credits)
+			setShowTooltip(credits === 0)
+		})
+	}, [response])
 
 	return (
 		<>
@@ -118,23 +106,16 @@ export function Playground() {
 			)}
 			<div className="grid-col-1 grid gap-8 xl:grid-cols-2">
 				<PlaygroundForm
-					context={context}
+					formData={formData}
 					handleSubmit={handleSubmit}
-					image={image}
-					jsonSchema={jsonSchema}
-					languageToTranslate={languageToTranslate}
-					setContext={setContext}
-					setImage={setImage}
-					setImageSize={setImageSize}
-					setJsonSchema={setJsonSchema}
-					setLanguageToTranslate={setLanguageToTranslate}
+					setFormData={setFormData}
 					userCredits={userCredits}
 				/>
 
 				{/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
 
-				<div className="flex hidden flex-col sm:block">
-					<div className={'flex hidden flex-col sm:block'} ref={apiResponseRef}>
+				<div className="flex flex-col">
+					<div className={'flex flex-col'} ref={apiResponseRef}>
 						<h3>API Response</h3>
 						<p className="mt-1 text-sm italic text-slate-500">
 							{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
@@ -144,7 +125,7 @@ export function Playground() {
 							response={response}
 						/>
 
-						<p className={'text-md my-4 text-slate-500'}>
+						<p className={'text-md my-4 hidden text-slate-500 sm:block'}>
 							remaining credits: &nbsp;
 							<span className={'font-semibold text-slate-900'}>
 								{userCredits}
@@ -152,12 +133,7 @@ export function Playground() {
 						</p>
 					</div>
 
-					<PlaygroundPreviewCode
-						context={context}
-						image={image}
-						jsonSchema={jsonSchema}
-						languageToTranslate={languageToTranslate}
-					/>
+					<PlaygroundPreviewCode formData={formData} />
 				</div>
 			</div>
 		</>
