@@ -3,7 +3,6 @@ const HTTP_EXAMPLE = (
 	image = null,
 	context = null,
 	jsonSchema = null,
-	formatJsonSchema = null,
 	keywords = null
 ) => `POST /api/describe HTTP/1.1
 Host: forvoyez.com
@@ -45,7 +44,6 @@ const CURL_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema,
 	keywords
 ) => `curl -X POST \\
   'https://forvoyez.com/api/describe' \\
@@ -67,7 +65,6 @@ const JAVASCRIPT_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema,
 	keywords
 ) => `const form = new FormData();
 form.append('image', ${image ? 'imageFile' : 'null'});
@@ -91,7 +88,6 @@ const PHP_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema,
 	keywords
 ) => `<?php
 $curl = curl_init();
@@ -125,7 +121,6 @@ const PYTHON_EXAMPLE = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema,
 	keywords
 ) => {
 	const imageFile = image ? `'${image.name}'` : '"example.jpg"'
@@ -138,12 +133,11 @@ files = {
     'image': open(${imageFile}, 'rb'),
 }
 payload = {
-    'data': {
-        'context': '${contextValue}',
-        'language': '${languageToTranslate || 'en'}',
-        'schema': ${schemaValue}
-    }
-}
+  ${context ? "'context': '" + context + "'," : ''}
+	${languageToTranslate ? "'language': '" + languageToTranslate + "'," : ''}
+	${jsonSchema ? "'schema': " + schemaValue : ''}
+	${keywords ? "'keywords': '" + keywords + "'" : ''}
+	}
 headers = {
     'Authorization': 'Bearer <user-token>' 
 }
@@ -158,7 +152,6 @@ export const getPreviewCode = (
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema,
 	keywords
 ) => {
 	switch (language) {
@@ -168,7 +161,6 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema,
 				keywords
 			)
 		case 'cURL':
@@ -177,7 +169,6 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema,
 				keywords
 			)
 		case 'JavaScript':
@@ -186,7 +177,6 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema,
 				keywords
 			)
 		case 'PHP':
@@ -195,7 +185,6 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema,
 				keywords
 			)
 		case 'Python':
@@ -204,10 +193,23 @@ export const getPreviewCode = (
 				image,
 				context,
 				jsonSchema,
-				formatJsonSchema,
 				keywords
 			)
 		default:
 			return ''
+	}
+}
+
+function formatJsonSchema(jsonSchema) {
+	if (!jsonSchema || jsonSchema.trim() === '') {
+		return 'No schema provided'
+	}
+	try {
+		const parsedJsonSchema = JSON.parse(jsonSchema)
+		return JSON.stringify(parsedJsonSchema, null, 4)
+			.replace(/\n/g, '\n    ')
+			.replace(/\n    \}/g, '\n    }\n')
+	} catch (error) {
+		return 'Invalid JSON'
 	}
 }
