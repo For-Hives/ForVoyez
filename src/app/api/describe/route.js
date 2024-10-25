@@ -32,7 +32,12 @@ export async function POST(request) {
 	try {
 		// get the authorisation header
 		const authorization = request.headers.get('Authorization')
-		if (!authorization) {
+		if (
+			!authorization ||
+			!authorization.startsWith('Bearer ') ||
+			authorization.length < 10
+		) {
+			console.error('Unauthorized, missing Authorization header')
 			return new Response('Unauthorized', {
 				statusText: 'Unauthorized, missing Authorization header',
 				status: 401,
@@ -60,7 +65,7 @@ export async function POST(request) {
 		} catch (error) {
 			console.error(
 				'Unauthorized, invalid token : ',
-				error,
+				error.message,
 				' for : ',
 				authorization
 			)

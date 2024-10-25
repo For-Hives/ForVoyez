@@ -36,8 +36,6 @@ export async function verifyJwt(jwt) {
 
 		return payload
 	} catch (e) {
-		console.error(e)
-
-		throw new Error('Token is invalid')
+		throw new Error('Token is not signed by the server')
 	}
 }
