@@ -20,8 +20,7 @@ import 'prismjs/components/prism-http'
 import 'prismjs/components/prism-php'
 
 export default function PlaygroundPreviewCode(params) {
-	// const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
-	const previewLanguages = ['JavaScript', 'cURL', 'PHP', 'HTTP']
+	const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
 
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
@@ -31,20 +30,6 @@ export default function PlaygroundPreviewCode(params) {
 	useEffect(() => {
 		Prism.highlightAll()
 	}, [selectedTab, params, disclosureOpen])
-
-	const formatJsonSchema = jsonSchema => {
-		if (!jsonSchema || jsonSchema.trim() === '') {
-			return 'No schema provided'
-		}
-		try {
-			const parsedJsonSchema = JSON.parse(jsonSchema)
-			return JSON.stringify(parsedJsonSchema, null, 4)
-				.replace(/\n/g, '\n    ')
-				.replace(/\n    \}/g, '\n    }\n')
-		} catch (error) {
-			return 'Invalid JSON'
-		}
-	}
 
 	const copySelectedEditorContent = () => {
 		const content = getSelectedEditorContent()
@@ -138,7 +123,6 @@ export default function PlaygroundPreviewCode(params) {
 																		params.formData.image,
 																		params.formData.context,
 																		params.formData.jsonSchema,
-																		formatJsonSchema,
 																		params.formData.keywords
 																	)}
 																</code>
