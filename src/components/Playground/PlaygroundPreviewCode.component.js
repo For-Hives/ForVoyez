@@ -20,7 +20,8 @@ import 'prismjs/components/prism-http'
 import 'prismjs/components/prism-php'
 
 export default function PlaygroundPreviewCode(params) {
-	const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
+	// const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
+	const previewLanguages = ['JavaScript', 'cURL', 'PHP', 'HTTP']
 
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
@@ -137,7 +138,8 @@ export default function PlaygroundPreviewCode(params) {
 																		params.formData.image,
 																		params.formData.context,
 																		params.formData.jsonSchema,
-																		formatJsonSchema
+																		formatJsonSchema,
+																		params.formData.keywords
 																	)}
 																</code>
 															</pre>
