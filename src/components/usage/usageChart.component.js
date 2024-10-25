@@ -17,7 +17,11 @@ import { useAuth } from '@clerk/nextjs'
 import { fr } from 'date-fns/locale'
 import { format } from 'date-fns'
 
-import { getUsageByToken, getUsageForUser } from '@/services/database.service'
+import {
+	getCreditsFromUserId,
+	getUsageByToken,
+	getUsageForUser,
+} from '@/services/database.service'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 
 export function UsageChartComponent() {
@@ -26,8 +30,13 @@ export function UsageChartComponent() {
 	const [isLoadingUsage, setIsLoadingUsage] = useState(true)
 	const [isLoadingUsageByToken, setIsLoadingUsageByToken] = useState(true)
 	const [showTooltip, setShowTooltip] = useState(false)
+	const [userCredits, setUserCredits] = useState(0)
 
 	const { userId } = useAuth()
+
+	useEffect(() => {
+		getCreditsFromUserId().then(credits => setUserCredits(credits))
+	}, [])
 
 	useEffect(() => {
 		async function fetchUsage() {
@@ -73,6 +82,20 @@ export function UsageChartComponent() {
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
+			<div className="">
+				<h2 className="mb-0 text-2xl font-bold text-slate-800">
+					How many credits do I have left?
+				</h2>
+				<div className="mt-0 flex gap-2">
+					<p className="text-md text-slate-600">
+						You have{' '}
+						<span className="font-bold text-forvoyez_orange-600">
+							{userCredits} credits left
+						</span>
+					</p>
+				</div>
+			</div>
+
 			<h2 className="mb-0 text-2xl font-bold text-slate-800">
 				Remaining Credits Over Time
 			</h2>
