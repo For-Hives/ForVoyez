@@ -1,9 +1,10 @@
 const HTTP_EXAMPLE = (
-	languageToTranslate,
-	image,
-	context,
-	jsonSchema,
-	formatJsonSchema
+	languageToTranslate = null,
+	image = null,
+	context = null,
+	jsonSchema = null,
+	formatJsonSchema = null,
+	keywords = null
 ) => `POST /api/describe HTTP/1.1
 Host: forvoyez.com
 Content-Type: multipart/form-data; boundary=---011000010111000001101001
@@ -12,30 +13,54 @@ Authorization: Bearer <user-token>
 -----011000010111000001101001
 Content-Disposition: form-data; name="image"; filename="${image ? image.name : 'example.jpg'}"
 Content-Type: ${image ? image.type : 'image/jpeg'}
-
-${image ? '<binary image data>' : ''}
------011000010111000001101001
-Content-Disposition: form-data; name="data"
-
-{
-  "context": "${context || 'No context provided'}",
-  "language": "${languageToTranslate || 'en'}",
-  "schema": ${formatJsonSchema(jsonSchema)}}
------011000010111000001101001--`
+${image ? '<binary image data>' : ''}${
+	context
+		? '\n-----011000010111000001101001\n' +
+			'Content-Disposition: form-data; name="context"\n' +
+			context
+		: ''
+}${
+	languageToTranslate
+		? '\n-----011000010111000001101001\n' +
+			'Content-Disposition: form-data; name="language"\n' +
+			languageToTranslate
+		: ''
+}${
+	jsonSchema
+		? `\n-----011000010111000001101001
+Content-Disposition: form-data; name="schema"
+${formatJsonSchema(jsonSchema)}`
+		: ''
+}${
+	keywords
+		? '\n-----011000010111000001101001\n' +
+			'Content-Disposition: form-data; name="keywords"\n' +
+			keywords
+		: ''
+}
+`
 
 const CURL_EXAMPLE = (
 	languageToTranslate,
 	image,
 	context,
 	jsonSchema,
-	formatJsonSchema
+	formatJsonSchema,
+	keywords
 ) => `curl -X POST \\
   'https://forvoyez.com/api/describe' \\
   -H 'Authorization: Bearer <user-token>' \\
-  -F 'image=@"${image ? image.name : 'example.jpg'}"' \\
-  -F 'data={"context":"${context || 'No context provided'}",
-	"language":"${languageToTranslate || 'en'}",
-  "schema":${formatJsonSchema(jsonSchema)}}'`
+  -F 'image=@"${image ? image.name : 'example.jpg'}"' ${
+		context ? '\\\n' + "  -F 'context=" + context + "'" : ''
+	} ${
+		languageToTranslate
+			? '\\\n' + "  -F 'language=" + languageToTranslate + "'"
+			: ''
+	} ${
+		jsonSchema
+			? '\\\n' + "  -F 'schema=" + formatJsonSchema(jsonSchema) + "'"
+			: ''
+	} ${keywords ? '\\\n' + "  -F 'keywords" + keywords + "'" : ''}`
 
 const JAVASCRIPT_EXAMPLE = (
 	languageToTranslate,
