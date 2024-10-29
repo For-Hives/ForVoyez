@@ -128,7 +128,10 @@ export function Playground() {
 
 						<p className={'text-md my-4 hidden text-slate-500 sm:block'}>
 							remaining credits: &nbsp;
-							<span className={'font-semibold text-slate-900'}>
+							<span
+								className={'font-semibold text-slate-900'}
+								data-testid="user-credits"
+							>
 								{userCredits}
 							</span>
 						</p>
