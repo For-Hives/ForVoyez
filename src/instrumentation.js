@@ -30,7 +30,9 @@ let initialized = false
 export function register() {
 	// Une spécificité (ou un bug ?) fait que register peut être appelé N fois, donc on ajoute un contrôle
 	// Réf : https://github.com/vercel/next.js/issues/51450
-	console.info('instrumentation activée')
+	console.info(
+		"instrumentation activée with '" + process.env.NEXT_RUNTIME + "' runtime"
+	)
 	if (initialized) return
 	initialized = true
 
