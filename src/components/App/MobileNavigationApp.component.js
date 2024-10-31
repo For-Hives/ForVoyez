@@ -4,6 +4,7 @@ import {
 	Fragment,
 	Suspense,
 	createContext,
+	memo,
 	useContext,
 	useEffect,
 	useRef,
@@ -139,26 +140,29 @@ export const useMobileNavigationStore = create()(set => ({
 	isOpen: false,
 }))
 
-export function MobileNavigationAppComponent() {
-	let isInsideMobileNavigation = useIsInsideMobileNavigation()
-	let { isOpen, toggle, close } = useMobileNavigationStore()
-	let ToggleIcon = isOpen ? XIcon : MenuIcon
+export const MobileNavigationAppComponent = memo(
+	function MobileNavigationAppComponent() {
+		// Wrap with memo
+		let isInsideMobileNavigation = useIsInsideMobileNavigation()
+		let { isOpen, toggle, close } = useMobileNavigationStore()
+		let ToggleIcon = isOpen ? XIcon : MenuIcon
 
-	return (
-		<IsInsideMobileNavigationContext.Provider value={true}>
-			<button
-				aria-label="Toggle navigation"
-				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-slate-900/5"
-				onClick={toggle}
-				type="button"
-			>
-				<ToggleIcon className="w-2.5 stroke-slate-900" />
-			</button>
-			{!isInsideMobileNavigation && (
-				<Suspense fallback={null}>
-					<MobileNavigationDialog close={close} isOpen={isOpen} />
-				</Suspense>
-			)}
-		</IsInsideMobileNavigationContext.Provider>
-	)
-}
+		return (
+			<IsInsideMobileNavigationContext.Provider value={true}>
+				<button
+					aria-label="Toggle navigation"
+					className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-slate-900/5"
+					onClick={toggle}
+					type="button"
+				>
+					<ToggleIcon className="w-2.5 stroke-slate-900" />
+				</button>
+				{!isInsideMobileNavigation && (
+					<Suspense fallback={null}>
+						<MobileNavigationDialog close={close} isOpen={isOpen} />
+					</Suspense>
+				)}
+			</IsInsideMobileNavigationContext.Provider>
+		)
+	}
+)
