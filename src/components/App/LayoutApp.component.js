@@ -16,6 +16,21 @@ import version from '@/helpers/version'
 export function LayoutAppComponent({ children }) {
 	const { user } = useUser()
 
+	const memoizedImage = useMemo(
+		() => (
+			<Image
+				alt="logo ForVoyez"
+				className="h-8 w-auto"
+				height={80}
+				src="/logo/logo.webp"
+				width={80}
+			/>
+		),
+		[]
+	)
+
+	const memoizedHeroPattern = useMemo(() => <HeroPatternAppComponent />, [])
+
 	return (
 		<>
 			<ToastContainer autoClose={3000} position="top-right" />
@@ -31,13 +46,7 @@ export function LayoutAppComponent({ children }) {
 								<div className="hidden lg:flex">
 									<Link aria-label="Home" href="/app">
 										<span className="sr-only">ForVoyez</span>
-										<Image
-											alt="logo ForVoyez"
-											className="h-8 w-auto"
-											height={80}
-											src="/logo/logo.webp"
-											width={80}
-										/>
+										{memoizedImage}
 									</Link>
 								</div>
 								<HeaderDashboard />
@@ -67,7 +76,7 @@ export function LayoutAppComponent({ children }) {
 					</motion.header>
 					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8 lg:pt-0">
 						<main className="flex-auto">
-							<HeroPatternAppComponent />
+							{memoizedHeroPattern}
 							<div className="flex h-full flex-col pb-10 pt-8 xl:pt-16">
 								<div className={'z-20'}>{children}</div>
 							</div>

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
@@ -15,7 +15,7 @@ export default function TokenList() {
 	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	const openModal = () => setIsModalOpen(true)
-	const closeModal = () => setIsModalOpen(false)
+	const closeModal = useCallback(() => setIsModalOpen(false), [])
 
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 	const [tokenToDelete, setTokenToDelete] = useState(null)
@@ -30,7 +30,7 @@ export default function TokenList() {
 		setDeleteModalOpen(false)
 	}
 
-	const handleDelete = () => {
+	const handleDelete = useCallback(() => {
 		deleteToken(tokenToDelete.id)
 			.then(() => {
 				setTokens(tokens.filter(token => token.id !== tokenToDelete.id))
@@ -41,7 +41,7 @@ export default function TokenList() {
 				toast.error('Error deleting token: ' + error.message)
 				closeDeleteModal()
 			})
-	}
+	}, [tokenToDelete, tokens, closeDeleteModal])
 
 	useEffect(() => {
 		getAllToken().then(setTokens)

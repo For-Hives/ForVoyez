@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 import { UserButton, useUser } from '@clerk/nextjs'
@@ -186,37 +186,39 @@ export const dashboardNavigation = [
 	},
 ]
 
-export function NavigationAppComponent(props) {
-	const { user } = useUser()
+export const NavigationAppComponent = memo(
+	function NavigationAppComponent(props) {
+		const { user } = useUser()
 
-	return (
-		<nav {...props}>
-			<ul role="list">
-				{dashboardNavigation.map((group, groupIndex) => (
-					<NavigationGroup
-						className={groupIndex === 0 ? 'md:mt-0' : ''}
-						group={group}
-						key={group.title}
-					/>
-				))}
-				{user && (
-					<div className={'mt-6'}>
-						<div className={'flex items-center gap-2 lg:hidden'}>
-							<UserButton
-								afterSignOutUrl="/"
-								appearance="ghost"
-								userProfileMode="navigation"
-								userProfileUrl="/profile"
-							/>
-							<Link className={'h-full w-full'} href="/profile">
-								<span className="text-sm font-medium text-slate-900">
-									{user.firstName} {user.lastName}
-								</span>
-							</Link>
+		return (
+			<nav {...props}>
+				<ul role="list">
+					{dashboardNavigation.map((group, groupIndex) => (
+						<NavigationGroup
+							className={groupIndex === 0 ? 'md:mt-0' : ''}
+							group={group}
+							key={group.title}
+						/>
+					))}
+					{user && (
+						<div className={'mt-6'}>
+							<div className={'flex items-center gap-2 lg:hidden'}>
+								<UserButton
+									afterSignOutUrl="/"
+									appearance="ghost"
+									userProfileMode="navigation"
+									userProfileUrl="/profile"
+								/>
+								<Link className={'h-full w-full'} href="/profile">
+									<span className="text-sm font-medium text-slate-900">
+										{user.firstName} {user.lastName}
+									</span>
+								</Link>
+							</div>
 						</div>
-					</div>
-				)}
-			</ul>
-		</nav>
-	)
-}
+					)}
+				</ul>
+			</nav>
+		)
+	}
+)
