@@ -1,3 +1,7 @@
+import {
+	BatchSpanProcessor,
+	ConsoleSpanExporter,
+} from '@opentelemetry/sdk-trace-base'
 import { OTLPHttpJsonTraceExporter, registerOTel } from '@vercel/otel'
 
 registerOTel({
