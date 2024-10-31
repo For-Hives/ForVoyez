@@ -1,6 +1,7 @@
 'use client'
 
 import { ToastContainer } from 'react-toastify'
+import { useMemo } from 'react'
 
 import { UserButton, useUser } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
