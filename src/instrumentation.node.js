@@ -5,7 +5,6 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { NodeSDK } from '@opentelemetry/sdk-node'
-import process from 'process'
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ERROR) // set diaglog level to DEBUG when debugging
 
 const exporterOptions = {
@@ -16,7 +15,7 @@ const exporterOptions = {
 const traceExporter = new OTLPTraceExporter(exporterOptions)
 const sdk = new NodeSDK({
 	resource: new Resource({
-		[SEMRESATTRS_SERVICE_NAME]: 'ForVoyez PROD',
+		[SEMRESATTRS_SERVICE_NAME]: 'ForVoyez Prdoduction',
 	}),
 	instrumentations: [getNodeAutoInstrumentations()],
 	traceExporter,
