@@ -1,4 +1,6 @@
 export async function register() {
+	console.info('next runtime :  ' + process.env.NEXT_RUNTIME)
+	console.info('node env :  ' + process.env.NODE_ENV)
 	if (
 		process.env.NEXT_RUNTIME === 'nodejs'
 		// &&
