@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Image from 'next/image'
 
@@ -50,28 +50,49 @@ export function AnimateSideHeroComponent() {
 		}
 	}, [])
 
+	const memoizedImageDemoLeftComponent = useMemo(
+		() => <ImageDemoLeftComponent />,
+		[]
+	)
+	const memoizedImageDemoMidTopComponent = useMemo(
+		() => <ImageDemoMidTopComponent />,
+		[]
+	)
+	const memoizedImageDemoMidBottomComponent = useMemo(
+		() => <ImageDemoMidBottomComponent />,
+		[]
+	)
+	const memoizedImageDemoRightTopComponent = useMemo(
+		() => <ImageDemoRightTopComponent />,
+		[]
+	)
+	const memoizedImageDemoRightBottomComponent = useMemo(
+		() => <ImageDemoRightBottomComponent />,
+		[]
+	)
+
 	return (
 		<div className="relative mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
 			{/* View sm + (all except mobile) */}
 			<div className="ml-auto hidden w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:block sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-				<ImageDemoLeftComponent />
+				{memoizedImageDemoLeftComponent}
 			</div>
 			<div className="mr-auto hidden w-44 flex-none space-y-8 sm:mr-0 sm:block sm:pt-52 lg:pt-36">
-				<ImageDemoMidTopComponent />
-				<ImageDemoMidBottomComponent />
+				{memoizedImageDemoMidTopComponent}
+				{memoizedImageDemoMidBottomComponent}
 			</div>
 			<div className="hidden w-44 flex-none space-y-8 pt-32 sm:block sm:pt-0">
-				<ImageDemoRightTopComponent />
-				<ImageDemoRightBottomComponent />
+				{memoizedImageDemoRightTopComponent}
+				{memoizedImageDemoRightBottomComponent}
 			</div>
 			{/* View mobile */}
 			<div className="mr-auto block w-44 flex-none space-y-8 sm:mr-0 sm:hidden sm:pt-52 lg:pt-36">
-				<ImageDemoMidTopComponent />
-				<ImageDemoMidBottomComponent />
+				{memoizedImageDemoMidTopComponent}
+				{memoizedImageDemoMidBottomComponent}
 			</div>
 			<div className="block w-44 flex-none space-y-8 pt-32 sm:hidden sm:pt-0">
-				<ImageDemoRightTopComponent />
-				<ImageDemoRightBottomComponent />
+				{memoizedImageDemoRightTopComponent}
+				{memoizedImageDemoRightBottomComponent}
 			</div>
 			<div
 				className={
