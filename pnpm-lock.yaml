@@ -54,8 +54,8 @@ importers:
         specifier: 14.2.16
         version: 14.2.16(@babel/core@7.25.9)(@playwright/test@1.48.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       openai:
-        specifier: 4.70.3
-        version: 4.70.3
+        specifier: 4.71.0
+        version: 4.71.0
       prisma:
         specifier: 5.21.1
         version: 5.21.1
@@ -2611,8 +2611,8 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
-  openai@4.70.3:
-    resolution: {integrity: sha512-N2XOWjuT5yKIdLgjZkQt9i5+cAXI7qKM7E5PpIsmVfnTi/Y812omr3rozgKwxXJC6aga8nl2BWos4HRdlZllFA==}
+  openai@4.71.0:
+    resolution: {integrity: sha512-jeJ7+6cZvj+ZbIsbX/Ag8+pug2+vjKbrD/v3Hwp6uv3KZyWjSkZa5MdUshzpNC3jsFzakfbUhEEFQXsKWNgm/g==}
     hasBin: true
     peerDependencies:
       zod: ^3.23.8
@@ -6113,7 +6113,7 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@4.70.3:
+  openai@4.71.0:
     dependencies:
       '@types/node': 18.19.59
       '@types/node-fetch': 2.6.11
