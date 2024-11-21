@@ -50,7 +50,7 @@
 		"form-data": "4.0.1",
 		"framer-motion": "11.11.17",
 		"jose": "5.9.6",
-		"mailgun.js": "10.2.3",
+		"mailgun.js": "10.2.4",
 		"next": "14.2.18",
 		"openai": "4.73.0",
 		"prisma": "5.22.0",
