@@ -60,7 +60,7 @@
 		"react-hook-form": "7.53.2",
 		"react-toastify": "10.0.6",
 		"react-type-animation": "3.2.0",
-		"recharts": "2.13.3",
+		"recharts": "2.14.0",
 		"sharp": "0.33.5",
 		"yup": "1.4.0",
 		"zustand": "5.0.1"
