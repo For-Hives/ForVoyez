@@ -118,8 +118,8 @@ importers:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.4.49)
       dotenv:
-        specifier: 16.4.6
-        version: 16.4.6
+        specifier: 16.4.7
+        version: 16.4.7
       eslint:
         specifier: 8.57.1
         version: 8.57.1
@@ -1598,8 +1598,8 @@ packages:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
 
-  dotenv@16.4.6:
-    resolution: {integrity: sha512-JhcR/+KIjkkjiU8yEpaB/USlzVi3i5whwOjpIRNGi9svKEXZSe+Qp6IWAjFjv+2GViAoDRCUv/QLNziQxsLqDg==}
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
   eastasianwidth@0.2.0:
@@ -4939,7 +4939,7 @@ snapshots:
 
   dotenv@16.4.5: {}
 
-  dotenv@16.4.6: {}
+  dotenv@16.4.7: {}
 
   eastasianwidth@0.2.0: {}
 
