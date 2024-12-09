@@ -91,8 +91,8 @@ importers:
         version: 5.0.2(@types/react@18.3.14)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
     devDependencies:
       '@clerk/testing':
-        specifier: 1.3.35
-        version: 1.3.35(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 1.3.36
+        version: 1.3.36(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@playwright/test':
         specifier: 1.49.0
         version: 1.49.0
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-YlKMpiVo4UITw3sgA+9QrAFRILVOz5hgB1Zw180Y2LEZ5a+MdpX668vJKGh7riSweMN7JQvU2jlsKGRO+1bXDw==}
     engines: {node: '>=18.17.0'}
 
-  '@clerk/backend@1.20.0':
-    resolution: {integrity: sha512-4QvFx88vt9DJzmi82/wrVNivIRDdhJm6Bp0Kv//OvXiisvAfi8NxtpgjQvltgB1F7txzZigxGeIjIplw3LQ/dQ==}
+  '@clerk/backend@1.20.1':
+    resolution: {integrity: sha512-uHyASZmPzx4IL1OtMAdIQlKB6ITefIwodjt83qXf40y9O/xJhtvZNTm1zk+V0aHxDnzBbl937blH5hoNWutIAw==}
     engines: {node: '>=18.17.0'}
 
   '@clerk/clerk-react@5.12.0':
@@ -297,8 +297,8 @@ packages:
       react: '>=18 || >=19.0.0-beta'
       react-dom: '>=18 || >=19.0.0-beta'
 
-  '@clerk/shared@2.19.1':
-    resolution: {integrity: sha512-ewTEIK91TEsQIQLsSFofAaCD8ZPYMy+1UgBB/k4Q8mese9A7mtE696FENaMXwu0YDyOg6yqgoHMOxOIYs8batQ==}
+  '@clerk/shared@2.19.2':
+    resolution: {integrity: sha512-xxItdH5Rbo3zAn1h5X+pGzqNk+A0vAlPg0vivft72RqSK9Y/IIUqx1Vd4MixFSVZgWrkg/f0IKzcEeEoJtm2kA==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       react: ^18 || ^19.0.0-0
@@ -321,8 +321,8 @@ packages:
       react-dom:
         optional: true
 
-  '@clerk/testing@1.3.35':
-    resolution: {integrity: sha512-50AklLQAuyXoB/kykBhPk2HIJGU6pMNTSZs5EvYo4NvPsxGTeTnOEOfhiapXQHukKkstWFFLzzgoemkQUg3hRg==}
+  '@clerk/testing@1.3.36':
+    resolution: {integrity: sha512-+NwaQK5WWu4qV4/I11AdaMleZKe+ki5v/cI4JzwIZitRBJ2V4Kkvoc3PPaBKB+kmX7vqA8HaS1Gkn2CXsThPQg==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       '@playwright/test': ^1
@@ -3686,9 +3686,9 @@ snapshots:
       - react
       - react-dom
 
-  '@clerk/backend@1.20.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@clerk/backend@1.20.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@clerk/shared': 2.19.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/shared': 2.19.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@clerk/types': 4.39.0
       cookie: 0.7.0
       snakecase-keys: 5.4.4
@@ -3718,7 +3718,7 @@ snapshots:
       server-only: 0.0.1
       tslib: 2.4.1
 
-  '@clerk/shared@2.19.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@clerk/shared@2.19.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@clerk/types': 4.39.0
       dequal: 2.0.3
@@ -3741,10 +3741,10 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@clerk/testing@1.3.35(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@clerk/testing@1.3.36(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@clerk/backend': 1.20.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@clerk/shared': 2.19.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/backend': 1.20.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/shared': 2.19.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@clerk/types': 4.39.0
       dotenv: 16.4.5
     optionalDependencies:
