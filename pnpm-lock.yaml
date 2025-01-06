@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@types/react': 19.0.3
-
 importers:
   .:
     dependencies:
@@ -1619,7 +1616,7 @@ packages:
 >>>>>>> 6b525d5 (feat: upgrade nextjs15)
     peerDependencies:
       '@testing-library/dom': ^10.0.0
-      '@types/react': 19.0.3
+      '@types/react': ^18.0.0 || ^19.0.0
       '@types/react-dom': ^18.0.0 || ^19.0.0
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -6201,7 +6198,7 @@ packages:
     engines: { node: '>=12.20.0' }
 >>>>>>> 6b525d5 (feat: upgrade nextjs15)
     peerDependencies:
-      '@types/react': 19.0.3
+      '@types/react': '>=18.0.0'
       immer: '>=9.0.6'
       react: '>=18.0.0'
       use-sync-external-store: '>=1.2.0'
