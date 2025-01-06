@@ -99,10 +99,5 @@
 		"@prisma/engines",
 		"prisma",
 		"sharp"
-	],
-	"pnpm": {
-		"overrides": {
-			"@types/react": "19.0.3"
-		}
-	}
+	]
 }
