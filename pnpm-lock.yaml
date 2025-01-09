@@ -42,8 +42,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       framer-motion:
-        specifier: 11.16.1
-        version: 11.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 11.16.3
+        version: 11.16.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       jose:
         specifier: 5.9.6
         version: 5.9.6
@@ -1936,8 +1936,8 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  framer-motion@11.16.1:
-    resolution: {integrity: sha512-xsjhEUSWHn39g334PpBTH+QissgEJVJkpRGS/4QUyMSmoJSNxA+7FTuq61s+OXPMS4muu5k9Y6r7GpcNKhd1xA==}
+  framer-motion@11.16.3:
+    resolution: {integrity: sha512-4TN2TRKfc/t3WC7QJF349Oa2UVnMmIC+IOzb1jt4JMoqjmI7TO6ATnjlKs+hpMxCkDDwt7q5V8azMidm4UYtRg==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -2479,8 +2479,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  motion-dom@11.16.1:
-    resolution: {integrity: sha512-XVNf3iCfZn9OHPZYJQy5YXXLn0NuPNvtT3YCat89oAnr4D88Cr52KqFgKa8dWElBK8uIoQhpJMJEG+dyniYycQ==}
+  motion-dom@11.16.3:
+    resolution: {integrity: sha512-v9Xf2bknUWW7WQajIVo2limfcKlxYv/dcGfB2Vx5h8cswOzP4IvJK21UXz4P37e8G0HstDoW4XRkrPIm737lfw==}
 
   motion-utils@11.16.0:
     resolution: {integrity: sha512-ngdWPjg31rD4WGXFi0eZ00DQQqKKu04QExyv/ymlC+3k+WIgYVFbt6gS5JsFPbJODTF/r8XiE/X+SsoT9c0ocw==}
@@ -5413,9 +5413,9 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@11.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  framer-motion@11.16.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
-      motion-dom: 11.16.1
+      motion-dom: 11.16.3
       motion-utils: 11.16.0
       tslib: 2.8.0
     optionalDependencies:
@@ -5963,7 +5963,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  motion-dom@11.16.1:
+  motion-dom@11.16.3:
     dependencies:
       motion-utils: 11.16.0
 
