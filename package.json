@@ -81,7 +81,7 @@
 		"eslint-plugin-perfectionist": "2.11.0",
 		"eslint-plugin-prettier": "5.2.1",
 		"husky": "9.1.7",
-		"jsdom": "25.0.1",
+		"jsdom": "26.0.0",
 		"lint-staged": "15.3.0",
 		"postcss": "8.4.49",
 		"prettier": "3.4.2",
