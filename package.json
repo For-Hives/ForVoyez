@@ -74,7 +74,7 @@
 		"@types/react": "19.0.7",
 		"@tailwindcss/typography": "0.5.16",
 		"autoprefixer": "10.4.20",
-		"eslint": "8.57.1",
+		"eslint": "9.18.0",
 		"eslint-config-next": "14.2.23",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-no-only-tests": "3.3.0",
