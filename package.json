@@ -79,7 +79,7 @@
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-no-only-tests": "3.3.0",
 		"eslint-plugin-perfectionist": "2.11.0",
-		"eslint-plugin-prettier": "5.2.1",
+		"eslint-plugin-prettier": "5.2.2",
 		"husky": "9.1.7",
 		"jsdom": "25.0.1",
 		"lint-staged": "15.3.0",
