@@ -27,8 +27,8 @@ importers:
         specifier: 6.2.1
         version: 6.2.1(prisma@6.2.1)
       '@rive-app/react-canvas':
-        specifier: 4.17.5
-        version: 4.17.5(react@19.0.0)
+        specifier: 4.17.6
+        version: 4.17.6(react@19.0.0)
       '@tailwindcss/forms':
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@3.4.17)
@@ -833,11 +833,11 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
 
-  '@rive-app/canvas@2.25.3':
-    resolution: {integrity: sha512-L/uF7/o14yW1hRad+Pt1gmIxVjmp7HYtBZmHR9XzC0BBwUyqMr5S1c/x8dHa4PbvljHwI1TrTU+drCCScZfRnQ==}
+  '@rive-app/canvas@2.25.4':
+    resolution: {integrity: sha512-g0z2ldp77gQr8J2ePmDROq1//8ZWeLZX1myCBDrDs3TJ/tFVuBoLCo3Oa2YrLlT99jrJJU2RhPwvV3otHdn3Cw==}
 
-  '@rive-app/react-canvas@4.17.5':
-    resolution: {integrity: sha512-BvjaiW80IyLOb76uZEvOOEp9INfqCPa29ailA8AvqT+FiXUmgiCh+JhIsR3cx3CCqW3DhuORr0F8AF1XFkxCwA==}
+  '@rive-app/react-canvas@4.17.6':
+    resolution: {integrity: sha512-gF52RIqf3euq2p6kPmO5UAlGgiWE2XmdcGNFXCbhVXKSQynMc3MAF9lwVUxbHbmjQ7fZlJJ9rcFe9cZfSi8mUg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
@@ -4149,11 +4149,11 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@rive-app/canvas@2.25.3': {}
+  '@rive-app/canvas@2.25.4': {}
 
-  '@rive-app/react-canvas@4.17.5(react@19.0.0)':
+  '@rive-app/react-canvas@4.17.6(react@19.0.0)':
     dependencies:
-      '@rive-app/canvas': 2.25.3
+      '@rive-app/canvas': 2.25.4
       react: 19.0.0
 
   '@rollup/rollup-android-arm-eabi@4.24.0':
