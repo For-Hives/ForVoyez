@@ -54,8 +54,8 @@ importers:
         specifier: 14.2.23
         version: 14.2.23(@babel/core@7.26.0)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       openai:
-        specifier: 4.78.1
-        version: 4.78.1
+        specifier: 4.79.1
+        version: 4.79.1(ws@8.18.0)
       prisma:
         specifier: 6.2.1
         version: 6.2.1
@@ -2649,12 +2649,15 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
-  openai@4.78.1:
-    resolution: {integrity: sha512-drt0lHZBd2lMyORckOXFPQTmnGLWSLt8VK0W9BhOKWpMFBEoHMoz5gxMPmVq5icp+sOrsbMnsmZTVHUlKvD1Ow==}
+  openai@4.79.1:
+    resolution: {integrity: sha512-M7P5/PKnT/S/B5v0D64giC9mjyxFYkqlCuQFzR5hkdzMdqUuHf8T1gHhPGPF5oAvu4+PO3TvJv/qhZoS2bqAkw==}
     hasBin: true
     peerDependencies:
+      ws: ^8.18.0
       zod: ^3.23.8
     peerDependenciesMeta:
+      ws:
+        optional: true
       zod:
         optional: true
 
@@ -6173,7 +6176,7 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@4.78.1:
+  openai@4.79.1(ws@8.18.0):
     dependencies:
       '@types/node': 18.19.59
       '@types/node-fetch': 2.6.11
@@ -6182,6 +6185,8 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+    optionalDependencies:
+      ws: 8.18.0
     transitivePeerDependencies:
       - encoding
 
