@@ -66,7 +66,7 @@
 		"zustand": "5.0.3"
 	},
 	"devDependencies": {
-		"@clerk/testing": "1.4.11",
+		"@clerk/testing": "1.4.12",
 		"@vitejs/plugin-react": "4.3.4",
 		"@vitest/coverage-v8": "3.0.2",
 		"@vitest/ui": "3.0.2",
