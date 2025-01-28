@@ -182,17 +182,17 @@ export default function PrivacyPolicyPage() {
 					<br />
 					SIRET : 880 505 276 00019
 					<br />
-					72 avenue Camus
+					4 impasse de la marchaisière
 					<br />
-					44000 Nantes
+					44115 Haute-Goulaine
 					<br />
 					Tel : 06 21 58 26 84
 					<br />
 					<a
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
-						href="https://andy-cinquin.fr"
+						href="https://andy-cinquin.com"
 					>
-						https://andy-cinquin.fr
+						https://andy-cinquin.com
 					</a>
 				</p>
 				<p className={`mt-1 text-sm text-slate-600`}>

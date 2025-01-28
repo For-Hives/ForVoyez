@@ -25,7 +25,7 @@ export const metadata = {
 			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
 		images: [
 			{
-				url: 'https://forvoyez.com/logo_og.webp',
+				url: 'https://forvoyez.com/logo/forvoyez_og.png',
 				width: 1261,
 				height: 959,
 			},
@@ -41,7 +41,7 @@ export const metadata = {
 			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
 		images: [
 			{
-				url: 'https://forvoyez.com/logo_og.webp',
+				url: 'https://forvoyez.com/logo/forvoyez_og.png',
 				width: 1261,
 				height: 959,
 			},
@@ -50,6 +50,20 @@ export const metadata = {
 		card: 'summary_large_image',
 		creator: '@ForVoyez',
 	},
+	icons: {
+		icon: [
+			{ url: '/favicon.ico' },
+			{ url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+			{ type: 'image/svg+xml', url: '/favicon.svg' },
+		],
+		apple: {
+			url: '/apple-touch-icon.png',
+			type: 'image/png',
+			sizes: '180x180',
+		},
+		shortcut: '/favicon.ico',
+	},
+
 	robots: {
 		googleBot: {
 			'max-image-preview': 'large',
@@ -63,6 +77,7 @@ export const metadata = {
 		follow: true,
 		index: true,
 	},
+
 	description:
 		'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
 	alternates: {
@@ -71,10 +86,25 @@ export const metadata = {
 		},
 		canonical: 'https://forvoyez.com/',
 	},
+	viewport: {
+		width: 'device-width',
+		viewportFit: 'cover',
+		initialScale: 1,
+		maximumScale: 1,
+	},
+	title: {
+		default: 'ForVoyez - AI-Powered Image Metadata Generation',
+		template: '%s | ForVoyez',
+	},
+	appleWebApp: {
+		statusBarStyle: 'default',
+		title: 'ForVoyez',
+		capable: true,
+	},
 	keywords: 'ForVoyez, image metadata, alt text, SEO, AI, SaaS, API',
 	authors: [{ url: 'https://forvoyez.com', name: 'ForVoyez Team' }],
-	title: 'ForVoyez - AI-Powered Image Metadata Generation',
 	metadataBase: new URL('https://forvoyez.com/'),
+	manifest: '/site.webmanifest',
 	publisher: 'ForVoyez',
 	creator: 'ForVoyez',
 }
