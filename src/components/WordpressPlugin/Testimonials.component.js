@@ -101,8 +101,8 @@ export function TestimonialsComponent() {
 						</blockquote>
 						<figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
 							<Image
-								alt={featuredTestimonial.author.name + ' profile picture'}
-								className="h-10 w-10 flex-none rounded-full bg-gray-50 object-cover"
+								alt={`${featuredTestimonial.author.name}'s profile picture - ForVoyez user testimonial`}
+								className="h-10 w-10 rounded-full bg-gray-50 object-cover"
 								height={40}
 								src={featuredTestimonial.author.imageUrl}
 								width={40}
@@ -114,7 +114,7 @@ export function TestimonialsComponent() {
 								<div className="text-gray-600">{`@${featuredTestimonial.author.handle}`}</div>
 							</div>
 							<Image
-								alt=""
+								alt={`${featuredTestimonial.author.name}'s company logo - Tell Me`}
 								className="h-10 w-auto flex-none"
 								height={40}
 								src={featuredTestimonial.author.logoUrl}
@@ -149,7 +149,7 @@ export function TestimonialsComponent() {
 											</blockquote>
 											<figcaption className="mt-6 flex items-center gap-x-4">
 												<Image
-													alt=""
+													alt={`${testimonial.author.name}'s profile picture - ForVoyez WordPress plugin user`}
 													className="h-10 w-10 rounded-full bg-gray-50 object-cover"
 													height={40}
 													src={testimonial.author.imageUrl}

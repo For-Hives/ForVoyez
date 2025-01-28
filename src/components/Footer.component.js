@@ -86,7 +86,7 @@ export function FooterComponent() {
 		<footer className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:pb-20 sm:pt-32 lg:px-8">
 			<div className="mb-10 flex justify-center">
 				<Image
-					alt="ForVoyez Logo"
+					alt="ForVoyez company logo"
 					height={50}
 					src="/logo/logo.webp"
 					width={50}
