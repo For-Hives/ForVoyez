@@ -79,7 +79,8 @@ export function HeroSectionComponent() {
 							transition={{ duration: 0.5, delay: 0.2 }}
 						>
 							<Image
-								alt="ForVoyez WordPress Plugin Interface"
+								alt="ForVoyez WordPress plugin interface screenshot showing the image optimization dashboard"
+								className="aspect-[2/3] w-full rounded-xl bg-slate-900/5 object-cover shadow-lg"
 								height={500}
 								src={'/images/wordpress-plugin/forvoyez_wordpress.png'}
 								width={500}

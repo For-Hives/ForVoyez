@@ -48,7 +48,7 @@ export function CtaPluginComponent() {
 					<div className="relative hidden h-80 sm:block lg:h-auto lg:flex-1">
 						<div className="absolute inset-0 flex items-center justify-center">
 							<Image
-								alt="ForVoyez wordpress app screenshot"
+								alt="ForVoyez WordPress plugin dashboard preview showing automatic alt text generation in action"
 								className="max-h-full max-w-full rounded-md object-contain ring-1 ring-white/10"
 								height={1080}
 								src="/images/wordpress-plugin/screenshot.webp"

@@ -39,7 +39,7 @@ export function NavbarComponent() {
 					<Link className="-m-1.5 p-1.5" data-testid="logo-link" href="/">
 						<span className="sr-only">ForVoyez</span>
 						<Image
-							alt="logo ForVoyez"
+							alt="ForVoyez navigation logo"
 							className="h-8 w-auto"
 							data-testid="logo-image"
 							height={80}
