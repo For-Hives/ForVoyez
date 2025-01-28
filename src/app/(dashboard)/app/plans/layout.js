@@ -1,10 +1,7 @@
 export const metadata = {
 	description:
-		"Explore ForVoyez's flexible pricing plans designed to suit your image metadata generation needs and scale with your business.",
-	alternates: {
-		canonical: '/app/plans',
-	},
-	title: 'Pricing Plans - ForVoyez',
+		'Manage your ForVoyez subscription, view available plans, and scale your image metadata generation capabilities.',
+	title: 'Subscription Plans',
 }
 
 export default function Layout({ children }) {

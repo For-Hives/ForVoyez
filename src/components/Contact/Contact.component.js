@@ -105,9 +105,9 @@ export function ContactComponent() {
 									/>
 								</dt>
 								<dd className={'font-bold'}>
-									72 Avenue Camus
+									4 Impasse de la marchaisière
 									<br />
-									44000 Nantes
+									44115 Nantes
 								</dd>
 							</div>
 							<div className="flex gap-x-4">

@@ -1,10 +1,10 @@
 export const metadata = {
 	description:
-		'Find important legal information about ForVoyez, including company details, intellectual property rights, and procedures for reporting copyright infringement.',
+		"View ForVoyez's legal notice and company information. Find details about our business registration, contact information, and regulatory compliance.",
 	alternates: {
-		canonical: 'https://forvoyez.com/app/legals/legal-notice',
+		canonical: '/app/legals/legal-notice',
 	},
-	title: 'Legal Notice - ForVoyez',
+	title: 'Legal Notice',
 }
 
 export default function LegalNoticePage() {
@@ -19,7 +19,7 @@ export default function LegalNoticePage() {
 			<p className="mt-4 text-sm text-slate-600">
 				<strong>SIRET</strong>: 880 505 276 00019
 				<br />
-				<strong>Registered office</strong>: 72 Avenue Camus, 44000 Nantes,
+				<strong>Registered office</strong>: 4 Impasse de la marchaisière, 44115,
 				France
 				<br />
 				<strong>VAT number</strong>: FR 35 880505276
@@ -154,9 +154,9 @@ export default function LegalNoticePage() {
 					<br />
 					ForVoyez Legal Department
 					<br />
-					72 Avenue Camus
+					4 Impasse de la marchaisière
 					<br />
-					44000, Nantes
+					44115, France
 					<br />
 					France
 				</p>

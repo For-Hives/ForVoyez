@@ -2,11 +2,8 @@ import TokenList from '@/components/Tokens/TokenList'
 
 export const metadata = {
 	description:
-		'Generate, manage, and revoke your ForVoyez API tokens to securely access our image metadata generation services.',
-	alternates: {
-		canonical: '/app/tokens',
-	},
-	title: 'API Tokens - ForVoyez',
+		'Securely manage your ForVoyez API keys. Create new tokens, revoke existing ones, and monitor key usage all in one place.',
+	title: 'API Keys Management',
 }
 
 export default function TokenPage() {

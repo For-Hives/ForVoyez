@@ -1,10 +1,10 @@
 export const metadata = {
 	description:
-		"Read about ForVoyez's privacy policy and how we handle your personal information when you use our AI-powered image metadata generation services.",
+		'Learn how ForVoyez handles your data. Our privacy policy outlines our data collection, usage, and protection practices.',
 	alternates: {
-		canonical: 'https://forvoyez.com/app/legals/privacy-policy',
+		canonical: '/app/legals/privacy-policy',
 	},
-	title: 'Privacy Policy - ForVoyez',
+	title: 'Privacy Policy',
 }
 
 export default function PrivacyPolicyPage() {

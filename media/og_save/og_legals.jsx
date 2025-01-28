@@ -57,8 +57,7 @@ export const div = () => {
 					fontSize: 42,
 				}}
 			>
-				Get in Touch With Us <br />
-				Email - Chat - Support
+				Legal Documentation & Privacy Information
 			</div>
 		</div>
 	)
