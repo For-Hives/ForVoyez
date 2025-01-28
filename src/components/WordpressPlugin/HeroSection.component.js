@@ -59,7 +59,7 @@ export function HeroSectionComponent() {
 								>
 									<Link
 										className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
-										href="/download-plugin"
+										href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 									>
 										Download Now
 									</Link>

@@ -51,7 +51,7 @@ export function CtaPluginComponent() {
 								alt="ForVoyez wordpress app screenshot"
 								className="max-h-full max-w-full rounded-md object-contain ring-1 ring-white/10"
 								height={1080}
-								src="/images/plugins/screenshot.webp"
+								src="/images/wordpress-plugin/screenshot.webp"
 								width={1824}
 							/>
 						</div>
