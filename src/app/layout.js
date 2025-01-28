@@ -19,6 +19,16 @@ const jost = Jost({
 	style: ['normal'],
 })
 
+export const viewport = {
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#FF6545' },
+		{ media: '(prefers-color-scheme: dark)', color: '#FF6545' },
+	],
+	width: 'device-width',
+	colorScheme: 'light',
+	initialScale: 1,
+}
+
 export const metadata = {
 	openGraph: {
 		description:
@@ -85,12 +95,6 @@ export const metadata = {
 			'en-US': 'https://forvoyez.com/',
 		},
 		canonical: 'https://forvoyez.com/',
-	},
-	viewport: {
-		width: 'device-width',
-		viewportFit: 'cover',
-		initialScale: 1,
-		maximumScale: 1,
 	},
 	title: {
 		default: 'ForVoyez - AI-Powered Image Metadata Generation',
