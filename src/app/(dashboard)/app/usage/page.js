@@ -2,11 +2,8 @@ import { UsageChartComponent } from '@/components/usage/usageChart.component'
 
 export const metadata = {
 	description:
-		'Monitor your ForVoyez API usage, track monthly limits, and analyze your image metadata generation trends.',
-	alternates: {
-		canonical: '/app/usage',
-	},
-	title: 'Usage Statistics - ForVoyez',
+		'Monitor your API usage, track request patterns, and analyze your ForVoyez integration performance.',
+	title: 'Usage Analytics',
 }
 
 export default function UsagePage() {

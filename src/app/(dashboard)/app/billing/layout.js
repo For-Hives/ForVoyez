@@ -1,10 +1,7 @@
 export const metadata = {
 	description:
-		'Manage your ForVoyez subscription, update payment methods, and view your billing history.',
-	alternates: {
-		canonical: '/app/billing',
-	},
-	title: 'Billing - ForVoyez',
+		'Access your billing history, manage payment methods, and view invoices for your ForVoyez subscription.',
+	title: 'Billing & Invoices',
 }
 
 export default function Layout({ children }) {

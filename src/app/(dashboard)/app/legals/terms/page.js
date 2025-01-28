@@ -1,12 +1,11 @@
 export const metadata = {
 	description:
-		"Read ForVoyez's Terms of Service agreement before accessing or using our AI-powered image metadata generation services.",
+		"Read ForVoyez's Terms of Service agreement. Learn about the rules, guidelines, and policies for using our image metadata generation services.",
 	alternates: {
-		canonical: 'https://forvoyez.com/app/legals/terms',
+		canonical: '/app/legals/terms',
 	},
-	title: 'Terms of Service - ForVoyez',
+	title: 'Terms of Service',
 }
-
 export default function TermsOfServicePage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto px-6">
