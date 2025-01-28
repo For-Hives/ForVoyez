@@ -3,8 +3,8 @@ import Image from 'next/image'
 
 const featuredTestimonial = {
 	author: {
-		imageUrl: '/images/plugins/testimonials/sarah.png',
-		logoUrl: '/images/plugins/logo-tell-me.png',
+		imageUrl: '/images/wordpress-plugin/testimonials/sarah.png',
+		logoUrl: '/images/wordpress-plugin/logo-tell-me.png',
 		name: 'Sarah Johnson',
 		handle: 'sarahj85',
 	},
@@ -15,17 +15,17 @@ const testimonials = [
 	[
 		[
 			{
-				body: "The automatic alt text feature has really helped our visually impaired users. We've gotten some positive feedback from them.",
 				author: {
-					imageUrl: '/images/plugins/testimonials/michael.png',
+					imageUrl: '/images/wordpress-plugin/testimonials/michael.png',
 					name: 'Michael Chen',
 					handle: 'kazor',
 				},
+				body: "The automatic alt text feature has really helped our visually impaired users. We've gotten some positive feedback from them.",
 			},
 			{
 				body: "ForVoyez's plugin has saved us a ton of time on image optimization. It’s pretty handy, and the descriptions are usually well-optimized for SEO.",
 				author: {
-					imageUrl: '/images/plugins/testimonials/emma.png',
+					imageUrl: '/images/wordpress-plugin/testimonials/emma.png',
 					name: 'Emma Rodriguez',
 					handle: 'emmashots',
 				},
@@ -35,7 +35,7 @@ const testimonials = [
 			{
 				body: "The plugin's bulk processing feature allowed us to optimize thousands of product images in a matter of hours. It's been a game-changer for our e-commerce site.",
 				author: {
-					imageUrl: '/images/plugins/testimonials/alex.png',
+					imageUrl: '/images/wordpress-plugin/testimonials/alex.png',
 					handle: 'leesin',
 					name: 'Alex Tan',
 				},
@@ -46,7 +46,7 @@ const testimonials = [
 		[
 			{
 				author: {
-					imageUrl: '/images/plugins/testimonials/sophie.png',
+					imageUrl: '/images/wordpress-plugin/testimonials/sophie.png',
 					handle: 'sophie.dubois33',
 					name: 'Sophie Dubois',
 				},
@@ -57,7 +57,7 @@ const testimonials = [
 			{
 				body: 'The multi-language support has helped us reach an international audience. We’ve noticed a nice boost in SEO, especially for non-English markets.',
 				author: {
-					imageUrl: '/images/plugins/testimonials/david.png',
+					imageUrl: '/images/wordpress-plugin/testimonials/david.png',
 					handle: 'septuar',
 					name: 'David Lee',
 				},

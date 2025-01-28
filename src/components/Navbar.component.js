@@ -13,7 +13,11 @@ const navigation = [
 	{ testId: 'nav-home', name: 'Home', href: '/' },
 	{ testId: 'nav-features', href: '/#features', name: 'Features' },
 	{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
-	{ testId: 'nav-plugins', href: '/plugins', name: 'Plugins' },
+	{
+		testId: 'nav-wordpress-plugin',
+		href: '/wordpress-plugin',
+		name: 'Plugins',
+	},
 	{
 		href: 'https://doc.forvoyez.com/',
 		testId: 'nav-documentation',

@@ -81,7 +81,7 @@ export function HeroSectionComponent() {
 							<Image
 								alt="ForVoyez WordPress Plugin Interface"
 								height={500}
-								src={'/images/plugins/forvoyez_wordpress.png'}
+								src={'/images/wordpress-plugin/forvoyez_wordpress.png'}
 								width={500}
 							/>
 						</motion.div>
