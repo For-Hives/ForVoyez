@@ -57,7 +57,8 @@ export const div = () => {
 					fontSize: 72,
 				}}
 			>
-				AI-Powered Alt Text Generator for WordPress
+				Smart Alt text. <br />
+				Better SEO.
 			</div>
 		</div>
 	)
