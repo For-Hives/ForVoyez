@@ -57,13 +57,8 @@ assignees: ''
 <!-- Ajoutez tous les liens pertinents -->
 - Documents de référence :
 - Issues liées :
+- Inspirations : 
 - Autres ressources :
 
 ## 💡 Notes additionnelles
 <!-- Ajoutez toute information complémentaire pertinente -->
-
----
-<!-- Tags pour le filtrage et la catégorisation -->
-**Type**: #communication
-**Canal**: #[canal-specifique]
-**Priorité**: Haute/Moyenne/Basse
