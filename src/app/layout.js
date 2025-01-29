@@ -78,7 +78,7 @@ export const metadata = {
 		googleBot: {
 			'max-image-preview': 'large',
 			'max-video-preview': -1,
-			noimageindex: true,
+			noimageindex: false,
 			'max-snippet': -1,
 			follow: true,
 			index: true,
