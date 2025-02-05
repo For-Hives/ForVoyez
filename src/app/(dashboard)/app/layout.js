@@ -1,4 +1,4 @@
-import { LayoutAppComponent } from '@/components/App/LayoutApp.component'
+import { LayoutAppComponent } from '@/components/App/LayoutApp.component' // app/(dashboard)/app/layout.js
 
 // app/(dashboard)/app/layout.js
 export const viewport = {
