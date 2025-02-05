@@ -7,7 +7,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 WORKDIR /usr/src/app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN apt update && apt install -y openssl
 
 # install dependencies into temp directory
