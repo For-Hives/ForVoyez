@@ -119,7 +119,7 @@ async function processOrderCreated(parsed_webhook) {
 
 		// add the credits to the user
 		await updateCredits(
-			user.clearkId,
+			user.clerkId,
 			plan ? plan.packageSize : 0,
 			null,
 			'Order created'
@@ -269,7 +269,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 
 				// Update the user's credits based on the package difference and log the reason
 				await updateCredits(
-					user.id,
+					user.clerkId,
 					packageDifference,
 					null,
 					'Subscription payment success (plan change)'
@@ -287,7 +287,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			if (newPlan) {
 				// Update the user's credits based on the current plan's package size and log the reason
 				await updateCredits(
-					user.clearkId,
+					user.clerkId,
 					newPlan.packageSize,
 					null,
 					'Subscription payment success'
@@ -309,7 +309,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		if (sub) {
 			// Update the user's credits based on the new subscription's plan package size and log the reason
 			await updateCredits(
-				user.clearkId,
+				user.clerkId,
 				sub.plan.packageSize ?? 0,
 				null,
 				'Subscription payment success (new plan)'
