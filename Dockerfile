@@ -4,17 +4,10 @@ FROM node:${NODE_VERSION}-slim as base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV COREPACK_ALLOW_UPDATE=1
-ENV COREPACK_NPM_REGISTRY=https://registry.npmjs.org/
 
 WORKDIR /usr/src/app
 
-# Étape mise à jour des certificats et corepack
-RUN apt-get update && apt-get install -y ca-certificates openssl && \
-    update-ca-certificates && \
-    corepack enable pnpm && \
-    corepack prepare pnpm@latest --activate && \
-    corepack enable
+RUN npm install -g corepack@latest && corepack enable && corepack prepare pnpm@latest --activate
 RUN apt update && apt install -y openssl
 
 # install dependencies into temp directory
