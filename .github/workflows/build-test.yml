@@ -88,7 +88,25 @@ jobs:
 
       - name: 'Start Docker Container'
         run: |
-          docker run -d --name forvoyez-container -p 3000:3000 --network test-network forvoyez:test
+          docker run -d --name forvoyez-container -p 3000:3000 \
+            -e NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
+            -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
+            -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} \
+            -e NEXT_PUBLIC_CLERK_SIGN_OUT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }} \
+            -e MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
+            -e MAILGUN_API_URL=${{ secrets.MAILGUN_API_URL }} \
+            -e MAILGUN_PUBLIC_KEY=${{ secrets.MAILGUN_PUBLIC_KEY }} \
+            -e MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }} \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e LEMON_SQUEEZY_API_KEY=${{ secrets.LEMON_SQUEEZY_API_KEY }} \
+            -e LEMON_SQUEEZY_STORE_ID=${{ secrets.LEMON_SQUEEZY_STORE_ID }} \
+            -e LEMON_SQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMON_SQUEEZY_WEBHOOK_SECRET }} \
+            -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez \
+            --network test-network \
+            forvoyez:test
       - name: 'Wait for the application to be ready'
         run: |
           echo "Waiting for the application to be ready..."
