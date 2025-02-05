@@ -24,6 +24,8 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile]
             - args: [--global, gulp, prettier, vitest]
+      - name: 'Generate prisma client'
+        run: pnpm prisma:generate
       - name: 'Run Unit Tests'
         run: pnpm test:ci
       - name: 'Report Coverage'
