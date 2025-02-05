@@ -64,9 +64,8 @@ jobs:
           docker run --link test-db:postgres --network test-network --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
       - name: 'Run prisma db migrate'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "
-            npm install -g pnpm && pnpm install && pnpm run prisma:migrate && pnpm run prisma:seed
-          "
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install && npm run prisma:migrate && npm run prisma:seed"
+
       - name: 'Build Docker Image for testing'
         run: |
           docker build -f Dockerfile -t forvoyez:test .
