@@ -88,7 +88,7 @@
 		"prettier-plugin-tailwindcss": "0.6.11",
 		"tailwindcss": "3.4.17",
 		"typescript": "5.7.3",
-		"vitest": "3.0.4",
+		"vitest": "3.0.5",
 		"vitest-mock-extended": "2.0.2",
 		"dotenv": "16.4.7",
 		"@playwright/test": "1.50.1"
