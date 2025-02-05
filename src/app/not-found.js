@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function notFound() {
+export default function NotFound() {
 	return (
 		<>
 			<div
