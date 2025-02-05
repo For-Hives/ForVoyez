@@ -62,7 +62,7 @@ describe('Webhook Service', () => {
 			prisma.webhookEvent.findUnique.mockResolvedValue(mockWebhook)
 			prisma.plan.findUnique.mockResolvedValue({ packageSize: 100 })
 			prisma.user.findUnique.mockResolvedValue(null)
-			prisma.user.create.mockResolvedValue({ id: 'user123' })
+			prisma.user.create.mockResolvedValue({ clerkId: 'user123' })
 
 			await processWebhook('webhook123')
 
@@ -189,7 +189,7 @@ describe('Webhook Service', () => {
 			prisma.webhookEvent.findUnique.mockResolvedValue(mockWebhook)
 			prisma.user.findUnique.mockResolvedValue({
 				customerId: 'customer123',
-				id: 'user123',
+				clerkId: 'user123',
 			})
 			prisma.subscription.findFirst
 				.mockResolvedValueOnce(null)
