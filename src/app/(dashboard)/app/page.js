@@ -102,10 +102,6 @@ const configResources = [
 ]
 
 export default function AppPage() {
-	useEffect(() => {
-		createUser()
-	}, [])
-
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
 			<h1 className="mb-8 text-3xl font-bold">

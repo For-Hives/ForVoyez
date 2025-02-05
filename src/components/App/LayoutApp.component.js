@@ -1,8 +1,9 @@
 'use client'
 
 import { ToastContainer } from 'react-toastify'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
+import { createUser } from '@/app/actions/app/createUser'
 import { UserButton, useUser } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
@@ -16,6 +17,10 @@ import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {
 	const { user } = useUser()
+
+	useEffect(() => {
+		createUser()
+	}, [])
 
 	const memoizedImage = useMemo(
 		() => (

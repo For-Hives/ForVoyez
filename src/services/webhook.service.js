@@ -77,7 +77,7 @@ async function processOrderCreated(parsed_webhook) {
 	const userId = parsed_webhook.meta.custom_data.user_id // Clerk user ID
 	const customerEmail = parsed_webhook.data.attributes.user_email
 	const customerName = parsed_webhook.data.attributes.user_name
-	const customerId = parsed_webhook.data.attributes.customer_id.toString() // Lemon Squeezy customer ID
+	const customerId = parsed_webhook.data.attributes.customer_id // Lemon Squeezy customer ID
 
 	// check if the user already exists
 	let user = await prisma.user.findUnique({
@@ -119,7 +119,7 @@ async function processOrderCreated(parsed_webhook) {
 
 		// add the credits to the user
 		await updateCredits(
-			user.id,
+			user.clearkId,
 			plan ? plan.packageSize : 0,
 			null,
 			'Order created'
@@ -287,7 +287,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 			if (newPlan) {
 				// Update the user's credits based on the current plan's package size and log the reason
 				await updateCredits(
-					user.id,
+					user.clearkId,
 					newPlan.packageSize,
 					null,
 					'Subscription payment success'
@@ -309,7 +309,7 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		if (sub) {
 			// Update the user's credits based on the new subscription's plan package size and log the reason
 			await updateCredits(
-				user.id,
+				user.clearkId,
 				sub.plan.packageSize ?? 0,
 				null,
 				'Subscription payment success (new plan)'
