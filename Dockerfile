@@ -31,7 +31,10 @@ FROM base AS prerelease
 COPY --from=install /tmp/dev/node_modules node_modules
 COPY . .
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
+
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
 RUN pnpm run prisma:generate
 RUN pnpm run build
@@ -48,8 +51,8 @@ COPY --from=prerelease /usr/src/app/src src
 COPY --from=prerelease /usr/src/app/package.json .
 COPY --from=prerelease /usr/src/app/prisma prisma
 
-ENV NODE_ENV production
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ENV NODE_ENV=production
+ENV PATH=/usr/src/app/node_modules/.bin:$PATH
 
 USER root
 
