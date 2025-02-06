@@ -29,7 +29,9 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		log('Filling in sign-in form')
 		await emailInput.fill(TEST_EMAIL)
 
-		const continueButton = page.locator('button:has-text("Continue")')
+		const continueButton = page.locator(
+			'button[data-localization-key="formButtonPrimary"]'
+		)
 		log('Waiting for continue button to be visible')
 		await continueButton.waitFor({ state: 'visible', timeout: 15000 })
 		await continueButton.click()

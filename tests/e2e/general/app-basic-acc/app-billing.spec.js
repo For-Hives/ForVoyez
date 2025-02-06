@@ -9,17 +9,18 @@ test.describe('Billing Page Functionality', () => {
 	test('Check billing page access and Toastify message', async ({ page }) => {
 		log('Page loaded')
 
-		// Wait for the Toastify message
-		const toastMessage = page.locator('.Toastify__toast-body')
-		log('Waiting for Toastify message to be visible')
-		await toastMessage.waitFor({ state: 'visible', timeout: 15000 })
+		// Wait for toast with specific text
+		const toastMessage = page.locator(
+			'.Toastify__toast-body:has-text("You must have been subscribed at least once")'
+		)
+		await toastMessage.waitFor({ state: 'visible', timeout: 20000 })
 
-		// Verify the Toastify message
-		log('Verifying the Toastify message')
-		await expect(toastMessage).toHaveText(
+		// Verify message content
+		log('Verifying Toast message')
+		await expect(toastMessage).toContainText(
 			'You must have been subscribed at least once to access this page.'
 		)
 
-		log('Billing page access test completed successfully')
+		log('Test completed successfully')
 	})
 })

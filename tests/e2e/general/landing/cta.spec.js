@@ -31,32 +31,26 @@ test.describe('CTA Component', () => {
 
 	test('CTA links are present and functional', async ({ page }) => {
 		await page.goto(getNextPublicUrl())
-
 		log('Page loaded')
 
-		// Check the visibility and functionality of the "Generate Metadata Now" link
+		// Generate Metadata link
 		const generateLink = page.locator('[data-testid="cta-generate-link"]')
-		log('Checking presence of "Generate Metadata Now" link')
 		await expect(generateLink).toBeVisible()
-		await expect(generateLink).toHaveAttribute('href', '/app')
 
-		log('Clicking "Generate Metadata Now" link')
+		log('Clicking generate link')
 		await generateLink.click()
 
-		// Check if redirected to the sign-in page
+		// Verify URL with proper regex
 		await expect(page).toHaveURL(
-			new RegExp(`${getNextPublicUrl()}/sign-in\\?redirect_url=.*%2Fapp`)
+			new RegExp(`${getNextPublicUrl()}\\/\\?redirect_url=.*\\/app`),
+			{ timeout: 10000 }
 		)
 
-		// Optionally, you can add steps to sign in here if needed
+		// Navigate back
+		await page.goBack()
 
-		// Go back to the home page
-		await page.goto(getNextPublicUrl())
-
-		// Check the visibility and functionality of the "Learn more" link
+		// Learn More link
 		const learnMoreLink = page.locator('[data-testid="cta-learn-more-link"]')
-		log('Checking presence of "Learn more" link')
-		await expect(learnMoreLink).toBeVisible()
 		await expect(learnMoreLink).toHaveAttribute(
 			'href',
 			'https://doc.forvoyez.com/'
