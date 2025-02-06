@@ -42,7 +42,7 @@ test.describe('CTA Component', () => {
 
 		// Verify URL with proper regex
 		await expect(page).toHaveURL(
-			new RegExp(`${getNextPublicUrl()}\\/\\?redirect_url=.*\\/app`),
+			new RegExp(`${getNextPublicUrl()}/sign-in\\?redirect_url=.*%2Fapp`),
 			{ timeout: 10000 }
 		)
 
