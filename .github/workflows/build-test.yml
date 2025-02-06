@@ -136,12 +136,18 @@ jobs:
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
           CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      - name: 'Capture Docker Logs'
+        if: always()
+        run: |
+          docker logs forvoyez-container > docker-logs.txt 2>&1
       - name: 'Upload Test Artifacts'
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-artifacts
-          path: test-results
+          path: |
+            test-results
+            docker-logs.txt
       - name: 'Stop and remove Docker Containers'
         run: |
           docker stop forvoyez-container
