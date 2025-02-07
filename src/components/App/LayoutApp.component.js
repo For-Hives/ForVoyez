@@ -47,7 +47,7 @@ export function LayoutAppComponent({ children }) {
 						className="contents h-full lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex lg:gap-4"
 						layoutScroll
 					>
-						<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pb-8 lg:pt-4 xl:w-80">
+						<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pt-4 lg:pb-8 xl:w-80">
 							<div className={'flex flex-col'}>
 								<div className="hidden lg:flex">
 									<Link aria-label="Home" href="/app">
@@ -83,7 +83,7 @@ export function LayoutAppComponent({ children }) {
 					<div className="relative flex h-full flex-col px-4 pt-14 sm:px-6 lg:px-8 lg:pt-0">
 						<main className="flex-auto">
 							{memoizedHeroPattern}
-							<div className="flex h-full flex-col pb-10 pt-8 xl:pt-16">
+							<div className="flex h-full flex-col pt-8 pb-10 xl:pt-16">
 								<div className={'z-20'}>{children}</div>
 							</div>
 						</main>

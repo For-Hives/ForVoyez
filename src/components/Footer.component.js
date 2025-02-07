@@ -83,7 +83,7 @@ const navigation = {
 
 export function FooterComponent() {
 	return (
-		<footer className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:pb-20 sm:pt-32 lg:px-8">
+		<footer className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:pt-32 sm:pb-20 lg:px-8">
 			<div className="mb-10 flex justify-center">
 				<Image
 					alt="ForVoyez company logo"
@@ -99,7 +99,7 @@ export function FooterComponent() {
 				{navigation.main.map(item => (
 					<div className="pb-6" key={item.name}>
 						<Link
-							className="text-sm leading-6 text-slate-600 hover:text-forvoyez_orange-500"
+							className="hover:text-forvoyez_orange-500 text-sm leading-6 text-slate-600"
 							href={item.href}
 						>
 							{item.name}
@@ -110,7 +110,7 @@ export function FooterComponent() {
 			<div className="mt-10 flex justify-center space-x-10">
 				{navigation.social.map(item => (
 					<Link
-						className="text-slate-400 hover:text-forvoyez_orange-500"
+						className="hover:text-forvoyez_orange-500 text-slate-400"
 						href={item.href}
 						key={item.name}
 					>

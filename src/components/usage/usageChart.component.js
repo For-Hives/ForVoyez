@@ -94,7 +94,7 @@ export function UsageChartComponent() {
 				<div className="mt-0 flex gap-2">
 					<p className="text-md text-slate-600">
 						You have{' '}
-						<span className="font-bold text-forvoyez_orange-600">
+						<span className="text-forvoyez_orange-600 font-bold">
 							{userCredits} credits left
 						</span>
 					</p>
@@ -109,7 +109,7 @@ export function UsageChartComponent() {
 					Follow your remaining credits over time:
 				</p>
 				{usage.length > 0 ? (
-					<p className="text-sm font-bold text-forvoyez_orange-600">
+					<p className="text-forvoyez_orange-600 text-sm font-bold">
 						{usage[usage.length - 1].creditsLeft}{' '}
 						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
@@ -124,7 +124,7 @@ export function UsageChartComponent() {
 					className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8"
 					data-testid="usage-tooltip"
 				>
-					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
+					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4">
 						<p className="text-sm leading-6 text-white">
 							<strong className="font-semibold">Usage Data</strong>
 							<svg
@@ -212,7 +212,7 @@ export function UsageChartComponent() {
 					</div>
 				)}
 			</div>
-			<h2 className="mb-0 mt-12 text-2xl font-bold text-slate-800">
+			<h2 className="mt-12 mb-0 text-2xl font-bold text-slate-800">
 				Usage by Token
 			</h2>
 			<div className="mt-0 flex gap-2">

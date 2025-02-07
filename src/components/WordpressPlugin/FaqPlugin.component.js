@@ -51,7 +51,7 @@ export function FaqPluginComponent() {
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-7xl divide-y divide-gray-900/10">
-					<h2 className="text-2xl font-bold leading-10 tracking-tight text-gray-900">
+					<h2 className="text-2xl leading-10 font-bold tracking-tight text-gray-900">
 						Frequently asked questions
 					</h2>
 					<dl className="mt-10 space-y-6 divide-y divide-gray-900/10">
@@ -61,7 +61,7 @@ export function FaqPluginComponent() {
 									<>
 										<dt>
 											<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-												<span className="text-base font-semibold leading-7">
+												<span className="text-base leading-7 font-semibold">
 													{faq.question}
 												</span>
 												<span className="ml-6 flex h-7 items-center">

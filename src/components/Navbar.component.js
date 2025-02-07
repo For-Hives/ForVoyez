@@ -65,7 +65,7 @@ export function NavbarComponent() {
 				<div className="hidden lg:flex lg:gap-x-12">
 					{navigation.map(item => (
 						<Link
-							className="text-sm font-semibold leading-6 text-slate-900"
+							className="text-sm leading-6 font-semibold text-slate-900"
 							data-testid={`nav-${item.name.toLowerCase()}`}
 							href={item.href}
 							key={item.name}
@@ -141,7 +141,7 @@ export function NavbarComponent() {
 							<div className="space-y-2 py-6">
 								{navigation.map(item => (
 									<Link
-										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-900 hover:bg-slate-50"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
 										data-testid={`nav-${item.name.toLowerCase()}`}
 										href={item.href}
 										key={item.name}
@@ -174,7 +174,7 @@ export function NavbarComponent() {
 								</SignedIn>
 								<SignedOut>
 									<SignInButton
-										className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-900 hover:bg-slate-50"
+										className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
 										data-testid="sign-in-button"
 									/>
 								</SignedOut>
