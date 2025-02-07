@@ -38,7 +38,9 @@ export function UsageChartComponent() {
 	useEffect(() => {
 		getCreditsFromUserId()
 			.then(credits => setUserCredits(credits))
-			.catch(toast.error('Error fetching user credits'))
+			.catch(error =>
+				console.error('Error fetching credits from user id:', error)
+			)
 	}, [])
 
 	useEffect(() => {
@@ -73,7 +75,7 @@ export function UsageChartComponent() {
 						setShowTooltip(false)
 					}
 				})
-				.catch(toast.error('Error fetching usage data'))
+				.catch(error => console.error('Error fetching usage data:', error))
 		}
 	}, [userId])
 

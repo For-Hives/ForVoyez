@@ -40,9 +40,7 @@ export function PricingComponent() {
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
 			})
-			.catch(error => {
-				toast.error('Error fetching plans: ' + error.message)
-			})
+			.catch(error => console.error('Error fetching usage data:', error))
 	}, [])
 
 	return (

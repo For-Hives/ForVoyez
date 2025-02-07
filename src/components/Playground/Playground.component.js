@@ -79,7 +79,7 @@ export function Playground() {
 				setUserCredits(credits)
 				setShowTooltip(credits === 0)
 			})
-			.catch(toast.error('Error fetching user credits'))
+			.catch(error => console.error('Error fetching usage data:', error))
 	}, [response])
 
 	return (
