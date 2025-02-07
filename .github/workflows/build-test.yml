@@ -66,7 +66,7 @@ jobs:
         run: |
           docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install -g pnpm && pnpm run prisma:migrate && pnpm run prisma:seed"
       - name: Setup Docker Cache
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver: docker
           config-inline: |
