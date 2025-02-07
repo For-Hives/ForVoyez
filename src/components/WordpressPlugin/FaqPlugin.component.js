@@ -1,5 +1,6 @@
 'use client'
 import { Disclosure } from '@headlessui/react'
+
 import { motion } from 'framer-motion'
 
 const faqs = [

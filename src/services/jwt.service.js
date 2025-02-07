@@ -1,9 +1,5 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { jwtVerify, SignJWT } from 'jose'
 import { createSecretKey } from 'crypto'
-
-function generateSecretKey() {
-	return createSecretKey(process.env.JWT_SECRET, 'utf-8')
-}
 
 export async function generateJwt(payload) {
 	const secretKey = generateSecretKey()
@@ -38,4 +34,8 @@ export async function verifyJwt(jwt) {
 	} catch (e) {
 		throw new Error('Token is not signed by the server')
 	}
+}
+
+function generateSecretKey() {
+	return createSecretKey(process.env.JWT_SECRET, 'utf-8')
 }

@@ -1,6 +1,6 @@
-import { Playground } from '@/components/Playground/Playground.component'
-
 import 'react-toastify/dist/ReactToastify.css'
+
+import { Playground } from '@/components/Playground/Playground.component'
 
 export const metadata = {
 	description:

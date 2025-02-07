@@ -1,18 +1,18 @@
 'use client'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-
 import {
 	BuildingOffice2Icon,
 	EnvelopeIcon,
 	PhoneIcon,
 } from '@heroicons/react/24/outline'
-import { sendEmail } from '@/app/actions/contact/sendEmail'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import Link from 'next/link'
 import * as yup from 'yup'
 
 import { FaqComponent } from '@/components/Contact/Faq.component'
+import { sendEmail } from '@/app/actions/contact/sendEmail'
 
 const schema = yup.object().shape({
 	email: yup.string().email('Invalid email').required('Email is required'),

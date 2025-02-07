@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 import {
 	Area,
@@ -35,7 +36,9 @@ export function UsageChartComponent() {
 	const { userId } = useAuth()
 
 	useEffect(() => {
-		getCreditsFromUserId().then(credits => setUserCredits(credits))
+		getCreditsFromUserId()
+			.then(credits => setUserCredits(credits))
+			.catch(toast.error('Error fetching user credits'))
 	}, [])
 
 	useEffect(() => {
@@ -60,15 +63,17 @@ export function UsageChartComponent() {
 		if (userId) {
 			fetchUsage()
 			fetchUsageByToken()
-			Promise.all([fetchUsage(), fetchUsageByToken()]).finally(() => {
-				setIsLoadingUsage(false)
-				setIsLoadingUsageByToken(false)
-				if (usage.length === 0 && usageByToken.length === 0) {
-					setShowTooltip(true)
-				} else {
-					setShowTooltip(false)
-				}
-			})
+			Promise.all([fetchUsage(), fetchUsageByToken()])
+				.finally(() => {
+					setIsLoadingUsage(false)
+					setIsLoadingUsageByToken(false)
+					if (usage.length === 0 && usageByToken.length === 0) {
+						setShowTooltip(true)
+					} else {
+						setShowTooltip(false)
+					}
+				})
+				.catch(toast.error('Error fetching usage data'))
 		}
 	}, [userId])
 

@@ -12,67 +12,6 @@ import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationAp
 import { useSectionStore } from '@/components/App/SectionProviderApp.component'
 import { remToPx } from '@/components/App/RemToPxApp.component'
 
-function useInitialValue(value, condition = true) {
-	let initialValue = useRef(value).current
-	return condition ? initialValue : value
-}
-
-function NavLink({
-	isAnchorLink = false,
-	active = false,
-	children,
-	testId,
-	href,
-}) {
-	return (
-		<Link
-			aria-current={active ? 'page' : undefined}
-			className={clsx(
-				'flex justify-between gap-2 py-1 pr-3 text-sm transition',
-				isAnchorLink ? 'pl-7' : 'pl-4',
-				active ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'
-			)}
-			data-testid={testId}
-			href={href}
-		>
-			<span className="truncate">{children}</span>
-		</Link>
-	)
-}
-
-function VisibleSectionHighlight({ pathname, group }) {
-	let [sections, visibleSections] = useInitialValue(
-		[useSectionStore(s => s.sections), useSectionStore(s => s.visibleSections)],
-		useIsInsideMobileNavigation()
-	)
-
-	let isPresent = useIsPresent()
-	let firstVisibleSectionIndex = Math.max(
-		0,
-		[{ id: '_top' }, ...sections].findIndex(
-			section => section.id === visibleSections[0]
-		)
-	)
-	let itemHeight = remToPx(2)
-	let height = isPresent
-		? Math.max(1, visibleSections.length) * itemHeight
-		: itemHeight
-	let top =
-		group.links.findIndex(link => link.href === pathname) * itemHeight +
-		firstVisibleSectionIndex * itemHeight
-
-	return (
-		<motion.div
-			animate={{ transition: { delay: 0.2 }, opacity: 1 }}
-			className="absolute inset-x-0 top-0 bg-slate-800/2.5 will-change-transform"
-			exit={{ opacity: 0 }}
-			initial={{ opacity: 0 }}
-			layout
-			style={{ borderRadius: 8, height, top }}
-		/>
-	)
-}
-
 function ActivePageMarker({ pathname, group }) {
 	let itemHeight = remToPx(2)
 	let offset = remToPx(0.25)
@@ -136,6 +75,67 @@ function NavigationGroup({ className, group }) {
 				</ul>
 			</div>
 		</li>
+	)
+}
+
+function NavLink({
+	isAnchorLink = false,
+	active = false,
+	children,
+	testId,
+	href,
+}) {
+	return (
+		<Link
+			aria-current={active ? 'page' : undefined}
+			className={clsx(
+				'flex justify-between gap-2 py-1 pr-3 text-sm transition',
+				isAnchorLink ? 'pl-7' : 'pl-4',
+				active ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'
+			)}
+			data-testid={testId}
+			href={href}
+		>
+			<span className="truncate">{children}</span>
+		</Link>
+	)
+}
+
+function useInitialValue(value, condition = true) {
+	let initialValue = useRef(value).current
+	return condition ? initialValue : value
+}
+
+function VisibleSectionHighlight({ pathname, group }) {
+	let [sections, visibleSections] = useInitialValue(
+		[useSectionStore(s => s.sections), useSectionStore(s => s.visibleSections)],
+		useIsInsideMobileNavigation()
+	)
+
+	let isPresent = useIsPresent()
+	let firstVisibleSectionIndex = Math.max(
+		0,
+		[{ id: '_top' }, ...sections].findIndex(
+			section => section.id === visibleSections[0]
+		)
+	)
+	let itemHeight = remToPx(2)
+	let height = isPresent
+		? Math.max(1, visibleSections.length) * itemHeight
+		: itemHeight
+	let top =
+		group.links.findIndex(link => link.href === pathname) * itemHeight +
+		firstVisibleSectionIndex * itemHeight
+
+	return (
+		<motion.div
+			animate={{ transition: { delay: 0.2 }, opacity: 1 }}
+			className="absolute inset-x-0 top-0 bg-slate-800/2.5 will-change-transform"
+			exit={{ opacity: 0 }}
+			initial={{ opacity: 0 }}
+			layout
+			style={{ borderRadius: 8, height, top }}
+		/>
 	)
 }
 

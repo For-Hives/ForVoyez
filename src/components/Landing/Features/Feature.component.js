@@ -1,6 +1,4 @@
 'use client'
-import { useEffect, useState } from 'react'
-
 import {
 	ClockIcon,
 	EyeIcon,
@@ -10,6 +8,7 @@ import {
 	SparklesIcon,
 } from '@heroicons/react/20/solid'
 import RiveComponent from '@rive-app/react-canvas'
+import { useEffect, useState } from 'react'
 
 const features = [
 	{

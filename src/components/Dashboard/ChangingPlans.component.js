@@ -1,8 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
-
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
+import { useEffect, useState } from 'react'
+
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
@@ -25,10 +25,6 @@ const frequencies = [
 		label: 'Annually',
 	},
 ]
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
 
 export function ChangingPlansComponent() {
 	const [plans, setPlans] = useState([])
@@ -354,4 +350,8 @@ export function ChangingPlansComponent() {
 			</div>
 		</div>
 	)
+}
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ')
 }

@@ -5,12 +5,6 @@ import { currentUser } from '@clerk/nextjs/server'
 import { generateJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
-function truncateToken(token) {
-	if (!token) return ''
-	// 	slice, and return the first 5 characters of the token string, then append '...', terminating the string with the 5 last characters.
-	return token.slice(0, 5) + '*****' + token.slice(-5)
-}
-
 export async function createToken(token) {
 	const userId = (await currentUser())?.id
 
@@ -40,25 +34,6 @@ export async function createToken(token) {
 	return { ...result, jwt_shortened }
 }
 
-export async function getAllToken() {
-	const userId = (await currentUser())?.id
-
-	if (!userId) {
-		throw new Error('You must be logged in to view tokens')
-	}
-
-	const result = await prisma.token.findMany({
-		where: {
-			userId: userId,
-		},
-	})
-
-	return result.map(token => ({
-		...token,
-		jwt: truncateToken(token.jwt),
-	}))
-}
-
 export async function deleteToken(tokenId) {
 	const userId = (await currentUser())?.id
 
@@ -81,4 +56,29 @@ export async function deleteToken(tokenId) {
 			id: tokenId,
 		},
 	})
+}
+
+export async function getAllToken() {
+	const userId = (await currentUser())?.id
+
+	if (!userId) {
+		throw new Error('You must be logged in to view tokens')
+	}
+
+	const result = await prisma.token.findMany({
+		where: {
+			userId: userId,
+		},
+	})
+
+	return result.map(token => ({
+		...token,
+		jwt: truncateToken(token.jwt),
+	}))
+}
+
+function truncateToken(token) {
+	if (!token) return ''
+	// 	slice, and return the first 5 characters of the token string, then append '...', terminating the string with the 5 last characters.
+	return token.slice(0, 5) + '*****' + token.slice(-5)
 }

@@ -6,49 +6,6 @@ import { getCustomerIdFromUser } from '@/services/database.service'
 
 const getStoreId = () => process.env.LEMON_SQUEEZY_STORE_ID
 
-export async function initLemonSqueezy() {
-	try {
-		ls.lemonSqueezySetup({
-			onError(error) {
-				console.error(error)
-				throw error
-			},
-			apiKey: process.env.LEMON_SQUEEZY_API_KEY,
-		})
-	} catch (error) {
-		console.error(error)
-		throw error
-	}
-}
-
-export async function listProducts() {
-	await initLemonSqueezy()
-	const STORE_ID = getStoreId()
-
-	const { statusCode, error, data } = await ls.listProducts({
-		filter: { storeId: STORE_ID },
-		include: ['variants'],
-	})
-
-	if (statusCode === 200) {
-		return data.data
-	} else {
-		throw new Error(error)
-	}
-}
-
-export async function listPrice(variantID) {
-	const { statusCode, error, data } = await ls.listPrices({
-		filter: { variantId: variantID },
-	})
-
-	if (statusCode === 200) {
-		return data.data
-	} else {
-		throw new Error(error)
-	}
-}
-
 export async function getCheckoutsLinks(plans) {
 	await initLemonSqueezy()
 
@@ -112,6 +69,49 @@ export async function getVariant(variantId) {
 
 	if (statusCode === 200) {
 		return data
+	} else {
+		throw new Error(error)
+	}
+}
+
+export async function initLemonSqueezy() {
+	try {
+		ls.lemonSqueezySetup({
+			onError(error) {
+				console.error(error)
+				throw error
+			},
+			apiKey: process.env.LEMON_SQUEEZY_API_KEY,
+		})
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
+}
+
+export async function listPrice(variantID) {
+	const { statusCode, error, data } = await ls.listPrices({
+		filter: { variantId: variantID },
+	})
+
+	if (statusCode === 200) {
+		return data.data
+	} else {
+		throw new Error(error)
+	}
+}
+
+export async function listProducts() {
+	await initLemonSqueezy()
+	const STORE_ID = getStoreId()
+
+	const { statusCode, error, data } = await ls.listProducts({
+		filter: { storeId: STORE_ID },
+		include: ['variants'],
+	})
+
+	if (statusCode === 200) {
+		return data.data
 	} else {
 		throw new Error(error)
 	}
