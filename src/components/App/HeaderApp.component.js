@@ -25,7 +25,7 @@ export const HeaderDashboard = memo(
 				className={clsx(
 					className,
 					'fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:left-72 lg:z-30 lg:hidden lg:px-8 xl:left-80',
-					!isInsideMobileNavigation && 'backdrop-blur-sm lg:left-72 xl:left-80',
+					!isInsideMobileNavigation && 'backdrop-blur-xs lg:left-72 xl:left-80',
 					isInsideMobileNavigation
 						? 'bg-white'
 						: 'bg-white/[var(--bg-opacity-light)]'

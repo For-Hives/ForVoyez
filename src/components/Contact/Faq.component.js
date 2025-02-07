@@ -18,10 +18,10 @@ const faqs = [
 	},
 	{
 		answer: `We offer several subscription plans to suit different needs:
-      <ul class="!list-disc pl-5">
-        <li class="!list-disc">Starter: Perfect for small entrepreneurs and occasional use.</li>
-        <li class="!list-disc">Growth: Ideal for regular, daily usage.</li>  
-        <li class="!list-disc">Enterprise: Tailored for high-volume users and large organizations.</li>
+      <ul class="list-disc! pl-5">
+        <li class="list-disc!">Starter: Perfect for small entrepreneurs and occasional use.</li>
+        <li class="list-disc!">Growth: Ideal for regular, daily usage.</li>  
+        <li class="list-disc!">Enterprise: Tailored for high-volume users and large organizations.</li>
       </ul>
       Please check our pricing page for more details on each plan and current rates.`,
 		question: 'What are the available subscription plans and pricing?',
@@ -55,7 +55,7 @@ export function FaqComponent() {
 	return (
 		<div className="mx-auto max-w-7xl px-6 pb-24 sm:pb-32 lg:px-8 lg:pb-40">
 			<div className="mx-auto max-w-4xl divide-y divide-slate-900/10">
-				<h2 className="text-2xl font-bold leading-10 tracking-tight text-slate-900">
+				<h2 className="text-2xl leading-10 font-bold tracking-tight text-slate-900">
 					Frequently Asked Questions
 				</h2>
 				<dl className="mt-10 space-y-6 divide-y divide-slate-900/10">
@@ -65,13 +65,13 @@ export function FaqComponent() {
 								<>
 									<dt>
 										<DisclosureButton className="flex w-full items-start justify-between text-left text-slate-900">
-											<span className="text-base font-semibold leading-7">
+											<span className="text-base leading-7 font-semibold">
 												{faq.question}
 											</span>
 											<span className="ml-6 flex h-7 items-center">
 												<ChevronDownIcon
 													aria-hidden="true"
-													className={`h-6 w-6 fill-forvoyez_orange-500 transition duration-300 ${
+													className={`fill-forvoyez_orange-500 h-6 w-6 transition duration-300 ${
 														open ? 'rotate-180' : ''
 													}`}
 												/>

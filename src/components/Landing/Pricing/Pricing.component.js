@@ -53,7 +53,7 @@ export function PricingComponent() {
 					data-testid="pricing-section"
 					id="pricing"
 				>
-					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
+					<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
 						Pricing
 					</h2>
 					<p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
@@ -66,7 +66,7 @@ export function PricingComponent() {
 				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
-						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs font-semibold leading-5 ring-1 ring-inset ring-slate-200"
+						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs leading-5 font-semibold ring-1 ring-slate-200 ring-inset"
 						onChange={setFrequency}
 						value={frequency}
 					>
@@ -90,7 +90,7 @@ export function PricingComponent() {
 								<div className={'transition-none'}>
 									<span className={'transition-none'}>{option.label}</span>
 									<div
-										className={`${option.value === 'annually' ? 'block' : 'hidden'} absolute -right-20 -top-7 rounded-full border border-forvoyez_orange-500 bg-white/80 p-1 px-2.5 text-xs text-forvoyez_orange-500 backdrop-blur-[2px] transition-none`}
+										className={`${option.value === 'annually' ? 'block' : 'hidden'} border-forvoyez_orange-500 text-forvoyez_orange-500 absolute -top-7 -right-20 rounded-full border bg-white/80 p-1 px-2.5 text-xs backdrop-blur-[2px] transition-none`}
 									>
 										20%&nbsp;more&nbsp;tokens
 									</div>
@@ -111,7 +111,7 @@ export function PricingComponent() {
 									<div
 										className={classNames(
 											tier.mostPopular
-												? 'ring-2 ring-forvoyez_orange-500'
+												? 'ring-forvoyez_orange-500 ring-2'
 												: 'ring-1 ring-slate-200',
 											'rounded-3xl p-8 xl:p-10'
 										)}
@@ -124,14 +124,14 @@ export function PricingComponent() {
 													tier.mostPopular
 														? 'text-forvoyez_orange-500'
 														: 'text-slate-900',
-													'text-lg font-semibold leading-8'
+													'text-lg leading-8 font-semibold'
 												)}
 												id={tier.id}
 											>
 												{tier.name}
 											</h3>
 											{tier.mostPopular ? (
-												<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-xs font-semibold leading-5 text-forvoyez_orange-500">
+												<p className="bg-forvoyez_orange-500/10 text-forvoyez_orange-500 rounded-full px-2.5 py-1 text-xs leading-5 font-semibold">
 													Most popular
 												</p>
 											) : null}
@@ -144,7 +144,7 @@ export function PricingComponent() {
 											<span className="text-4xl font-bold tracking-tight text-slate-900">
 												{(tier.price / 100).toFixed(2).replace('.', ',')}€
 											</span>
-											<span className="text-sm font-semibold leading-6 text-slate-600">
+											<span className="text-sm leading-6 font-semibold text-slate-600">
 												{frequency.priceSuffix}
 											</span>
 										</p>
@@ -155,9 +155,9 @@ export function PricingComponent() {
 											aria-describedby={tier.id}
 											className={classNames(
 												tier.mostPopular
-													? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-													: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-												'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+													? 'bg-forvoyez_orange-500 text-white shadow-xs hover:bg-[#e05d45]'
+													: 'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
+												'focus-visible:outline-forvoyez_orange-500 mt-6 block rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 											)}
 											data-testid={`plan-button-${tier.id}`}
 											href="/app/plans"
@@ -193,7 +193,7 @@ export function PricingComponent() {
 												<li className="flex gap-x-3" key={feature}>
 													<CheckIcon
 														aria-hidden="true"
-														className="h-6 w-5 flex-none text-forvoyez_orange-500"
+														className="text-forvoyez_orange-500 h-6 w-5 flex-none"
 													/>
 													{feature}
 												</li>
@@ -214,7 +214,7 @@ export function PricingComponent() {
 							<h3
 								className={classNames(
 									'text-slate-900',
-									'text-lg font-semibold leading-8'
+									'text-lg leading-8 font-semibold'
 								)}
 								id="custom"
 							>
@@ -228,7 +228,7 @@ export function PricingComponent() {
 							<span className="text-4xl font-bold tracking-tight text-slate-900">
 								Custom
 							</span>
-							<span className="text-sm font-semibold leading-6 text-slate-600">
+							<span className="text-sm leading-6 font-semibold text-slate-600">
 								{frequency.priceSuffix}
 							</span>
 						</p>
@@ -236,8 +236,8 @@ export function PricingComponent() {
 						<Link
 							aria-describedby="custom"
 							className={classNames(
-								'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-								'mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+								'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
+								'focus-visible:outline-forvoyez_orange-500 mt-6 block rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 							)}
 							data-testid="contact-us"
 							href="/contact"
@@ -252,7 +252,7 @@ export function PricingComponent() {
 								<li className="flex gap-x-3" key={feature}>
 									<CheckIcon
 										aria-hidden="true"
-										className="h-6 w-5 flex-none text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-6 w-5 flex-none"
 									/>
 									{feature}
 								</li>

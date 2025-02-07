@@ -86,7 +86,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 bg-black bg-opacity-25" />
+					<div className="bg-opacity-25 fixed inset-0 bg-black" />
 				</Transition.Child>
 
 				<div className="fixed inset-0 overflow-y-auto">
@@ -103,7 +103,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 								<Dialog.Title
 									as="h3"
-									className="text-lg font-medium leading-6 text-slate-900"
+									className="text-lg leading-6 font-medium text-slate-900"
 								>
 									{!tokenToDisplayInClipBoardField ? (
 										<>Create new secret key</>
@@ -130,10 +130,10 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 														Name
 													</label>
 													<input
-														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 ring-1 shadow-sm ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.name
 																? 'ring-red-300 focus:ring-red-500'
-																: 'ring-slate-300 focus:ring-forvoyez_orange-600'
+																: 'focus:ring-forvoyez_orange-600 ring-slate-300'
 														}`}
 														id="name"
 														name="name"
@@ -155,10 +155,10 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 														Expiration Date
 													</label>
 													<input
-														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 ring-1 shadow-sm ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.expiredAt
 																? 'ring-red-300 focus:ring-red-500'
-																: 'ring-slate-300 focus:ring-forvoyez_orange-600'
+																: 'focus:ring-forvoyez_orange-600 ring-slate-300'
 														}`}
 														defaultValue={
 															new Date(
@@ -187,15 +187,15 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 											tokenToDisplayInClipBoardField.length > 15 && (
 												<div className="mt-4">
 													<label
-														className="block text-sm font-medium leading-6 text-slate-900"
+														className="block text-sm leading-6 font-medium text-slate-900"
 														htmlFor="token"
 													>
 														Your New Token
 													</label>
-													<div className="mt-2 flex rounded-md shadow-sm">
-														<div className="relative flex flex-grow items-stretch focus-within:z-10">
+													<div className="mt-2 flex rounded-md shadow-xs">
+														<div className="relative flex grow items-stretch focus-within:z-10">
 															<input
-																className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+																className="focus:ring-forvoyez_orange-600 block w-full rounded-none rounded-l-md border-0 py-1.5 pl-3 text-slate-900 ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 																id="token"
 																name="token"
 																readOnly
@@ -204,7 +204,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 															/>
 														</div>
 														<button
-															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50"
+															className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-300 ring-inset hover:bg-slate-50"
 															onClick={() =>
 																copyToClipboard(tokenToDisplayInClipBoardField)
 															}
@@ -231,14 +231,14 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 										{!(tokenToDisplayInClipBoardField.length > 15) && (
 											<>
 												<button
-													className="inline-flex justify-center rounded-md border border-transparent bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+													className="inline-flex justify-center rounded-md border border-transparent bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
 													onClick={closeModal}
 													type="button"
 												>
 													Cancel
 												</button>
 												<button
-													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+													className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600 block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 													type="submit"
 												>
 													Create Token
@@ -248,7 +248,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 										{tokenToDisplayInClipBoardField &&
 											tokenToDisplayInClipBoardField.length > 15 && (
 												<button
-													className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+													className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600 block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 													onClick={() => {
 														setTokenToDisplayInClipBoardField('')
 														closeModal()

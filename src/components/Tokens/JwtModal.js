@@ -8,15 +8,15 @@ export default function JwtModal({ setJwtModalOpen, jwtToken }) {
 	}
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
+		<div className="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-slate-600">
 			<div className="w-3/4 rounded-lg bg-white p-8 shadow-lg">
 				<h2 className="text-lg font-semibold">Your JWT Token</h2>
-				<div className="relative mb-4 mt-4 w-full">
-					<pre className="overflow-x-auto rounded bg-slate-100 p-2 text-sm text-slate-800">
+				<div className="relative mt-4 mb-4 w-full">
+					<pre className="overflow-x-auto rounded-sm bg-slate-100 p-2 text-sm text-slate-800">
 						<code>{jwtToken}</code>
 					</pre>
 					<button
-						className="absolute right-1 top-1 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+						className="absolute top-1 right-1 rounded-sm bg-blue-500 p-2 text-white hover:bg-blue-700"
 						onClick={copyToClipboard}
 						title="Copier le token"
 					>

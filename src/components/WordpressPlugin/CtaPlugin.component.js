@@ -5,10 +5,10 @@ export function CtaPluginComponent() {
 	return (
 		<div className="bg-white">
 			<div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-				<div className="relative isolate overflow-hidden rounded-3xl bg-forvoyez_orange-500 px-6 py-16 shadow-2xl sm:px-16 sm:pb-0 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+				<div className="bg-forvoyez_orange-500 relative isolate overflow-hidden rounded-3xl px-6 py-16 shadow-2xl sm:px-16 sm:pb-0 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
 					<svg
 						aria-hidden="true"
-						className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
+						className="absolute top-1/2 left-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
 						viewBox="0 0 1024 1024"
 					>
 						<circle
@@ -38,7 +38,7 @@ export function CtaPluginComponent() {
 						</p>
 						<div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
 							<Link
-								className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-forvoyez_orange-500 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+								className="text-forvoyez_orange-500 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
 								href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 							>
 								Download Now

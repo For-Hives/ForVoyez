@@ -53,7 +53,7 @@ export function PluginComponent() {
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-2xl lg:text-center">
-					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
+					<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
 						WordPress Plugin
 					</h2>
 					<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -69,10 +69,10 @@ export function PluginComponent() {
 					<dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
 						{PLUGIN_FEATURES.map(feature => (
 							<div className="flex flex-col" key={feature.name}>
-								<dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+								<dt className="flex items-center gap-x-3 text-base leading-7 font-semibold text-gray-900">
 									<feature.icon
 										aria-hidden="true"
-										className="h-5 w-5 flex-none text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-5 w-5 flex-none"
 									/>
 									{feature.name}
 								</dt>
@@ -85,7 +85,7 @@ export function PluginComponent() {
 				</div>
 				<div className="mt-16 flex justify-center pt-8">
 					<Link
-						className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500"
+						className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-500 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 						href="/wordpress-plugin"
 					>
 						Get Started in your WordPress website

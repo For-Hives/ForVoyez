@@ -73,7 +73,7 @@ export default function PlaygroundPreviewCode(params) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -81,7 +81,7 @@ export default function PlaygroundPreviewCode(params) {
 								initial={{ opacity: 0, y: -10 }}
 							>
 								<div className={'flex hidden flex-col sm:block'}>
-									<p className="mt-1 text-sm italic text-slate-500">
+									<p className="mt-1 text-sm text-slate-500 italic">
 										{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
 									</p>
 
@@ -97,7 +97,7 @@ export default function PlaygroundPreviewCode(params) {
 													<Tab
 														className={({ selected }) =>
 															selected
-																? 'w-1/4 border-b-2 border-forvoyez_orange-500 px-1 py-4 text-center text-sm font-medium text-forvoyez_orange-600'
+																? 'border-forvoyez_orange-500 text-forvoyez_orange-600 w-1/4 border-b-2 px-1 py-4 text-center text-sm font-medium'
 																: 'w-1/4 border-b-2 border-transparent px-1 py-4 text-center text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'
 														}
 														data-testid={`tab-${language.toLowerCase()}`}
@@ -128,7 +128,7 @@ export default function PlaygroundPreviewCode(params) {
 																</code>
 															</pre>
 															<button
-																className="absolute right-2 top-3 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500"
+																className="focus:ring-forvoyez_orange-500 absolute top-3 right-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:ring-2 focus:outline-hidden"
 																data-testid="copy-button"
 																onClick={copySelectedEditorContent}
 															>

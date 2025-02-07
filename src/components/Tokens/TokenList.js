@@ -70,9 +70,9 @@ export default function TokenList() {
 						token, and delete existing ones.
 					</p>
 				</div>
-				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+				<div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
 					<button
-						className="block rounded-md bg-forvoyez_orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+						className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600 block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 						data-testid="add-token-button"
 						onClick={openModal}
 						type="button"
@@ -81,21 +81,21 @@ export default function TokenList() {
 					</button>
 				</div>
 			</div>
-			<div className="min-w-7xl mt-8 flex max-w-7xl items-center justify-center shadow-sm">
-				<div className={'min-w-7xl w-full max-w-7xl overflow-x-auto'}>
+			<div className="mt-8 flex max-w-7xl min-w-7xl items-center justify-center shadow-xs">
+				<div className={'w-full max-w-7xl min-w-7xl overflow-x-auto'}>
 					<div className="align-middle">
-						<div className="ring-1 ring-black ring-opacity-5">
+						<div className="ring-opacity-5 ring-1 ring-black">
 							<table className="m-0 divide-y divide-slate-300">
 								<thead className="bg-slate-50">
 									<tr>
 										<th
-											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											className="w-3/12 overflow-x-auto py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-slate-900 sm:pl-6"
 											scope="col"
 										>
 											Token name
 										</th>
 										<th
-											className="w-3/12 overflow-x-auto py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6"
+											className="w-3/12 overflow-x-auto py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-slate-900 sm:pl-6"
 											scope="col"
 										>
 											Token value
@@ -113,7 +113,7 @@ export default function TokenList() {
 											Expired at
 										</th>
 										<th
-											className="relative w-2/12 py-3.5 pl-3 pr-4 sm:pr-6"
+											className="relative w-2/12 py-3.5 pr-4 pl-3 sm:pr-6"
 											scope="col"
 										>
 											<span className="sr-only">Actions</span>
@@ -126,16 +126,16 @@ export default function TokenList() {
 										tokens && tokens.length > 0 ? (
 											tokens.map((token, index) => (
 												<tr data-testid={`token-row-${index}`} key={index}>
-													<td className="overflow-x-visible whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+													<td className="overflow-x-visible py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-slate-900 sm:pl-6">
 														{
 															// display token name, and truncate if too long
 															token.name
 														}
 													</td>
-													<td className="overflow-x-visible whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+													<td className="overflow-x-visible py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-slate-900 sm:pl-6">
 														{token.jwt}
 													</td>
-													<td className="whitespace-nowrap py-4 text-sm font-medium text-slate-900">
+													<td className="py-4 text-sm font-medium whitespace-nowrap text-slate-900">
 														{
 															// display token creation date, and time, format it too
 															new Date(token.createdAt).toLocaleString(
@@ -152,7 +152,7 @@ export default function TokenList() {
 															)
 														}
 													</td>
-													<td className="whitespace-nowrap py-4 text-sm font-medium text-slate-900">
+													<td className="py-4 text-sm font-medium whitespace-nowrap text-slate-900">
 														{
 															// display token expiration date, and format it
 															new Date(token.expiredAt).toLocaleString(
@@ -169,7 +169,7 @@ export default function TokenList() {
 															)
 														}
 													</td>
-													<td className="relative flex justify-end whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
+													<td className="relative flex justify-end py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap">
 														<button
 															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
 															data-testid={`delete-token-button-${index}`}
@@ -182,7 +182,7 @@ export default function TokenList() {
 											))
 										) : (
 											<tr>
-												<td className="py-4 pl-4 pr-3 text-sm font-medium italic text-slate-900 sm:pl-6">
+												<td className="py-4 pr-3 pl-4 text-sm font-medium text-slate-900 italic sm:pl-6">
 													No tokens found, create one, and it will appear here
 												</td>
 												<td></td>

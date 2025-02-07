@@ -60,14 +60,14 @@ export function RefillPlansComponent() {
 		return (
 			<>
 				<div className="animate-pulse">
-					<div className="mb-2 h-6 w-1/4 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-full rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-9/12 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-2/3 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-1/2 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-3/4 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-3/5 rounded bg-slate-200"></div>
-					<div className="mb-2 h-4 w-1/3 rounded bg-slate-200"></div>
+					<div className="mb-2 h-6 w-1/4 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-full rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-9/12 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-2/3 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-1/2 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-3/4 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-3/5 rounded-sm bg-slate-200"></div>
+					<div className="mb-2 h-4 w-1/3 rounded-sm bg-slate-200"></div>
 				</div>
 				<div className="mx-auto max-w-7xl animate-pulse px-6 lg:px-8">
 					<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
@@ -120,7 +120,7 @@ export function RefillPlansComponent() {
 										<div
 											className={classNames(
 												tier.mostPopular
-													? 'ring-2 ring-forvoyez_orange-500'
+													? 'ring-forvoyez_orange-500 ring-2'
 													: 'ring-1 ring-slate-200',
 												'flex flex-col rounded-3xl p-8'
 											)}
@@ -133,14 +133,14 @@ export function RefillPlansComponent() {
 														tier.mostPopular
 															? 'text-forvoyez_orange-500'
 															: 'text-slate-900',
-														'text-lg font-semibold leading-8'
+														'text-lg leading-8 font-semibold'
 													)}
 													id={tier.id}
 												>
 													{tier.name}
 												</h3>
 												{tier.mostPopular ? (
-													<p className="rounded-full bg-forvoyez_orange-500/10 px-2.5 py-1 text-center text-xs font-semibold leading-5 text-forvoyez_orange-500">
+													<p className="bg-forvoyez_orange-500/10 text-forvoyez_orange-500 rounded-full px-2.5 py-1 text-center text-xs leading-5 font-semibold">
 														Most popular
 													</p>
 												) : null}
@@ -164,9 +164,9 @@ export function RefillPlansComponent() {
 														aria-describedby={tier.id}
 														className={classNames(
 															tier.mostPopular
-																? 'bg-forvoyez_orange-500 text-white shadow-sm hover:bg-[#e05d45]'
-																: 'text-forvoyez_orange-500 ring-1 ring-inset ring-forvoyez_orange-500/20 hover:ring-[#e05d45]/30',
-															'mt-6 block w-full rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500'
+																? 'bg-forvoyez_orange-500 text-white shadow-xs hover:bg-[#e05d45]'
+																: 'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
+															'focus-visible:outline-forvoyez_orange-500 mt-6 block w-full rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 														)}
 														data-testid={`subscribe-${tier.variantId}`}
 														href={checkoutUrls[tier.variantId]}

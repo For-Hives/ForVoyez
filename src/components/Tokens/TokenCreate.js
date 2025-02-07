@@ -49,22 +49,22 @@ export default function TokenCreate({ setTokens, tokens }) {
 	}
 
 	return (
-		<div className="mb-4 flex items-center justify-center rounded-lg bg-white p-4 shadow">
+		<div className="mb-4 flex items-center justify-center rounded-lg bg-white p-4 shadow-sm">
 			<input
-				className="mb-4 mr-2 w-full rounded border p-2"
+				className="mr-2 mb-4 w-full rounded-sm border p-2"
 				onChange={e => setNewTokenName(e.target.value)}
 				placeholder="Token Name"
 				type="text"
 				value={newTokenName}
 			/>
 			<input
-				className="mb-4 mr-2 w-full rounded border p-2"
+				className="mr-2 mb-4 w-full rounded-sm border p-2"
 				onChange={e => setNewTokenExpiry(e.target.value)}
 				type="date"
 				value={newTokenExpiry}
 			/>
 			<button
-				className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+				className="w-full rounded-sm bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
 				onClick={create}
 			>
 				Create Token

@@ -22,10 +22,10 @@ export function ResourceCardAppComponent({ resource }) {
 			onMouseMove={onMouseMove}
 		>
 			<ResourcePattern {...resource.pattern} mouseX={mouseX} mouseY={mouseY} />
-			<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/7.5 group-hover:ring-forvoyez_orange-500/10" />
-			<div className="relative rounded-2xl px-4 pb-4 pt-16">
+			<div className="group-hover:ring-forvoyez_orange-500/10 absolute inset-0 rounded-2xl ring-1 ring-slate-900/7.5 ring-inset" />
+			<div className="relative rounded-2xl px-4 pt-16 pb-4">
 				<ResourceIcon icon={resource.icon} />
-				<h3 className="mt-4 text-sm font-semibold leading-7 text-slate-900">
+				<h3 className="mt-4 text-sm leading-7 font-semibold text-slate-900">
 					<Link href={resource.href}>
 						{' '}
 						<span className="absolute inset-0 rounded-2xl" />
@@ -54,7 +54,7 @@ export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 				/>
 			</div>
 			<motion.div
-				className="absolute inset-0 rounded-2xl bg-gradient-to-r from-forvoyez_orange-200/20 to-forvoyez_orange-300/20 opacity-0 transition duration-300 group-hover:opacity-100"
+				className="from-forvoyez_orange-200/20 to-forvoyez_orange-300/20 absolute inset-0 rounded-2xl bg-linear-to-r opacity-0 transition duration-300 group-hover:opacity-100"
 				style={style}
 			/>
 			<motion.div
@@ -62,7 +62,7 @@ export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 				style={style}
 			>
 				<GridPatternAppComponent
-					className="absolute inset-x-0 inset-y-[-30%] h-[160%] w-full skew-y-[-18deg] fill-forvoyez_orange-500/50 stroke-forvoyez_orange-500/70"
+					className="fill-forvoyez_orange-500/50 stroke-forvoyez_orange-500/70 absolute inset-x-0 inset-y-[-30%] h-[160%] w-full skew-y-[-18deg]"
 					height={56}
 					width={72}
 					x="50%"
@@ -75,8 +75,8 @@ export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 
 function ResourceIcon({ icon: Icon }) {
 	return (
-		<div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900/5 ring-1 ring-slate-900/25 backdrop-blur-[2px] transition duration-300 group-hover:bg-white/50 group-hover:ring-forvoyez_orange-500/25">
-			<Icon className="h-5 w-5 fill-slate-500/10 stroke-slate-500 transition-colors duration-300 group-hover:fill-forvoyez_orange-500/10 group-hover:stroke-forvoyez_orange-500" />
+		<div className="group-hover:ring-forvoyez_orange-500/25 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900/5 ring-1 ring-slate-900/25 backdrop-blur-[2px] transition duration-300 group-hover:bg-white/50">
+			<Icon className="group-hover:fill-forvoyez_orange-500/10 group-hover:stroke-forvoyez_orange-500 h-5 w-5 fill-slate-500/10 stroke-slate-500 transition-colors duration-300" />
 		</div>
 	)
 }
