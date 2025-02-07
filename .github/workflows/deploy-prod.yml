@@ -44,6 +44,7 @@ jobs:
           context: .
           dockerfile: Dockerfile.prod
           push: true
+          build-args: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           tags: ${{ secrets.APP_IMAGE }}
       - name: Deploy to Coolify
         run: |
