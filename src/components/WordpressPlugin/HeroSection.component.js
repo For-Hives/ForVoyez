@@ -36,7 +36,7 @@ export function HeroSectionComponent() {
 				/>
 			</svg>
 			<div className="overflow-hidden">
-				<div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+				<div className="mx-auto max-w-7xl px-6 pt-36 pb-32 sm:pt-60 lg:px-8 lg:pt-32">
 					<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 						<motion.div
 							animate={{ opacity: 1, y: 0 }}
@@ -58,14 +58,14 @@ export function HeroSectionComponent() {
 									whileTap={{ scale: 0.95 }}
 								>
 									<Link
-										className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forvoyez_orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-600"
+										className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-600 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 										href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 									>
 										Download Now
 									</Link>
 								</motion.div>
 								<Link
-									className="text-sm font-semibold leading-6 text-slate-900"
+									className="text-sm leading-6 font-semibold text-slate-900"
 									href="#how-it-works"
 								>
 									Learn more <span aria-hidden="true">→</span>

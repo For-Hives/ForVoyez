@@ -19,7 +19,7 @@ export default function TokenModalDelete({
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 bg-black bg-opacity-25" />
+					<div className="bg-opacity-25 fixed inset-0 bg-black" />
 				</Transition.Child>
 
 				<div className="fixed inset-0 overflow-y-auto">
@@ -36,7 +36,7 @@ export default function TokenModalDelete({
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 								<Dialog.Title
 									as="h3"
-									className="text-lg font-medium leading-6 text-slate-900"
+									className="text-lg leading-6 font-medium text-slate-900"
 								>
 									Revoke secret key
 								</Dialog.Title>
@@ -59,14 +59,14 @@ export default function TokenModalDelete({
 
 								<div className="mt-4 flex justify-end space-x-2">
 									<button
-										className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+										className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
 										onClick={closeModal}
 										type="button"
 									>
 										Cancel
 									</button>
 									<button
-										className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+										className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
 										data-testid="revoke-key-button"
 										onClick={onConfirm}
 										type="button"

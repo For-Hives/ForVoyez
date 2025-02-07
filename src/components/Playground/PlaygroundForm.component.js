@@ -93,12 +93,12 @@ export default function PlaygroundForm(props) {
 			<div>
 				<h3>Image upload</h3>
 				<label
-					className="block text-sm font-medium leading-6 text-slate-900"
+					className="block text-sm leading-6 font-medium text-slate-900"
 					htmlFor="image"
 				>
 					Your image
 				</label>
-				<p className="mt-1 text-sm italic text-slate-500">
+				<p className="mt-1 text-sm text-slate-500 italic">
 					{`Upload an image to process with our API. The image should be in PNG, WEBP, 
 							JPG, or GIF format and not exceed 10MB in size. You can either click
 							the "Upload a file" button or drag and drop an image into the
@@ -120,7 +120,7 @@ export default function PlaygroundForm(props) {
 								src={imagePreview}
 							/>
 							<button
-								className="absolute -right-4 top-[1.25rem] rounded-full bg-forvoyez_orange-600 p-1 text-white shadow-md hover:bg-forvoyez_orange-500 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500 focus:ring-offset-2"
+								className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus:ring-forvoyez_orange-500 absolute top-[1.25rem] -right-4 rounded-full p-1 text-white shadow-md focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
 								data-testid="reset-image"
 								onClick={handleResetImage}
 							>
@@ -162,7 +162,7 @@ export default function PlaygroundForm(props) {
 								<div
 									className={'m-0 flex items-center justify-center gap-1 p-0'}
 								>
-									<span className="text-sm font-semibold text-forvoyez_orange-600 hover:text-forvoyez_orange-500">
+									<span className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500 text-sm font-semibold">
 										Upload a file
 									</span>
 									<input
@@ -179,7 +179,7 @@ export default function PlaygroundForm(props) {
 											: 'or drag and drop'}
 									</p>
 								</div>
-								<p className="m-0 p-0 text-center text-xs italic text-slate-600">
+								<p className="m-0 p-0 text-center text-xs text-slate-600 italic">
 									(PNG, JPEG, WEBP, and non-animated GIF up to 10MB)
 								</p>
 							</div>
@@ -195,7 +195,7 @@ export default function PlaygroundForm(props) {
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
 								<label
-									className="block text-sm font-medium leading-6 text-slate-900"
+									className="block text-sm leading-6 font-medium text-slate-900"
 									htmlFor="comment"
 								>
 									Add Your Context (Optional)
@@ -218,7 +218,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -226,7 +226,7 @@ export default function PlaygroundForm(props) {
 								initial={{ opacity: 0, y: -10 }}
 							>
 								<div>
-									<p className="mt-1 text-sm italic text-slate-500">
+									<p className="mt-1 text-sm text-slate-500 italic">
 										{`Provide additional context to help our API better understand and
 							process your image. This can include information about the image
 							content, specific requirements, or any other relevant details. The
@@ -234,7 +234,7 @@ export default function PlaygroundForm(props) {
 									</p>
 									<div className="mt-2">
 										<textarea
-											className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											data-testid="context-input"
 											id="Context"
 											maxLength={300}
@@ -269,7 +269,7 @@ export default function PlaygroundForm(props) {
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
 								<label
-									className="block text-sm font-medium leading-6 text-slate-900"
+									className="block text-sm leading-6 font-medium text-slate-900"
 									htmlFor="comment"
 								>
 									Keywords (Optional)
@@ -292,7 +292,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -300,7 +300,7 @@ export default function PlaygroundForm(props) {
 								initial={{ opacity: 0, y: -10 }}
 							>
 								<div>
-									<p className="mt-1 text-sm italic text-slate-500">
+									<p className="mt-1 text-sm text-slate-500 italic">
 										{`Provide additional keywords to force the API to include them in the generated metadata. 
 										This can be useful to ensure that specific terms are included in the title, 
 										alternative text, or caption of the analyzed image.
@@ -308,7 +308,7 @@ export default function PlaygroundForm(props) {
 									</p>
 									<div className="mt-2">
 										<textarea
-											className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											data-testid="keywords-input"
 											id="Keywords"
 											maxLength={300}
@@ -344,7 +344,7 @@ export default function PlaygroundForm(props) {
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
 								<label
-									className="block text-sm font-medium leading-6 text-slate-900"
+									className="block text-sm leading-6 font-medium text-slate-900"
 									htmlFor="languageToTranslate"
 								>
 									Language (Optional)
@@ -367,7 +367,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -375,13 +375,13 @@ export default function PlaygroundForm(props) {
 								initial={{ opacity: 0, y: -10 }}
 							>
 								<div className={'mb-4'}>
-									<p className="mt-1 text-sm italic text-slate-500">
+									<p className="mt-1 text-sm text-slate-500 italic">
 										Specify the language for the generated metadata. You can
 										select from the list or enter a custom language code.
 									</p>
 									<div className="mt-2">
 										<input
-											className="block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-600 sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											id="languageToTranslate"
 											maxLength={25}
 											name="languageToTranslate"
@@ -409,7 +409,7 @@ export default function PlaygroundForm(props) {
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
 								<label
-									className="block text-sm font-medium leading-6 text-slate-900"
+									className="block text-sm leading-6 font-medium text-slate-900"
 									htmlFor="jsonSchema"
 								>
 									JSON Schema (Optional)
@@ -432,7 +432,7 @@ export default function PlaygroundForm(props) {
 								</span>
 							</Disclosure.Button>
 						</dt>
-						<Disclosure.Panel as="dd" className="mt-2 pl-0 pr-12">
+						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
@@ -440,15 +440,15 @@ export default function PlaygroundForm(props) {
 								initial={{ opacity: 0, y: -10 }}
 							>
 								<div>
-									<p className="mt-1 text-sm italic text-slate-500">
+									<p className="mt-1 text-sm text-slate-500 italic">
 										{`Specify the desired JSON schema for the API response. This allows
 							you to customize the structure and format of the returned data. Use
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 									</p>
-									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300">
+									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset">
 										{props.formData.jsonSchema}
-										<div className={'absolute right-3 top-2'}>
+										<div className={'absolute top-2 right-3'}>
 											<div className="flex items-center justify-end">
 												{isJsonValid ? (
 													<span
@@ -484,7 +484,7 @@ export default function PlaygroundForm(props) {
 
 			<div>
 				<button
-					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.formData.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
+					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.formData.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
 					data-testid="analyze-button"
 					disabled={
 						!isJsonValid || !props.formData.image || props.userCredits === 0

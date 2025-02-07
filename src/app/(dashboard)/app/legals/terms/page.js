@@ -34,14 +34,14 @@ export default function TermsOfServicePage() {
 			</p>
 
 			<a
-				className="mt-4 inline-flex items-center rounded-md bg-forvoyez_orange-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-forvoyez_orange-600 focus:outline-none focus:ring-2 focus:ring-forvoyez_orange-500 focus:ring-offset-2"
+				className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus:ring-forvoyez_orange-500 mt-4 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white shadow-xs focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
 				href="/legal/Terms of service - ForVoyez.pdf"
 				rel="noopener noreferrer"
 				target="_blank"
 			>
 				<svg
 					aria-hidden="true"
-					className="-ml-1 mr-2 h-5 w-5"
+					className="mr-2 -ml-1 h-5 w-5"
 					fill="currentColor"
 					viewBox="0 0 20 20"
 					xmlns="http://www.w3.org/2000/svg"

@@ -56,9 +56,9 @@ export function ContactComponent() {
 	return (
 		<div className="relative isolate bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
-				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
+				<div className="relative px-6 pt-24 pb-20 sm:pt-32 lg:static lg:px-8 lg:py-48">
 					<div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
-						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gradient-to-r from-white to-transparent lg:w-1/2">
+						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-linear-to-r from-white to-transparent lg:w-1/2">
 							<svg
 								aria-hidden="true"
 								className="absolute inset-0 h-full w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
@@ -101,7 +101,7 @@ export function ContactComponent() {
 									<span className="sr-only">Address</span>
 									<BuildingOffice2Icon
 										aria-hidden="true"
-										className="h-7 w-6 text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-7 w-6"
 									/>
 								</dt>
 								<dd className={'font-bold'}>
@@ -115,7 +115,7 @@ export function ContactComponent() {
 									<span className="sr-only">Telephone</span>
 									<PhoneIcon
 										aria-hidden="true"
-										className="h-7 w-6 text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-7 w-6"
 									/>
 								</dt>
 								<dd className={'font-bold'}>
@@ -132,7 +132,7 @@ export function ContactComponent() {
 									<span className="sr-only">Email</span>
 									<EnvelopeIcon
 										aria-hidden="true"
-										className="h-7 w-6 text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-7 w-6"
 									/>
 								</dt>
 								<dd className={'font-bold'}>
@@ -148,7 +148,7 @@ export function ContactComponent() {
 					</div>
 				</div>
 				<form
-					className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
+					className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48"
 					method="POST"
 					onSubmit={handleSubmit(onSubmit)}
 				>
@@ -156,7 +156,7 @@ export function ContactComponent() {
 						<div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
 							<div>
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="first-name"
 								>
 									First name *
@@ -164,7 +164,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="given-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['first-name'] ? 'ring-red-500' : ''
 										}`}
 										id="first-name"
@@ -181,7 +181,7 @@ export function ContactComponent() {
 							</div>
 							<div>
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="last-name"
 								>
 									Last name *
@@ -189,7 +189,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="family-name"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['last-name'] ? 'ring-red-500' : ''
 										}`}
 										id="last-name"
@@ -206,7 +206,7 @@ export function ContactComponent() {
 							</div>
 							<div className="sm:col-span-2">
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="company"
 								>
 									Company
@@ -214,7 +214,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="organization"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.company ? 'ring-red-500' : ''
 										}`}
 										id="company"
@@ -231,7 +231,7 @@ export function ContactComponent() {
 							</div>
 							<div className="sm:col-span-2">
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="email"
 								>
 									Email *
@@ -239,7 +239,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="email"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.email ? 'ring-red-500' : ''
 										}`}
 										id="email"
@@ -256,7 +256,7 @@ export function ContactComponent() {
 							</div>
 							<div className="sm:col-span-2">
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="phone-number"
 								>
 									Phone number
@@ -264,7 +264,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="tel"
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['phone-number'] ? 'ring-red-500' : ''
 										}`}
 										id="phone-number"
@@ -281,14 +281,14 @@ export function ContactComponent() {
 							</div>
 							<div className="sm:col-span-2">
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="subject"
 								>
 									Subject
 								</label>
 								<div className="mt-2.5">
 									<input
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.subject ? 'ring-red-500' : ''
 										}`}
 										id="subject"
@@ -305,14 +305,14 @@ export function ContactComponent() {
 							</div>
 							<div className="sm:col-span-2">
 								<label
-									className="block text-sm font-semibold leading-6 text-slate-900"
+									className="block text-sm leading-6 font-semibold text-slate-900"
 									htmlFor="message"
 								>
 									Message *
 								</label>
 								<div className="mt-2.5">
 									<textarea
-										className={`block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-forvoyez_orange-500/30 sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.message ? 'ring-red-500' : ''
 										}`}
 										defaultValue={''}
@@ -337,7 +337,7 @@ export function ContactComponent() {
 								<br />
 							</p>
 							<p className={'mt-2 text-right'}>
-								<span className={'text-xs italic text-slate-600'}>
+								<span className={'text-xs text-slate-600 italic'}>
 									By submitting this form, you agree that we may use the
 									provided contact information to respond to your inquiry.
 								</span>
@@ -346,7 +346,7 @@ export function ContactComponent() {
 
 						<div className="mt-2 flex justify-end">
 							<button
-								className="rounded-md bg-forvoyez_orange-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forvoyez_orange-500"
+								className="bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-500 rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 								type="submit"
 							>
 								Send message
