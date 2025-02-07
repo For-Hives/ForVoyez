@@ -83,8 +83,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: forvoyez:test
-          build-args:
-            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          build-args: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
       - name: 'Start Docker Container'
         run: |

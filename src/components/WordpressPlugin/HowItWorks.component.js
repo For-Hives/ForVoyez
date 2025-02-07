@@ -33,9 +33,9 @@ export function HowItWorksComponent() {
 		<div className="overflow-hidden bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl md:px-6 lg:px-8">
 				<div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
-					<div className="px-6 lg:px-0 lg:pr-4 lg:pt-4">
+					<div className="px-6 lg:px-0 lg:pt-4 lg:pr-4">
 						<div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
-							<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
+							<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
 								Streamlined Process
 							</h2>
 							<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -57,7 +57,7 @@ export function HowItWorksComponent() {
 										<dt className="inline font-semibold text-gray-900">
 											<feature.icon
 												aria-hidden="true"
-												className="absolute left-1 top-1 h-5 w-5 text-forvoyez_orange-500"
+												className="text-forvoyez_orange-500 absolute top-1 left-1 h-5 w-5"
 											/>
 											{feature.name}
 										</dt>{' '}
@@ -68,10 +68,10 @@ export function HowItWorksComponent() {
 						</div>
 					</div>
 					<div className="h-full px-6 lg:px-0">
-						<div className="relative isolate h-full overflow-hidden rounded-3xl bg-forvoyez_orange-500 px-6 pt-12 sm:mx-auto sm:max-w-2xl lg:max-w-none">
+						<div className="bg-forvoyez_orange-500 relative isolate h-full overflow-hidden rounded-3xl px-6 pt-12 sm:mx-auto sm:max-w-2xl lg:max-w-none">
 							<div
 								aria-hidden="true"
-								className="absolute -inset-y-px -left-3 -z-10 h-full w-full origin-bottom-left skew-x-[-30deg] bg-forvoyez_orange-100 opacity-20 ring-1 ring-inset ring-white"
+								className="bg-forvoyez_orange-100 absolute -inset-y-px -left-3 -z-10 h-full w-full origin-bottom-left skew-x-[-30deg] opacity-20 ring-1 ring-white ring-inset"
 							/>
 							<div className="mx-auto flex h-full max-w-2xl items-center sm:mx-0 sm:max-w-none">
 								<div className="aspect-video w-full">
@@ -88,7 +88,7 @@ export function HowItWorksComponent() {
 							</div>
 							<div
 								aria-hidden="true"
-								className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 sm:rounded-3xl"
+								className="pointer-events-none absolute inset-0 ring-1 ring-black/10 ring-inset sm:rounded-3xl"
 							/>
 						</div>
 					</div>

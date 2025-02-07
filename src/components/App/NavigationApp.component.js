@@ -21,7 +21,7 @@ function ActivePageMarker({ pathname, group }) {
 	return (
 		<motion.div
 			animate={{ transition: { delay: 0.2 }, opacity: 1 }}
-			className="absolute left-2 h-6 w-px bg-forvoyez_orange-500"
+			className="bg-forvoyez_orange-500 absolute left-2 h-6 w-px"
 			exit={{ opacity: 0 }}
 			initial={{ opacity: 0 }}
 			layout

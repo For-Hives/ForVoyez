@@ -6,7 +6,7 @@ export default function NotFound() {
 		<>
 			<div
 				className={
-					'pointer-events-none fixed left-0 top-0 z-10 h-screen w-screen'
+					'pointer-events-none fixed top-0 left-0 z-10 h-screen w-screen'
 				}
 			>
 				<Image

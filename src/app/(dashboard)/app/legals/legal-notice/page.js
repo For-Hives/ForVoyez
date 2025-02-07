@@ -31,7 +31,7 @@ export default function LegalNoticePage() {
 			</p>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Address</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Address</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					72 Avenue Camus
 					<br />
@@ -42,7 +42,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Contact</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Contact</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					<a
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
@@ -56,7 +56,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Abuse</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Abuse</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					To report contentious content or if you are a victim of fraudulent use
 					of a ForVoyez service, please contact us via the{' '}
@@ -71,7 +71,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Intellectual Property
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -85,7 +85,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Personal Data
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -98,7 +98,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Notice and Procedure for Making Claims of Copyright Infringement
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -163,7 +163,7 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Update</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Update</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					Should we update, amend, or make any changes to this document, those
 					changes will be prominently posted here.

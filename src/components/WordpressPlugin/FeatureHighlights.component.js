@@ -54,7 +54,7 @@ export function FeatureHighlightsComponent() {
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-2xl lg:text-center">
-					<h2 className="text-base font-semibold leading-7 text-forvoyez_orange-500">
+					<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
 						Feature-rich Plugin
 					</h2>
 					<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -76,10 +76,10 @@ export function FeatureHighlightsComponent() {
 								key={feature.name}
 								transition={{ delay: index * 0.1, duration: 0.5 }}
 							>
-								<dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+								<dt className="flex items-center gap-x-3 text-base leading-7 font-semibold text-gray-900">
 									<feature.icon
 										aria-hidden="true"
-										className="h-5 w-5 flex-none text-forvoyez_orange-500"
+										className="text-forvoyez_orange-500 h-5 w-5 flex-none"
 									/>
 									{feature.name}
 								</dt>

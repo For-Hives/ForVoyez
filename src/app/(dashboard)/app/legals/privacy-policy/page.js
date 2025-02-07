@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
 			</p>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Website Visitors
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Gathering of Personally-Identifying Information
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Aggregated Statistics
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Protection of Certain Personally-Identifying Information
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">Cookies</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Cookies</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					{`A cookie is a string of information that a website stores on a
 						visitor's computer, and that the visitor's browser provides to the
@@ -132,7 +132,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Business Transfers
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -146,7 +146,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Third-Party Content
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -160,7 +160,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-8 text-2xl font-bold text-slate-800">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
 					Privacy Policy Changes
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -174,7 +174,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-12 text-2xl font-bold text-slate-800">
+				<h2 className="mt-12 mb-4 text-2xl font-bold text-slate-800">
 					Contact Information
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
@@ -210,7 +210,7 @@ export default function PrivacyPolicyPage() {
 			</section>
 
 			<section>
-				<h2 className="mb-4 mt-12 text-2xl font-bold text-slate-800">
+				<h2 className="mt-12 mb-4 text-2xl font-bold text-slate-800">
 					Hosting
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">

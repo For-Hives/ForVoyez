@@ -96,7 +96,7 @@ export function AnimateSideHeroComponent() {
 			</div>
 			<div
 				className={
-					'container-animation absolute left-0 top-0 flex h-full w-full items-center justify-center'
+					'container-animation absolute top-0 left-0 flex h-full w-full items-center justify-center'
 				}
 			>
 				<div
@@ -109,7 +109,7 @@ export function AnimateSideHeroComponent() {
 					>
 						<Image alt={'cursor'} height={35} src={'/cursor.svg'} width={35} />
 					</div>
-					<div className={'absolute bottom-0 right-0'}>
+					<div className={'absolute right-0 bottom-0'}>
 						<div>
 							<div className={'relative'}>
 								<button className={'bubbly-button font-bold text-slate-950'}>

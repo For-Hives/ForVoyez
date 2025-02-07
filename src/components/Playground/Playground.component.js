@@ -89,7 +89,7 @@ export function Playground() {
 					className="not-prose pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:flex sm:justify-center sm:px-6 sm:pb-5 lg:px-8"
 					data-testid="tooltip"
 				>
-					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pl-4 sm:pr-3.5">
+					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4">
 						<p className="text-sm leading-6 text-white">
 							<Link data-testid="tooltip-link" href="/app/plans">
 								<strong className="font-semibold">Playground usage</strong>
@@ -121,7 +121,7 @@ export function Playground() {
 				<div className="flex flex-col">
 					<div className={'flex flex-col'} ref={apiResponseRef}>
 						<h3>API Response</h3>
-						<p className="mt-1 text-sm italic text-slate-500">
+						<p className="mt-1 text-sm text-slate-500 italic">
 							{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
 						</p>
 						<PlaygroundResponse
