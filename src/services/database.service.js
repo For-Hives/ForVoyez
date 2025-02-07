@@ -8,6 +8,30 @@ import {
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
+// Function to decrement the credits for the authenticated user
+export async function decrementCredit(reason, tokenJwt = null) {
+	const user = await getCurrentUser()
+	await updateCredits(user.id, -1, tokenJwt, reason)
+	console.info(`User ${user.id} used 1 credit`)
+}
+
+// Function to decrement the credits for the authenticated user from the API ( dont have access to the currentuser object)
+export async function decrementCreditFromAPI(userId, reason, tokenJwt = null) {
+	await updateCredits(userId, -1, tokenJwt, reason)
+	console.info(`User ${userId} used 1 credit`)
+}
+
+// Function to retrieve the authenticated user's credits
+export async function getCreditsFromUserId() {
+	const user = await getCurrentUser()
+
+	const connectedUser = await prisma.user.findFirst({
+		where: { clerkId: user.id },
+	})
+
+	return connectedUser?.credits
+}
+
 // Function to retrieve the authenticated user
 export async function getCurrentUser() {
 	const user = await currentUser()
@@ -17,6 +41,30 @@ export async function getCurrentUser() {
 	return user
 }
 
+// Function to retrieve the customer ID for the authenticated user
+export async function getCustomerIdFromUser() {
+	const user = await getCurrentUser()
+	const userPrisma = await prisma.user.findUnique({
+		select: { customerId: true },
+		where: { clerkId: user.id },
+	})
+
+	if (!userPrisma?.customerId) {
+		let subscriptionClient = await prisma.subscription.findFirst({
+			where: { userId: user.id },
+		})
+		if (!subscriptionClient?.customerId) {
+			return null
+		}
+		await prisma.user.update({
+			data: { customerId: Number(subscriptionClient.customerId) },
+			where: { clerkId: subscriptionClient.userId },
+		})
+		return subscriptionClient.customerId
+	}
+	return userPrisma?.customerId ?? null
+}
+
 // Function to retrieve plans from the database
 export async function getPlans(filter = null) {
 	const plans = await prisma.plan.findMany()
@@ -24,6 +72,76 @@ export async function getPlans(filter = null) {
 		return plans.filter(plan => plan.billingCycle === filter)
 	}
 	return plans
+}
+
+// Function to retrieve the authenticated user's subscription
+export async function getSubscriptionFromUserId() {
+	const user = await getCurrentUser()
+
+	return prisma.subscription.findFirst({
+		where: { userId: user.id },
+		include: { plan: true },
+	})
+}
+
+// Function to retrieve API usage by token for the authenticated user
+export async function getUsageByToken() {
+	const user = await getCurrentUser()
+
+	const usageData = await prisma.usage.findMany({
+		where: { userId: user.id },
+		include: { token: true },
+	})
+
+	const usageByToken = usageData.reduce((acc, usage) => {
+		const tokenName = usage.token?.name ?? 'Playground'
+		acc[tokenName] = (acc[tokenName] ?? 0) + 1
+		return acc
+	}, {})
+
+	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
+}
+
+// Function to retrieve API usage for the authenticated user
+export async function getUsageForUser() {
+	const user = await getCurrentUser()
+
+	const userCredits = await getCreditsFromUserId()
+	if (!userCredits) {
+		throw new Error('User credits not found')
+	}
+
+	const usageData = await prisma.usage.findMany({
+		where: { userId: user.id },
+		orderBy: { usedAt: 'asc' },
+	})
+
+	if (usageData.length === 0) {
+		return []
+	}
+
+	let hourlyCreditsLeft = {}
+
+	usageData.forEach(usage => {
+		const dateHour = usage.usedAt.toISOString().slice(0, 13)
+
+		if (!hourlyCreditsLeft[dateHour]) {
+			hourlyCreditsLeft[dateHour] = {
+				creditsLeft: usage.previousCredits,
+				fullDate: usage.usedAt,
+				dateHour,
+			}
+		} else {
+			hourlyCreditsLeft[dateHour].creditsLeft = usage.previousCredits
+		}
+	})
+
+	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
+
+	if (hourlyUsageArray.length <= 5) {
+		return hourlyUsageArray
+	}
+	return hourlyUsageArray
 }
 
 // Function to sync product variants with the Plan model in the database
@@ -145,30 +263,6 @@ export async function syncPlans() {
 	}
 }
 
-// Function to retrieve the customer ID for the authenticated user
-export async function getCustomerIdFromUser() {
-	const user = await getCurrentUser()
-	const userPrisma = await prisma.user.findUnique({
-		select: { customerId: true },
-		where: { clerkId: user.id },
-	})
-
-	if (!userPrisma?.customerId) {
-		let subscriptionClient = await prisma.subscription.findFirst({
-			where: { userId: user.id },
-		})
-		if (!subscriptionClient?.customerId) {
-			return null
-		}
-		await prisma.user.update({
-			data: { customerId: Number(subscriptionClient.customerId) },
-			where: { clerkId: subscriptionClient.userId },
-		})
-		return subscriptionClient.customerId
-	}
-	return userPrisma?.customerId ?? null
-}
-
 // Function to update the credits for the specified user
 export async function updateCredits(userId, credits, tokenJwt, reason) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
@@ -208,98 +302,4 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 			reason,
 		},
 	})
-}
-
-// Function to decrement the credits for the authenticated user
-export async function decrementCredit(reason, tokenJwt = null) {
-	const user = await getCurrentUser()
-	await updateCredits(user.id, -1, tokenJwt, reason)
-	console.info(`User ${user.id} used 1 credit`)
-}
-
-// Function to decrement the credits for the authenticated user from the API ( dont have access to the currentuser object)
-export async function decrementCreditFromAPI(userId, reason, tokenJwt = null) {
-	await updateCredits(userId, -1, tokenJwt, reason)
-	console.info(`User ${userId} used 1 credit`)
-}
-
-// Function to retrieve API usage for the authenticated user
-export async function getUsageForUser() {
-	const user = await getCurrentUser()
-
-	const userCredits = await getCreditsFromUserId()
-	if (!userCredits) {
-		throw new Error('User credits not found')
-	}
-
-	const usageData = await prisma.usage.findMany({
-		where: { userId: user.id },
-		orderBy: { usedAt: 'asc' },
-	})
-
-	if (usageData.length === 0) {
-		return []
-	}
-
-	let hourlyCreditsLeft = {}
-
-	usageData.forEach(usage => {
-		const dateHour = usage.usedAt.toISOString().slice(0, 13)
-
-		if (!hourlyCreditsLeft[dateHour]) {
-			hourlyCreditsLeft[dateHour] = {
-				creditsLeft: usage.previousCredits,
-				fullDate: usage.usedAt,
-				dateHour,
-			}
-		} else {
-			hourlyCreditsLeft[dateHour].creditsLeft = usage.previousCredits
-		}
-	})
-
-	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
-
-	if (hourlyUsageArray.length <= 5) {
-		return hourlyUsageArray
-	}
-	return hourlyUsageArray
-}
-
-// Function to retrieve API usage by token for the authenticated user
-export async function getUsageByToken() {
-	const user = await getCurrentUser()
-
-	const usageData = await prisma.usage.findMany({
-		where: { userId: user.id },
-		include: { token: true },
-	})
-
-	const usageByToken = usageData.reduce((acc, usage) => {
-		const tokenName = usage.token?.name ?? 'Playground'
-		acc[tokenName] = (acc[tokenName] ?? 0) + 1
-		return acc
-	}, {})
-
-	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
-}
-
-// Function to retrieve the authenticated user's subscription
-export async function getSubscriptionFromUserId() {
-	const user = await getCurrentUser()
-
-	return prisma.subscription.findFirst({
-		where: { userId: user.id },
-		include: { plan: true },
-	})
-}
-
-// Function to retrieve the authenticated user's credits
-export async function getCreditsFromUserId() {
-	const user = await getCurrentUser()
-
-	const connectedUser = await prisma.user.findFirst({
-		where: { clerkId: user.id },
-	})
-
-	return connectedUser?.credits
 }

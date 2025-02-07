@@ -1,17 +1,17 @@
 'use client'
 
 import {
-	Fragment,
-	Suspense,
 	createContext,
+	Fragment,
 	memo,
+	Suspense,
 	useContext,
 	useEffect,
 	useRef,
 } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { Dialog, Transition } from '@headlessui/react'
 import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
@@ -47,6 +47,10 @@ function XIcon(props) {
 }
 
 const IsInsideMobileNavigationContext = createContext(false)
+
+export function useIsInsideMobileNavigation() {
+	return useContext(IsInsideMobileNavigationContext)
+}
 
 function MobileNavigationDialog({ isOpen, close }) {
 	let pathname = usePathname()
@@ -127,10 +131,6 @@ function MobileNavigationDialog({ isOpen, close }) {
 			</Dialog>
 		</Transition.Root>
 	)
-}
-
-export function useIsInsideMobileNavigation() {
-	return useContext(IsInsideMobileNavigationContext)
 }
 
 export const useMobileNavigationStore = create()(set => ({

@@ -1,6 +1,6 @@
+import { Disclosure } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 
-import { Disclosure } from '@headlessui/react'
 import { motion } from 'framer-motion'
 
 export default function PlaygroundForm(props) {

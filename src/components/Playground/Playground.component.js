@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
-import { describePlaygroundAction } from '@/app/actions/app/playground'
 import Link from 'next/link'
 
 import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
 import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.component'
 import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
+import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { getCreditsFromUserId } from '@/services/database.service'
 
@@ -73,10 +74,12 @@ export function Playground() {
 	}
 
 	useEffect(() => {
-		getCreditsFromUserId().then(credits => {
-			setUserCredits(credits)
-			setShowTooltip(credits === 0)
-		})
+		getCreditsFromUserId()
+			.then(credits => {
+				setUserCredits(credits)
+				setShowTooltip(credits === 0)
+			})
+			.catch(toast.error('Error fetching user credits'))
 	}, [response])
 
 	return (

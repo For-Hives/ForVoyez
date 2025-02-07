@@ -1,12 +1,13 @@
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { createToken } from '@/app/actions/tokens/TokensCRUD'
-import { Dialog, Transition } from '@headlessui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+
+import { createToken } from '@/app/actions/tokens/TokensCRUD'
 
 const schema = yup.object().shape({
 	expiredAt: yup

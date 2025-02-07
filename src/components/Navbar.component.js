@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
 import { Dialog } from '@headlessui/react'
+import { useState } from 'react'
+
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 

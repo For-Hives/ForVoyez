@@ -1,6 +1,5 @@
-import { useState } from 'react'
-
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
+import { useState } from 'react'
 
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
 import copyToClipboard from '@/helpers/copyToClipboard'

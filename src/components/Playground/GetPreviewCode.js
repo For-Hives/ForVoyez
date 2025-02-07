@@ -155,16 +155,16 @@ export const getPreviewCode = (
 	keywords
 ) => {
 	switch (language) {
-		case 'HTTP':
-			return HTTP_EXAMPLE(
+		case 'cURL':
+			return CURL_EXAMPLE(
 				languageToTranslate,
 				image,
 				context,
 				jsonSchema,
 				keywords
 			)
-		case 'cURL':
-			return CURL_EXAMPLE(
+		case 'HTTP':
+			return HTTP_EXAMPLE(
 				languageToTranslate,
 				image,
 				context,

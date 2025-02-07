@@ -66,10 +66,6 @@ const testimonials = [
 	],
 ]
 
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
-
 export function TestimonialsComponent() {
 	return (
 		<div className="relative isolate bg-white pb-32 pt-24 sm:pt-32">
@@ -172,4 +168,8 @@ export function TestimonialsComponent() {
 			</div>
 		</div>
 	)
+}
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ')
 }

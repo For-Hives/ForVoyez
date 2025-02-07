@@ -6,25 +6,6 @@ import { decrementCreditFromAPI } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
-// Helper function to check if a file is a valid image
-function isValidImageFile(file) {
-	const validTypes = [
-		'image/jpeg',
-		'image/jpg',
-		'image/png',
-		'image/webp',
-		'image/gif',
-	]
-	return validTypes.includes(file.type)
-}
-
-// Helper function to validate the schema
-function isValidSchema() {
-	// Implement your schema validation logic here
-	// Return true if the schema is valid, false otherwise
-	return true
-}
-
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	let user
@@ -133,4 +114,23 @@ export async function POST(request) {
 			status: 500,
 		})
 	}
+}
+
+// Helper function to check if a file is a valid image
+function isValidImageFile(file) {
+	const validTypes = [
+		'image/jpeg',
+		'image/jpg',
+		'image/png',
+		'image/webp',
+		'image/gif',
+	]
+	return validTypes.includes(file.type)
+}
+
+// Helper function to validate the schema
+function isValidSchema() {
+	// Implement your schema validation logic here
+	// Return true if the schema is valid, false otherwise
+	return true
 }

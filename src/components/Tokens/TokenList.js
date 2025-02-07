@@ -1,13 +1,11 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
 import { toast } from 'react-toastify'
 
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
-
 import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
 import TokenModal from '@/components/Tokens/TokenModal'
-
-import 'react-toastify/dist/ReactToastify.css'
 
 export default function TokenList() {
 	const [tokens, setTokens] = useState([])
@@ -44,7 +42,11 @@ export default function TokenList() {
 	}, [tokenToDelete, tokens, closeDeleteModal])
 
 	useEffect(() => {
-		getAllToken().then(setTokens)
+		getAllToken()
+			.then(setTokens)
+			.catch(error => {
+				toast.error('Error fetching tokens: ' + error.message)
+			})
 	}, [])
 
 	return (

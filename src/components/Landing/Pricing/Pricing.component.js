@@ -1,8 +1,9 @@
 'use client'
-import { useEffect, useState } from 'react'
-
 import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
 import Link from 'next/link'
 
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
@@ -17,10 +18,6 @@ const frequencies = [
 		label: 'Annually',
 	},
 ]
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
 
 export function PricingComponent() {
 	const [plans, setPlans] = useState([])
@@ -38,10 +35,14 @@ export function PricingComponent() {
 	}, [frequency])
 
 	useEffect(() => {
-		getPlans().then(plans => {
-			const sortedPlans = sortPlans(plans)
-			setPlans(sortedPlans)
-		})
+		getPlans()
+			.then(plans => {
+				const sortedPlans = sortPlans(plans)
+				setPlans(sortedPlans)
+			})
+			.catch(error => {
+				toast.error('Error fetching plans: ' + error.message)
+			})
 	}, [])
 
 	return (
@@ -265,4 +266,8 @@ export function PricingComponent() {
 			</div>
 		</div>
 	)
+}
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ')
 }

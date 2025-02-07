@@ -3,7 +3,6 @@
 import { ToastContainer } from 'react-toastify'
 import { useEffect, useMemo } from 'react'
 
-import { createUser } from '@/app/actions/app/createUser'
 import { UserButton, useUser } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
@@ -13,6 +12,7 @@ import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp
 import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'
+import { createUser } from '@/app/actions/app/createUser'
 import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {

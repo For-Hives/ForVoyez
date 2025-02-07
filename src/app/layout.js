@@ -1,8 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css'
+
 import { Jost, Source_Sans_3 } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import Script from 'next/script'
 
-import 'react-toastify/dist/ReactToastify.css'
 import '@/styles/globals.css'
 
 const sourcesans = Source_Sans_3({

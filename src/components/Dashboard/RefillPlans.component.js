@@ -11,10 +11,6 @@ import {
 import { getCheckoutsLinks } from '@/services/lemonsqueezy.service'
 import { sortPlans } from '@/helpers/sortPlans'
 
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
-
 export function RefillPlansComponent() {
 	const auth = useAuth()
 
@@ -193,4 +189,8 @@ export function RefillPlansComponent() {
 			)}
 		</>
 	)
+}
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ')
 }
