@@ -1,8 +1,8 @@
 # ForVoyez - AI-Powered Image Metadata Generation
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2.3-black.svg)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.3-38B2AC.svg)](https://tailwindcss.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.2.1-black.svg)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.0.7-38B2AC.svg)](https://tailwindcss.com/)
 
 ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for images using advanced AI technology. Our API processes your images and returns metadata in a customizable JSON format, making it easy to integrate into your existing workflows and boost your search engine rankings.
 
