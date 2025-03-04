@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: 127.1:3000/api/token
+  url: 127.1:3000/api/tokens
   body: multipartForm
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkQXQiOiIyMDI1LTAzLTA0VDE1OjU2OjQ2Ljc0OVoiLCJleHBpcmVkQXQiOiIyMDM1LTAzLTAxVDIzOjAwOjAwLjAwMFoiLCJuYW1lIjoidGVzdCIsInVzZXJJZCI6InVzZXJfMmZCcjNtTHNnS1VVcUlvZWoyVVVsTUVQM2lsIiwiaWF0IjoxNzQxMTAzODA2LCJpc3MiOiJGb3JWb3lleiIsImF1ZCI6IkZvclZveWV6IiwiZXhwIjoyMDU2NDAyODAwfQ.d-w_Zo0ZH83Q4CKEZt4PIKgXEgwo1wa7benW9Tqo_zY
 }
