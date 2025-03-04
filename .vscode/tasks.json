@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run ESLint Fix",
+			"type": "shell",
+			"command": "bun run lint:fix",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		}
+	]
+}

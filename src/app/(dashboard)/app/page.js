@@ -59,11 +59,11 @@ const configResources = [
 		icon: KeyIcon,
 	},
 	{
+		description: 'Track your API usage and limits.',
 		pattern: {
 			squares: [[0, 1]],
 			y: 22,
 		},
-		description: 'Track your API usage and limits.',
 		testId: 'link-usage',
 		href: '/app/usage',
 		icon: ChartBarIcon,
