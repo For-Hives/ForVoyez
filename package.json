@@ -98,7 +98,7 @@
 		"tailwindcss": "4.0.7",
 		"typescript": "5.8.2",
 		"vitest": "3.0.8",
-		"vitest-mock-extended": "2.0.2"
+		"vitest-mock-extended": "3.0.1"
 	},
 	"trustedDependencies": [
 		"@clerk/shared",
