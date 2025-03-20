@@ -37,7 +37,7 @@
 		"seed": "node prisma/seed.js"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "6.12.5",
+		"@clerk/nextjs": "6.12.6",
 		"@headlessui/react": "2.2.0",
 		"@heroicons/react": "2.2.0",
 		"@hookform/resolvers": "4.1.3",
