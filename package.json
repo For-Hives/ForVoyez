@@ -84,7 +84,7 @@
 		"eslint-config-prettier": "10.1.1",
 		"eslint-plugin-no-only-tests": "3.3.0",
 		"eslint-plugin-perfectionist": "4.10.1",
-		"eslint-plugin-prettier": "5.2.3",
+		"eslint-plugin-prettier": "5.2.4",
 		"eslint-plugin-promise": "7.2.1",
 		"eslint-plugin-react-hooks": "5.2.0",
 		"eslint-plugin-woke": "1.0.1",
