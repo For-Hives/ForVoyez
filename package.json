@@ -57,7 +57,7 @@
 		"prismjs": "1.30.0",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
-		"react-hook-form": "7.54.2",
+		"react-hook-form": "7.55.0",
 		"react-toastify": "10.0.6",
 		"react-type-animation": "3.2.0",
 		"recharts": "2.15.1",
