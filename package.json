@@ -71,7 +71,7 @@
 		"@playwright/test": "1.51.1",
 		"@tailwindcss/postcss": "4.0.7",
 		"@tailwindcss/typography": "0.5.16",
-		"@tanstack/eslint-plugin-query": "5.68.0",
+		"@tanstack/eslint-plugin-query": "5.71.5",
 		"@testing-library/react": "16.2.0",
 		"@types/react": "19.1.0",
 		"@typescript-eslint/parser": "8.29.0",
