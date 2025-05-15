@@ -81,7 +81,7 @@
 		"dotenv": "16.4.7",
 		"eslint": "9.23.0",
 		"eslint-config-next": "15.2.4",
-		"eslint-config-prettier": "10.1.1",
+		"eslint-config-prettier": "10.1.5",
 		"eslint-plugin-no-only-tests": "3.3.0",
 		"eslint-plugin-perfectionist": "4.10.1",
 		"eslint-plugin-prettier": "5.2.5",
