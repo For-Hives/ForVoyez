@@ -73,7 +73,7 @@
 		"@tailwindcss/typography": "0.5.16",
 		"@tanstack/eslint-plugin-query": "5.78.0",
 		"@testing-library/react": "16.3.0",
-		"@types/react": "19.1.5",
+		"@types/react": "19.1.6",
 		"@typescript-eslint/parser": "8.32.1",
 		"@vitejs/plugin-react": "4.5.0",
 		"@vitest/coverage-v8": "3.1.4",
@@ -109,7 +109,7 @@
 	],
 	"pnpm": {
 		"overrides": {
-			"@types/react": "19.1.5"
+			"@types/react": "19.1.6"
 		}
 	}
 }
