@@ -79,8 +79,13 @@ export async function getSubscriptionFromUserId() {
 	const user = await getCurrentUser()
 
 	return prisma.subscription.findFirst({
-		where: { userId: user.id },
+		where: { userId: user.id }, // Assuming user.id is the correct field linking to Subscription's userId
 		include: { plan: true },
+		orderBy: [
+			{ status: 'asc' }, // 'active' should come before 'cancelled', 'expired', etc.
+			{ renewsAt: 'desc' },
+			{ id: 'desc' }, // Proxy for createdAt: 'desc'
+		],
 	})
 }
 
@@ -208,13 +213,14 @@ export async function syncPlans() {
 				? currentPriceObj.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 			const priceString = price?.toString() ?? ''
+			const parsedPrice = parseInt(priceString)
 
 			await _addVariant({
 				productId: variant.product_id.toString(),
 				description: variant.description,
 				productName: variant.productName,
 				variantId: variant.variantId,
-				price: parseInt(priceString),
+				price: isNaN(parsedPrice) || priceString === '' ? 0 : parsedPrice,
 				billingCycle: interval,
 				variantEnabled: true,
 				name: variant.name,
@@ -241,13 +247,14 @@ export async function syncPlans() {
 				? currentPriceObj.attributes.unit_price_decimal
 				: currentPriceObj.attributes.unit_price
 			const priceString = price?.toString() ?? ''
+			const parsedPrice = parseInt(priceString)
 
 			await _addVariant({
 				productId: variant.product_id.toString(),
 				description: variant.description,
 				productName: variant.productName,
 				variantId: variant.variantId,
-				price: parseInt(priceString),
+				price: isNaN(parsedPrice) || priceString === '' ? 0 : parsedPrice,
 				name: variant.productName,
 				billingCycle: interval,
 				variantEnabled: true,

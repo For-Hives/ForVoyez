@@ -192,22 +192,168 @@ describe('Webhook Service', () => {
 				clerkId: 'user123',
 			})
 			prisma.subscription.findFirst
-				.mockResolvedValueOnce(null)
-				.mockResolvedValue({
+				.mockResolvedValueOnce({ // For existingSubscription lookup in the old code path
+					plan: { packageSize: 50 },
+					userId: 'user123',
+					planId: 'planId',
+					oldPlanId: null,
+				})
+				.mockResolvedValueOnce({ // For the sub lookup in the old code path
 					plan: { packageSize: 50 },
 					userId: 'user123',
 					planId: 'planId',
 					oldPlanId: null,
 				})
 
+
 			await processWebhook('webhook123')
 
+			// This assertion might need adjustment based on the refactored logic
+			// The refactored logic should result in 'Subscription payment success'
 			expect(updateCredits).toHaveBeenCalledWith(
 				'user123',
-				50,
+				50, // This comes from currentSubscription.plan.packageSize
 				null,
-				'Subscription payment success (new plan)'
+				'Subscription payment success' // Changed from 'Subscription payment success (new plan)' due to refactor
 			)
+		})
+
+		describe('processSubscriptionPaymentSuccess specific scenarios', () => {
+			let consoleErrorSpy
+
+			beforeEach(() => {
+				consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+				prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', customerId: 'cust123', id: 'dbUser123' })
+			})
+
+			afterEach(() => {
+				consoleErrorSpy.mockRestore()
+			})
+
+			const getMockWebhookEvent = (bodyOverride = {}, eventName = 'subscription_payment_success') => ({
+				body: JSON.stringify({
+					meta: { custom_data: { user_id: 'user123' } },
+					data: { attributes: { subscription_id: 'subLemo123', ...bodyOverride } },
+					...bodyOverride, // Allow overriding top-level keys if needed for specific tests
+				}),
+				eventName,
+				id: 'webhookEvent123',
+			})
+			
+			it('Test Case 1a: Plan Change - Old Plan Missing', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'user123',
+					oldPlanId: 'oldPlanDbId1',
+					plan: { id: 'newPlanDbId2', packageSize: 100 }, // New plan is valid
+				})
+				prisma.plan.findUnique.mockResolvedValueOnce(null) // Old plan is missing
+
+				await processWebhook(webhookEvent.id, webhookEvent) // Simulating passing the already parsed webhook for direct call if needed
+
+				expect(updateCredits).toHaveBeenCalledWith('user123', 100, null, 'Subscription payment success (plan change)') // 100 - 0 = 100
+				expect(consoleErrorSpy).toHaveBeenCalledWith(
+					expect.stringContaining('Old or new plan details missing during plan change credit calculation')
+				)
+			})
+
+			it('Test Case 1b: Plan Change - New Plan Missing (currentSubscription.plan is null)', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'user123',
+					oldPlanId: 'oldPlanDbId1',
+					plan: null, // New plan is missing
+				})
+				prisma.plan.findUnique.mockResolvedValueOnce({ id: 'oldPlanDbId1', packageSize: 50 }) // Old plan is valid
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).toHaveBeenCalledWith('user123', -50, null, 'Subscription payment success (plan change)') // 0 - 50 = -50
+				expect(consoleErrorSpy).toHaveBeenCalledWith(
+					expect.stringContaining('Old or new plan details missing during plan change credit calculation')
+				)
+			})
+
+
+			it('Test Case 2: Regular Renewal - Plan Missing (currentSubscription.plan is null)', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'user123',
+					oldPlanId: null, // Not a plan change
+					plan: null,     // Current plan is missing
+				})
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).toHaveBeenCalledWith('user123', 0, null, 'Subscription payment success')
+				expect(consoleErrorSpy).toHaveBeenCalledWith(
+					expect.stringContaining('Plan details or packageSize missing for regular payment')
+				)
+			})
+
+			it('Test Case 3: Subscription Not Found', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce(null) // currentSubscription not found
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).not.toHaveBeenCalled()
+				expect(consoleErrorSpy).toHaveBeenCalledWith(
+					`Subscription not found for lemonSqueezyId: subLemo123. Cannot process payment.`
+				)
+			})
+
+			it('Test Case 4: User Mismatch', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'anotherUserClerkId456', // Different user
+					oldPlanId: null,
+					plan: { id: 'planDbId1', packageSize: 100 },
+				})
+				// user.clerkId is 'user123' from prisma.user.findUnique mock
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).not.toHaveBeenCalled()
+				expect(consoleErrorSpy).toHaveBeenCalledWith(
+					expect.stringContaining('Data inconsistency: Subscription')
+				)
+			})
+
+			it('Test Case 5: Successful Plan Change', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'user123',
+					oldPlanId: 'oldPlanDbId1',
+					plan: { id: 'newPlanDbId2', packageSize: 150 }, // New plan
+				})
+				prisma.plan.findUnique.mockResolvedValueOnce({ id: 'oldPlanDbId1', packageSize: 50 }) // Old plan
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).toHaveBeenCalledWith('user123', 100, null, 'Subscription payment success (plan change)') // 150 - 50 = 100
+				expect(consoleErrorSpy).not.toHaveBeenCalled()
+			})
+
+			it('Test Case 6: Successful Regular Renewal', async () => {
+				const webhookEvent = getMockWebhookEvent()
+				prisma.subscription.findFirst.mockResolvedValueOnce({ // currentSubscription
+					lemonSqueezyId: 'subLemo123',
+					userId: 'user123',
+					oldPlanId: null, // Not a plan change
+					plan: { id: 'currentPlanDbId1', packageSize: 75 },
+				})
+
+				await processWebhook(webhookEvent.id, webhookEvent)
+
+				expect(updateCredits).toHaveBeenCalledWith('user123', 75, null, 'Subscription payment success')
+				expect(consoleErrorSpy).not.toHaveBeenCalled()
+			})
 		})
 	})
 })

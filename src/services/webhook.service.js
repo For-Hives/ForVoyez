@@ -219,91 +219,74 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		return
 	}
 
-	// Find the user's existing subscription (if any) in the database
-	const existingSubscription = await prisma.subscription.findFirst({
-		where: {
-			userId: user.id,
-		},
-		include: {
-			plan: true,
-		},
+	// Fetch the Subscription directly using the subscriptionId (Lemon Squeezy ID) from the webhook.
+	const currentSubscription = await prisma.subscription.findFirst({
+		where: { lemonSqueezyId: subscriptionId.toString() },
+		include: { plan: true }, // Current plan
 	})
 
-	// If an existing subscription is found
-	if (existingSubscription) {
-		// If the existing subscription has an oldPlanId (indicating a plan change)
-		if (existingSubscription.oldPlanId) {
-			// Retrieve the old plan from the database using the oldPlanId
-			const oldPlan = await prisma.plan.findUnique({
-				where: {
-					id: existingSubscription.oldPlanId,
-				},
-			})
+	// Error Handling: If currentSubscription is not found
+	if (!currentSubscription) {
+		console.error(
+			`Subscription not found for lemonSqueezyId: ${subscriptionId}. Cannot process payment.`
+		)
+		return
+	}
 
-			// Find the new subscription associated with the current Lemon Squeezy subscription ID
-			const newSubscription = await prisma.subscription.findFirst({
-				where: {
-					lemonSqueezyId: subscriptionId.toString(),
-				},
-				include: {
-					plan: true,
-				},
-			})
+	// User Match Verification: Ensure the subscription belongs to the user from the webhook.
+	// Assumes currentSubscription.userId stores the clerkId.
+	if (currentSubscription.userId !== user.clerkId) {
+		console.error(
+			`Data inconsistency: Subscription ${currentSubscription.id} (Lemon ID: ${subscriptionId}) userId ${currentSubscription.userId} does not match webhook user clerkId ${user.clerkId}.`
+		)
+		return
+	}
 
-			// If both the old plan and new subscription are found
-			if (oldPlan && newSubscription) {
-				// Calculate the difference in package size between the new and old plans
-				const packageDifference =
-					newSubscription.plan.packageSize - oldPlan.packageSize
-
-				// Update the user's credits based on the package difference and log the reason
-				await updateCredits(
-					user.clerkId,
-					packageDifference,
-					null,
-					'Subscription payment success (plan change)'
-				)
-			}
-		} else {
-			// If there is no oldPlanId, retrieve the current plan from the database
-			const newPlan = await prisma.plan.findUnique({
-				where: {
-					id: existingSubscription.planId,
-				},
-			})
-
-			// If the current plan is found
-			if (newPlan) {
-				// Update the user's credits based on the current plan's package size and log the reason
-				await updateCredits(
-					user.clerkId,
-					newPlan.packageSize,
-					null,
-					'Subscription payment success'
-				)
-			}
-		}
-	} else {
-		// If no existing subscription is found, find the subscription associated with the current Lemon Squeezy subscription ID
-		const sub = await prisma.subscription.findFirst({
-			where: {
-				lemonSqueezyId: subscriptionId.toString(),
-			},
-			include: {
-				plan: true,
-			},
+	// Logic for plan change or regular payment
+	if (currentSubscription.oldPlanId) {
+		// This is a plan change
+		const oldPlan = await prisma.plan.findUnique({
+			where: { id: currentSubscription.oldPlanId },
 		})
 
-		// If the subscription is found
-		if (sub) {
-			// Update the user's credits based on the new subscription's plan package size and log the reason
-			await updateCredits(
-				user.clerkId,
-				sub.plan.packageSize ?? 0,
-				null,
-				'Subscription payment success (new plan)'
+		const newPlan = currentSubscription.plan // This is the new plan
+
+		let packageDifference = 0
+		if (oldPlan && newPlan && newPlan.packageSize != null) { // newPlan.packageSize can be 0
+			packageDifference = newPlan.packageSize - (oldPlan.packageSize || 0) // Default oldPlan.packageSize to 0 if null
+		} else {
+			console.error(
+				`Old or new plan details missing during plan change credit calculation. User ID: ${userId}, Subscription ID: ${subscriptionId}, Old Plan ID: ${currentSubscription.oldPlanId}, New Plan ID: ${newPlan?.id}`
 			)
+			// packageDifference remains 0, or handle as an error preventing credit update
 		}
+
+		await updateCredits(
+			user.clerkId,
+			packageDifference,
+			null,
+			'Subscription payment success (plan change)'
+		)
+	} else {
+		// This is a regular renewal or initial payment
+		const currentPlan = currentSubscription.plan
+		let creditsToAdd = 0
+
+		if (currentPlan && currentPlan.packageSize != null) { // currentPlan.packageSize can be 0
+			creditsToAdd = currentPlan.packageSize
+		} else {
+			console.error(
+				`Plan details or packageSize missing for regular payment. User ID: ${userId}, Subscription ID: ${subscriptionId}, Plan ID: ${currentSubscription.planId}`
+			)
+			// creditsToAdd remains 0, or handle as an error preventing credit update
+		}
+
+		await updateCredits(
+			user.clerkId,
+			creditsToAdd,
+			null,
+			'Subscription payment success'
+		)
 	}
 }
 

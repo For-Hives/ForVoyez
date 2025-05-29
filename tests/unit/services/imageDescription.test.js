@@ -235,5 +235,39 @@ describe('Image Description Service', () => {
 				})
 			).rejects.toThrow('OpenAI service failure')
 		})
+
+		it('should handle invalid JSON response from OpenAI for SEO data', async () => {
+			const base64Image = 'base64ImageString'
+			const data = { context: 'Some context', schema: {}, keywords: '', language: 'en' }
+			const mockExtractedContext = 'Extracted context'
+			const mockVisionResponse = { choices: [{ message: { content: 'Image description content' } }] }
+			const invalidJsonResponse = { choices: [{ message: { content: "{'title': 'test', alt: 'test }" } }] } // Invalid JSON
+
+			vi.spyOn(TestingExports, 'extractKeywordsAndLimitContext').mockResolvedValue(mockExtractedContext)
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+			const createMock = vi.fn()
+				.mockResolvedValueOnce(mockVisionResponse) // First call for vision
+				.mockResolvedValueOnce(invalidJsonResponse)  // Second call for SEO
+
+			OpenAI.mockImplementation(() => ({
+				chat: { completions: { create: createMock } },
+			}))
+
+			const result = await getImageDescription(base64Image, data)
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'Failed to parse JSON response from OpenAI: ',
+				expect.any(String) // The specific error message from JSON.parse can vary
+			)
+			expect(result).toEqual({
+				error: 'Failed to parse SEO data',
+				title: '',
+				alt: '',
+				caption: '',
+			})
+
+			consoleErrorSpy.mockRestore()
+		})
 	})
 })

@@ -279,6 +279,51 @@ describe('Database Service', () => {
 				where: { variantId: 'variant1' },
 			})
 		})
+
+		it('should correctly parse prices and default to 0 for invalid price strings', async () => {
+			ls.listProducts.mockResolvedValue([
+				{
+					relationships: { variants: { data: [{ id: 'variant1' }, { id: 'variant2' }, { id: 'variant3' }] } },
+					attributes: { name: 'Test Product' },
+				},
+			])
+			ls.getVariant.mockImplementation(variantId => {
+				return Promise.resolve({
+					data: {
+						attributes: {
+							is_subscription: false,
+							product_id: 'prod1',
+							name: `Variant ${variantId}`,
+						},
+					},
+				})
+			})
+			ls.listPrice.mockImplementation(variantId => {
+				if (variantId === 'variant1') { // Valid price
+					return Promise.resolve([{ attributes: { unit_price: 1000 } }])
+				} else if (variantId === 'variant2') { // Invalid price string
+					return Promise.resolve([{ attributes: { unit_price: 'not-a-number' } }])
+				} else if (variantId === 'variant3') { // Empty price string
+					return Promise.resolve([{ attributes: { unit_price: '' } }])
+				}
+				return Promise.resolve([])
+			})
+
+			await syncPlans()
+
+			expect(prisma.plan.upsert).toHaveBeenCalledWith(expect.objectContaining({
+				create: expect.objectContaining({ variantId: 'variant1', price: 1000 }),
+				update: expect.objectContaining({ variantId: 'variant1', price: 1000 }),
+			}))
+			expect(prisma.plan.upsert).toHaveBeenCalledWith(expect.objectContaining({
+				create: expect.objectContaining({ variantId: 'variant2', price: 0 }),
+				update: expect.objectContaining({ variantId: 'variant2', price: 0 }),
+			}))
+			expect(prisma.plan.upsert).toHaveBeenCalledWith(expect.objectContaining({
+				create: expect.objectContaining({ variantId: 'variant3', price: 0 }),
+				update: expect.objectContaining({ variantId: 'variant3', price: 0 }),
+			}))
+		})
 	})
 
 	describe('getCustomerIdFromUser', () => {
@@ -540,14 +585,24 @@ describe('Database Service', () => {
 	})
 
 	describe('getSubscriptionFromUserId', () => {
-		it('should return the subscription of the authenticated user', async () => {
-			const mockUser = { id: 'user123' }
-			const mockSubscription = { id: 'sub123', plan: {} }
+		it('should return the subscription of the authenticated user and call findFirst with correct orderBy', async () => {
+			const mockUser = { id: 'user123' } // clerk user id
+			const mockSubscription = { id: 'sub123', plan: {}, userId: 'user123', status: 'active', renewsAt: new Date() }
+			
 			clerk.currentUser.mockResolvedValue(mockUser)
 			prisma.subscription.findFirst.mockResolvedValue(mockSubscription)
 
 			const subscription = await getSubscriptionFromUserId()
 
+			expect(prisma.subscription.findFirst).toHaveBeenCalledWith({
+				where: { userId: mockUser.id },
+				include: { plan: true },
+				orderBy: [
+					{ status: 'asc' },
+					{ renewsAt: 'desc' },
+					{ id: 'desc' },
+				],
+			})
 			expect(subscription).toBe(mockSubscription)
 		})
 

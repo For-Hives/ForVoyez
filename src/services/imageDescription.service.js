@@ -111,7 +111,24 @@ export async function getImageDescription(base64Image, data) {
 			n: 1,
 		})
 
-		return JSON.parse(seoResponse.choices[0].message.content.trim())
+		try {
+			return JSON.parse(seoResponse.choices[0].message.content.trim())
+		} catch (jsonError) {
+			if (jsonError instanceof SyntaxError) {
+				console.error(
+					'Failed to parse JSON response from OpenAI: ',
+					jsonError.message
+				)
+				return {
+					error: 'Failed to parse SEO data',
+					title: '',
+					alt: '',
+					caption: '',
+				}
+			}
+			// Re-throw other errors to be caught by the outer catch block
+			throw jsonError
+		}
 	} catch (error) {
 		console.error('Failed to get image description:', error)
 		throw new Error('OpenAI service failure')
