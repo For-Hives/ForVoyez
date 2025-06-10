@@ -40,7 +40,7 @@
 		"@clerk/nextjs": "6.21.0",
 		"@headlessui/react": "2.2.4",
 		"@heroicons/react": "2.2.0",
-		"@hookform/resolvers": "5.1.0",
+		"@hookform/resolvers": "5.1.1",
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
 		"@prisma/client": "6.9.0",
 		"@rive-app/react-canvas": "4.21.3",
