@@ -75,8 +75,8 @@ importers:
         specifier: 7.59.0
         version: 7.59.0(react@19.1.0)
       react-toastify:
-        specifier: 10.0.6
-        version: 10.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 11.0.5
+        version: 11.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-type-animation:
         specifier: 3.2.0
         version: 3.2.0(prop-types@15.8.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -3048,11 +3048,11 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
-  react-toastify@10.0.6:
-    resolution: {integrity: sha512-yYjp+omCDf9lhZcrZHKbSq7YMuK0zcYkDFTzfRFgTXkTFHZ1ToxwAonzA4JI5CxA91JpjFLmwEsZEgfYfOqI1A==}
+  react-toastify@11.0.5:
+    resolution: {integrity: sha512-EpqHBGvnSTtHYhCPLxML05NLY2ZX0JURbAdNYa6BUkk+amz4wbKBQvoKQAB0ardvSarUBuY4Q4s1sluAzZwkmA==}
     peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
 
   react-type-animation@3.2.0:
     resolution: {integrity: sha512-WXTe0i3rRNKjmggPvT5ntye1QBt0ATGbijeW6V3cQe2W0jaMABXXlPPEdtofnS9tM7wSRHchEvI9SUw+0kUohw==}
@@ -6579,7 +6579,7 @@ snapshots:
 
   react-refresh@0.17.0: {}
 
-  react-toastify@10.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-toastify@11.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       clsx: 2.1.1
       react: 19.1.0
