@@ -68,7 +68,7 @@
 	"devDependencies": {
 		"@clerk/testing": "1.9.3",
 		"@next/eslint-plugin-next": "15.3.5",
-		"@playwright/test": "1.53.2",
+		"@playwright/test": "1.54.0",
 		"@tailwindcss/postcss": "4.0.7",
 		"@tailwindcss/typography": "0.5.16",
 		"@tanstack/eslint-plugin-query": "5.81.2",
