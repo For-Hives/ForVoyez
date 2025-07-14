@@ -43,7 +43,7 @@
 		"@hookform/resolvers": "5.1.1",
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
 		"@prisma/client": "6.11.1",
-		"@rive-app/react-canvas": "4.21.4",
+		"@rive-app/react-canvas": "4.21.5",
 		"@tailwindcss/forms": "0.5.10",
 		"clsx": "2.1.1",
 		"date-fns": "4.1.0",
