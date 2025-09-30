@@ -115,7 +115,7 @@ export async function getImageDescription(base64Image, data) {
 		return JSON.parse(seoResponse.choices[0].message.content.trim())
 	} catch (error) {
 		console.error('Failed to get image description:', error)
-		throw new Error('OpenAI service failure')
+		throw error
 	}
 }
 
@@ -139,7 +139,7 @@ async function extractKeywordsAndLimitContext(context) {
 		return response.choices[0].message.content.trim()
 	} catch (error) {
 		console.error('Failed to extract keywords and limit context:', error)
-		throw new Error('OpenAI service failure')
+		throw error
 	}
 }
 
