@@ -227,7 +227,8 @@
 .bubbly-button:before {
 	display: none;
 	top: -75%;
-	background-image: radial-gradient(circle, #f97316 20%, transparent 20%),
+	background-image:
+		radial-gradient(circle, #f97316 20%, transparent 20%),
 		radial-gradient(circle, transparent 20%, #f97316 20%, transparent 30%),
 		radial-gradient(circle, #f97316 20%, transparent 20%),
 		radial-gradient(circle, #f97316 20%, transparent 20%),
@@ -252,7 +253,8 @@
 .bubbly-button:after {
 	display: none;
 	bottom: -75%;
-	background-image: radial-gradient(circle, #f97316 20%, transparent 20%),
+	background-image:
+		radial-gradient(circle, #f97316 20%, transparent 20%),
 		radial-gradient(circle, #f97316 20%, transparent 20%),
 		radial-gradient(circle, transparent 10%, #f97316 15%, transparent 20%),
 		radial-gradient(circle, #f97316 20%, transparent 20%),

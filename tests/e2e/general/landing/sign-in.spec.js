@@ -1,4 +1,5 @@
 const { expect, test } = require('@playwright/test')
+
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 
 const TEST_EMAIL = process.env.TEST_EMAIL
@@ -86,11 +87,11 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		await expect(page).toHaveURL(`${getNextPublicUrl()}/profile`)
 
 		// Check for the presence of the email address on the manage account page
-		const emailElement = page.locator(
-			'.cl-profileSectionItem__emailAddresses .cl-internal-bolkfx'
-		)
 		log('Checking presence of email address on manage account page')
-		await expect(emailElement).toHaveText(TEST_EMAIL)
+		const emailElement = page
+			.locator('.cl-profileSectionItem__emailAddresses')
+			.getByText(TEST_EMAIL)
+		await expect(emailElement).toBeVisible()
 
 		log('Sign-in and manage account test completed successfully')
 
