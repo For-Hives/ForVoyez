@@ -88,8 +88,8 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
+			max_completion_tokens: 1000,
 			model: modelUsed,
-			max_tokens: 1000,
 			n: 1,
 		})
 
@@ -106,8 +106,8 @@ export async function getImageDescription(base64Image, data) {
 				},
 			],
 			response_format: { type: 'json_object' },
+			max_completion_tokens: 1500,
 			model: modelUsed,
-			max_tokens: 1500,
 			stop: null,
 			n: 1,
 		})
@@ -131,8 +131,8 @@ async function extractKeywordsAndLimitContext(context) {
 					role: 'user',
 				},
 			],
+			max_completion_tokens: 150,
 			model: modelUsed,
-			max_tokens: 150,
 			n: 1,
 		})
 

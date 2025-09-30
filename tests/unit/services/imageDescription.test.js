@@ -84,7 +84,7 @@ describe('Image Description Service', () => {
 					},
 				],
 				model: 'gpt-5-nano-2025-08-07',
-				max_tokens: 150,
+				max_completion_tokens: 150,
 				n: 1,
 			})
 		})
@@ -175,7 +175,7 @@ describe('Image Description Service', () => {
 					},
 				],
 				model: 'gpt-5-nano-2025-08-07',
-				max_tokens: 150,
+				max_completion_tokens: 150,
 				n: 1,
 			})
 			expect(createMock).toHaveBeenNthCalledWith(2, {
@@ -195,7 +195,7 @@ describe('Image Description Service', () => {
 					},
 				],
 				model: 'gpt-5-nano-2025-08-07',
-				max_tokens: 1000,
+				max_completion_tokens: 1000,
 				n: 1,
 			})
 			expect(createMock).toHaveBeenNthCalledWith(3, {
@@ -211,7 +211,7 @@ describe('Image Description Service', () => {
 				],
 				response_format: { type: 'json_object' },
 				model: 'gpt-5-nano-2025-08-07',
-				max_tokens: 1500,
+				max_completion_tokens: 1500,
 				stop: null,
 				n: 1,
 			})
