@@ -8,7 +8,8 @@ import { defaultJsonTemplateSchema } from '@/constants/playground'
 // from gpt-3.5-turbo (0.006$ / 1M tokens) to
 // $0.50 / 1M tokens for gpt-3.5-turbo-0125
 // $0.150 / 1M input tokens for gpt-4o-mini
-const modelUsed = 'gpt-4o-mini'
+// $0.05 / 1M input tokens for gpt-5-nano
+const modelUsed = 'gpt-5-nano-2025-08-07'
 
 // Convert blob to Base64 string with image optimizations.
 export async function blobToBase64(blob) {
@@ -87,8 +88,8 @@ export async function getImageDescription(base64Image, data) {
 					role: 'user',
 				},
 			],
+			max_completion_tokens: 1000,
 			model: modelUsed,
-			max_tokens: 1000,
 			n: 1,
 		})
 
@@ -105,8 +106,8 @@ export async function getImageDescription(base64Image, data) {
 				},
 			],
 			response_format: { type: 'json_object' },
+			max_completion_tokens: 1500,
 			model: modelUsed,
-			max_tokens: 1500,
 			stop: null,
 			n: 1,
 		})
@@ -114,7 +115,7 @@ export async function getImageDescription(base64Image, data) {
 		return JSON.parse(seoResponse.choices[0].message.content.trim())
 	} catch (error) {
 		console.error('Failed to get image description:', error)
-		throw new Error('OpenAI service failure')
+		throw error
 	}
 }
 
@@ -130,15 +131,15 @@ async function extractKeywordsAndLimitContext(context) {
 					role: 'user',
 				},
 			],
+			max_completion_tokens: 150,
 			model: modelUsed,
-			max_tokens: 150,
 			n: 1,
 		})
 
 		return response.choices[0].message.content.trim()
 	} catch (error) {
 		console.error('Failed to extract keywords and limit context:', error)
-		throw new Error('OpenAI service failure')
+		throw error
 	}
 }
 

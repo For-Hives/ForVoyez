@@ -3,9 +3,9 @@ import OpenAI from 'openai'
 import sharp from 'sharp'
 
 import {
-	TestingExports,
 	blobToBase64,
 	getImageDescription,
+	TestingExports,
 } from '@/services/imageDescription.service'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
@@ -83,8 +83,8 @@ describe('Image Description Service', () => {
 						role: 'user',
 					},
 				],
-				model: 'gpt-4o-mini',
-				max_tokens: 150,
+				model: 'gpt-5-nano-2025-08-07',
+				max_completion_tokens: 150,
 				n: 1,
 			})
 		})
@@ -174,8 +174,8 @@ describe('Image Description Service', () => {
 						role: 'user',
 					},
 				],
-				model: 'gpt-4o-mini',
-				max_tokens: 150,
+				model: 'gpt-5-nano-2025-08-07',
+				max_completion_tokens: 150,
 				n: 1,
 			})
 			expect(createMock).toHaveBeenNthCalledWith(2, {
@@ -194,8 +194,8 @@ describe('Image Description Service', () => {
 						role: 'user',
 					},
 				],
-				model: 'gpt-4o-mini',
-				max_tokens: 1000,
+				model: 'gpt-5-nano-2025-08-07',
+				max_completion_tokens: 1000,
 				n: 1,
 			})
 			expect(createMock).toHaveBeenNthCalledWith(3, {
@@ -210,8 +210,8 @@ describe('Image Description Service', () => {
 					},
 				],
 				response_format: { type: 'json_object' },
-				model: 'gpt-4o-mini',
-				max_tokens: 1500,
+				model: 'gpt-5-nano-2025-08-07',
+				max_completion_tokens: 1500,
 				stop: null,
 				n: 1,
 			})
