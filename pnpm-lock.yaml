@@ -11,7 +11,7 @@ importers:
   .:
     dependencies:
       '@ai-sdk/openai':
-        specifier: ^2.0.42
+        specifier: 2.0.42
         version: 2.0.42(zod@4.1.11)
       '@clerk/nextjs':
         specifier: 6.20.0
@@ -38,7 +38,7 @@ importers:
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@4.0.7)
       ai:
-        specifier: ^5.0.59
+        specifier: 5.0.59
         version: 5.0.59(zod@4.1.11)
       clsx:
         specifier: 2.1.1
@@ -95,7 +95,7 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       zod:
-        specifier: ^4.1.11
+        specifier: 4.1.11
         version: 4.1.11
       zustand:
         specifier: 5.0.6
