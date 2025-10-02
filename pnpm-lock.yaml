@@ -103,8 +103,8 @@ importers:
         version: 5.0.5(@types/react@19.1.8)(immer@10.1.3)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
       '@clerk/testing':
-        specifier: 1.10.0
-        version: 1.10.0(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.13.1
+        version: 1.13.1(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@next/eslint-plugin-next':
         specifier: 15.3.5
         version: 15.3.5
@@ -377,8 +377,8 @@ packages:
       react-dom:
         optional: true
 
-  '@clerk/testing@1.10.0':
-    resolution: {integrity: sha512-lDfSL5n7sZ6aPX0r3vq0fp+ggQ+rL3F4D/gbVuKKyV3X7XUkxGimM6zifs8yz9pomIoCQDEHfLCYztLg7AK8jw==}
+  '@clerk/testing@1.13.1':
+    resolution: {integrity: sha512-jnMajyK5J8l3xsW1FdZpVz5QiGvk0zi4OOfn+2ZrQt+GS8Y7MqkQzRt+5pvUsU5fVXsq3zZGxVwj0gsppo383Q==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       '@playwright/test': ^1
@@ -1993,12 +1993,12 @@ packages:
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
-    engines: {node: '>=12'}
-
   dotenv@17.2.0:
     resolution: {integrity: sha512-Q4sgBT60gzd0BB0lSyYD3xM4YxrXA9y4uBDof1JNYGzOXrQdQ6yX+7XIAqoFOGQFOTK1D3Hts5OllpxMDZFONQ==}
+    engines: {node: '>=12'}
+
+  dotenv@17.2.2:
+    resolution: {integrity: sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -4150,12 +4150,12 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@clerk/testing@1.10.0(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@clerk/testing@1.13.1(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@clerk/backend': 2.17.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/shared': 3.27.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/types': 4.90.0
-      dotenv: 16.4.7
+      dotenv: 17.2.2
     optionalDependencies:
       '@playwright/test': 1.54.1
     transitivePeerDependencies:
@@ -5638,9 +5638,9 @@ snapshots:
       no-case: 3.0.4
       tslib: 2.8.1
 
-  dotenv@16.4.7: {}
-
   dotenv@17.2.0: {}
+
+  dotenv@17.2.2: {}
 
   dunder-proto@1.0.1:
     dependencies:
