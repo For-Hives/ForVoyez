@@ -1,4 +1,3 @@
-import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { currentUser } from '@clerk/nextjs/server'
 
@@ -6,6 +5,7 @@ import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
+import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { decrementCredit } from '@/services/database.service'
 
 vi.mock('@clerk/nextjs/server')
@@ -134,6 +134,96 @@ describe('describePlaygroundAction', () => {
 		expect(getImageDescription).toHaveBeenCalledWith(
 			mockBase64Image,
 			expect.objectContaining({
+				context: 'Test Context',
+				language: 'en',
+				schema: {},
+			})
+		)
+	})
+
+	it('should parse schema string into an object', async () => {
+		const mockUser = { id: 'user123' }
+		const mockFile = new Blob(['image content'], { type: 'image/png' })
+		const mockBase64Image = 'base64ImageString'
+		const mockDescription = {
+			title: 'Image Title',
+			caption: 'Caption',
+			alt: 'Alt Text',
+		}
+		const schemaObject = {
+			alternativeText: 'Alt text description',
+			caption: 'Caption description',
+			title: 'Title description',
+		}
+
+		currentUser.mockResolvedValue(mockUser)
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		blobToBase64.mockResolvedValue(mockBase64Image)
+		getImageDescription.mockResolvedValue(mockDescription)
+
+		const formData = new FormData()
+		formData.append('image', mockFile)
+		formData.append(
+			'data',
+			JSON.stringify({
+				schema: JSON.stringify(schemaObject),
+				context: 'Test Context',
+				language: 'en',
+			})
+		)
+
+		await describePlaygroundAction(formData)
+
+		expect(getImageDescription).toHaveBeenCalledWith(
+			mockBase64Image,
+			expect.objectContaining({
+				context: 'Test Context',
+				schema: schemaObject,
+				language: 'en',
+				keywords: '',
+			})
+		)
+	})
+
+	it('should handle keywords parameter', async () => {
+		const mockUser = { id: 'user123' }
+		const mockFile = new Blob(['image content'], { type: 'image/png' })
+		const mockBase64Image = 'base64ImageString'
+		const mockDescription = {
+			title: 'Image Title',
+			caption: 'Caption',
+			alt: 'Alt Text',
+		}
+
+		currentUser.mockResolvedValue(mockUser)
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		blobToBase64.mockResolvedValue(mockBase64Image)
+		getImageDescription.mockResolvedValue(mockDescription)
+
+		const formData = new FormData()
+		formData.append('image', mockFile)
+		formData.append(
+			'data',
+			JSON.stringify({
+				keywords: 'test, keywords',
+				context: 'Test Context',
+				language: 'en',
+				schema: {},
+			})
+		)
+
+		await describePlaygroundAction(formData)
+
+		expect(getImageDescription).toHaveBeenCalledWith(
+			mockBase64Image,
+			expect.objectContaining({
+				keywords: 'test, keywords',
 				context: 'Test Context',
 				language: 'en',
 				schema: {},

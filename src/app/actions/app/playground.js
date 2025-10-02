@@ -35,14 +35,25 @@ export async function describePlaygroundAction(formData) {
 	}
 
 	const data = JSON.parse(formData.get('data') || '{}')
-	const schema = data.schema || {}
+	// Parse the schema if it's a string, otherwise use the object or default to empty object
+	let schema = data.schema || {}
+	if (typeof schema === 'string') {
+		try {
+			schema = JSON.parse(schema)
+		} catch (error) {
+			console.error('Failed to parse schema JSON:', error)
+			schema = {}
+		}
+	}
 	const context = data.context || ''
 	const language = data.language || 'en' // Default language is English
+	const keywords = data.keywords || ''
 
 	const base64Image = await blobToBase64(file)
 
 	// Get image description using base64 encoded image
 	const description = await getImageDescription(base64Image, {
+		keywords,
 		language,
 		context,
 		schema,

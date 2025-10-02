@@ -146,6 +146,44 @@ describe('describe API', () => {
 			)
 		})
 
+		it('should parse schema string from FormData', async () => {
+			const formData = new FormData()
+			const schemaObject = {
+				alternativeText: 'Alt description',
+				caption: 'Caption description',
+				title: 'Title description',
+			}
+			formData.append('image', mockFile)
+			formData.append('schema', JSON.stringify(schemaObject))
+			formData.append('context', 'Test Context')
+			formData.append('language', 'en')
+			formData.append('keywords', 'test, keywords')
+
+			const request = mockRequest(
+				[['Authorization', 'Bearer validtoken']],
+				formData
+			)
+			verifyJwt.mockResolvedValue(mockPayload)
+			prisma.user.findUnique.mockResolvedValue(mockUser)
+			blobToBase64.mockResolvedValue(mockBase64Image)
+			getImageDescription.mockResolvedValue(mockDescription)
+
+			const response = await POST(request)
+			const result = await response.json()
+
+			expect(response.status).toBe(200)
+			expect(result).toEqual(mockDescription)
+			expect(getImageDescription).toHaveBeenCalledWith(
+				mockBase64Image,
+				expect.objectContaining({
+					keywords: 'test, keywords',
+					context: 'Test Context',
+					schema: schemaObject,
+					language: 'en',
+				})
+			)
+		})
+
 		it('should return 500 if an error occurs', async () => {
 			const formData = new FormData()
 			formData.append('image', mockFile)

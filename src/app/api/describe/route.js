@@ -74,7 +74,16 @@ export async function POST(request) {
 			})
 		}
 
-		const schema = formData.get('schema') || {}
+		let schema = formData.get('schema') || '{}'
+		// Parse the schema if it's a string
+		if (typeof schema === 'string') {
+			try {
+				schema = JSON.parse(schema)
+			} catch (error) {
+				console.error('Failed to parse schema JSON:', error)
+				schema = {}
+			}
+		}
 		const context = formData.get('context') || ''
 		const keywords = formData.get('keywords') || ''
 		const language = formData.get('language') || 'en' // Default language is English
