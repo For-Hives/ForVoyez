@@ -74,16 +74,7 @@ export async function POST(request) {
 			})
 		}
 
-		let schema = formData.get('schema') || '{}'
-		// Parse the schema if it's a string
-		if (typeof schema === 'string') {
-			try {
-				schema = JSON.parse(schema)
-			} catch (error) {
-				console.error('Failed to parse schema JSON:', error)
-				schema = {}
-			}
-		}
+		const schema = parseSchema(formData.get('schema'))
 		const context = formData.get('context') || ''
 		const keywords = formData.get('keywords') || ''
 		const language = formData.get('language') || 'en' // Default language is English
@@ -142,4 +133,25 @@ function isValidSchema() {
 	// Implement your schema validation logic here
 	// Return true if the schema is valid, false otherwise
 	return true
+}
+
+/**
+ * Parses schema from string or object format
+ * @param {string|object} schema - Schema to parse
+ * @returns {object} Parsed schema object or empty object if invalid
+ */
+function parseSchema(schema) {
+	if (!schema || schema === '{}') return {}
+	if (typeof schema === 'object' && !Array.isArray(schema)) return schema
+
+	if (typeof schema === 'string') {
+		try {
+			return JSON.parse(schema)
+		} catch (error) {
+			console.error('Failed to parse schema JSON:', error)
+			return {}
+		}
+	}
+
+	return {}
 }

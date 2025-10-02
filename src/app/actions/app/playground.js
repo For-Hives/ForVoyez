@@ -35,19 +35,10 @@ export async function describePlaygroundAction(formData) {
 	}
 
 	const data = JSON.parse(formData.get('data') || '{}')
-	// Parse the schema if it's a string, otherwise use the object or default to empty object
-	let schema = data.schema || {}
-	if (typeof schema === 'string') {
-		try {
-			schema = JSON.parse(schema)
-		} catch (error) {
-			console.error('Failed to parse schema JSON:', error)
-			schema = {}
-		}
-	}
+	const schema = parseSchema(data.schema)
 	const context = data.context || ''
-	const language = data.language || 'en' // Default language is English
 	const keywords = data.keywords || ''
+	const language = data.language || 'en' // Default language is English
 
 	const base64Image = await blobToBase64(file)
 
@@ -67,4 +58,25 @@ export async function describePlaygroundAction(formData) {
 		data: description,
 		status: 200,
 	}
+}
+
+/**
+ * Parses schema from string or object format
+ * @param {string|object} schema - Schema to parse
+ * @returns {object} Parsed schema object or empty object if invalid
+ */
+function parseSchema(schema) {
+	if (!schema) return {}
+	if (typeof schema === 'object' && !Array.isArray(schema)) return schema
+
+	if (typeof schema === 'string') {
+		try {
+			return JSON.parse(schema)
+		} catch (error) {
+			console.error('Failed to parse schema JSON:', error)
+			return {}
+		}
+	}
+
+	return {}
 }
