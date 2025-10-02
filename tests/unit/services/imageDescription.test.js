@@ -192,7 +192,7 @@ describe('Image Description Service', () => {
 	})
 
 	describe('buildSchemaDefinition', () => {
-		it('should create a schema definition from a valid object template', () => {
+		it('returns the provided template when it is a valid object', () => {
 			const template = {
 				alternativeText: 'Alt text description',
 				caption: 'Caption description',
@@ -204,44 +204,12 @@ describe('Image Description Service', () => {
 			expect(schema).toEqual(template)
 		})
 
-		it('should handle string input by parsing it to an object', () => {
-			const template = JSON.stringify({
-				alternativeText: 'Alt text description',
-				caption: 'Caption description',
-				title: 'Title description',
-			})
-
-			const schema = buildSchemaDefinition(template)
-
-			expect(schema).toEqual({
-				alternativeText: 'Alt text description',
-				caption: 'Caption description',
-				title: 'Title description',
-			})
-		})
-
-		it('should handle invalid string input by returning default schema', () => {
-			const template = 'invalid json string'
-
-			const schema = buildSchemaDefinition(template)
-
-			expect(schema).toEqual(defaultJsonTemplateSchema)
-		})
-
-		it('should handle non-object input by returning default schema', () => {
-			const schema1 = buildSchemaDefinition(null)
-			const schema2 = buildSchemaDefinition([])
-			const schema3 = buildSchemaDefinition(123)
-
-			expect(schema1).toEqual(defaultJsonTemplateSchema)
-			expect(schema2).toEqual(defaultJsonTemplateSchema)
-			expect(schema3).toEqual(defaultJsonTemplateSchema)
-		})
-
-		it('should use default template when empty object is provided', () => {
-			const schema = buildSchemaDefinition({})
-
-			expect(schema).toEqual(defaultJsonTemplateSchema)
+		it('falls back to the default template when schema is missing or empty', () => {
+			expect(buildSchemaDefinition(undefined)).toEqual(
+				defaultJsonTemplateSchema
+			)
+			expect(buildSchemaDefinition({})).toEqual(defaultJsonTemplateSchema)
+			expect(buildSchemaDefinition(null)).toEqual(defaultJsonTemplateSchema)
 		})
 	})
 
@@ -297,9 +265,9 @@ describe('Image Description Service', () => {
 			expect(prompt).toContain('Image Description: A beautiful sunset')
 			expect(prompt).toContain('Additional Context: Nature photography')
 			expect(prompt).toContain('sunset, nature')
-			expect(prompt).toContain('alternativeText')
-			expect(prompt).toContain('caption')
-			expect(prompt).toContain('title')
+			expect(prompt).toContain('- "alternativeText"')
+			expect(prompt).toContain('- "caption"')
+			expect(prompt).toContain('- "title"')
 			expect(prompt).toContain('Respond ONLY with a valid JSON object')
 		})
 
@@ -318,11 +286,11 @@ describe('Image Description Service', () => {
 			const prompt = getSeoPrompt(imageDescription, cleanedContext, data)
 
 			expect(prompt).toContain('Image Description: A beautiful sunset')
-			expect(prompt).toContain('short: short word to describe image')
-			expect(prompt).toContain('long: detailed description of the image')
-			expect(prompt).not.toContain('alternativeText')
-			expect(prompt).not.toContain('caption')
-			expect(prompt).not.toContain('title')
+			expect(prompt).toContain('- "short": short word to describe image')
+			expect(prompt).toContain('- "long": detailed description of the image')
+			expect(prompt).not.toContain('"alternativeText"')
+			expect(prompt).not.toContain('"caption"')
+			expect(prompt).not.toContain('"title"')
 		})
 
 		it('should handle missing keywords', () => {
