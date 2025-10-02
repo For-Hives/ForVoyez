@@ -1,8 +1,24 @@
-import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+
+import { defineConfig } from 'vitest/config'
 import path from 'path'
 
 export default defineConfig({
+	resolve: {
+		alias: {
+			// During unit tests we don't need the real Clerk package; point imports
+			// to local lightweight mocks so Vitest / Vite can resolve them.
+			'@clerk/nextjs/server': path.resolve(
+				__dirname,
+				'./tests/unit/mocks/clerk.server.js'
+			),
+			'@clerk/nextjs': path.resolve(
+				__dirname,
+				'./tests/unit/mocks/clerk.client.js'
+			),
+			'@': path.resolve(__dirname, './src'),
+		},
+	},
 	test: {
 		coverage: {
 			reporter: [
@@ -19,11 +35,6 @@ export default defineConfig({
 		},
 		include: ['tests/unit/**/*.test.js'],
 		environment: 'jsdom',
-	},
-	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-		},
 	},
 	plugins: [react()],
 })
