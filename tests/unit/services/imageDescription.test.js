@@ -8,8 +8,12 @@ import {
 } from '@/services/imageDescription.service'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
-const { extractKeywordsAndLimitContext, createZodSchema, getSeoPrompt } =
-	TestingExports
+const {
+	extractKeywordsAndLimitContext,
+	buildSchemaDefinition,
+	parseMetadataResponse,
+	getSeoPrompt,
+} = TestingExports
 
 // Mock the AI SDK
 vi.mock('ai', () => ({
@@ -116,25 +120,29 @@ describe('Image Description Service', () => {
 				title: 'Title',
 			}
 
-			// Mock the generateText calls (for context extraction and image description)
 			generateText
+				.mockResolvedValueOnce({ text: mockExtractedContext })
+				.mockResolvedValueOnce({ text: mockImageDescription })
 				.mockResolvedValueOnce({
-					text: mockExtractedContext,
+					text: JSON.stringify(mockSeoMetadata),
 				})
-				.mockResolvedValueOnce({
-					text: mockImageDescription,
-				})
-
-			// Mock the generateObject call (for structured SEO metadata)
-			generateObject.mockResolvedValueOnce({
-				object: mockSeoMetadata,
-			})
 
 			const result = await getImageDescription(base64Image, data)
 
 			expect(result).toEqual(mockSeoMetadata)
-			expect(generateText).toHaveBeenCalledTimes(2)
-			expect(generateObject).toHaveBeenCalledTimes(1)
+			expect(generateText).toHaveBeenCalledTimes(3)
+			expect(generateObject).not.toHaveBeenCalled()
+			expect(generateText).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					messages: [
+						expect.objectContaining({
+							content: expect.stringContaining(
+								'Respond ONLY with a valid JSON object'
+							),
+						}),
+					],
+				})
+			)
 		})
 
 		it('should throw an error if OpenAI service fails', async () => {
@@ -165,19 +173,12 @@ describe('Image Description Service', () => {
 				short: 'Dancer portrait',
 			}
 
-			// Mock the generateText calls (for context extraction and image description)
 			generateText
+				.mockResolvedValueOnce({ text: mockExtractedContext })
+				.mockResolvedValueOnce({ text: mockImageDescription })
 				.mockResolvedValueOnce({
-					text: mockExtractedContext,
+					text: JSON.stringify(mockSeoMetadata),
 				})
-				.mockResolvedValueOnce({
-					text: mockImageDescription,
-				})
-
-			// Mock the generateObject call (for structured SEO metadata)
-			generateObject.mockResolvedValueOnce({
-				object: mockSeoMetadata,
-			})
 
 			const result = await getImageDescription(base64Image, data)
 
@@ -186,21 +187,21 @@ describe('Image Description Service', () => {
 			expect(result).not.toHaveProperty('alternativeText')
 			expect(result).not.toHaveProperty('caption')
 			expect(result).not.toHaveProperty('title')
+			expect(generateObject).not.toHaveBeenCalled()
 		})
 	})
 
-	describe('createZodSchema', () => {
-		it('should create a Zod schema from a valid object template', () => {
+	describe('buildSchemaDefinition', () => {
+		it('should create a schema definition from a valid object template', () => {
 			const template = {
 				alternativeText: 'Alt text description',
 				caption: 'Caption description',
 				title: 'Title description',
 			}
 
-			const schema = createZodSchema(template)
+			const schema = buildSchemaDefinition(template)
 
-			expect(schema).toBeDefined()
-			expect(schema._def.typeName).toBe('ZodObject')
+			expect(schema).toEqual(template)
 		})
 
 		it('should handle string input by parsing it to an object', () => {
@@ -210,42 +211,75 @@ describe('Image Description Service', () => {
 				title: 'Title description',
 			})
 
-			const schema = createZodSchema(template)
+			const schema = buildSchemaDefinition(template)
 
-			expect(schema).toBeDefined()
-			expect(schema._def.typeName).toBe('ZodObject')
+			expect(schema).toEqual({
+				alternativeText: 'Alt text description',
+				caption: 'Caption description',
+				title: 'Title description',
+			})
 		})
 
-		it('should handle invalid string input by returning empty schema', () => {
+		it('should handle invalid string input by returning default schema', () => {
 			const template = 'invalid json string'
 
-			const schema = createZodSchema(template)
+			const schema = buildSchemaDefinition(template)
 
-			expect(schema).toBeDefined()
-			expect(schema._def.typeName).toBe('ZodObject')
-			// Should have no fields due to invalid input
-			expect(Object.keys(schema._def.shape())).toHaveLength(0)
+			expect(schema).toEqual(defaultJsonTemplateSchema)
 		})
 
-		it('should handle non-object input by returning empty schema', () => {
-			const schema1 = createZodSchema(null)
-			const schema2 = createZodSchema([])
-			const schema3 = createZodSchema(123)
+		it('should handle non-object input by returning default schema', () => {
+			const schema1 = buildSchemaDefinition(null)
+			const schema2 = buildSchemaDefinition([])
+			const schema3 = buildSchemaDefinition(123)
 
-			expect(schema1._def.typeName).toBe('ZodObject')
-			expect(schema2._def.typeName).toBe('ZodObject')
-			expect(schema3._def.typeName).toBe('ZodObject')
-			expect(Object.keys(schema1._def.shape())).toHaveLength(0)
-			expect(Object.keys(schema2._def.shape())).toHaveLength(0)
-			expect(Object.keys(schema3._def.shape())).toHaveLength(0)
+			expect(schema1).toEqual(defaultJsonTemplateSchema)
+			expect(schema2).toEqual(defaultJsonTemplateSchema)
+			expect(schema3).toEqual(defaultJsonTemplateSchema)
 		})
 
 		it('should use default template when empty object is provided', () => {
-			const schema = createZodSchema({})
+			const schema = buildSchemaDefinition({})
 
-			expect(schema).toBeDefined()
-			expect(schema._def.typeName).toBe('ZodObject')
-			expect(Object.keys(schema._def.shape())).toHaveLength(0)
+			expect(schema).toEqual(defaultJsonTemplateSchema)
+		})
+	})
+
+	describe('parseMetadataResponse', () => {
+		const schemaDefinition = {
+			alternativeText: 'Alt text',
+			caption: 'Caption',
+			title: 'Title',
+		}
+
+		it('should parse valid JSON response and trim values', () => {
+			const response = `\n\n{\n  "alternativeText": " Alt ",\n  "caption": "Caption",\n  "title": "Title"\n}`
+
+			const result = parseMetadataResponse(response, schemaDefinition)
+
+			expect(result).toEqual({
+				alternativeText: 'Alt',
+				caption: 'Caption',
+				title: 'Title',
+			})
+		})
+
+		it('should ignore extra properties and fill missing fields with empty strings', () => {
+			const response = '{"alternativeText":"Alt","extra":"value"}'
+
+			const result = parseMetadataResponse(response, schemaDefinition)
+
+			expect(result).toEqual({
+				alternativeText: 'Alt',
+				caption: '',
+				title: '',
+			})
+		})
+
+		it('should throw an error when JSON cannot be parsed', () => {
+			expect(() =>
+				parseMetadataResponse('Invalid response', schemaDefinition)
+			).toThrow('Failed to parse metadata JSON')
 		})
 	})
 
@@ -266,6 +300,7 @@ describe('Image Description Service', () => {
 			expect(prompt).toContain('alternativeText')
 			expect(prompt).toContain('caption')
 			expect(prompt).toContain('title')
+			expect(prompt).toContain('Respond ONLY with a valid JSON object')
 		})
 
 		it('should generate prompt with custom schema fields', () => {
@@ -300,7 +335,7 @@ describe('Image Description Service', () => {
 			const prompt = getSeoPrompt(imageDescription, cleanedContext, data)
 
 			expect(prompt).toContain('Image Description: A beautiful sunset')
-			expect(prompt).not.toContain('keywords')
+			expect(prompt).not.toContain('Ensure the output naturally incorporates')
 		})
 	})
 })

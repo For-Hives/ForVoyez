@@ -1,7 +1,6 @@
-import { generateObject, generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { generateText } from 'ai'
 import sharp from 'sharp'
-import { z } from 'zod'
 
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
@@ -96,17 +95,14 @@ export async function getImageDescription(base64Image, data) {
 
 		console.info('Image Description:', imageDescription)
 
-		const seoPrompt = getSeoPrompt(imageDescription, cleanedContext, data)
+		const schemaDefinition = buildSchemaDefinition(data.schema)
 
-		// Create Zod schema from the data.schema, or use default if not provided
-		const schemaToUse =
-			data.schema && Object.keys(data.schema).length > 0
-				? data.schema
-				: defaultJsonTemplateSchema
-		const seoSchema = createZodSchema(schemaToUse)
+		const seoPrompt = getSeoPrompt(imageDescription, cleanedContext, {
+			...data,
+			schemaDefinition,
+		})
 
-		// Generate alt text, caption, and title for the image using structured outputs
-		const { object: seoMetadata } = await generateObject({
+		const { text: rawSeoMetadata } = await generateText({
 			messages: [
 				{
 					content: seoPrompt,
@@ -114,8 +110,9 @@ export async function getImageDescription(base64Image, data) {
 				},
 			],
 			model: openai(modelUsed),
-			schema: seoSchema,
 		})
+
+		const seoMetadata = parseMetadataResponse(rawSeoMetadata, schemaDefinition)
 
 		console.info('SEO Metadata:', seoMetadata)
 
@@ -126,8 +123,7 @@ export async function getImageDescription(base64Image, data) {
 	}
 }
 
-// Helper function to create Zod schema from template
-function createZodSchema(template) {
+function buildSchemaDefinition(template) {
 	// Handle string input by parsing it
 	let parsedTemplate = template
 	if (typeof template === 'string') {
@@ -140,38 +136,39 @@ function createZodSchema(template) {
 	}
 
 	// Ensure we have a valid object
-	if (
-		!parsedTemplate ||
-		typeof parsedTemplate !== 'object' ||
-		Array.isArray(parsedTemplate)
-	) {
-		console.error(
-			'Invalid template: expected object, got:',
-			typeof parsedTemplate
-		)
-		parsedTemplate = {}
+	const normalizedTemplate =
+		parsedTemplate &&
+		typeof parsedTemplate === 'object' &&
+		!Array.isArray(parsedTemplate)
+			? parsedTemplate
+			: {}
+
+	const sanitizedEntries = Object.entries(normalizedTemplate).reduce(
+		(acc, [key, value]) => {
+			if (typeof key !== 'string') {
+				return acc
+			}
+
+			const safeValue =
+				typeof value === 'string' && value.trim().length > 0
+					? value.trim()
+					: String(value ?? '').trim()
+
+			if (key.trim().length === 0) {
+				return acc
+			}
+
+			acc[key] = safeValue
+			return acc
+		},
+		{}
+	)
+
+	if (Object.keys(sanitizedEntries).length === 0) {
+		return { ...defaultJsonTemplateSchema }
 	}
 
-	const schemaFields = {}
-
-	// Simple, clear descriptions for each field
-	const fieldDescriptions = {
-		alternativeText:
-			'Alternative text (alt text) for the image - concise and meaningful description',
-		caption:
-			'Caption for the image - brief description of what the image shows',
-		title:
-			'Title for the image - short, informative title under 100 characters',
-	}
-
-	for (const [key] of Object.entries(parsedTemplate)) {
-		// Use predefined descriptions or create a simple one
-		const description = fieldDescriptions[key] || `${key} for the image`
-
-		schemaFields[key] = z.string().describe(description)
-	}
-
-	return z.object(schemaFields)
+	return sanitizedEntries
 }
 
 // Function to extract keywords and limit context size
@@ -197,29 +194,43 @@ async function extractKeywordsAndLimitContext(context) {
 
 export const TestingExports = {
 	extractKeywordsAndLimitContext,
-	createZodSchema,
+	buildSchemaDefinition,
+	parseMetadataResponse,
 	getSeoPrompt,
 }
 
+TestingExports.createZodSchema = buildSchemaDefinition
+
 // Function to generate the SEO prompt
 function getSeoPrompt(result, cleanedContext, data) {
-	// Get the schema to use (custom or default)
-	const schemaToUse =
-		data.schema && Object.keys(data.schema).length > 0
-			? data.schema
-			: defaultJsonTemplateSchema
+	const schemaDefinition =
+		data.schemaDefinition || buildSchemaDefinition(data.schema)
 
-	// Build dynamic field descriptions based on the schema
-	const fieldDescriptions = Object.entries(schemaToUse)
-		.map(([key, value]) => {
-			// If the value is a descriptive string, use it; otherwise create a generic description
-			const description =
-				typeof value === 'string' && value.length > 0
-					? value
+	const fieldDescriptions = Object.entries(schemaDefinition)
+		.map(([key, description]) => {
+			const safeDescription =
+				typeof description === 'string' && description.trim().length > 0
+					? description.trim()
 					: `${key} for the image`
-			return `- ${key}: ${description}`
+			return `- "${key}": ${safeDescription}`
 		})
 		.join('\n')
+
+	const keywordsInstruction =
+		data.keywords && data.keywords.trim().length > 0
+			? `Ensure the output naturally incorporates the following keywords: "${data.keywords.trim()}".`
+			: ''
+
+	const language = (data.language || 'en').trim()
+
+	const structureHint = JSON.stringify(
+		Object.keys(schemaDefinition).reduce((acc, key) => {
+			acc[key] = '<string>'
+			return acc
+		}, {}),
+		null,
+		2
+	)
 
 	return `As an SEO expert, your task is to generate optimized metadata for an image based on the provided description and context.
 
@@ -227,13 +238,56 @@ Image Description: ${result}
 
 Additional Context: ${cleanedContext}.
 
-${data.keywords && data.keywords !== '' ? `The answers must contain these keywords: "${data.keywords}". The user asks for these keywords to be part of the response.` : ''}
+${keywordsInstruction}
 
-Please generate the following metadata:
+Please generate the following metadata fields:
 ${fieldDescriptions}
 
-Remember, the ultimate goal is to create metadata that enhances the image's visibility and accessibility while providing value to users.
-Focus on crafting descriptions that are rich in relevant keywords, yet natural and easy to understand.
+Respond ONLY with a valid JSON object (no prose, markdown, or code fences) matching the following structure:
+${structureHint}
 
-The language of the output should be in ${data.language ?? 'en'}.`
+Each value must be a natural, human-readable sentence tailored for the requested language.
+Use ${language} for every field.`
+}
+
+function parseMetadataResponse(rawResponse, schemaDefinition) {
+	const trimmed = rawResponse?.toString().trim()
+
+	if (!trimmed) {
+		throw new Error('Failed to parse metadata JSON')
+	}
+
+	const startIndex = trimmed.indexOf('{')
+	const endIndex = trimmed.lastIndexOf('}')
+
+	if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) {
+		throw new Error('Failed to parse metadata JSON')
+	}
+
+	const jsonCandidate = trimmed.slice(startIndex, endIndex + 1)
+
+	let parsed
+	try {
+		parsed = JSON.parse(jsonCandidate)
+	} catch (error) {
+		console.error('Failed to parse metadata JSON:', error)
+		throw new Error('Failed to parse metadata JSON')
+	}
+
+	const allowedKeys = Object.keys(schemaDefinition)
+	return allowedKeys.reduce((acc, key) => {
+		if (Object.prototype.hasOwnProperty.call(parsed, key)) {
+			const value = parsed[key]
+			acc[key] =
+				typeof value === 'string'
+					? value.trim()
+					: value != null
+						? String(value).trim()
+						: ''
+		} else {
+			acc[key] = ''
+		}
+
+		return acc
+	}, {})
 }
