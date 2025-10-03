@@ -118,8 +118,8 @@ importers:
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.0.7)
       '@tanstack/eslint-plugin-query':
-        specifier: 5.81.2
-        version: 5.81.2(eslint@9.31.0(jiti@2.6.1))(typescript@5.8.3)
+        specifier: 5.91.0
+        version: 5.91.0(eslint@9.31.0(jiti@2.6.1))(typescript@5.8.3)
       '@testing-library/react':
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.0)(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1329,8 +1329,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tanstack/eslint-plugin-query@5.81.2':
-    resolution: {integrity: sha512-h4k6P6fm5VhKP5NkK+0TTVpGGyKQdx6tk7NYYG7J7PkSu7ClpLgBihw7yzK8N3n5zPaF3IMyErxfoNiXWH/3/A==}
+  '@tanstack/eslint-plugin-query@5.91.0':
+    resolution: {integrity: sha512-Kn6yWyRe3dIPf7NqyDMhcsTBz2Oh8jPSOpBdlnLQhGBJ6iTMBFYA4B1UreGJ/WdfzQskSMh5imcyWF+wqa/Q5g==}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
@@ -1943,15 +1943,6 @@ packages:
 
   debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-
-  debug@4.4.0:
-    resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
-    engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
     peerDependenciesMeta:
@@ -4933,7 +4924,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.0.7
 
-  '@tanstack/eslint-plugin-query@5.81.2(eslint@9.31.0(jiti@2.6.1))(typescript@5.8.3)':
+  '@tanstack/eslint-plugin-query@5.91.0(eslint@9.31.0(jiti@2.6.1))(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/utils': 8.45.0(eslint@9.31.0(jiti@2.6.1))(typescript@5.8.3)
       eslint: 9.31.0(jiti@2.6.1)
@@ -5166,7 +5157,7 @@ snapshots:
       '@typescript-eslint/tsconfig-utils': 8.45.0(typescript@5.8.3)
       '@typescript-eslint/types': 8.45.0
       '@typescript-eslint/visitor-keys': 8.45.0
-      debug: 4.4.0
+      debug: 4.4.3
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -5665,10 +5656,6 @@ snapshots:
   date-fns@4.1.0: {}
 
   debug@3.2.7:
-    dependencies:
-      ms: 2.1.3
-
-  debug@4.4.0:
     dependencies:
       ms: 2.1.3
 
