@@ -57,8 +57,8 @@ importers:
         specifier: 6.1.0
         version: 6.1.0
       mailgun.js:
-        specifier: 12.0.3
-        version: 12.0.3
+        specifier: 12.1.0
+        version: 12.1.0
       next:
         specifier: 15.5.4
         version: 15.5.4(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2839,8 +2839,8 @@ packages:
   magicast@0.3.5:
     resolution: {integrity: sha512-L0WhttDl+2BOsybvEOLK7fW3UA0OQ0IQ2d6Zl2x/a6vVRs3bAY0ECOSHHeL5jD+SbOpOCUEi0y1DgHEn9Qn1AQ==}
 
-  mailgun.js@12.0.3:
-    resolution: {integrity: sha512-ki4+xNDA/MjIQAWHB2TK5t5lJN99l45iIRU4SmTqhkY2RCfwQD04s59R3I5YCKdkY/Y5598XRKdkQOj29+eydw==}
+  mailgun.js@12.1.0:
+    resolution: {integrity: sha512-Cd6rD/aYosAuKcHI9iHdgF6n65nNB63ClQrpsvNVxDeks49SMOuh1euFXV/JUNB27n4jMZhprXSKnftcV2Bm9Q==}
     engines: {node: '>=18.0.0'}
 
   make-dir@4.0.0:
@@ -6637,7 +6637,7 @@ snapshots:
       '@babel/types': 7.27.1
       source-map-js: 1.2.1
 
-  mailgun.js@12.0.3:
+  mailgun.js@12.1.0:
     dependencies:
       axios: 1.12.2
       base-64: 1.0.0
