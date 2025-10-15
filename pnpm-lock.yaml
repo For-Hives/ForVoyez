@@ -39,8 +39,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@4.0.7)
       ai:
-        specifier: 5.0.71
-        version: 5.0.71(zod@4.1.12)
+        specifier: 5.0.72
+        version: 5.0.72(zod@4.1.12)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -1516,8 +1516,8 @@ packages:
     resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
     engines: {node: '>= 8.0.0'}
 
-  ai@5.0.71:
-    resolution: {integrity: sha512-2c9/cXpF7O1K9xOgcoPCMC7Jj5GxVsPHTBhKcV6bqCVKm21P8AiN+rz9zIGopNMDhlEbQxqi8qSgrwCfsW+KMw==}
+  ai@5.0.72:
+    resolution: {integrity: sha512-LB4APrlESLGHG/5x+VVdl0yYPpHPHpnGd5Gwl7AWVL+n7T0GYsNos/S/6dZ5CZzxLnPPEBkRgvJC4rupeZqyNg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5140,7 +5140,7 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@5.0.71(zod@4.1.12):
+  ai@5.0.72(zod@4.1.12):
     dependencies:
       '@ai-sdk/gateway': 1.0.40(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
