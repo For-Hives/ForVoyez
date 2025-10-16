@@ -10,7 +10,7 @@ import { defaultJsonTemplateSchema } from '@/constants/playground'
 // $0.50 / 1M tokens for gpt-3.5-turbo-0125
 // $0.150 / 1M input tokens for gpt-4o-mini
 // $0.050 / 1M output tokens for gpt-5-nano
-const modelUsed = 'gpt-5-nano'
+const modelUsed = 'gpt-4o-mini'
 
 // Convert blob to Base64 string with image optimizations.
 export async function blobToBase64(blob) {
