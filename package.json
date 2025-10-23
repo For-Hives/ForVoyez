@@ -94,7 +94,7 @@
 		"espree": "10.4.0",
 		"husky": "9.1.7",
 		"jsdom": "27.0.1",
-		"lint-staged": "16.2.5",
+		"lint-staged": "16.2.6",
 		"postcss": "8.5.6",
 		"prettier": "3.6.2",
 		"prettier-plugin-tailwindcss": "0.7.1",
