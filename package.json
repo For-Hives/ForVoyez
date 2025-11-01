@@ -60,7 +60,7 @@
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"react-hook-form": "7.66.0",
-		"react-toastify": "10.0.6",
+		"react-toastify": "11.0.5",
 		"react-type-animation": "3.2.0",
 		"recharts": "3.3.0",
 		"sharp": "0.34.4",
