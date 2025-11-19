@@ -37,7 +37,7 @@
 		"seed": "node prisma/seed.js"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "6.35.1",
+		"@clerk/nextjs": "6.35.2",
 		"@ai-sdk/openai": "2.0.68",
 		"@headlessui/react": "2.2.9",
 		"@heroicons/react": "2.2.0",
