@@ -63,8 +63,8 @@ importers:
         specifier: 15.5.6
         version: 15.5.6(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       openai:
-        specifier: 6.9.0
-        version: 6.9.0(ws@8.18.3)(zod@4.1.12)
+        specifier: 6.9.1
+        version: 6.9.1(ws@8.18.3)(zod@4.1.12)
       prisma:
         specifier: 6.19.0
         version: 6.19.0(magicast@0.3.5)(typescript@5.9.3)
@@ -2970,8 +2970,8 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
-  openai@6.9.0:
-    resolution: {integrity: sha512-n2sJRYmM+xfJ0l3OfH8eNnIyv3nQY7L08gZQu3dw6wSdfPtKAk92L83M2NIP5SS8Cl/bsBBG3yKzEOjkx0O+7A==}
+  openai@6.9.1:
+    resolution: {integrity: sha512-vQ5Rlt0ZgB3/BNmTa7bIijYFhz3YBceAA3Z4JuoMSBftBF9YqFHIEhZakSs+O/Ad7EaoEimZvHxD5ylRjN11Lg==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -6791,7 +6791,7 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@6.9.0(ws@8.18.3)(zod@4.1.12):
+  openai@6.9.1(ws@8.18.3)(zod@4.1.12):
     optionalDependencies:
       ws: 8.18.3
       zod: 4.1.12
