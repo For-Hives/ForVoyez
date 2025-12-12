@@ -46,7 +46,7 @@
 		"@prisma/client": "6.19.1",
 		"@rive-app/react-canvas": "4.24.0",
 		"@tailwindcss/forms": "0.5.10",
-		"ai": "5.0.110",
+		"ai": "5.0.112",
 		"clsx": "2.1.1",
 		"date-fns": "4.1.0",
 		"form-data": "4.0.5",
