@@ -141,7 +141,7 @@ jobs:
           docker logs forvoyez-container > docker-logs.txt 2>&1
       - name: 'Upload Test Artifacts'
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-artifacts
           path: |
