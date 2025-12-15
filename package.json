@@ -75,7 +75,7 @@
 		"@tailwindcss/postcss": "4.0.7",
 		"@tailwindcss/typography": "0.5.19",
 		"@tanstack/eslint-plugin-query": "5.91.2",
-		"@testing-library/react": "16.3.0",
+		"@testing-library/react": "16.3.1",
 		"@types/react": "19.2.7",
 		"@typescript-eslint/parser": "8.49.0",
 		"@vitejs/plugin-react": "5.1.2",
