@@ -69,7 +69,7 @@
 		"zustand": "5.0.9"
 	},
 	"devDependencies": {
-		"@clerk/testing": "1.13.23",
+		"@clerk/testing": "1.13.24",
 		"@next/eslint-plugin-next": "15.5.9",
 		"@playwright/test": "1.57.0",
 		"@tailwindcss/postcss": "4.0.7",
