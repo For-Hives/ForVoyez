@@ -13,7 +13,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 3.0.2
-        version: 3.0.2(zod@4.3.2)
+        version: 3.0.2(zod@4.3.4)
       '@clerk/nextjs':
         specifier: 6.36.5
         version: 6.36.5(next@15.5.9(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -40,7 +40,7 @@ importers:
         version: 0.5.11(tailwindcss@4.0.7)
       ai:
         specifier: 6.0.5
-        version: 6.0.5(zod@4.3.2)
+        version: 6.0.5(zod@4.3.4)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -64,7 +64,7 @@ importers:
         version: 15.5.9(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       openai:
         specifier: 6.15.0
-        version: 6.15.0(ws@8.18.3)(zod@4.3.2)
+        version: 6.15.0(ws@8.18.3)(zod@4.3.4)
       prisma:
         specifier: 6.19.1
         version: 6.19.1(magicast@0.3.5)(typescript@5.9.3)
@@ -96,8 +96,8 @@ importers:
         specifier: 1.7.1
         version: 1.7.1
       zod:
-        specifier: 4.3.2
-        version: 4.3.2
+        specifier: 4.3.4
+        version: 4.3.4
       zustand:
         specifier: 5.0.9
         version: 5.0.9(@types/react@19.2.7)(immer@10.1.3)(react@19.2.3)(use-sync-external-store@1.5.0(react@19.2.3))
@@ -3863,8 +3863,8 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@4.3.2:
-    resolution: {integrity: sha512-b8L8yn4rIVfiXyHAmnr52/ZEpDumlT0bmxiq3Ws1ybrinhflGpt12Hvv54kYnEsGPRs6o/Ka3/ppA2OWY21IVg==}
+  zod@4.3.4:
+    resolution: {integrity: sha512-Zw/uYiiyF6pUT1qmKbZziChgNPRu+ZRneAsMUDU6IwmXdWt5JwcUfy2bvLOCUtz5UniaN/Zx5aFttZYbYc7O/A==}
 
   zustand@5.0.9:
     resolution: {integrity: sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==}
@@ -3888,25 +3888,25 @@ snapshots:
 
   '@acemir/cssom@0.9.28': {}
 
-  '@ai-sdk/gateway@3.0.4(zod@4.3.2)':
+  '@ai-sdk/gateway@3.0.4(zod@4.3.4)':
     dependencies:
       '@ai-sdk/provider': 3.0.1
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.2)
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.4)
       '@vercel/oidc': 3.0.5
-      zod: 4.3.2
+      zod: 4.3.4
 
-  '@ai-sdk/openai@3.0.2(zod@4.3.2)':
+  '@ai-sdk/openai@3.0.2(zod@4.3.4)':
     dependencies:
       '@ai-sdk/provider': 3.0.1
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.2)
-      zod: 4.3.2
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.4)
+      zod: 4.3.4
 
-  '@ai-sdk/provider-utils@4.0.2(zod@4.3.2)':
+  '@ai-sdk/provider-utils@4.0.2(zod@4.3.4)':
     dependencies:
       '@ai-sdk/provider': 3.0.1
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 4.3.2
+      zod: 4.3.4
 
   '@ai-sdk/provider@3.0.1':
     dependencies:
@@ -5224,13 +5224,13 @@ snapshots:
 
   agent-base@7.1.3: {}
 
-  ai@6.0.5(zod@4.3.2):
+  ai@6.0.5(zod@4.3.4):
     dependencies:
-      '@ai-sdk/gateway': 3.0.4(zod@4.3.2)
+      '@ai-sdk/gateway': 3.0.4(zod@4.3.4)
       '@ai-sdk/provider': 3.0.1
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.2)
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.4)
       '@opentelemetry/api': 1.9.0
-      zod: 4.3.2
+      zod: 4.3.4
 
   ajv@6.12.6:
     dependencies:
@@ -5938,8 +5938,8 @@ snapshots:
       '@babel/parser': 7.28.4
       eslint: 9.39.2(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.3.2
-      zod-validation-error: 4.0.2(zod@4.3.2)
+      zod: 4.3.4
+      zod-validation-error: 4.0.2(zod@4.3.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -6800,10 +6800,10 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@6.15.0(ws@8.18.3)(zod@4.3.2):
+  openai@6.15.0(ws@8.18.3)(zod@4.3.4):
     optionalDependencies:
       ws: 8.18.3
-      zod: 4.3.2
+      zod: 4.3.4
 
   optionator@0.9.4:
     dependencies:
@@ -7707,11 +7707,11 @@ snapshots:
       toposort: 2.0.2
       type-fest: 2.19.0
 
-  zod-validation-error@4.0.2(zod@4.3.2):
+  zod-validation-error@4.0.2(zod@4.3.4):
     dependencies:
-      zod: 4.3.2
+      zod: 4.3.4
 
-  zod@4.3.2: {}
+  zod@4.3.4: {}
 
   zustand@5.0.9(@types/react@19.2.7)(immer@10.1.3)(react@19.2.3)(use-sync-external-store@1.5.0(react@19.2.3)):
     optionalDependencies:
