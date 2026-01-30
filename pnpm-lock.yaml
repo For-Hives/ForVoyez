@@ -16,7 +16,7 @@ importers:
         version: 3.0.23(zod@4.3.6)
       '@clerk/nextjs':
         specifier: 6.37.1
-        version: 6.37.1(next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 6.37.1(next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@headlessui/react':
         specifier: 2.2.9
         version: 2.2.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -61,7 +61,7 @@ importers:
         version: 12.7.0
       next:
         specifier: 15.5.10
-        version: 15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       openai:
         specifier: 6.17.0
         version: 6.17.0(ws@8.18.3)(zod@4.3.6)
@@ -104,13 +104,13 @@ importers:
     devDependencies:
       '@clerk/testing':
         specifier: 1.13.33
-        version: 1.13.33(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 1.13.33(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@next/eslint-plugin-next':
         specifier: 15.5.11
         version: 15.5.11
       '@playwright/test':
-        specifier: 1.58.0
-        version: 1.58.0
+        specifier: 1.58.1
+        version: 1.58.1
       '@tailwindcss/postcss':
         specifier: 4.0.7
         version: 4.0.7
@@ -1003,8 +1003,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@playwright/test@1.58.0':
-    resolution: {integrity: sha512-fWza+Lpbj6SkQKCrU6si4iu+fD2dD3gxNHFhUPxsfXBPhnv3rRSQVd0NtBUT9Z/RhF/boCBcuUaMUSTRTopjZg==}
+  '@playwright/test@1.58.1':
+    resolution: {integrity: sha512-6LdVIUERWxQMmUSSQi0I53GgCBYgM2RpGngCPY7hSeju+VrKjq3lvs7HpJoPbDiY5QM5EYRtRX5fvrinnMAz3w==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3132,13 +3132,13 @@ packages:
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
 
-  playwright-core@1.58.0:
-    resolution: {integrity: sha512-aaoB1RWrdNi3//rOeKuMiS65UCcgOVljU46At6eFcOFPFHWtd2weHRRow6z/n+Lec0Lvu0k9ZPKJSjPugikirw==}
+  playwright-core@1.58.1:
+    resolution: {integrity: sha512-bcWzOaTxcW+VOOGBCQgnaKToLJ65d6AqfLVKEWvexyS3AS6rbXl+xdpYRMGSRBClPvyj44njOWoxjNdL/H9UNg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.58.0:
-    resolution: {integrity: sha512-2SVA0sbPktiIY/MCOPX8e86ehA/e+tDNq+e5Y8qjKYti2Z/JG7xnronT/TXTIkKbYGWlCbuucZ6dziEgkoEjQQ==}
+  playwright@1.58.1:
+    resolution: {integrity: sha512-+2uTZHxSCcxjvGc5C891LrS1/NlxglGxzrC4seZiVjcYVQfUa87wBL6rTDqzGjuoWNjnBzRqKmF6zRYGMvQUaQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4203,13 +4203,13 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       tslib: 2.8.1
 
-  '@clerk/nextjs@6.37.1(next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@clerk/nextjs@6.37.1(next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@clerk/backend': 2.29.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@clerk/clerk-react': 5.60.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@clerk/shared': 3.44.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@clerk/types': 4.101.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      next: 15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       server-only: 0.0.1
@@ -4227,14 +4227,14 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@clerk/testing@1.13.33(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@clerk/testing@1.13.33(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@clerk/backend': 2.29.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@clerk/shared': 3.44.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@clerk/types': 4.101.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       dotenv: 17.2.2
     optionalDependencies:
-      '@playwright/test': 1.58.0
+      '@playwright/test': 1.58.1
     transitivePeerDependencies:
       - react
       - react-dom
@@ -4659,9 +4659,9 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@playwright/test@1.58.0':
+  '@playwright/test@1.58.1':
     dependencies:
-      playwright: 1.58.0
+      playwright: 1.58.1
 
   '@polka/url@1.0.0-next.28': {}
 
@@ -6824,7 +6824,7 @@ snapshots:
 
   natural-orderby@5.0.0: {}
 
-  next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next@15.5.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@next/env': 15.5.10
       '@swc/helpers': 0.5.15
@@ -6843,7 +6843,7 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 15.5.7
       '@next/swc-win32-x64-msvc': 15.5.7
       '@opentelemetry/api': 1.9.0
-      '@playwright/test': 1.58.0
+      '@playwright/test': 1.58.1
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -6979,11 +6979,11 @@ snapshots:
       exsolve: 1.0.7
       pathe: 2.0.3
 
-  playwright-core@1.58.0: {}
+  playwright-core@1.58.1: {}
 
-  playwright@1.58.0:
+  playwright@1.58.1:
     dependencies:
-      playwright-core: 1.58.0
+      playwright-core: 1.58.1
     optionalDependencies:
       fsevents: 2.3.2
 
