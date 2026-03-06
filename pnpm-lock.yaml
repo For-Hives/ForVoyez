@@ -176,13 +176,13 @@ importers:
         version: 9.1.7
       jsdom:
         specifier: 27.4.0
-        version: 27.4.0(postcss@8.5.6)
+        version: 27.4.0(postcss@8.5.8)
       lint-staged:
         specifier: 16.2.7
         version: 16.2.7
       postcss:
-        specifier: 8.5.6
-        version: 8.5.6
+        specifier: 8.5.8
+        version: 8.5.8
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -197,7 +197,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 3.2.4
-        version: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.6))(lightningcss@1.30.1)(yaml@2.8.1)
+        version: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.8))(lightningcss@1.30.1)(yaml@2.8.1)
       vitest-mock-extended:
         specifier: 3.1.0
         version: 3.1.0(typescript@5.9.3)(vitest@3.2.4)
@@ -3203,8 +3203,8 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.5.6:
-    resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
+  postcss@8.5.8:
+    resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -4342,9 +4342,9 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.14(postcss@8.5.6)':
+  '@csstools/css-syntax-patches-for-csstree@1.0.14(postcss@8.5.8)':
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.8
 
   '@csstools/css-tokenizer@3.0.4': {}
 
@@ -4978,7 +4978,7 @@ snapshots:
       '@tailwindcss/node': 4.0.7
       '@tailwindcss/oxide': 4.0.7
       lightningcss: 1.30.1
-      postcss: 8.5.6
+      postcss: 8.5.8
       tailwindcss: 4.0.7
 
   '@tailwindcss/typography@0.5.19(tailwindcss@4.0.7)':
@@ -5348,7 +5348,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.6))(lightningcss@1.30.1)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.8))(lightningcss@1.30.1)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -5397,7 +5397,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.6))(lightningcss@1.30.1)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.8))(lightningcss@1.30.1)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -5691,10 +5691,10 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  cssstyle@5.3.4(postcss@8.5.6):
+  cssstyle@5.3.4(postcss@8.5.8):
     dependencies:
       '@asamuzakjp/css-color': 4.1.0
-      '@csstools/css-syntax-patches-for-csstree': 1.0.14(postcss@8.5.6)
+      '@csstools/css-syntax-patches-for-csstree': 1.0.14(postcss@8.5.8)
       css-tree: 3.1.0
     transitivePeerDependencies:
       - postcss
@@ -6673,12 +6673,12 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsdom@27.4.0(postcss@8.5.6):
+  jsdom@27.4.0(postcss@8.5.8):
     dependencies:
       '@acemir/cssom': 0.9.28
       '@asamuzakjp/dom-selector': 6.7.6
       '@exodus/bytes': 1.7.0
-      cssstyle: 5.3.4(postcss@8.5.6)
+      cssstyle: 5.3.4(postcss@8.5.8)
       data-urls: 6.0.0
       decimal.js: 10.6.0
       html-encoding-sniffer: 6.0.0
@@ -7089,7 +7089,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postcss@8.5.6:
+  postcss@8.5.8:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -7739,7 +7739,7 @@ snapshots:
   vite@6.1.0(@types/node@18.19.75)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1):
     dependencies:
       esbuild: 0.24.2
-      postcss: 8.5.6
+      postcss: 8.5.8
       rollup: 4.34.4
     optionalDependencies:
       '@types/node': 18.19.75
@@ -7752,9 +7752,9 @@ snapshots:
     dependencies:
       ts-essentials: 10.0.4(typescript@5.9.3)
       typescript: 5.9.3
-      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.6))(lightningcss@1.30.1)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.8))(lightningcss@1.30.1)(yaml@2.8.1)
 
-  vitest@3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.6))(lightningcss@1.30.1)(yaml@2.8.1):
+  vitest@3.2.4(@types/node@18.19.75)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(postcss@8.5.8))(lightningcss@1.30.1)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -7782,7 +7782,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 18.19.75
       '@vitest/ui': 3.2.4(vitest@3.2.4)
-      jsdom: 27.4.0(postcss@8.5.6)
+      jsdom: 27.4.0(postcss@8.5.8)
     transitivePeerDependencies:
       - jiti
       - less
