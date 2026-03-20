@@ -118,8 +118,8 @@ importers:
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.0.7)
       '@tanstack/eslint-plugin-query':
-        specifier: 5.91.4
-        version: 5.91.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        specifier: 5.91.5
+        version: 5.91.5(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       '@testing-library/react':
         specifier: 16.3.2
         version: 16.3.2(@testing-library/dom@10.4.0)(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1359,11 +1359,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tanstack/eslint-plugin-query@5.91.4':
-    resolution: {integrity: sha512-8a+GAeR7oxJ5laNyYBQ6miPK09Hi18o5Oie/jx8zioXODv/AUFLZQecKabPdpQSLmuDXEBPKFh+W5DKbWlahjQ==}
+  '@tanstack/eslint-plugin-query@5.91.5':
+    resolution: {integrity: sha512-4pqgoT5J+ntkyOoBtnxJu8LYRj3CurfNe92fghJw66mI7pZijKmOulM32Wa48cyVzGtgiuQ2o5KWC9LJVXYcBQ==}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
-      typescript: ^5.0.0
+      typescript: ^5.4.0
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -1523,12 +1523,6 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4 <6.0.0'
 
-  '@typescript-eslint/tsconfig-utils@8.56.0':
-    resolution: {integrity: sha512-bSJoIIt4o3lKXD3xmDh9chZcjCz5Lk8xS7Rxn+6l5/pKrDpkCwtQNQQwZ2qRPk7TkUYhrq3WPIHXOXlbXP0itg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
-
   '@typescript-eslint/tsconfig-utils@8.56.1':
     resolution: {integrity: sha512-qOtCYzKEeyr3aR9f28mPJqBty7+DBqsdd63eO0yyDwc6vgThj2UjWfJIcsFeSucYydqcuudMOprZ+x1SpF3ZuQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1552,10 +1546,6 @@ packages:
 
   '@typescript-eslint/types@8.53.0':
     resolution: {integrity: sha512-Bmh9KX31Vlxa13+PqPvt4RzKRN1XORYSLlAE+sO1i28NkisGbTtSLFVB3l7PWdHtR3E0mVMuC7JilWJ99m2HxQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/types@8.56.0':
-    resolution: {integrity: sha512-DBsLPs3GsWhX5HylbP9HNG15U0bnwut55Lx12bHB9MpXxQ+R5GC8MwQe+N1UFXxAeQDvEsEDY6ZYwX03K7Z6HQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/types@8.56.1':
@@ -5047,7 +5037,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.0.7
 
-  '@tanstack/eslint-plugin-query@5.91.4(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)':
+  '@tanstack/eslint-plugin-query@5.91.5(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/utils': 8.53.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.4(jiti@2.6.1)
@@ -5185,8 +5175,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.45.0(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.56.0
+      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.9.3)
+      '@typescript-eslint/types': 8.56.1
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -5194,8 +5184,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.53.0(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.56.0
+      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.9.3)
+      '@typescript-eslint/types': 8.56.1
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -5238,10 +5228,6 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  '@typescript-eslint/tsconfig-utils@8.56.0(typescript@5.9.3)':
-    dependencies:
-      typescript: 5.9.3
-
   '@typescript-eslint/tsconfig-utils@8.56.1(typescript@5.9.3)':
     dependencies:
       typescript: 5.9.3
@@ -5262,8 +5248,6 @@ snapshots:
   '@typescript-eslint/types@8.45.0': {}
 
   '@typescript-eslint/types@8.53.0': {}
-
-  '@typescript-eslint/types@8.56.0': {}
 
   '@typescript-eslint/types@8.56.1': {}
 
