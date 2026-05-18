@@ -8,7 +8,7 @@ export function HeroSectionComponent() {
 		<section className="relative isolate flex h-full min-h-0 flex-col items-center justify-center md:min-h-[80vh] lg:min-h-[90vh] xl:min-h-[95vh]">
 			<svg
 				aria-hidden="true"
-				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)] stroke-slate-200"
 			>
 				<defs>
 					<pattern

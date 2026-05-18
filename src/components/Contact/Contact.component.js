@@ -61,7 +61,7 @@ export function ContactComponent() {
 						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-linear-to-r from-white to-transparent lg:w-1/2">
 							<svg
 								aria-hidden="true"
-								className="absolute inset-0 h-full w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+								className="absolute inset-0 h-full w-full [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)] stroke-slate-200"
 							>
 								<defs>
 									<pattern
@@ -164,7 +164,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="given-name"
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['first-name'] ? 'ring-red-500' : ''
 										}`}
 										id="first-name"
@@ -189,7 +189,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="family-name"
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['last-name'] ? 'ring-red-500' : ''
 										}`}
 										id="last-name"
@@ -214,7 +214,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="organization"
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.company ? 'ring-red-500' : ''
 										}`}
 										id="company"
@@ -239,7 +239,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="email"
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.email ? 'ring-red-500' : ''
 										}`}
 										id="email"
@@ -264,7 +264,7 @@ export function ContactComponent() {
 								<div className="mt-2.5">
 									<input
 										autoComplete="tel"
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors['phone-number'] ? 'ring-red-500' : ''
 										}`}
 										id="phone-number"
@@ -288,7 +288,7 @@ export function ContactComponent() {
 								</label>
 								<div className="mt-2.5">
 									<input
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.subject ? 'ring-red-500' : ''
 										}`}
 										id="subject"
@@ -312,7 +312,7 @@ export function ContactComponent() {
 								</label>
 								<div className="mt-2.5">
 									<textarea
-										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 ring-1 shadow-sm ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+										className={`focus:ring-forvoyez_orange-500/30 block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 											errors.message ? 'ring-red-500' : ''
 										}`}
 										defaultValue={''}

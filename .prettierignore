@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+package-lock.json
+bun.lockb
+.next/
+coverage/
+test-results/
+node_modules/

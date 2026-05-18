@@ -8,7 +8,7 @@ export function HeroComponent() {
 		<section className="relative isolate">
 			<svg
 				aria-hidden="true"
-				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-slate-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+				className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)] stroke-slate-200"
 			>
 				<defs>
 					<pattern

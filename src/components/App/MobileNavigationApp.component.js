@@ -121,7 +121,7 @@ function MobileNavigationDialog({ isOpen, close }) {
 						leaveTo="-translate-x-full"
 					>
 						<motion.div
-							className="fixed top-14 bottom-0 left-0 w-full overflow-y-auto bg-white px-4 pt-6 pb-4 ring-1 shadow-lg shadow-slate-900/10 ring-slate-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10"
+							className="fixed top-14 bottom-0 left-0 w-full overflow-y-auto bg-white px-4 pt-6 pb-4 shadow-lg ring-1 shadow-slate-900/10 ring-slate-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10"
 							layoutScroll
 						>
 							<NavigationAppComponent />

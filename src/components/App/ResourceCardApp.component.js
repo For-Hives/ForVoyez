@@ -44,7 +44,7 @@ export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
 
 	return (
 		<div className="pointer-events-none">
-			<div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
+			<div className="absolute inset-0 rounded-2xl [mask-image:linear-gradient(white,transparent)] transition duration-300 group-hover:opacity-50">
 				<GridPatternAppComponent
 					className="absolute inset-x-0 inset-y-[-30%] h-[160%] w-full skew-y-[-18deg] fill-black/[0.02] stroke-black/5"
 					height={56}

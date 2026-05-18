@@ -234,7 +234,7 @@ export default function PlaygroundForm(props) {
 									</p>
 									<div className="mt-2">
 										<textarea
-											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-xs ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											data-testid="context-input"
 											id="Context"
 											maxLength={300}
@@ -308,7 +308,7 @@ export default function PlaygroundForm(props) {
 									</p>
 									<div className="mt-2">
 										<textarea
-											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-xs ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											data-testid="keywords-input"
 											id="Keywords"
 											maxLength={300}
@@ -381,7 +381,7 @@ export default function PlaygroundForm(props) {
 									</p>
 									<div className="mt-2">
 										<input
-											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+											className="focus:ring-forvoyez_orange-600 block w-full rounded-md border-0 py-1.5 text-slate-900 shadow-xs ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 											id="languageToTranslate"
 											maxLength={25}
 											name="languageToTranslate"
@@ -446,7 +446,7 @@ export default function PlaygroundForm(props) {
 							valid JSON syntax to define the schema. If left empty, the API will
 							return the default schema.`}
 									</p>
-									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset">
+									<div className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 shadow-xs ring-1 ring-slate-300 ring-inset">
 										{props.formData.jsonSchema}
 										<div className={'absolute top-2 right-3'}>
 											<div className="flex items-center justify-end">

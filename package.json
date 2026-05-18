@@ -43,7 +43,7 @@
 		"@heroicons/react": "2.2.0",
 		"@hookform/resolvers": "5.2.2",
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
-		"@prisma/client": "6.19.2",
+		"@prisma/client": "6.19.3",
 		"@rive-app/react-canvas": "4.28.5",
 		"@tailwindcss/forms": "0.5.11",
 		"ai": "6.0.184",
@@ -52,10 +52,10 @@
 		"form-data": "4.0.5",
 		"framer-motion": "12.39.0",
 		"jose": "6.2.3",
-		"mailgun.js": "12.7.1",
+		"mailgun.js": "12.9.0",
 		"next": "15.5.18",
 		"openai": "6.38.0",
-		"prisma": "6.19.2",
+		"prisma": "6.19.3",
 		"prismjs": "1.30.0",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
@@ -69,8 +69,8 @@
 		"zustand": "5.0.13"
 	},
 	"devDependencies": {
-		"@clerk/testing": "1.14.4",
-		"@next/eslint-plugin-next": "15.5.14",
+		"@clerk/testing": "1.14.6",
+		"@next/eslint-plugin-next": "15.5.18",
 		"@playwright/test": "1.60.0",
 		"@tailwindcss/postcss": "4.3.0",
 		"@tailwindcss/typography": "0.5.19",
@@ -83,7 +83,7 @@
 		"@vitest/ui": "3.2.4",
 		"dotenv": "17.4.2",
 		"eslint": "9.39.4",
-		"eslint-config-next": "15.5.14",
+		"eslint-config-next": "15.5.18",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-no-only-tests": "3.4.0",
 		"eslint-plugin-perfectionist": "4.15.1",
@@ -101,7 +101,7 @@
 		"tailwindcss": "4.3.0",
 		"typescript": "5.9.3",
 		"vitest": "3.2.4",
-		"vitest-mock-extended": "3.1.0"
+		"vitest-mock-extended": "3.1.1"
 	},
 	"trustedDependencies": [
 		"@clerk/shared",

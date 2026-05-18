@@ -13,7 +13,7 @@ export default function PlaygroundResponse(props) {
 				<LoadAnimation />
 			) : (
 				<div
-					className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset"
+					className="relative mt-2 w-full overflow-hidden rounded-md border-0 px-4 py-2.5 pr-2.5 text-slate-900 shadow-xs ring-1 ring-slate-300 ring-inset"
 					data-testid="response-editor"
 				>
 					{props.response && JSON.stringify(props.response, null, 4)}

@@ -130,7 +130,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 														Name
 													</label>
 													<input
-														className={`block w-full rounded-md border-0 py-2 text-slate-900 ring-1 shadow-sm ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.name
 																? 'ring-red-300 focus:ring-red-500'
 																: 'focus:ring-forvoyez_orange-600 ring-slate-300'
@@ -155,7 +155,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 														Expiration Date
 													</label>
 													<input
-														className={`block w-full rounded-md border-0 py-2 text-slate-900 ring-1 shadow-sm ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+														className={`block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
 															errors.expiredAt
 																? 'ring-red-300 focus:ring-red-500'
 																: 'focus:ring-forvoyez_orange-600 ring-slate-300'

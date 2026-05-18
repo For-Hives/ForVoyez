@@ -91,7 +91,7 @@ export function TestimonialsComponent() {
 					</p>
 				</div>
 				<div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
-					<figure className="rounded-2xl bg-white ring-1 shadow-lg ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
+					<figure className="rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
 						<blockquote className="p-6 text-lg leading-7 font-semibold tracking-tight text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
 							<p>{`"${featuredTestimonial.body}"`}</p>
 						</blockquote>
@@ -137,7 +137,7 @@ export function TestimonialsComponent() {
 								>
 									{column.map(testimonial => (
 										<figure
-											className="rounded-2xl bg-white p-6 ring-1 shadow-lg ring-gray-900/5"
+											className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5"
 											key={testimonial.author.handle}
 										>
 											<blockquote className="text-gray-900">
