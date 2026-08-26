@@ -72,7 +72,7 @@
 		"@clerk/testing": "1.14.6",
 		"@next/eslint-plugin-next": "15.5.18",
 		"@playwright/test": "1.60.0",
-		"@tailwindcss/postcss": "4.3.0",
+		"@tailwindcss/postcss": "4.3.3",
 		"@tailwindcss/typography": "0.5.19",
 		"@tanstack/eslint-plugin-query": "5.100.10",
 		"@testing-library/react": "16.3.2",
@@ -98,7 +98,7 @@
 		"postcss": "8.5.14",
 		"prettier": "3.8.3",
 		"prettier-plugin-tailwindcss": "0.8.0",
-		"tailwindcss": "4.3.0",
+		"tailwindcss": "4.3.3",
 		"typescript": "5.9.3",
 		"vitest": "3.2.4",
 		"vitest-mock-extended": "3.1.1"
