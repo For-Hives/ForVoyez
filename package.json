@@ -70,7 +70,7 @@
 	},
 	"devDependencies": {
 		"@clerk/testing": "1.14.6",
-		"@next/eslint-plugin-next": "15.5.18",
+		"@next/eslint-plugin-next": "16.3.4",
 		"@playwright/test": "1.60.0",
 		"@tailwindcss/postcss": "4.3.0",
 		"@tailwindcss/typography": "0.5.19",
@@ -83,7 +83,7 @@
 		"@vitest/ui": "3.2.4",
 		"dotenv": "17.4.2",
 		"eslint": "9.39.4",
-		"eslint-config-next": "15.5.18",
+		"eslint-config-next": "16.3.4",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-no-only-tests": "3.4.0",
 		"eslint-plugin-perfectionist": "4.15.1",
