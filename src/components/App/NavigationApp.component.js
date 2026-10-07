@@ -1,8 +1,8 @@
 'use client'
 
+import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import { memo, useRef } from 'react'
 
-import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
 import { UserButton, useUser } from '@clerk/nextjs'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -204,7 +204,6 @@ export const NavigationAppComponent = memo(
 						<div className={'mt-6'}>
 							<div className={'flex items-center gap-2 lg:hidden'}>
 								<UserButton
-									afterSignOutUrl="/"
 									appearance="ghost"
 									userProfileMode="navigation"
 									userProfileUrl="/profile"

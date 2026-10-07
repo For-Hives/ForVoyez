@@ -116,8 +116,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<ClerkProvider>
-			<html className={`${sourcesans.variable} ${jost.variable}`} lang={'en'}>
+		<ClerkProvider
+			afterSignOutUrl="/"
+			// Clerk Core 3 hides optional sign-up fields by default; keep showing them
+			appearance={{ options: { showOptionalFields: true } }}
+		>
+			<html
+				className={`${sourcesans.variable} ${jost.variable}`}
+				data-scroll-behavior="smooth"
+				lang={'en'}
+			>
 				<Script
 					async
 					data-domains={'forvoyez.com,doc.forvoyez.com'}

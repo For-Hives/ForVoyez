@@ -5,7 +5,7 @@ import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
 import { Dialog } from '@headlessui/react'
 import { useState } from 'react'
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { Show, SignInButton, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -75,9 +75,8 @@ export function NavbarComponent() {
 					))}
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
-					<SignedIn>
+					<Show when="signed-in">
 						<UserButton
-							afterSignOutUrl={'/'}
 							data-testid="user-button"
 							signInUrl={'/sign-in'}
 							userProfileMode={'navigation'}
@@ -91,16 +90,15 @@ export function NavbarComponent() {
 							Go to dashboard{' '}
 							<ArrowUpRightIcon className={'size-3.5'}></ArrowUpRightIcon>
 						</Link>
-					</SignedIn>
-					<SignedOut>
+					</Show>
+					<Show when="signed-out">
 						<SignInButton
-							afterSignInUrl={'/app'}
-							afterSignUpUrl={'/app'}
 							className="decoration-none"
 							data-testid="sign-in-button"
-							signInFallbackRedirectUrl={'/app'}
+							fallbackRedirectUrl={'/app'}
+							signUpFallbackRedirectUrl={'/app'}
 						/>
-					</SignedOut>
+					</Show>
 				</div>
 			</nav>
 			<Dialog
@@ -151,7 +149,7 @@ export function NavbarComponent() {
 								))}
 							</div>
 							<div className="py-6">
-								<SignedIn>
+								<Show when="signed-in">
 									<div className={'flex flex-col gap-4'}>
 										<Link
 											className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
@@ -164,20 +162,19 @@ export function NavbarComponent() {
 											></ArrowUpRightIcon>
 										</Link>
 										<UserButton
-											afterSignOutUrl={'/'}
 											data-testid="user-button"
 											signInUrl={'/sign-in'}
 											userProfileMode={'navigation'}
 											userProfileUrl={'/profile'}
 										/>
 									</div>
-								</SignedIn>
-								<SignedOut>
+								</Show>
+								<Show when="signed-out">
 									<SignInButton
 										className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
 										data-testid="sign-in-button"
 									/>
-								</SignedOut>
+								</Show>
 							</div>
 						</div>
 					</div>

@@ -6,10 +6,20 @@ import queryPlugin from '@tanstack/eslint-plugin-query'
 import perfectionist from 'eslint-plugin-perfectionist'
 import nextPlugin from '@next/eslint-plugin-next'
 import promisePlugin from 'eslint-plugin-promise'
+import { fixupPluginRules } from '@eslint/compat'
 import wokePlugin from 'eslint-plugin-woke' // import tsParser from '@typescript-eslint/parser'
 import * as espree from 'espree'
 
 export default [
+	{
+		ignores: [
+			'.next/',
+			'coverage/',
+			'test-results/',
+			'playwright-report/',
+			'src/generated/',
+		],
+	},
 	perfectionist.configs['recommended-natural'],
 	eslintPluginPrettierRecommended,
 	...queryPlugin.configs['flat/recommended'],
@@ -29,30 +39,29 @@ export default [
 				'error',
 				{
 					groups: [
-						'type',
+						'type-import',
 						'react',
 						'nanostores',
-						['builtin', 'external'],
-						'internal-type',
-						'internal',
-						['parent-type', 'sibling-type', 'index-type'],
-						['parent', 'sibling', 'index'],
+						['value-builtin', 'value-external'],
+						'type-internal',
+						'value-internal',
+						['type-parent', 'type-sibling', 'type-index'],
+						['value-parent', 'value-sibling', 'value-index'],
 						'side-effect',
 						'style',
-						'object',
+						'ts-equals-import',
 						'unknown',
 					],
-					// Correction ici (customGroups au lieu de custom-groups)
-					customGroups: {
-						value: {
-							nanostores: '@nanostores/.*',
-							react: ['react', 'react-*'],
+					customGroups: [
+						{
+							elementNamePattern: ['react', 'react-*'],
+							groupName: 'react',
 						},
-						type: {
-							react: 'react',
+						{
+							elementNamePattern: '@nanostores/.*',
+							groupName: 'nanostores',
 						},
-					},
-					// Correction ici (internalPattern au lieu de internal-pattern)
+					],
 					internalPattern: [
 						'@/components/.*',
 						'@/services/.*',
@@ -60,8 +69,8 @@ export default [
 						'@/helpers/.*',
 						'@/app/actions.*',
 					],
-					newlinesBetween: 'always',
 					type: 'line-length',
+					newlinesBetween: 1,
 					order: 'desc',
 				},
 			],
@@ -84,6 +93,13 @@ export default [
 
 			'woke/all': 'warn',
 		},
+		plugins: {
+			'no-only-tests': noOnlyTestsPlugin,
+			// eslint-plugin-woke still calls context.getSourceCode(), removed in ESLint 10
+			woke: fixupPluginRules(wokePlugin),
+			'react-hooks': reactHooksPlugin,
+			'@next/next': nextPlugin,
+		},
 		languageOptions: {
 			parserOptions: {
 				ecmaFeatures: { jsx: true },
@@ -91,12 +107,6 @@ export default [
 				sourceType: 'module',
 			},
 			parser: espree,
-		},
-		plugins: {
-			'no-only-tests': noOnlyTestsPlugin,
-			'react-hooks': reactHooksPlugin,
-			'@next/next': nextPlugin,
-			woke: wokePlugin,
 		},
 		files: ['**/*.{js,jsx,mjs,cjs}'],
 	},

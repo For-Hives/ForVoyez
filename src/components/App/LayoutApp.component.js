@@ -2,9 +2,9 @@
 
 import { ToastContainer } from 'react-toastify'
 import { useEffect, useMemo } from 'react'
+import { motion } from 'motion/react'
 
 import { UserButton, useUser } from '@clerk/nextjs'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -62,7 +62,6 @@ export function LayoutAppComponent({ children }) {
 								{user && (
 									<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
 										<UserButton
-											afterSignOutUrl="/"
 											appearance="ghost"
 											userProfileMode="navigation"
 											userProfileUrl="/profile"

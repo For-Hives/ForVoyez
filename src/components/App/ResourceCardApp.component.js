@@ -1,5 +1,6 @@
 'use client'
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
+import { motion, useMotionTemplate, useMotionValue } from 'motion/react'
+
 import Link from 'next/link'
 
 import { GridPatternAppComponent } from '@/components/App/GridPatternApp.component'

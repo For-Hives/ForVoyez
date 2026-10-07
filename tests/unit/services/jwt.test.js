@@ -1,5 +1,8 @@
+// Server-side code. With Vitest 5 + jsdom 30 the jsdom environment no longer
+// automocks Node built-ins (crypto) and its Blob has no stream(), so use Node.
+// @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { SignJWT, jwtVerify } from 'jose'
+import { jwtVerify, SignJWT } from 'jose'
 import { createSecretKey } from 'crypto'
 
 import { generateJwt, verifyJwt } from '@/services/jwt.service'
