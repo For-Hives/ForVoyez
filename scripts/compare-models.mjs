@@ -23,10 +23,10 @@ Needs OPENAI_API_KEY. Accepted images: .jpg .jpeg .png .webp .gif
 
 Options:
   --out <dir>           report folder (default: compare-models-report)
-  --model <id>          new pipeline model (default: FORVOYEZ_AI_MODEL or gpt-5.6-luna)
+  --model <id>          new pipeline model (default: FORVOYEZ_AI_MODEL or gpt-6-luna)
   --legacy-model <id>   previous pipeline model (default: gpt-4o-mini)
   --detail <level>      new pipeline image detail: low, high or auto
-                        (default: FORVOYEZ_AI_IMAGE_DETAIL or auto)
+                        (default: FORVOYEZ_AI_IMAGE_DETAIL or low)
   --context <text>      context sent with every image
   --keywords <text>     keywords sent with every image
   --language <lang>     output language (default: en)
@@ -89,7 +89,7 @@ async function main() {
 	}
 
 	const settings = {
-		newDetail: process.env.FORVOYEZ_AI_IMAGE_DETAIL || 'auto',
+		newDetail: process.env.FORVOYEZ_AI_IMAGE_DETAIL || 'low',
 		newModel: process.env.FORVOYEZ_AI_MODEL || DEFAULT_AI_MODEL,
 		legacyModel: values['legacy-model'] || LEGACY_AI_MODEL,
 		schema: values.schema ? JSON.parse(values.schema) : {},

@@ -52,7 +52,7 @@ function modelAnswering(
 			finishReason: { raw: 'completed', unified: 'stop' },
 			warnings: [],
 		}),
-		modelId: 'gpt-5.6-luna',
+		modelId: 'gpt-6-luna',
 	})
 	openai.mockReturnValue(model)
 	return model
@@ -176,7 +176,7 @@ describe('Image Description Service', () => {
 			)
 			expect(model.doGenerateCalls).toHaveLength(1)
 			expect(openai).toHaveBeenCalledWith(DEFAULT_AI_MODEL)
-			expect(DEFAULT_AI_MODEL).toBe('gpt-5.6-luna')
+			expect(DEFAULT_AI_MODEL).toBe('gpt-6-luna')
 		})
 
 		it('sends the image, the instructions and the generation limits in that call', async () => {
@@ -239,7 +239,7 @@ describe('Image Description Service', () => {
 				'<customer_keywords>\nballet, opera\n</customer_keywords>'
 			)
 			expect(image).toEqual({
-				providerOptions: { openai: { imageDetail: 'auto' } },
+				providerOptions: { openai: { imageDetail: 'low' } },
 				data: { type: 'data', data: IMAGE },
 				mediaType: 'image/webp',
 				type: 'file',
@@ -267,7 +267,7 @@ describe('Image Description Service', () => {
 
 			expect(
 				model.doGenerateCalls[0].prompt[1].content[1].providerOptions
-			).toEqual({ openai: { imageDetail: 'auto' } })
+			).toEqual({ openai: { imageDetail: 'low' } })
 		})
 
 		it('generates only the fields of a custom schema', async () => {
@@ -364,7 +364,7 @@ describe('Image Description Service', () => {
 			const [label, usage] = consoleInfo.mock.calls[0]
 			expect(label).toBe('AI usage:')
 			expect(JSON.parse(usage)).toMatchObject({
-				model: 'gpt-5.6-luna',
+				model: 'gpt-6-luna',
 				outputTokens: 64,
 				inputTokens: 812,
 			})
@@ -381,7 +381,7 @@ describe('Image Description Service', () => {
 			const result = await generateImageMetadata(IMAGE, {})
 
 			expect(result.metadata).toEqual(defaultAnswer)
-			expect(result.model).toBe('gpt-5.6-luna')
+			expect(result.model).toBe('gpt-6-luna')
 			expect(result.usage).toMatchObject({ outputTokens: 50, inputTokens: 700 })
 			expect(result.latencyMs).toBeGreaterThanOrEqual(0)
 		})

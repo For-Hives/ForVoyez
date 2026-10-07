@@ -203,8 +203,8 @@ Make sure to replace the placeholders with your actual values for each environme
 
 Optional variables:
 
-- `FORVOYEZ_AI_MODEL`: OpenAI model used by `/api/describe` and the playground (default `gpt-5.6-luna`, same `OPENAI_API_KEY`). Set it to `gpt-4o-mini` to roll back to the previous model without a code change.
-- `FORVOYEZ_AI_IMAGE_DETAIL`: OpenAI image detail sent with each image, `auto` (default), `low` or `high`.
+- `FORVOYEZ_AI_MODEL`: OpenAI model used by `/api/describe` and the playground (default `gpt-6-luna`, same `OPENAI_API_KEY`). Set it to `gpt-5.6-luna` (tied on quality in the October 2026 evaluation, about 2x the cost) or `gpt-4o-mini` (previous model) to roll back without a code change.
+- `FORVOYEZ_AI_IMAGE_DETAIL`: OpenAI image detail sent with each image, `low` (default), `auto` or `high`.
 - `SYNC_SECRET`: enables `GET /api/sync` (copies the Lemon Squeezy products into the `Plan` table). Call it with the header `x-sync-secret: <SYNC_SECRET>` (the former `?true=true` query is no longer used); without the variable, or with a wrong header, the route answers 404. Run it after adding or changing a product or variant in Lemon Squeezy, otherwise purchases of that variant fail with `Plan not found`.
 
 ## Support

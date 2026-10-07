@@ -13,13 +13,13 @@ import {
 // OpenAI model used for the generation. Override it with the FORVOYEZ_AI_MODEL
 // env var (same OPENAI_API_KEY), read at call time: `gpt-4o-mini` rolls back
 // to the previous model without code changes.
-export const DEFAULT_AI_MODEL = 'gpt-5.6-luna'
+export const DEFAULT_AI_MODEL = 'gpt-6-luna'
 
 // OpenAI image detail ('low', 'high' or 'auto'), overridable with the
-// FORVOYEZ_AI_IMAGE_DETAIL env var. 'auto' keeps the previous pipeline's
-// behaviour; 'low' costs a fraction of the input tokens once
-// scripts/compare-models.mjs shows the quality holds.
-export const DEFAULT_IMAGE_DETAIL = 'auto'
+// FORVOYEZ_AI_IMAGE_DETAIL env var. 'low' scored as well as 'auto' in the
+// October 2026 blind evaluation (scripts/compare-models.mjs) for half the
+// input tokens.
+export const DEFAULT_IMAGE_DETAIL = 'low'
 const IMAGE_DETAILS = ['low', 'high', 'auto']
 
 // One call per image. The timeout covers the retry and stays below the

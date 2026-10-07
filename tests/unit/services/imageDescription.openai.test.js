@@ -70,7 +70,7 @@ describe('OpenAI request built by the image description service', () => {
 		vi.restoreAllMocks()
 	})
 
-	it('asks gpt-5.6-luna for a strict JSON schema, without reasoning, with a low-detail image', async () => {
+	it('asks gpt-6-luna for a strict JSON schema, without reasoning, with a low-detail image', async () => {
 		const result = await getImageDescription(IMAGE, {
 			context: 'A ballet',
 			language: 'fr',
@@ -98,10 +98,11 @@ describe('OpenAI request built by the image description service', () => {
 			},
 			reasoning: { effort: 'none' },
 			max_output_tokens: 2000,
-			model: 'gpt-5.6-luna',
-			temperature: 0.3,
+			model: 'gpt-6-luna',
 			store: false,
 		})
+		// gpt-6-luna takes no sampling temperature: the AI SDK leaves it out
+		expect(body).not.toHaveProperty('temperature')
 		expect(body.text.format.schema.required.sort()).toEqual([
 			'alternativeText',
 			'caption',
@@ -114,7 +115,7 @@ describe('OpenAI request built by the image description service', () => {
 		expect(user.content).toContainEqual({
 			image_url: `data:image/webp;base64,${IMAGE}`,
 			type: 'input_image',
-			detail: 'auto',
+			detail: 'low',
 		})
 		expect(consoleWarn).not.toHaveBeenCalled()
 	})
