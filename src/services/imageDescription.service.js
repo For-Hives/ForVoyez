@@ -159,6 +159,9 @@ export async function generateImageMetadata(base64Image, data = {}) {
 				usage: error?.usage ? summarizeUsage(error.usage) : undefined,
 				// after the retry, the AI SDK throws a RetryError
 				statusCode: error?.statusCode ?? error?.lastError?.statusCode,
+				// provider error type/code only (e.g. insufficient_quota), never its message
+				errorType: providerError(error)?.type,
+				errorCode: providerError(error)?.code,
 				lastError: error?.lastError?.name,
 				latencyMs: Date.now() - startedAt,
 				error: error?.name,
@@ -248,6 +251,11 @@ function getImageDetail() {
 
 function getModelId() {
 	return process.env.FORVOYEZ_AI_MODEL?.trim() || DEFAULT_AI_MODEL
+}
+
+// OpenAI's error body ({ error: { type, code, message } }) parsed by the AI SDK
+function providerError(error) {
+	return (error?.lastError ?? error)?.data?.error
 }
 
 function summarizeUsage(usage) {

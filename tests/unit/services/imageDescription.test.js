@@ -414,6 +414,34 @@ describe('Image Description Service', () => {
 			expect(logged).not.toContain(CONTEXT)
 		})
 
+		it('logs the provider error type and code, not its message', async () => {
+			modelFailingWith(
+				new APICallError({
+					data: {
+						error: {
+							message: 'You have no credits remaining.',
+							code: 'credit_balance_exhausted',
+							type: 'insufficient_quota',
+						},
+					},
+					url: 'https://api.openai.com/v1/responses',
+					message: 'You have no credits remaining.',
+					requestBodyValues: {},
+					isRetryable: false,
+					statusCode: 429,
+				})
+			)
+
+			await getImageDescription(IMAGE, {}).catch(error => error)
+
+			expect(JSON.parse(consoleError.mock.calls[0][1])).toMatchObject({
+				errorCode: 'credit_balance_exhausted',
+				errorType: 'insufficient_quota',
+				statusCode: 429,
+			})
+			expect(everythingLogged()).not.toContain('no credits remaining')
+		})
+
 		it('retries a failed call only once', async () => {
 			const model = modelFailingWith(
 				new APICallError({
