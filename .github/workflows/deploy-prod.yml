@@ -14,7 +14,7 @@ jobs:
 
       - name: Get the version from the tag
         id: get_tag_version
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
       - name: Configure Git
         run: |
@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          dockerfile: Dockerfile.prod
+          file: Dockerfile
           push: true
           build-args: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           tags: ${{ secrets.APP_IMAGE }}

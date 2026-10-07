@@ -17,13 +17,12 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24.x'
+      # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v4
         with:
-          version: latest
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
-            - args: [--global, gulp, prettier, vitest]
       - name: 'Generate prisma client'
         run: pnpm prisma:generate
       - name: 'Run Unit Tests'
@@ -48,12 +47,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24.x'
+      # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v4
-        with:
-          version: latest
       - name: 'Install Dependencies'
         run: |
           pnpm install --frozen-lockfile
+      - name: 'Generate prisma client'
+        run: pnpm prisma:generate
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
       - name: 'Create Docker network'
@@ -64,7 +64,7 @@ jobs:
           docker run --link test-db:postgres --network test-network --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
       - name: 'Run prisma db migrate'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install -g pnpm && pnpm run prisma:migrate && pnpm run prisma:seed"
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0 node:22 sh -c "corepack enable && pnpm run prisma:migrate && pnpm run prisma:seed"
       - name: Setup Docker Cache
         uses: docker/setup-buildx-action@v3
         with:
@@ -123,7 +123,7 @@ jobs:
           exit 1
       - name: 'Check Database Connection'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install -g pnpm && node check-db-connection.js"
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 node check-db-connection.js
 
       - name: 'Run E2E Tests'
         run: pnpm test:e2e:general
