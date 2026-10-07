@@ -1,0 +1,110 @@
+import { defaultJsonTemplateSchema } from '@/constants/playground'
+
+// Limits on the describe inputs (public API and playground). Context and
+// keywords are customer text sent to the model: longer values are cut. A
+// schema beyond these limits is rejected with a 400.
+export const DESCRIBE_LIMITS = {
+	maxSchemaDescriptionLength: 1000,
+	maxKeywordsLength: 1000,
+	maxContextLength: 1000,
+	maxSchemaKeyLength: 64,
+	maxLanguageLength: 64,
+	maxSchemaKeys: 20,
+}
+
+// A describe request the API answers with 400 (the message is shown to the
+// customer, e.g. by the WordPress plugin).
+export class InvalidDescribeInputError extends Error {
+	constructor(message) {
+		super(message)
+		this.name = 'InvalidDescribeInputError'
+	}
+}
+
+/**
+ * Normalizes the `schema` field: a flat map `key -> description`, as an object
+ * or a JSON string. Missing, empty or unparseable schemas fall back to the
+ * default fields (title, alternativeText, caption). Keys are kept as sent,
+ * blank keys are skipped and descriptions are coerced to trimmed strings.
+ * @param {string|object} schema
+ * @returns {Record<string, string>}
+ * @throws {InvalidDescribeInputError} when the schema exceeds DESCRIBE_LIMITS
+ */
+export function normalizeDescribeSchema(schema) {
+	let parsed = schema
+	if (typeof schema === 'string') {
+		try {
+			parsed = JSON.parse(schema)
+		} catch {
+			parsed = {}
+		}
+	}
+
+	if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+		parsed = {}
+	}
+
+	const entries = Object.entries(parsed)
+		.filter(([key]) => key.trim().length > 0)
+		.map(([key, value]) => [key, String(value ?? '').trim()])
+
+	if (entries.length === 0) {
+		return { ...defaultJsonTemplateSchema }
+	}
+
+	if (entries.length > DESCRIBE_LIMITS.maxSchemaKeys) {
+		throw new InvalidDescribeInputError(
+			`Invalid schema: at most ${DESCRIBE_LIMITS.maxSchemaKeys} fields are allowed`
+		)
+	}
+
+	for (const [key, description] of entries) {
+		if (key.length > DESCRIBE_LIMITS.maxSchemaKeyLength) {
+			throw new InvalidDescribeInputError(
+				`Invalid schema: field names must be at most ${DESCRIBE_LIMITS.maxSchemaKeyLength} characters`
+			)
+		}
+		if (key === '__proto__') {
+			throw new InvalidDescribeInputError(
+				'Invalid schema: "__proto__" is not allowed as a field name'
+			)
+		}
+		if (description.length > DESCRIBE_LIMITS.maxSchemaDescriptionLength) {
+			throw new InvalidDescribeInputError(
+				`Invalid schema: field descriptions must be at most ${DESCRIBE_LIMITS.maxSchemaDescriptionLength} characters`
+			)
+		}
+	}
+
+	return Object.fromEntries(entries)
+}
+
+/**
+ * Trims customer text (context, keywords) and cuts it to `maxLength`.
+ * @param {unknown} value
+ * @param {number} maxLength
+ * @returns {string}
+ */
+export function normalizeDescribeText(value, maxLength) {
+	return String(value ?? '')
+		.trim()
+		.slice(0, maxLength)
+		.trim()
+}
+
+/**
+ * The output language as written by the customer ("en", "fr-FR", "French"),
+ * on one line and at most DESCRIBE_LIMITS.maxLanguageLength characters.
+ * Defaults to "en".
+ * @param {unknown} value
+ * @returns {string}
+ */
+export function normalizeLanguage(value) {
+	const language = String(value ?? '')
+		.replace(/[\u0000-\u001f\u007f\s]+/g, ' ')
+		.trim()
+		.slice(0, DESCRIBE_LIMITS.maxLanguageLength)
+		.trim()
+
+	return language || 'en'
+}

@@ -1,8 +1,11 @@
-'use server'
+// Server-only Lemon Squeezy client (uses the store API key). Client components
+// reach it through the auth-checked actions in `src/app/actions/app/plans.js`.
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 import { currentUser } from '@clerk/nextjs/server'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
+
+import 'server-only'
 
 const getStoreId = () => process.env.LEMON_SQUEEZY_STORE_ID
 
@@ -42,6 +45,8 @@ export async function getCheckoutsLinks(plans) {
 	return checkoutUrls
 }
 
+// Returns the Lemon Squeezy customer portal URL of the authenticated user, or
+// null when the user never bought anything (no Lemon Squeezy customer yet).
 export async function getCustomerPortalLink() {
 	await initLemonSqueezy()
 
@@ -55,7 +60,7 @@ export async function getCustomerPortalLink() {
 	const customerId = await getCustomerIdFromUser(user.id)
 
 	if (!customerId) {
-		throw new Error('Customer not found.')
+		return null
 	}
 
 	// get customer object

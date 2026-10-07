@@ -142,10 +142,9 @@ export async function GET(request) {
 			{ status: 200 }
 		)
 	} catch (error) {
+		// the details stay in the server log: database errors can name
+		// internal hosts
 		console.error('Error while retrieving information:', error)
-		return Response.json(
-			{ details: error.message, error: 'Server error' },
-			{ status: 500 }
-		)
+		return Response.json({ error: 'Server error' }, { status: 500 })
 	}
 }

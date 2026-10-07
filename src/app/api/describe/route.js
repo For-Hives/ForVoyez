@@ -1,17 +1,23 @@
 import {
+	chargeOneCredit,
+	findActiveApiToken,
+	NoCreditsLeftError,
+} from '@/services/database.service'
+import {
+	InvalidDescribeInputError,
+	normalizeDescribeSchema,
+} from '@/helpers/describeInput'
+import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
-import { decrementCreditFromAPI } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
-	let user
-	let payload
 	try {
-		// get the authorisation header
+		// get the authorisation header (never log it: it carries the API key)
 		const authorization = request.headers.get('Authorization')
 		if (
 			!authorization ||
@@ -19,100 +25,104 @@ export async function POST(request) {
 			authorization.length < 10
 		) {
 			console.error('Unauthorized, missing Authorization header')
-			return new Response('Unauthorized', {
-				statusText: 'Unauthorized, missing Authorization header',
-				status: 401,
-			})
+			return jsonError('Unauthorized, missing Authorization header', 401)
+		}
+		const jwt = authorization.slice('Bearer '.length).trim()
+
+		// check if the token is signed by us
+		let payload
+		try {
+			payload = await verifyJwt(jwt)
+		} catch (error) {
+			console.error('Unauthorized, invalid token:', error.message)
+			return jsonError('Unauthorized, invalid token', 401)
 		}
 
-		// check if the token is valid
-		try {
-			payload = await verifyJwt(authorization)
-
-			// check if the token is still valid and if the user is have credit left
-			user = await prisma.user.findUnique({
-				where: {
-					clerkId: payload.userId,
-				},
-			})
-
-			if (!user || user.credits <= 0) {
-				console.error('Unauthorized, no credit left, user : ', payload.userId)
-				return new Response('Unauthorized, no credit left', {
-					statusText: 'Unauthorized, no credit left',
-					status: 401,
-				})
-			}
-		} catch (error) {
+		// check if the API key still exists (not deleted from the dashboard),
+		// belongs to the token's user and has not expired
+		const apiToken = await findActiveApiToken(jwt, payload.userId)
+		if (!apiToken) {
 			console.error(
-				'Unauthorized, invalid token : ',
-				error.message,
-				' for : ',
-				authorization
+				'Unauthorized, revoked or expired token, user:',
+				payload.userId
 			)
-			return new Response('Unauthorized, invalid token', {
-				statusText: 'Unauthorized, invalid token',
-				status: 401,
-			})
+			return jsonError('Unauthorized, invalid token', 401)
+		}
+
+		// fail fast when the user has no credit left (the charge below is the
+		// authoritative, atomic check)
+		const user = await prisma.user.findUnique({
+			where: {
+				clerkId: payload.userId,
+			},
+		})
+
+		if (!user || user.credits <= 0) {
+			console.error('Unauthorized, no credit left, user:', payload.userId)
+			return jsonError('Unauthorized, no credit left', 401)
 		}
 
 		const formData = await request.formData()
 
 		const file = formData.get('image')
 		if (!file) {
-			return new Response('Bad Request, No file uploaded', {
-				statusText: 'Bad Request, No file uploaded',
-				status: 400,
-			})
+			return jsonError('Bad Request, No file uploaded', 400)
 		}
 
 		// Check if the uploaded file is an image
 		if (!isValidImageFile(file)) {
-			return new Response('Bad Request, Invalid image file', {
-				statusText: 'Bad Request, Invalid image file',
-				status: 400,
-			})
+			return jsonError('Bad Request, Invalid image file', 400)
 		}
 
-		const schema = parseSchema(formData.get('schema'))
 		const context = formData.get('context') || ''
 		const keywords = formData.get('keywords') || ''
 		const language = formData.get('language') || 'en' // Default language is English
 
-		// Validate the schema if provided
-		if (schema && !isValidSchema(schema)) {
-			return new Response('Invalid schema', {
-				statusText: 'Bad Request',
-				status: 400,
-			})
+		// Flat map key -> description; empty or unparseable means the default
+		// fields, too many or too long fields are a 400 (no credit charged)
+		let schema
+		try {
+			schema = normalizeDescribeSchema(formData.get('schema'))
+		} catch (error) {
+			if (error instanceof InvalidDescribeInputError) {
+				return jsonError(error.message, 400, 'Bad Request')
+			}
+			throw error
 		}
 
-		const base64Image = await blobToBase64(file)
+		let base64Image
+		try {
+			base64Image = await blobToBase64(file)
+		} catch (error) {
+			// e.g. "Image processing failed: Image size exceeds the maximum limit
+			// of 10 MB". Same status as before (500), but a readable message.
+			console.error('Error processing the image:', error.message)
+			return jsonError(error.message, 500, 'Internal Server Error')
+		}
 
-		const descriptionResult = await getImageDescription(base64Image, {
-			language,
-			keywords,
-			context,
-			schema,
-		})
-
-		// update the user credit
-		decrementCreditFromAPI(
+		// one credit is reserved atomically, refunded if the generation fails
+		const descriptionResult = await chargeOneCredit(
 			payload.userId,
-			'decrement token from Describe Action',
-			authorization.replace('Bearer ', '')
+			{
+				reason: 'decrement token from Describe Action',
+				tokenId: apiToken.id,
+			},
+			() =>
+				getImageDescription(base64Image, {
+					language,
+					keywords,
+					context,
+					schema,
+				})
 		)
 
-		return new Response(JSON.stringify(descriptionResult), {
-			headers: { 'Content-Type': 'application/json' },
-			status: 200,
-		})
+		return Response.json(descriptionResult, { status: 200 })
 	} catch (error) {
+		if (error instanceof NoCreditsLeftError) {
+			return jsonError('Unauthorized, no credit left', 401)
+		}
 		console.error('Error processing the request:', error)
-		return new Response('Internal Server Error', {
-			statusText: 'Internal Server Error',
-			status: 500,
-		})
+		return jsonError('Internal Server Error', 500)
 	}
 }
 
@@ -128,30 +138,8 @@ function isValidImageFile(file) {
 	return validTypes.includes(file.type)
 }
 
-// Helper function to validate the schema
-function isValidSchema() {
-	// Implement your schema validation logic here
-	// Return true if the schema is valid, false otherwise
-	return true
-}
-
-/**
- * Parses schema from string or object format
- * @param {string|object} schema - Schema to parse
- * @returns {object} Parsed schema object or empty object if invalid
- */
-function parseSchema(schema) {
-	if (!schema || schema === '{}') return {}
-	if (typeof schema === 'object' && !Array.isArray(schema)) return schema
-
-	if (typeof schema === 'string') {
-		try {
-			return JSON.parse(schema)
-		} catch (error) {
-			console.error('Failed to parse schema JSON:', error)
-			return {}
-		}
-	}
-
-	return {}
+// Error responses are JSON `{ "error": "<human message>" }` (the WordPress
+// plugin parses them); the status codes are unchanged.
+function jsonError(message, status, statusText = message) {
+	return Response.json({ error: message }, { statusText, status })
 }

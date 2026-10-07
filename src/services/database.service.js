@@ -1,4 +1,6 @@
-'use server'
+// Server-only data access. This module is NOT a server action module (no
+// 'use server'): client components go through the dedicated, auth-checked
+// actions in `src/app/actions/app/` instead of importing it.
 import { currentUser } from '@clerk/nextjs/server'
 
 import {
@@ -8,17 +10,104 @@ import {
 } from '@/services/lemonsqueezy.service'
 import { prisma } from '@/services/prisma.service'
 
-// Function to decrement the credits for the authenticated user
-export async function decrementCredit(reason, tokenJwt = null) {
-	const user = await getCurrentUser()
-	await updateCredits(user.id, -1, tokenJwt, reason)
-	console.info(`User ${user.id} used 1 credit`)
+import 'server-only'
+
+export class NoCreditsLeftError extends Error {
+	constructor() {
+		super('No credits left')
+		this.name = 'NoCreditsLeftError'
+	}
 }
 
-// Function to decrement the credits for the authenticated user from the API ( dont have access to the currentuser object)
-export async function decrementCreditFromAPI(userId, reason, tokenJwt = null) {
-	await updateCredits(userId, -1, tokenJwt, reason)
+/**
+ * Charges one credit to `userId` for the result of `work`.
+ *
+ * The credit is reserved atomically before `work` runs (a single
+ * `UPDATE ... WHERE credits >= 1`), so parallel requests can never spend the
+ * same credit twice nor push the balance below zero. If `work` throws, the
+ * credit is refunded and the error is rethrown. The `Usage` row is only
+ * written once `work` succeeded.
+ *
+ * @param {string} userId - Clerk user id (User.clerkId)
+ * @param {{ reason: string, tokenId?: string | null }} usage - Usage row fields
+ * @param {() => Promise<T>} work - the paid operation
+ * @returns {Promise<T>} the result of `work`
+ * @throws {NoCreditsLeftError} when the user has no credit left
+ * @template T
+ */
+export async function chargeOneCredit(
+	userId,
+	{ tokenId = null, reason },
+	work
+) {
+	const [reservation, userAfterReservation] = await prisma.$transaction([
+		prisma.user.updateMany({
+			where: { credits: { gte: 1 }, clerkId: userId },
+			data: { credits: { decrement: 1 } },
+		}),
+		prisma.user.findUnique({
+			where: { clerkId: userId },
+			select: { credits: true },
+		}),
+	])
+
+	if (reservation.count === 0) {
+		throw new NoCreditsLeftError()
+	}
+
+	let result
+	try {
+		result = await work()
+	} catch (error) {
+		await refundOneCredit(userId)
+		throw error
+	}
+
+	// Same transaction as the decrement: the row was locked, so this is exactly
+	// the balance right after this request's reservation.
+	const currentCredits = userAfterReservation.credits
+	try {
+		await prisma.usage.create({
+			data: {
+				previousCredits: currentCredits + 1,
+				currentCredits,
+				userId: userId,
+				used: -1,
+				tokenId,
+				reason,
+			},
+		})
+	} catch (error) {
+		// The work succeeded and the credit is spent: do not fail the request
+		// because the usage log could not be written.
+		console.error(`Failed to record usage for user ${userId}:`, error.message)
+	}
+
 	console.info(`User ${userId} used 1 credit`)
+	return result
+}
+
+// Function to find the API token behind a verified JWT. Returns the Token row
+// only if it still exists (not deleted from the dashboard), belongs to
+// `userId` and has not expired; null otherwise.
+export async function findActiveApiToken(jwt, userId) {
+	if (!jwt || !userId) {
+		return null
+	}
+
+	const token = await prisma.token.findUnique({
+		where: { jwt },
+	})
+
+	if (!token || token.userId !== userId) {
+		return null
+	}
+
+	if (!(new Date(token.expiredAt) > new Date())) {
+		return null
+	}
+
+	return token
 }
 
 // Function to retrieve the authenticated user's credits
@@ -263,27 +352,30 @@ export async function syncPlans() {
 	}
 }
 
-// Function to update the credits for the specified user
+// Function to add (or remove, when negative) credits for the specified user.
+// The balance change is a single atomic `credits = credits + n` update.
 export async function updateCredits(userId, credits, tokenJwt, reason) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
 		throw new Error('Invalid credits value')
 	}
 
-	const user = await prisma.user.findFirst({
+	const user = await prisma.user.findUnique({
 		where: { clerkId: userId },
+		select: { clerkId: true },
 	})
 
 	if (!user) {
 		throw new Error('User not found')
 	}
 
-	const previousCredits = user.credits
-	const currentCredits = previousCredits + credits
-
-	await prisma.user.update({
-		data: { credits: currentCredits },
+	const updatedUser = await prisma.user.update({
+		data: { credits: { increment: credits } },
 		where: { clerkId: userId },
+		select: { credits: true },
 	})
+
+	const currentCredits = updatedUser.credits
+	const previousCredits = currentCredits - credits
 
 	let token = null
 	if (tokenJwt) {
@@ -302,4 +394,15 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 			reason,
 		},
 	})
+}
+
+async function refundOneCredit(userId) {
+	try {
+		await prisma.user.update({
+			data: { credits: { increment: 1 } },
+			where: { clerkId: userId },
+		})
+	} catch (error) {
+		console.error(`Failed to refund 1 credit to user ${userId}:`, error.message)
+	}
 }

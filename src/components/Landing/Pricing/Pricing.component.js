@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import Link from 'next/link'
 
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
-import { getPlans } from '@/services/database.service'
+import { listPlans } from '@/app/actions/app/plans'
 import { sortPlans } from '@/helpers/sortPlans'
 
 const frequencies = [
@@ -35,7 +35,7 @@ export function PricingComponent() {
 	}, [frequency])
 
 	useEffect(() => {
-		getPlans()
+		listPlans()
 			.then(plans => {
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)

@@ -19,10 +19,10 @@ import { fr } from 'date-fns/locale'
 import { format } from 'date-fns'
 
 import {
-	getCreditsFromUserId,
-	getUsageByToken,
-	getUsageForUser,
-} from '@/services/database.service'
+	getMyCredits,
+	getMyUsage,
+	getMyUsageByToken,
+} from '@/app/actions/app/usage'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 
 export function UsageChartComponent() {
@@ -36,7 +36,7 @@ export function UsageChartComponent() {
 	const { userId } = useAuth()
 
 	useEffect(() => {
-		getCreditsFromUserId()
+		getMyCredits()
 			.then(credits => setUserCredits(credits))
 			.catch(error =>
 				console.error('Error fetching credits from user id:', error)
@@ -46,7 +46,7 @@ export function UsageChartComponent() {
 	useEffect(() => {
 		async function fetchUsage() {
 			try {
-				const data = await getUsageForUser()
+				const data = await getMyUsage()
 				setUsage(data)
 			} catch (error) {
 				console.error('Error fetching usage data:', error)
@@ -54,7 +54,7 @@ export function UsageChartComponent() {
 		}
 
 		async function fetchUsageByToken() {
-			const data = await getUsageByToken()
+			const data = await getMyUsageByToken()
 			const formattedData = data.map(entry => ({
 				token: entry.token,
 				used: entry.used,

@@ -222,14 +222,13 @@ describe('Lemon Squeezy Service', () => {
 			)
 		})
 
-		it('should throw an error if the customer ID is not found', async () => {
+		it('should return null (not throw) for a user who never bought anything', async () => {
 			const mockUser = { id: 'user123' }
 			clerk.currentUser.mockResolvedValue(mockUser)
 			getCustomerIdFromUser.mockResolvedValue(null)
 
-			await expect(getCustomerPortalLink()).rejects.toThrow(
-				'Customer not found.'
-			)
+			await expect(getCustomerPortalLink()).resolves.toBeNull()
+			expect(lemonsqueezy.getCustomer).not.toHaveBeenCalled()
 		})
 	})
 
