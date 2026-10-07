@@ -9,7 +9,9 @@ import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.compo
 import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
-import { getCreditsFromUserId } from '@/services/database.service'
+import { getMyCredits } from '@/app/actions/app/usage'
+
+const MAX_IMAGE_SIZE_BYTES = 10485760
 
 export function Playground() {
 	const [userCredits, setUserCredits] = useState(0)
@@ -32,13 +34,14 @@ export function Playground() {
 		e.preventDefault()
 
 		if (!formData.image) {
-			setUploadError('Please select an image')
+			toast.error('Please select an image')
 			return
 		}
 
-		// 10 * 1024 * 1024
-		if (formData.image.size > 10485760) {
-			setUploadError('Image size should not exceed 10MB')
+		// 10 * 1024 * 1024, the server action body limit (next.config.js) leaves
+		// room for this plus the multipart overhead
+		if (formData.image.size > MAX_IMAGE_SIZE_BYTES) {
+			toast.error('Image size should not exceed 10MB')
 			return
 		}
 
@@ -61,7 +64,9 @@ export function Playground() {
 			if (response.status === 200) {
 				setResponse(response.data)
 			} else {
-				setResponse('Error processing the request. Please try again.')
+				setResponse(
+					response.error || 'Error processing the request. Please try again.'
+				)
 			}
 		} catch (error) {
 			console.error('Error:', error)
@@ -74,7 +79,7 @@ export function Playground() {
 	}
 
 	useEffect(() => {
-		getCreditsFromUserId()
+		getMyCredits()
 			.then(credits => {
 				setUserCredits(credits)
 				setShowTooltip(credits === 0)

@@ -3,10 +3,14 @@
 import { currentUser } from '@clerk/nextjs/server'
 
 import {
+	InvalidDescribeInputError,
+	normalizeDescribeSchema,
+} from '@/helpers/describeInput'
+import {
 	blobToBase64,
 	getImageDescription,
 } from '@/services/imageDescription.service'
-import { decrementCredit } from '@/services/database.service'
+import { chargeOneCredit } from '@/services/database.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
@@ -23,7 +27,8 @@ export async function describePlaygroundAction(formData) {
 		},
 	})
 
-	if (userData.credits <= 0) {
+	// no DB row yet (createUser not run) means no credit either
+	if (!userData || userData.credits <= 0) {
 		console.error('No credits left')
 		throw new Error('No credits left')
 	}
@@ -35,48 +40,41 @@ export async function describePlaygroundAction(formData) {
 	}
 
 	const data = JSON.parse(formData.get('data') || '{}')
-	const schema = parseSchema(data.schema)
 	const context = data.context || ''
 	const keywords = data.keywords || ''
 	const language = data.language || 'en' // Default language is English
 
+	// same limits as the API: a schema with too many or too long fields is
+	// refused before any credit is charged
+	let schema
+	try {
+		schema = normalizeDescribeSchema(data.schema)
+	} catch (error) {
+		if (error instanceof InvalidDescribeInputError) {
+			return { error: error.message, status: 400 }
+		}
+		throw error
+	}
+
 	const base64Image = await blobToBase64(file)
 
-	// Get image description using base64 encoded image
-	const description = await getImageDescription(base64Image, {
-		keywords,
-		language,
-		context,
-		schema,
-	})
-
-	// Update the user credit using the updateCreditForUser function
-	await decrementCredit('describe from PlaygroundAction')
+	// Get image description using base64 encoded image. One credit is reserved
+	// atomically before the generation and refunded if it fails.
+	const description = await chargeOneCredit(
+		user.id,
+		{ reason: 'describe from PlaygroundAction' },
+		() =>
+			getImageDescription(base64Image, {
+				keywords,
+				language,
+				context,
+				schema,
+			})
+	)
 
 	// Return the description as a directly usable JSON object
 	return {
 		data: description,
 		status: 200,
 	}
-}
-
-/**
- * Parses schema from string or object format
- * @param {string|object} schema - Schema to parse
- * @returns {object} Parsed schema object or empty object if invalid
- */
-function parseSchema(schema) {
-	if (!schema) return {}
-	if (typeof schema === 'object' && !Array.isArray(schema)) return schema
-
-	if (typeof schema === 'string') {
-		try {
-			return JSON.parse(schema)
-		} catch (error) {
-			console.error('Failed to parse schema JSON:', error)
-			return {}
-		}
-	}
-
-	return {}
 }

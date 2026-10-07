@@ -7,13 +7,11 @@ import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getCheckoutsLinks,
-	getCustomerPortalLink,
-} from '@/services/lemonsqueezy.service'
-import {
-	getPlans,
-	getSubscriptionFromUserId,
-} from '@/services/database.service'
+	getCheckoutUrls,
+	getCustomerPortalUrl,
+	getMySubscription,
+	listPlans,
+} from '@/app/actions/app/plans'
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import { sortPlans } from '@/helpers/sortPlans'
 
@@ -42,7 +40,7 @@ export function ChangingPlansComponent() {
 	useEffect(() => {
 		const fetchPlans = async () => {
 			try {
-				const plans = await getPlans()
+				const plans = await listPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
 				await fetchCheckoutUrls(sortedPlans)
@@ -53,9 +51,11 @@ export function ChangingPlansComponent() {
 
 		const fetchSubscription = async () => {
 			try {
-				const sub = await getSubscriptionFromUserId(auth.userId)
+				const sub = await getMySubscription()
 				if (sub) {
 					setCurrentSubscription(sub)
+					// only subscribers have a Lemon Squeezy customer portal
+					await fetchCustomerPortalUrl()
 				}
 			} catch (error) {
 				console.error('Error fetching subscription:', error)
@@ -66,7 +66,7 @@ export function ChangingPlansComponent() {
 			if (!plans) return
 
 			try {
-				const checkouts = await getCheckoutsLinks(plans)
+				const checkouts = await getCheckoutUrls()
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
@@ -75,7 +75,8 @@ export function ChangingPlansComponent() {
 
 		const fetchCustomerPortalUrl = async () => {
 			try {
-				const url = await getCustomerPortalLink()
+				// null when the user never bought anything
+				const url = await getCustomerPortalUrl()
 				setCustomerPortalUrl(url)
 			} catch (error) {
 				console.error('Error fetching customer portal URL:', error)
@@ -84,7 +85,6 @@ export function ChangingPlansComponent() {
 
 		fetchPlans()
 		fetchSubscription()
-		fetchCustomerPortalUrl()
 	}, [auth.userId])
 
 	if (plans.length === 0 || !checkoutUrls) {
