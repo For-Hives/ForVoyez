@@ -7,7 +7,8 @@ const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 export async function POST(request) {
 	try {
 		console.info('webhook request received')
-		if (!WEBHOOK_SECRET) {
+		const secret = WEBHOOK_SECRET()
+		if (!secret) {
 			console.error('Lemon Squeezy Webhook Secret not set in .env')
 			return new Response('Lemon Squeezy Webhook Secret not set in .env', {
 				status: 500,
@@ -17,14 +18,18 @@ export async function POST(request) {
 		// check if the request come from lemonsqueezy servers #Security
 		const rawBody = await request.text()
 
-		const hmac = createHmac('sha256', WEBHOOK_SECRET())
+		const hmac = createHmac('sha256', secret)
 		const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
 		const signature = Buffer.from(
 			request.headers.get('X-Signature') ?? '',
 			'utf8'
 		)
 
-		if (!timingSafeEqual(digest, signature)) {
+		// timingSafeEqual throws when the lengths differ
+		if (
+			digest.length !== signature.length ||
+			!timingSafeEqual(digest, signature)
+		) {
 			console.error('webhook not authorized')
 			return new Response(`Webhook not authorized`, {
 				status: 401,
@@ -34,12 +39,19 @@ export async function POST(request) {
 		// Process the webhook payload
 		const webhookId = await saveWebhooks(JSON.parse(rawBody))
 
-		// non blocking process
-		processWebhook(webhookId)
+		// The event is stored: answer 200 even if processing fails, otherwise
+		// Lemon Squeezy retries and the event would be stored (and credited)
+		// twice. Processing errors are recorded on the stored event.
+		try {
+			await processWebhook(webhookId)
+		} catch (error) {
+			console.error(`webhook ${webhookId} processing error:`, error.message)
+		}
 	} catch (error) {
-		console.error('Webhook error: ', request.text())
-		console.error(error)
-		return new Response(`Webhook error: ${error.message}`, {
+		// never log the body: it contains the customer's name and email (and
+		// Prisma/JSON errors can quote it), so only log the error kind
+		console.error('Webhook error:', error.code ?? error.name)
+		return new Response('Webhook error', {
 			status: 400,
 		})
 	}
