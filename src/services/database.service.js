@@ -1,7 +1,7 @@
 // Server-only data access. This module is NOT a server action module (no
 // 'use server'): client components go through the dedicated, auth-checked
 // actions in `src/app/actions/app/` instead of importing it.
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 import {
 	getVariant,
@@ -110,7 +110,8 @@ export async function findActiveApiToken(jwt, userId) {
 	return token
 }
 
-// Function to retrieve the authenticated user's credits
+// Function to retrieve the authenticated user's credits. No User row yet (the
+// layout creates it on the very first visit) means no credits: 0, not undefined.
 export async function getCreditsFromUserId() {
 	const user = await getCurrentUser()
 
@@ -118,16 +119,25 @@ export async function getCreditsFromUserId() {
 		where: { clerkId: user.id },
 	})
 
-	return connectedUser?.credits
+	return connectedUser?.credits ?? 0
 }
 
-// Function to retrieve the authenticated user
+/**
+ * Returns the authenticated user as `{ id }` (the Clerk user id) only.
+ *
+ * Every caller only needs the id: `auth()` reads it from the session the Clerk
+ * proxy already verified, while `currentUser()` would call the rate-limited
+ * Clerk Backend API on every dashboard request.
+ *
+ * @returns {Promise<{ id: string }>}
+ * @throws {Error} when the request is anonymous
+ */
 export async function getCurrentUser() {
-	const user = await currentUser()
-	if (!user) {
+	const { userId } = await auth()
+	if (!userId) {
 		throw new Error('User not authenticated')
 	}
-	return user
+	return { id: userId }
 }
 
 // Function to retrieve the customer ID for the authenticated user
@@ -177,8 +187,10 @@ export async function getSubscriptionFromUserId() {
 export async function getUsageByToken() {
 	const user = await getCurrentUser()
 
+	// only the charged operations (used: -1): purchases and renewals add credits
+	// without a token and are not "Playground" uses
 	const usageData = await prisma.usage.findMany({
-		where: { userId: user.id },
+		where: { userId: user.id, used: { lt: 0 } },
 		include: { token: true },
 	})
 
@@ -191,46 +203,32 @@ export async function getUsageByToken() {
 	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
 }
 
-// Function to retrieve API usage for the authenticated user
+// Function to retrieve the authenticated user's balance over time: one point
+// per hour, the balance right after the last operation of that hour. It does
+// not depend on the current balance, so a user at 0 credits keeps their history.
 export async function getUsageForUser() {
 	const user = await getCurrentUser()
-
-	const userCredits = await getCreditsFromUserId()
-	if (!userCredits) {
-		throw new Error('User credits not found')
-	}
 
 	const usageData = await prisma.usage.findMany({
 		where: { userId: user.id },
 		orderBy: { usedAt: 'asc' },
 	})
 
-	if (usageData.length === 0) {
-		return []
-	}
+	const hourlyCreditsLeft = {}
 
-	let hourlyCreditsLeft = {}
-
-	usageData.forEach(usage => {
+	for (const usage of usageData) {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13)
 
-		if (!hourlyCreditsLeft[dateHour]) {
-			hourlyCreditsLeft[dateHour] = {
-				creditsLeft: usage.previousCredits,
-				fullDate: usage.usedAt,
-				dateHour,
-			}
-		} else {
-			hourlyCreditsLeft[dateHour].creditsLeft = usage.previousCredits
+		// rows are sorted, so the last one of the hour wins. currentCredits is
+		// the balance after the operation (previousCredits the one before it)
+		hourlyCreditsLeft[dateHour] = {
+			creditsLeft: usage.currentCredits,
+			fullDate: usage.usedAt,
+			dateHour,
 		}
-	})
-
-	const hourlyUsageArray = Object.values(hourlyCreditsLeft)
-
-	if (hourlyUsageArray.length <= 5) {
-		return hourlyUsageArray
 	}
-	return hourlyUsageArray
+
+	return Object.values(hourlyCreditsLeft)
 }
 
 // Function to sync product variants with the Plan model in the database
