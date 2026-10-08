@@ -6,7 +6,9 @@ import {
 	getImageDescription,
 } from '@/services/imageDescription.service'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
-import { decrementCredit } from '@/services/database.service'
+import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { DescriptionTooLongError } from '@/helpers/describeInput'
+import { chargeOneCredit } from '@/services/database.service'
 
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/imageDescription.service')
@@ -25,6 +27,8 @@ vi.mock('@/services/prisma.service', async () => {
 describe('describePlaygroundAction', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
+		// charge succeeds: run the paid work and return its result
+		chargeOneCredit.mockImplementation((userId, usage, work) => work())
 	})
 
 	it('should throw an error if the user is not authenticated', async () => {
@@ -43,6 +47,75 @@ describe('describePlaygroundAction', () => {
 		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
 			'No credits left'
 		)
+	})
+
+	it('should throw "No credits left" (not crash) if the user has no DB row', async () => {
+		currentUser.mockResolvedValue({ id: 'user123' })
+		prisma.user.findUnique.mockResolvedValue(null)
+
+		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
+			'No credits left'
+		)
+		expect(chargeOneCredit).not.toHaveBeenCalled()
+	})
+
+	it('should not return a description when the atomic charge finds no credit', async () => {
+		currentUser.mockResolvedValue({ id: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 1 })
+		blobToBase64.mockResolvedValue('base64ImageString')
+		chargeOneCredit.mockRejectedValue(new Error('No credits left'))
+
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		await expect(describePlaygroundAction(formData)).rejects.toThrow(
+			'No credits left'
+		)
+		expect(getImageDescription).not.toHaveBeenCalled()
+	})
+
+	it('should return a 400 error, without charging, for a schema with too many fields', async () => {
+		currentUser.mockResolvedValue({ id: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		const schema = Object.fromEntries(
+			Array.from({ length: 21 }, (_, index) => [`field${index}`, 'text'])
+		)
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+		formData.append('data', JSON.stringify({ schema: JSON.stringify(schema) }))
+
+		const result = await describePlaygroundAction(formData)
+
+		expect(result).toEqual({
+			error: 'Invalid schema: at most 20 fields are allowed',
+			status: 400,
+		})
+		expect(chargeOneCredit).not.toHaveBeenCalled()
+		expect(getImageDescription).not.toHaveBeenCalled()
+	})
+
+	it('should return a 400 error when the answer for the schema is too long', async () => {
+		currentUser.mockResolvedValue({ id: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		blobToBase64.mockResolvedValue('base64ImageString')
+		// chargeOneCredit refunds the credit and rethrows
+		getImageDescription.mockRejectedValue(new DescriptionTooLongError())
+
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		const result = await describePlaygroundAction(formData)
+
+		expect(result).toEqual({
+			error: new DescriptionTooLongError().message,
+			status: 400,
+		})
 	})
 
 	it('should throw an error if no file is uploaded', async () => {
@@ -91,15 +164,17 @@ describe('describePlaygroundAction', () => {
 			data: mockDescription,
 			status: 200,
 		})
-		expect(decrementCredit).toHaveBeenCalledWith(
-			'describe from PlaygroundAction'
+		expect(chargeOneCredit).toHaveBeenCalledWith(
+			'user123',
+			{ reason: 'describe from PlaygroundAction' },
+			expect.any(Function)
 		)
 		expect(getImageDescription).toHaveBeenCalledWith(
 			mockBase64Image,
 			expect.objectContaining({
+				schema: defaultJsonTemplateSchema,
 				context: 'Test Context',
 				language: 'fr',
-				schema: {},
 			})
 		)
 	})
@@ -134,9 +209,9 @@ describe('describePlaygroundAction', () => {
 		expect(getImageDescription).toHaveBeenCalledWith(
 			mockBase64Image,
 			expect.objectContaining({
+				schema: defaultJsonTemplateSchema,
 				context: 'Test Context',
 				language: 'en',
-				schema: {},
 			})
 		)
 	})
@@ -223,10 +298,10 @@ describe('describePlaygroundAction', () => {
 		expect(getImageDescription).toHaveBeenCalledWith(
 			mockBase64Image,
 			expect.objectContaining({
+				schema: defaultJsonTemplateSchema,
 				keywords: 'test, keywords',
 				context: 'Test Context',
 				language: 'en',
-				schema: {},
 			})
 		)
 	})

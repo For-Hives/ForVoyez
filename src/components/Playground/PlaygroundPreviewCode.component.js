@@ -2,8 +2,8 @@
 import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { Disclosure, Tab } from '@headlessui/react'
 import { useEffect, useState } from 'react'
+import { motion } from 'motion/react'
 
-import { motion } from 'framer-motion'
 import Prism from 'prismjs'
 
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'

@@ -1,3 +1,4 @@
+import { findActiveApiToken } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -40,20 +41,18 @@ export async function GET(request) {
 			)
 		}
 
-		// Get the token from the database to verify it's valid
-		const tokenRecord = await prisma.token.findFirst({
-			where: {
-				expiredAt: {
-					gt: new Date(),
-				},
-				jwt: token,
-			},
-		})
+		// Same rule as /api/describe: the API key must still exist (not deleted
+		// from the dashboard), belong to the token's user and not be expired
+		const tokenRecord = await findActiveApiToken(token, payload.userId)
 
 		if (!tokenRecord) {
+			console.error(
+				'Unauthorized, revoked or expired token, user:',
+				payload.userId
+			)
 			return Response.json(
-				{ error: 'Token not found or expired in database' },
-				{ status: 401 }
+				{ error: 'Unauthorized, invalid token' },
+				{ statusText: 'Unauthorized, invalid token', status: 401 }
 			)
 		}
 
@@ -142,10 +141,9 @@ export async function GET(request) {
 			{ status: 200 }
 		)
 	} catch (error) {
+		// the details stay in the server log: database errors can name
+		// internal hosts
 		console.error('Error while retrieving information:', error)
-		return Response.json(
-			{ details: error.message, error: 'Server error' },
-			{ status: 500 }
-		)
+		return Response.json({ error: 'Server error' }, { status: 500 })
 	}
 }

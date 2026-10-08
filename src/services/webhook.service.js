@@ -2,7 +2,26 @@
 import { updateCredits } from '@/services/database.service'
 import { prisma } from '@/services/prisma.service'
 
+// Events that add credits. Each one pays for one Lemon Squeezy resource,
+// `data.id`: the order (order_created) or the subscription invoice
+// (subscription_payment_success). A redelivery of an already processed
+// resource (lost 200, Lemon Squeezy retry, "Resend" from its dashboard) must
+// not credit it again.
+const CREDITING_EVENTS = new Set([
+	'order_created',
+	'subscription_payment_success',
+])
+
+// Note stored on a processed subscription_updated event that moved its
+// subscription to another plan (see processSubscriptionUpdated): the plan
+// change marker of the next `updated` invoice (see hasProcessedPlanChange).
+const PLAN_CHANGE_NOTE = 'Plan change applied'
+
 // methode to process the webhooks #id
+// Processing errors are recorded on the WebhookEvent row (`processingError`,
+// `processed` stays false) instead of being thrown: the event is already
+// stored, so Lemon Squeezy must not retry it. To replay a failed event once
+// its cause is fixed, resend it from the Lemon Squeezy dashboard.
 export async function processWebhook(id) {
 	// get the webhook by id
 	const webhook = await prisma.webhookEvent.findUnique({
@@ -13,55 +32,82 @@ export async function processWebhook(id) {
 		return
 	}
 
-	// process the webhook
-	const parsed_webhook = JSON.parse(webhook.body)
+	// never log the payload: it contains the customer's name and email
+	console.info(`processing webhook ${id}: ${webhook.eventName}`)
 
-	console.info(
-		'processing webhook : ',
-		webhook.eventName.toString(),
-		' || content : ',
-		webhook.body.toString()
-	)
+	let note = null
+	try {
+		// process the webhook
+		const parsed_webhook = JSON.parse(webhook.body)
 
-	// switch
-	switch (webhook.eventName) {
-		case 'order_created':
-			await processOrderCreated(parsed_webhook)
-			break
-		case 'subscription_cancelled':
-			await processSubscriptionCancelled(parsed_webhook)
-			break
-		case 'subscription_created':
-			await processSubscriptionCreated(parsed_webhook)
-			break
-		case 'subscription_payment_success':
-			await processSubscriptionPaymentSuccess(parsed_webhook)
-			break
-		case 'subscription_plan_changed':
-			await processSubscriptionPlanChanged(parsed_webhook)
-			break
-		case 'subscription_resumed':
-			await processSubscriptionResumed(parsed_webhook)
-			break
-		case 'subscription_updated':
-			// nothing to do
-			break
-	}
+		const duplicateOf = await findProcessedDuplicate(webhook, parsed_webhook)
+		if (duplicateOf) {
+			console.info(
+				`webhook ${id} (${webhook.eventName}): duplicate of processed webhook ${duplicateOf.id}, skipped`
+			)
+			await prisma.webhookEvent.update({
+				data: {
+					processingError: `Duplicate of webhook event ${duplicateOf.id}, already processed: skipped`,
+					processed: true,
+				},
+				where: { id: id },
+			})
+			return
+		}
 
-	// if the webhook is processed, update the webhook
-	if (webhook) {
-		prisma.webhookEvent.update({
-			data: { processed: true },
+		// switch
+		switch (webhook.eventName) {
+			case 'order_created':
+				await processOrderCreated(parsed_webhook)
+				break
+			case 'subscription_cancelled':
+				await processSubscriptionCancelled(parsed_webhook)
+				break
+			case 'subscription_created':
+				await processSubscriptionCreated(parsed_webhook)
+				break
+			case 'subscription_payment_success':
+				await processSubscriptionPaymentSuccess(parsed_webhook)
+				break
+			case 'subscription_plan_changed':
+				await processSubscriptionPlanChanged(parsed_webhook)
+				break
+			case 'subscription_resumed':
+				await processSubscriptionResumed(parsed_webhook)
+				break
+			case 'subscription_updated':
+				note = await processSubscriptionUpdated(parsed_webhook, webhook)
+				break
+		}
+	} catch (error) {
+		// Prisma errors can echo the query arguments (customer name/email): log
+		// only the error kind, the full message goes to the WebhookEvent row.
+		console.error(
+			`webhook ${id} (${webhook.eventName}) processing failed:`,
+			error.code ?? error.name
+		)
+		await prisma.webhookEvent.update({
+			data: { processingError: String(error.message ?? error) },
 			where: { id: id },
 		})
+		return
 	}
+
+	// the webhook is processed, update the webhook (a plan change applied by
+	// subscription_updated keeps a note, see hasProcessedPlanChange)
+	await prisma.webhookEvent.update({
+		data: note
+			? { processingError: note, processed: true }
+			: { processed: true },
+		where: { id: id },
+	})
 }
 
 export async function saveWebhooks(webhooks) {
 	// save the webhooks in the database
 	const webhook = await prisma.webhookEvent.create({
 		data: {
-			customerId: webhooks.data.attributes.customer_id,
+			customerId: toIntOrNull(webhooks.data.attributes.customer_id),
 			userId: webhooks.meta.custom_data.user_id,
 			eventName: webhooks.meta.event_name,
 			body: JSON.stringify(webhooks),
@@ -72,12 +118,130 @@ export async function saveWebhooks(webhooks) {
 	return webhook.id
 }
 
-// private function to process the webhook "order_created" (used in case of refill buy)
+// Returns an earlier, already processed delivery of the same crediting event
+// for the same Lemon Squeezy resource (`data.id`), or null. Failed deliveries
+// (`processed` false) do not count, so a fixed event can be resent.
+// Not a lock: two deliveries processed at the very same time can both pass
+// (Lemon Squeezy retries only after a failed or timed out answer).
+async function findProcessedDuplicate(webhook, parsed_webhook) {
+	const resourceId = parsed_webhook.data?.id
+	if (!CREDITING_EVENTS.has(webhook.eventName) || resourceId == null) {
+		return null
+	}
+
+	// a user only has a handful of these events: compare the stored payloads
+	const processedEvents = await prisma.webhookEvent.findMany({
+		where: {
+			eventName: webhook.eventName,
+			id: { not: webhook.id },
+			userId: webhook.userId,
+			processed: true,
+		},
+		select: { body: true, id: true },
+		orderBy: { id: 'asc' },
+	})
+
+	return (
+		processedEvents.find(
+			event => String(parseBody(event.body)?.data?.id) === String(resourceId)
+		) ?? null
+	)
+}
+
+// True when a processed subscription_updated or subscription_plan_changed
+// event of the same subscription is more recent (Lemon Squeezy's
+// `updated_at`) than this one: a late delivery or a Resend of an old state
+// must not move the subscription back to its previous plan.
+async function hasNewerProcessedUpdate(event, payload, subscriptionId) {
+	const updatedAt = Date.parse(payload.data?.attributes?.updated_at)
+	if (Number.isNaN(updatedAt)) {
+		return false
+	}
+
+	const updates = await prisma.webhookEvent.findMany({
+		where: {
+			eventName: { in: ['subscription_updated', 'subscription_plan_changed'] },
+			id: { not: event.id },
+			userId: event.userId,
+			processed: true,
+		},
+		select: { eventName: true, body: true },
+	})
+
+	return updates.some(update => {
+		const other = parseBody(update.body)
+		return (
+			planChangeSubscriptionId(update.eventName, other) === subscriptionId &&
+			Date.parse(other?.data?.attributes?.updated_at) > updatedAt
+		)
+	})
+}
+
+// True when a processed plan change moved this subscription to its current
+// plan: a subscription_plan_changed event, or a subscription_updated event
+// that changed the plan (it carries PLAN_CHANGE_NOTE; the other, routine
+// subscription_updated events do not count). A plan change marker
+// (`oldPlanId`) set by this version always has one. The version before it
+// set `oldPlanId` at every plan change, never cleared it and never marked its
+// webhook events processed: such a stale marker must not be taken for the
+// plan change of a new `updated` invoice that arrives before its plan change.
+async function hasProcessedPlanChange(subscription, userId) {
+	// a user only has a handful of these events: compare the stored payloads
+	const planChanges = await prisma.webhookEvent.findMany({
+		where: {
+			OR: [
+				{ eventName: 'subscription_plan_changed' },
+				{
+					processingError: { startsWith: PLAN_CHANGE_NOTE },
+					eventName: 'subscription_updated',
+				},
+			],
+			processed: true,
+			userId: userId,
+		},
+		select: { eventName: true, body: true },
+	})
+
+	return planChanges.some(event => {
+		const payload = parseBody(event.body)
+		return (
+			planChangeSubscriptionId(event.eventName, payload) ===
+				subscription.lemonSqueezyId &&
+			String(payload?.data?.attributes?.variant_id) ===
+				subscription.plan?.variantId
+		)
+	})
+}
+
+function parseBody(body) {
+	try {
+		return JSON.parse(body)
+	} catch {
+		return null
+	}
+}
+
+// The Lemon Squeezy subscription id of a plan change event, as stored in
+// Subscription.lemonSqueezyId: `data.id` of a subscription_updated (a
+// subscription object, like subscription_created), the subscription item's
+// subscription of a subscription_plan_changed (as processed there).
+function planChangeSubscriptionId(eventName, payload) {
+	const id =
+		eventName === 'subscription_updated'
+			? payload?.data?.id
+			: payload?.data?.attributes?.first_subscription_item?.subscription_id
+	return id == null ? undefined : String(id)
+}
+
+// private function to process the webhook "order_created": credits a paid
+// order, i.e. a one-time credit pack OR the first payment of a new
+// subscription (Lemon Squeezy always sends order_created with
+// subscription_created). The first subscription payment also triggers
+// subscription_payment_success (billing_reason "initial"), which is skipped
+// there so it is credited only once, here.
 async function processOrderCreated(parsed_webhook) {
 	const userId = parsed_webhook.meta.custom_data.user_id // Clerk user ID
-	const customerEmail = parsed_webhook.data.attributes.user_email
-	const customerName = parsed_webhook.data.attributes.user_name
-	const customerId = parsed_webhook.data.attributes.customer_id // Lemon Squeezy customer ID
+	const customerId = toIntOrNull(parsed_webhook.data.attributes.customer_id) // Lemon Squeezy customer ID
 
 	// check if the user already exists
 	let user = await prisma.user.findUnique({
@@ -91,8 +255,6 @@ async function processOrderCreated(parsed_webhook) {
 		user = await prisma.user.create({
 			data: {
 				customerId: customerId,
-				email: customerEmail,
-				name: customerName,
 				clerkId: userId,
 			},
 		})
@@ -117,10 +279,16 @@ async function processOrderCreated(parsed_webhook) {
 			},
 		})
 
+		if (!plan) {
+			throw new Error(
+				`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
+			)
+		}
+
 		// add the credits to the user
 		await updateCredits(
 			user.clerkId,
-			plan ? plan.packageSize : 0,
+			plan.packageSize ?? 0,
 			null,
 			'Order created'
 		)
@@ -154,7 +322,10 @@ async function processSubscriptionCreated(webhook) {
 		// Update the user's customerId if it's not already set
 		if (!user.customerId) {
 			await prisma.user.update({
-				data: { customerId: webhook.data.attributes.customer_id.toString() },
+				data: {
+					// User.customerId is an Int column
+					customerId: toIntOrNull(webhook.data.attributes.customer_id),
+				},
 				where: { clerkId: webhook.meta.custom_data.user_id },
 			})
 		}
@@ -166,11 +337,18 @@ async function processSubscriptionCreated(webhook) {
 	}
 
 	// link plan with variantId
+	const variantId = webhook.data.attributes.variant_id.toString()
 	const plan = await prisma.plan.findUnique({
 		where: {
-			variantId: webhook.data.attributes.variant_id.toString(),
+			variantId: variantId,
 		},
 	})
+
+	if (!plan) {
+		throw new Error(
+			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
+		)
+	}
 
 	// create a new subscription in the database for the user
 	await prisma.subscription.create({
@@ -193,12 +371,33 @@ async function processSubscriptionCreated(webhook) {
 	})
 }
 
-// private function to process the webhook "subscription_payment_success", to add credits to the user,
-// used in case of subscription payment success
+// private function to process the webhook "subscription_payment_success": adds
+// the credits paid by one invoice of a subscription, by billing reason:
+// - "initial": first payment, already credited by order_created (skipped)
+// - "updated": immediate invoice after a plan change, the current period was
+//   already credited with the old plan: add the extra credits of the new plan
+//   only (never negative). Fails while the plan change (subscription_updated
+//   or subscription_plan_changed) is not processed yet (no `oldPlanId`, or
+//   one left by the previous version, see hasProcessedPlanChange), so the
+//   invoice can be resent after it.
+// - "renewal" (and any other reason): a new period, the full current plan
+// The plan change marker (`oldPlanId`, set by a plan change) is cleared once
+// an invoice is credited, so it is used at most once.
 async function processSubscriptionPaymentSuccess(webhook) {
 	// Extract the Clerk user ID and Lemon Squeezy subscription ID from the webhook data
 	const userId = webhook.meta.custom_data.user_id
 	const subscriptionId = webhook.data.attributes.subscription_id
+	const billingReason = webhook.data.attributes.billing_reason
+
+	// The initial payment of a subscription is credited by order_created (sent
+	// with every purchase, it carries the variant and does not depend on
+	// subscription_created having been processed first).
+	if (billingReason === 'initial') {
+		console.info(
+			`subscription ${subscriptionId}: initial payment already credited by order_created`
+		)
+		return
+	}
 
 	// Find the user in the database based on the Clerk user ID
 	const user = await prisma.user.findUnique({
@@ -207,103 +406,85 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		},
 	})
 
-	// If the user is not found, log an error and return
+	// Nothing is credited: fail (processed stays false, processingError set) so
+	// the invoice can be resent once the user is fixed, instead of marking it
+	// processed, which would make a resend a skipped duplicate.
 	if (!user) {
-		console.error('User not found for userId:', userId)
-		return
+		throw new Error(`User ${userId} not found, invoice not credited`)
 	}
 
-	// If the user doesn't have a customerId, log an error and return
 	if (!user.customerId) {
-		console.error('CustomerId not found for user:', user)
-		return
+		throw new Error(
+			`CustomerId not set for user ${user.clerkId}, invoice not credited`
+		)
 	}
 
-	// Find the user's existing subscription (if any) in the database
-	const existingSubscription = await prisma.subscription.findFirst({
+	// The subscription this invoice pays, with its current plan
+	const subscription = await prisma.subscription.findUnique({
 		where: {
-			userId: user.id,
+			lemonSqueezyId: String(subscriptionId),
 		},
 		include: {
 			plan: true,
 		},
 	})
 
-	// If an existing subscription is found
-	if (existingSubscription) {
-		// If the existing subscription has an oldPlanId (indicating a plan change)
-		if (existingSubscription.oldPlanId) {
-			// Retrieve the old plan from the database using the oldPlanId
-			const oldPlan = await prisma.plan.findUnique({
-				where: {
-					id: existingSubscription.oldPlanId,
-				},
-			})
+	if (!subscription) {
+		throw new Error(
+			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
+		)
+	}
 
-			// Find the new subscription associated with the current Lemon Squeezy subscription ID
-			const newSubscription = await prisma.subscription.findFirst({
-				where: {
-					lemonSqueezyId: subscriptionId.toString(),
-				},
-				include: {
-					plan: true,
-				},
-			})
+	const packageSize = subscription.plan?.packageSize ?? 0
 
-			// If both the old plan and new subscription are found
-			if (oldPlan && newSubscription) {
-				// Calculate the difference in package size between the new and old plans
-				const packageDifference =
-					newSubscription.plan.packageSize - oldPlan.packageSize
-
-				// Update the user's credits based on the package difference and log the reason
-				await updateCredits(
-					user.clerkId,
-					packageDifference,
-					null,
-					'Subscription payment success (plan change)'
-				)
-			}
-		} else {
-			// If there is no oldPlanId, retrieve the current plan from the database
-			const newPlan = await prisma.plan.findUnique({
-				where: {
-					id: existingSubscription.planId,
-				},
-			})
-
-			// If the current plan is found
-			if (newPlan) {
-				// Update the user's credits based on the current plan's package size and log the reason
-				await updateCredits(
-					user.clerkId,
-					newPlan.packageSize,
-					null,
-					'Subscription payment success'
-				)
-			}
-		}
-	} else {
-		// If no existing subscription is found, find the subscription associated with the current Lemon Squeezy subscription ID
-		const sub = await prisma.subscription.findFirst({
-			where: {
-				lemonSqueezyId: subscriptionId.toString(),
-			},
-			include: {
-				plan: true,
-			},
-		})
-
-		// If the subscription is found
-		if (sub) {
-			// Update the user's credits based on the new subscription's plan package size and log the reason
-			await updateCredits(
-				user.clerkId,
-				sub.plan.packageSize ?? 0,
-				null,
-				'Subscription payment success (new plan)'
+	if (billingReason === 'updated') {
+		// Lemon Squeezy does not order its webhooks: without the plan change
+		// marker the extra credits are unknown. Fail so this invoice can be
+		// resent once its plan change is processed (crediting 0 would
+		// mark it processed and a resend would be skipped as a duplicate).
+		if (
+			!subscription.oldPlanId ||
+			!(await hasProcessedPlanChange(subscription, userId))
+		) {
+			throw new Error(
+				`Subscription ${subscriptionId}: plan change not processed yet, resend this invoice after its plan change (subscription_updated or subscription_plan_changed) event`
 			)
 		}
+		const oldPlan = await prisma.plan.findUnique({
+			where: { id: subscription.oldPlanId },
+		})
+		const extraCredits = oldPlan
+			? Math.max(0, packageSize - (oldPlan.packageSize ?? 0))
+			: 0
+
+		if (extraCredits > 0) {
+			await updateCredits(
+				user.clerkId,
+				extraCredits,
+				null,
+				'Subscription payment success (plan change)'
+			)
+		} else {
+			console.info(
+				`subscription ${subscriptionId}: plan change invoice, no extra credits`
+			)
+		}
+	} else {
+		await updateCredits(
+			user.clerkId,
+			packageSize,
+			null,
+			'Subscription payment success'
+		)
+	}
+
+	if (subscription.oldPlanId) {
+		await prisma.subscription.update({
+			where: {
+				lemonSqueezyId: String(subscriptionId),
+			},
+			data: { oldPlanId: null },
+		})
 	}
 }
 
@@ -328,29 +509,47 @@ async function processSubscriptionPlanChanged(webhook) {
 		},
 	})
 
-	if (subscription) {
-		// Get the new plan associated with the variantId
-		const newPlan = await prisma.plan.findUnique({
-			where: {
-				variantId: webhook.data.attributes.variant_id.toString(),
-			},
-		})
-
-		if (newPlan) {
-			// Update the subscription with the new plan and the old plan
-			await prisma.subscription.update({
-				data: {
-					oldPlanId: subscription.planId, // Save the old plan
-					statusFormatted: 'Active',
-					planId: newPlan.id,
-					status: 'active',
-				},
-				where: {
-					lemonSqueezyId: subscriptionId.toString(),
-				},
-			})
-		}
+	if (!subscription) {
+		throw new Error(
+			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
+		)
 	}
+
+	// Get the new plan associated with the variantId
+	const variantId = webhook.data.attributes.variant_id.toString()
+	const newPlan = await prisma.plan.findUnique({
+		where: {
+			variantId: variantId,
+		},
+	})
+
+	if (!newPlan) {
+		throw new Error(
+			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
+		)
+	}
+
+	// Already on this plan: a redelivery of this event. Overwriting the old
+	// plan with the current one would lose the extra credits of the upgrade.
+	if (subscription.planId === newPlan.id) {
+		console.info(
+			`subscription ${subscriptionId}: already on plan ${newPlan.id}, plan change skipped`
+		)
+		return
+	}
+
+	// Update the subscription with the new plan and the old plan
+	await prisma.subscription.update({
+		data: {
+			oldPlanId: subscription.planId, // Save the old plan
+			statusFormatted: 'Active',
+			planId: newPlan.id,
+			status: 'active',
+		},
+		where: {
+			lemonSqueezyId: subscriptionId.toString(),
+		},
+	})
 }
 
 // private function to process the webhook "subscription_resumed", to update the status of the subscription
@@ -367,4 +566,74 @@ async function processSubscriptionResumed(webhook) {
 				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
+}
+
+// private function to process the webhook "subscription_updated", sent for
+// every change of a subscription (status, renewal date, payment method,
+// plan...). Lemon Squeezy does not send subscription_plan_changed (none in
+// production): a `variant_id` other than the subscription's plan is a plan
+// change, applied like subscription_plan_changed does (`oldPlanId` keeps the
+// previous plan for the `updated` invoice, which then credits max(0, new -
+// old)). The status is left to the status events. Both events can arrive for
+// one change: the second one finds the subscription already on the new plan
+// and changes nothing. Returns the note stored on the event when the plan
+// changed, null otherwise.
+async function processSubscriptionUpdated(webhook, event) {
+	const variantId = webhook.data?.attributes?.variant_id
+	const subscriptionId = planChangeSubscriptionId(
+		'subscription_updated',
+		webhook
+	)
+	if (variantId == null || subscriptionId == null) {
+		return null
+	}
+
+	const subscription = await prisma.subscription.findUnique({
+		where: { lemonSqueezyId: subscriptionId },
+		include: { plan: true },
+	})
+
+	if (!subscription) {
+		throw new Error(
+			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
+		)
+	}
+
+	// same plan: a routine update (renewal, status, payment method...)
+	if (subscription.plan?.variantId === String(variantId)) {
+		return null
+	}
+
+	const newPlan = await prisma.plan.findUnique({
+		where: { variantId: String(variantId) },
+	})
+
+	if (!newPlan) {
+		throw new Error(
+			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
+		)
+	}
+
+	if (await hasNewerProcessedUpdate(event, webhook, subscriptionId)) {
+		console.info(
+			`subscription ${subscriptionId}: older than a processed update, plan change to variant ${variantId} skipped`
+		)
+		return null
+	}
+
+	await prisma.subscription.update({
+		data: { oldPlanId: subscription.planId, planId: newPlan.id },
+		where: { lemonSqueezyId: subscriptionId },
+	})
+
+	console.info(
+		`subscription ${subscriptionId}: plan ${subscription.planId} -> ${newPlan.id}`
+	)
+	return `${PLAN_CHANGE_NOTE}: plan ${subscription.planId} -> plan ${newPlan.id}`
+}
+
+// Lemon Squeezy ids are integers; Int columns must not receive strings.
+function toIntOrNull(value) {
+	const number = Number(value)
+	return value == null || !Number.isInteger(number) ? null : number
 }

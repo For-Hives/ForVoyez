@@ -47,6 +47,18 @@ const nextConfig = {
 		]
 	},
 
+	experimental: {
+		// The playground promises 10 MB images (Playground.component.js). A
+		// 10 MB file plus the multipart framing and the `data` field is a bit
+		// more than 10 MB, hence 11 MB for the server action body (default 1 MB)
+		// and for the body the proxy buffers (default 10 MB, truncated beyond).
+		// The proxy does not run on /api: /api/describe enforces its own 11 MB.
+		serverActions: {
+			bodySizeLimit: '11mb',
+		},
+		proxyClientMaxBodySize: '11mb',
+	},
+
 	images: {
 		remotePatterns: [
 			{

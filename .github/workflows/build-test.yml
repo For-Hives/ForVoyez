@@ -17,13 +17,12 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24.x'
+      # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v4
         with:
-          version: latest
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
-            - args: [--global, gulp, prettier, vitest]
       - name: 'Generate prisma client'
         run: pnpm prisma:generate
       - name: 'Run Unit Tests'
@@ -48,12 +47,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24.x'
+      # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v4
-        with:
-          version: latest
       - name: 'Install Dependencies'
         run: |
           pnpm install --frozen-lockfile
+      - name: 'Generate prisma client'
+        run: pnpm prisma:generate
       - name: 'Install Playwright Browsers'
         run: pnpm exec playwright install
       - name: 'Create Docker network'
@@ -64,7 +64,7 @@ jobs:
           docker run --link test-db:postgres --network test-network --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
       - name: 'Run prisma db migrate'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install -g pnpm && pnpm run prisma:migrate && pnpm run prisma:seed"
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0 node:22 sh -c "corepack enable && pnpm run prisma:migrate && pnpm run prisma:seed"
       - name: Setup Docker Cache
         uses: docker/setup-buildx-action@v3
         with:
@@ -123,10 +123,14 @@ jobs:
           exit 1
       - name: 'Check Database Connection'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 sh -c "npm install -g pnpm && node check-db-connection.js"
+          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 node check-db-connection.js
 
-      - name: 'Run E2E Tests'
-        run: pnpm test:e2e:general
+      # basic account (tests/e2e/general), then subscribed account
+      # (tests/e2e/subscribed), each with its own output folder. The second
+      # one also runs when the first one failed, so both accounts get their
+      # screenshots.
+      - name: 'Run E2E Tests (basic account)'
+        run: pnpm test:e2e:basic
         env:
           NEXT_PUBLIC_URL: http://localhost:3000
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
@@ -135,6 +139,25 @@ jobs:
           TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
           ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
           CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      # API key flow and one playground analysis: 2 real OpenAI calls per run
+      - name: 'Run E2E Tests (subscribed account)'
+        if: ${{ !cancelled() }}
+        run: pnpm test:e2e:sub
+        env:
+          NEXT_PUBLIC_URL: http://localhost:3000
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL_SUB: ${{ secrets.TEST_EMAIL_SUB }}
+          TEST_PASSWORD_SUB: ${{ secrets.TEST_PASSWORD_SUB }}
+          ENABLE_TEST_LOGS: ${{ secrets.ENABLE_TEST_LOGS }}
+          CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
+      - name: 'Upload E2E Screenshots'
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-screenshots
+          path: e2e-screenshots/
+          if-no-files-found: warn
       - name: 'Capture Docker Logs'
         if: always()
         run: |

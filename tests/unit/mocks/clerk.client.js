@@ -7,6 +7,7 @@ export const SignUp = () => null
 export const UserProfile = () => null
 export const SignedIn = ({ children }) => children
 export const SignedOut = ({ children }) => children
+export const Show = ({ children }) => children
 export const SignInButton = () => null
 export const UserButton = () => null
 export const useAuth = () => ({ userId: null })
@@ -23,4 +24,5 @@ export default {
 	useUser,
 	SignIn,
 	SignUp,
+	Show,
 }

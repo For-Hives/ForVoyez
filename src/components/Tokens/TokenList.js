@@ -81,8 +81,8 @@ export default function TokenList() {
 					</button>
 				</div>
 			</div>
-			<div className="mt-8 flex max-w-7xl min-w-7xl items-center justify-center shadow-xs">
-				<div className={'w-full max-w-7xl min-w-7xl overflow-x-auto'}>
+			<div className="mt-8 flex max-w-7xl items-center justify-center shadow-xs">
+				<div className={'w-full max-w-7xl overflow-x-auto'}>
 					<div className="align-middle">
 						<div className="ring-opacity-5 ring-1 ring-black">
 							<table className="m-0 divide-y divide-slate-300">

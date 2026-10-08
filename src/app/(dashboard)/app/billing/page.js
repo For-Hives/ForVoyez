@@ -5,65 +5,40 @@ import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/navigation'
 
-import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
+import { getCustomerPortalUrl } from '@/app/actions/app/plans'
 
 export default function BillingPage() {
 	const router = useRouter()
 	const [loadingMessage, setLoadingMessage] = useState('Loading your data...')
 
-	async function hasEverBeenSubscribed() {
-		try {
-			await getCustomerPortalLink()
-			return true
-		} catch (error) {
-			if (error.message === 'customer not found') {
-				return false
-			}
-			throw error
+	function redirectToPlans(toastId) {
+		if (!toast.isActive(toastId)) {
+			toast.info(
+				'You must have been subscribed at least once to access this page.',
+				{ toastId }
+			)
 		}
+		router.push('/app/plans')
 	}
 
 	async function handleUserRedirect() {
 		setLoadingMessage('Checking your subscription status...')
 
 		try {
-			const hasSubscription = await hasEverBeenSubscribed()
-			if (!hasSubscription) {
-				if (!toast.isActive('subscription-toast')) {
-					toast.info(
-						'You must have been subscribed at least once to access this page.',
-						{ toastId: 'subscription-toast' }
-					)
-				}
+			// null when the user never bought anything (no customer portal)
+			const url = await getCustomerPortalUrl()
+
+			if (!url) {
+				redirectToPlans('subscription-toast')
 				return
 			}
 
 			setLoadingMessage('Fetching your billing portal...')
-			const url = await getCustomerPortalLink()
-
-			if (url) {
-				router.replace(url)
-				setLoadingMessage('Redirecting to your billing home...')
-			} else {
-				throw new Error('Received null URL from getCustomerPortalLink')
-			}
+			router.replace(url)
+			setLoadingMessage('Redirecting to your billing home...')
 		} catch (error) {
 			console.error('Error during user redirect:', error) // Log the error for debugging
-			if (!toast.isActive('data-load-error')) {
-				if (error.message === 'Customer not found.') {
-					toast.info(
-						'You must have been subscribed at least once to access this page.',
-						{ toastId: 'data-load-error' }
-					)
-					router.push('/app/plans')
-					return
-				}
-				toast.info(
-					'You must have been subscribed at least once to access this page.',
-					{ toastId: 'data-load-error' }
-				)
-				router.push('/app/plans')
-			}
+			redirectToPlans('data-load-error')
 			setLoadingMessage('Failed to load data. Please try again later.')
 		}
 	}

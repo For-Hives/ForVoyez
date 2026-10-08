@@ -10,9 +10,9 @@ import {
 	useRef,
 } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { motion } from 'motion/react'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { create } from 'zustand'
 
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'

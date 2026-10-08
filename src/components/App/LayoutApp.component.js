@@ -2,9 +2,9 @@
 
 import { ToastContainer } from 'react-toastify'
 import { useEffect, useMemo } from 'react'
+import { motion } from 'motion/react'
 
 import { UserButton, useUser } from '@clerk/nextjs'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -16,11 +16,16 @@ import { createUser } from '@/app/actions/app/createUser'
 import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {
-	const { user } = useUser()
+	const { isSignedIn, user } = useUser()
 
+	// the database user of the signed-in visitor (the legal pages share this
+	// layout and are public: a signed-out visitor has no user to create)
 	useEffect(() => {
-		createUser()
-	}, [])
+		if (!isSignedIn) return
+		createUser().catch(error =>
+			console.error('Error creating the user:', error.message)
+		)
+	}, [isSignedIn])
 
 	const memoizedImage = useMemo(
 		() => (
@@ -62,7 +67,6 @@ export function LayoutAppComponent({ children }) {
 								{user && (
 									<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
 										<UserButton
-											afterSignOutUrl="/"
 											appearance="ghost"
 											userProfileMode="navigation"
 											userProfileUrl="/profile"

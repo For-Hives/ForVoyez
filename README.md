@@ -35,8 +35,12 @@ To get started with ForVoyez, follow these steps:
 
 To run the ForVoyez project locally, ensure you have the following dependencies installed:
 
-- Node.js (v20.x or higher)
-- npm (v10.x or higher)
+- Node.js:
+  - v24 recommended (v24.15 or higher), as in the Docker image and CI.
+  - v22.22.2 or higher (or v24.15 or higher) for the development tooling: the unit tests (jsdom 30), the pre-commit hook (lint-staged 17) and ESLint 10 need it.
+  - v22.12 or higher is enough to build and run the app (`pnpm build`, `pnpm start`); `pnpm prisma:seed` and `node check-db-connection.js` load the generated TypeScript Prisma client directly and need v22.18 or higher.
+  - `.nvmrc` pins major 22 for the Nixpacks build on Coolify, whose default would be Node 18 (too old for Next 16 and Prisma 7); a `NIXPACKS_NODE_VERSION` variable on the Coolify app overrides it.
+- pnpm (the version pinned in `package.json` `packageManager`, enable it with `corepack enable`). On Node 22.12 and 22.13, the bundled corepack cannot fetch pnpm (`Error: Cannot find matching keyid`): run `npm i -g corepack@latest` first.
 - PostgreSQL (v16.x or higher)
 
 ## Development
@@ -55,16 +59,28 @@ If you want to configure your .env file to connect to the database, you can use 
 DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
 ```
 
+The app reads `DATABASE_URL` the way Prisma 6 did (`src/helpers/databaseUrl.js`), so a production URL keeps working unchanged: without `sslmode` (or with `sslmode=prefer`, or a value Prisma 6 did not know such as `verify-full`), TLS is used when the server offers it and plaintext otherwise; `sslmode=require` needs TLS; `sslmode=disable` turns it off. The certificate is only verified with `sslaccept=strict`, against the CA file given in `sslcert` (relative to `prisma/`) when there is one. Add `uselibpqcompat=true` to use node-postgres' own reading of the libpq parameters instead (`sslmode=verify-full&sslrootcert=...`).
+
 Then, you can connect to the database using the following command:
 
 1. Clone the repository: `git clone https://github.com/For-Hives/ForVoyez.git`
 2. Navigate to the project directory: `cd forvoyez`
-3. Install dependencies: `npm install` or `bun install`
+3. Install dependencies: `pnpm install`
 4. Set up the PostgreSQL database using the provided Docker command (see README for details).
 5. Create a `.env` file based on the `.env.example` file and fill in the required environment variables.
-6. Run database migrations: `npm run prisma-migrate`
-7. Generate Prisma client: `npm run prisma-generate`
-8. Start the development server: `npm run dev`
+6. Generate Prisma client: `pnpm install` already does it (`postinstall`), run `pnpm prisma:generate` again after changing `prisma/schema.prisma` (the client is generated into `src/generated/prisma`, and `pnpm build` runs this step too)
+7. Run database migrations: `pnpm prisma:migrate` (Prisma reads `DATABASE_URL` through `prisma.config.ts`, which loads `.env`)
+8. Start the development server: `pnpm dev`
+
+### Comparing AI models
+
+`scripts/compare-models.mjs` runs the previous pipeline (3 sequential `gpt-4o-mini` calls, kept in `scripts/legacy-image-description.mjs`) and the current one (a single vision call with structured output, `src/services/imageDescription.service.js`) on every image of a folder, then writes a side-by-side report with the generated fields, the token usage and the latency. It calls the OpenAI API (4 calls per image), so try it on a small folder first:
+
+```bash
+node --env-file=.env scripts/compare-models.mjs ./my-images --context "Wedding photos" --language fr
+```
+
+It needs `OPENAI_API_KEY`, accepts `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`, and writes `compare-models-report/report.md` and `report.json` (`--out` to change the folder). `--model`, `--legacy-model` and `--detail` override the compared models and the image detail; `--help` lists every option.
 
 ## Webhook Configuration for Local Development
 
@@ -131,17 +147,24 @@ you can use ngrok to create a secure tunnel to your local server and receive web
 
 - If your local server is not responding, verify that it is running and listening on the correct port (by default, `3000` for Next.js). You can also check the server logs for any relevant error messages.
 
+### Failed or repeated webhook events
+
+Every signed event is stored in the `WebhookEvent` table and answered with 200, even when processing fails, so Lemon Squeezy does not retry it.
+
+- A processing failure is logged as `webhook <id> (<event>) processing failed` and its message is stored in `WebhookEvent.processingError` (`processed` stays `false`). For example `Plan not found for variant ...` means the plans must be synced first (`GET /api/sync`).
+- To replay a failed event once the cause is fixed, resend it from the Lemon Squeezy dashboard (Settings > Webhooks). Find the failed ones with `SELECT id, "eventName", "processingError" FROM "WebhookEvent" WHERE processed = false AND "processingError" IS NOT NULL;`.
+- A plan change comes as a `subscription_updated` event whose `variant_id` is not the subscription's current plan (Lemon Squeezy sends `subscription_updated` for every change of a subscription, and no `subscription_plan_changed` was ever received in production; one would be applied the same way, and when both arrive the second one changes nothing). The subscription moves to the new plan and keeps the previous one in `oldPlanId`; the event is marked `processed` with a `Plan change applied: plan <old> -> plan <new>` note. A `subscription_updated` older (`updated_at`) than one already processed for the same subscription does not move it back.
+- Lemon Squeezy does not order its webhooks: the invoice of an upgrade (`subscription_payment_success`, billing reason `updated`, credited `max(0, new plan - old plan)`) processed before its plan change fails with `plan change not processed yet`. Resend it once the plan change is processed. The plan change must be a processed `subscription_updated` that changed the plan (with the note above) or `subscription_plan_changed` to the subscription's current plan: an `oldPlanId` left by the previous version of the app (which never cleared it and never marked events processed) is not taken for it.
+- Events that add credits (`order_created`, `subscription_payment_success`) are credited once per Lemon Squeezy order or invoice (`data.id`): a redelivery of an already processed one is stored, marked `processed` with a `Duplicate of webhook event <id>` note, and not credited again.
+
 ## Image Metadata Generation Process
 
-ForVoyez leverages the power of OpenAI's advanced language models to generate image metadata. The process involves the following steps:
+ForVoyez uses an OpenAI vision model (`FORVOYEZ_AI_MODEL`, see [Environment Variables](#environment-variables)) to generate image metadata, in a single call per image (`src/services/imageDescription.service.js`):
 
-1. The user sends an image file along with optional context and a custom JSON schema to the ForVoyez API.
-2. The image is preprocessed and analyzed using computer vision techniques.
-3. The extracted visual features are combined with the provided context and fed into OpenAI's language models.
-4. The language models generate relevant and SEO-optimized alternative text, titles, and captions based on the image content and context.
-5. The generated metadata is structured according to the provided JSON schema and returned to the user.
-
-ForVoyez continuously improves its metadata generation capabilities by fine-tuning the language models on a diverse dataset of image-metadata pairs.
+1. The user sends an image file to `/api/describe` (or the playground), with an optional context, keywords, language and output schema.
+2. The image is checked (10 MB maximum; JPEG, PNG, WebP or GIF, read from the file itself, not from the MIME type it was sent with), turned upright and resized to fit 1000x1000 pixels.
+3. The image, the context, the keywords and the requested fields are sent to the model in one request, which must answer with structured output: exactly the requested keys, each a string.
+4. The generated metadata is returned as a flat JSON object. One credit is charged only when the generation succeeds.
 
 ## API Usage Tracking
 
@@ -153,33 +176,44 @@ If you encounter any bugs, have feature requests, or want to contribute to the p
 
 ## API Usage
 
-To use the ForVoyez API, send a POST request to the `/api/describe` endpoint with the following parameters:
+The full reference is at [doc.forvoyez.com](https://doc.forvoyez.com/describe). In short, send a `multipart/form-data` POST request to `https://forvoyez.com/api/describe` with an API key from the dashboard (`Authorization: Bearer <YOUR_API_TOKEN>`) and the following fields:
 
-- `image`: The image file to process (JPEG, PNG, WebP, GIF).
-- `context` (optional): Additional context or information about the image to guide the metadata generation process.
-- `jsonSchema` (optional): A custom JSON schema defining the desired output format for the generated metadata.
+- `image`: the image file to process (JPEG, PNG, WebP, GIF, 10 MB maximum). The format is read from the file, so its MIME type does not matter (`curl -F image=@photo.webp` sends `application/octet-stream`); another format, such as SVG, AVIF or TIFF, gets a 400 `Bad Request, Invalid image file`.
+- `context` (optional): additional information about the image to guide the generation.
+- `keywords` (optional): keywords to work into the metadata.
+- `language` (optional): language of the generated metadata, `en` by default. A language code (`it`, `pt-BR`, `he_IL`) is given to the model by its name (Italian, Brazilian Portuguese, Hebrew (Israel)); any other value is passed as written.
+- `schema` (optional): a JSON string, a flat map of output field name to description. Without it, the fields are `title`, `alternativeText` and `caption`, and the response also has `alt_text`, a copy of `alternativeText` that the WordPress plugin up to 1.1.40 reads.
 
 Example Request:
 
 ```bash
-curl -X POST -H "Authorization: Bearer <YOUR_API_TOKEN>" -F "image=@/path/to/image.jpg" -F "context=A beautiful sunset over the ocean" -F "jsonSchema={\"title\": \"string\", \"alt\": \"string\", \"caption\": \"string\"}" https://api.forvoyez.com/describe
+curl -X POST -H "Authorization: Bearer <YOUR_API_TOKEN>" -F "image=@/path/to/image.jpg" -F "context=A beautiful sunset over the ocean" -F "language=en" https://forvoyez.com/api/describe
 ```
 
-Example Response:
+Example Response (200, exactly the schema keys, plus `alt_text` because this request sends no `schema`):
 
 ```json
 {
 	"title": "Serene Sunset Over the Calm Ocean Waves",
-	"alt": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape.",
-	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea."
+	"alternativeText": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape.",
+	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea.",
+	"alt_text": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape."
 }
 ```
+
+Errors keep their HTTP status (400 invalid request, 401 missing, invalid, revoked or expired API key, or no credit left, 413 image over 10 MB, 500 server error) and have a JSON body: `{ "error": "<human message>" }`. An image over 10 MB, or a request body over 11 MB, gets a 413 `Image too large: the maximum is 10 MB`; a body that is not `multipart/form-data` gets a 400. No credit is charged for any error. A schema whose fields need more than about 1,500 words in total gets a 400 `Invalid schema: the requested fields need a longer answer than the API can return ...` (the generation stops at its output limit, the credit is refunded).
 
 ## Environment Variables
 
 To run the ForVoyez project, you need to set up the environment variables in a `.env` file.
 You must follow the `.env.example` file to define the required variables.
 Make sure to replace the placeholders with your actual values for each environment variable.
+
+Optional variables:
+
+- `FORVOYEZ_AI_MODEL`: OpenAI model used by `/api/describe` and the playground (default `gpt-6-luna`, same `OPENAI_API_KEY`). Set it to `gpt-5.6-luna` (tied on quality in the October 2026 evaluation, about 2x the cost) or `gpt-4o-mini` (previous model) to roll back without a code change.
+- `FORVOYEZ_AI_IMAGE_DETAIL`: OpenAI image detail sent with each image, `low` (default), `auto` or `high`.
+- `SYNC_SECRET`: enables `GET /api/sync` (copies the Lemon Squeezy products into the `Plan` table). Call it with the header `x-sync-secret: <SYNC_SECRET>` (the former `?true=true` query is no longer used); without the variable, or with a wrong header, the route answers 404. Run it after adding or changing a product or variant in Lemon Squeezy, otherwise purchases of that variant fail with `Plan not found`.
 
 ## Support
 

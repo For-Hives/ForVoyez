@@ -30,10 +30,11 @@ test.describe('Client Logic Billing Functionality', () => {
 			log('User redirected to plans page - no valid subscription access')
 			expect(currentURL).toContain('/app/plans')
 
-			// Check for the expected toast message
-			const toastMessage = page.locator(
-				'.Toastify__toast-body:has-text("You must have been subscribed at least once")'
-			)
+			// Check for the expected toast message (by role and text: v11 of
+			// react-toastify dropped the `.Toastify__toast-body` wrapper)
+			const toastMessage = page
+				.getByRole('alert')
+				.filter({ hasText: 'You must have been subscribed at least once' })
 
 			// Wait a bit for toast to appear if it hasn't already
 			try {

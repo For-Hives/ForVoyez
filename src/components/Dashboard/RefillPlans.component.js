@@ -5,10 +5,10 @@ import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getPlans,
-	getSubscriptionFromUserId,
-} from '@/services/database.service'
-import { getCheckoutsLinks } from '@/services/lemonsqueezy.service'
+	getCheckoutUrls,
+	getMySubscription,
+	listPlans,
+} from '@/app/actions/app/plans'
 import { sortPlans } from '@/helpers/sortPlans'
 
 export function RefillPlansComponent() {
@@ -21,7 +21,7 @@ export function RefillPlansComponent() {
 	useEffect(() => {
 		const fetchPlans = async () => {
 			try {
-				const plans = await getPlans()
+				const plans = await listPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
 				await fetchCheckoutUrls(sortedPlans)
@@ -32,7 +32,7 @@ export function RefillPlansComponent() {
 
 		const fetchSubscription = async () => {
 			try {
-				const sub = await getSubscriptionFromUserId(auth.userId)
+				const sub = await getMySubscription()
 				if (sub) {
 					setCurrentSubscription(sub)
 				}
@@ -45,7 +45,7 @@ export function RefillPlansComponent() {
 			if (!plans) return
 
 			try {
-				const checkouts = await getCheckoutsLinks(plans)
+				const checkouts = await getCheckoutUrls()
 				setCheckoutUrls(checkouts)
 			} catch (error) {
 				console.error('Error fetching checkouts:', error)
