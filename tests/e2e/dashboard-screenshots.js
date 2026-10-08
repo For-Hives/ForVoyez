@@ -76,13 +76,9 @@ function describeDashboardScreenshots(account) {
 				return route.abort()
 			})
 
+			// No wait on the billing heading: the redirect can happen before it
+			// renders (it made this test flaky for the account without customer).
 			await page.goto('/app/billing')
-			await expect(
-				page.getByRole('heading', {
-					name: 'Billing & Invoice Management',
-					level: 1,
-				})
-			).toBeVisible({ timeout: 45_000 })
 			await expect
 				.poll(() => portalHost !== null || page.url().includes('/app/plans'), {
 					timeout: 45_000,
