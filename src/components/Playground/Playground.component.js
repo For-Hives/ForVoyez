@@ -120,7 +120,9 @@ export function Playground() {
 					formData={formData}
 					handleSubmit={handleSubmit}
 					setFormData={setFormData}
-					userCredits={userCredits}
+					// the form only uses it to disable the button: disabled until the
+					// balance is known
+					userCredits={userCredits ?? 0}
 				/>
 
 				{/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}

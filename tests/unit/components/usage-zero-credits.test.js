@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { createElement } from 'react'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -24,9 +24,6 @@ vi.mock('@/components/Playground/PlaygroundPreviewCode.component', () => ({
 	default: () => null,
 }))
 vi.mock('@/components/Playground/PlaygroundResponse.component', () => ({
-	default: () => null,
-}))
-vi.mock('@/components/Playground/PlaygroundForm.component', () => ({
 	default: () => null,
 }))
 // jsdom has no layout: render the chart containers only
@@ -211,5 +208,23 @@ describe('Playground credits', () => {
 		expect(screen.queryByTestId('user-credits-loading')).toBeNull()
 		expect(screen.getByTestId('user-credits').textContent).toBe('0')
 		expect(screen.getByTestId('tooltip')).toBeTruthy()
+	})
+
+	it('should keep the Analyze button disabled until the credits are loaded', async () => {
+		const credits = deferred()
+		getMyCredits.mockReturnValue(credits.promise)
+		// jsdom has no object URLs (the form previews the picked image)
+		URL.createObjectURL = vi.fn(() => 'blob:preview')
+
+		render(createElement(Playground))
+		fireEvent.change(screen.getByTestId('upload-input'), {
+			target: { files: [new File(['x'], 'cat.png', { type: 'image/png' })] },
+		})
+
+		expect(screen.getByTestId('analyze-button').disabled).toBe(true)
+
+		await act(async () => credits.resolve(3))
+
+		expect(screen.getByTestId('analyze-button').disabled).toBe(false)
 	})
 })
