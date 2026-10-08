@@ -60,17 +60,27 @@ export async function describePlaygroundAction(formData) {
 
 	// Get image description using base64 encoded image. One credit is reserved
 	// atomically before the generation and refunded if it fails.
-	const description = await chargeOneCredit(
-		user.id,
-		{ reason: 'describe from PlaygroundAction' },
-		() =>
-			getImageDescription(base64Image, {
-				keywords,
-				language,
-				context,
-				schema,
-			})
-	)
+	let description
+	try {
+		description = await chargeOneCredit(
+			user.id,
+			{ reason: 'describe from PlaygroundAction' },
+			() =>
+				getImageDescription(base64Image, {
+					keywords,
+					language,
+					context,
+					schema,
+				})
+		)
+	} catch (error) {
+		// e.g. a schema that needs a longer answer than the output cap (the
+		// credit was refunded)
+		if (error instanceof InvalidDescribeInputError) {
+			return { error: error.message, status: 400 }
+		}
+		throw error
+	}
 
 	// Return the description as a directly usable JSON object
 	return {

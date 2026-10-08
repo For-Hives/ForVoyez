@@ -129,6 +129,11 @@ export async function POST(request) {
 		if (error instanceof NoCreditsLeftError) {
 			return jsonError('Unauthorized, no credit left', 401)
 		}
+		// e.g. a schema that needs a longer answer than the output cap (the
+		// credit was refunded)
+		if (error instanceof InvalidDescribeInputError) {
+			return jsonError(error.message, 400, 'Bad Request')
+		}
 		console.error('Error processing the request:', error)
 		return jsonError('Internal Server Error', 500)
 	}

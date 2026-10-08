@@ -194,7 +194,7 @@ Example Response (200, exactly the schema keys, plus `alt_text` because this req
 }
 ```
 
-Errors keep their HTTP status (400 invalid request, 401 missing, invalid, revoked or expired API key, or no credit left, 500 server error) and have a JSON body: `{ "error": "<human message>" }`.
+Errors keep their HTTP status (400 invalid request, 401 missing, invalid, revoked or expired API key, or no credit left, 500 server error) and have a JSON body: `{ "error": "<human message>" }`. A schema whose fields need more than about 1,500 words in total gets a 400 `Invalid schema: the requested fields need a longer answer than the API can return ...` (the generation stops at its output limit, the credit is refunded).
 
 ## Environment Variables
 

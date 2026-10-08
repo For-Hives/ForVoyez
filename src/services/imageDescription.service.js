@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import {
 	DESCRIBE_LIMITS,
+	DescriptionTooLongError,
 	languageName,
 	normalizeDescribeSchema,
 	normalizeDescribeText,
@@ -28,6 +29,9 @@ const IMAGE_DETAILS = ['low', 'high', 'auto']
 const AI_TIMEOUT_MS = 25_000
 const AI_MAX_RETRIES = 1
 const AI_TEMPERATURE = 0.3
+// About 1,500 English words for all the fields together; a schema asking for
+// more gets a DescriptionTooLongError (400). A higher cap would not help much:
+// at ~100 output tokens/s, 2,000 tokens already take ~20 s of AI_TIMEOUT_MS.
 const AI_MAX_OUTPUT_TOKENS = 2000
 
 // Tags around the customer text in the prompt (see buildUserText).
@@ -152,6 +156,9 @@ export async function generateImageMetadata(base64Image, data = {}) {
 		// throws when the model returned no usable object
 		output = result.output
 	} catch (error) {
+		// 'length': the answer was cut at AI_MAX_OUTPUT_TOKENS (invalid JSON,
+		// or no output at all)
+		const finishReason = error?.finishReason ?? result?.finishReason
 		// AI SDK errors carry the request body (image, customer text) and the
 		// model output: log and rethrow only what identifies the failure.
 		console.error(
@@ -167,8 +174,12 @@ export async function generateImageMetadata(base64Image, data = {}) {
 				latencyMs: Date.now() - startedAt,
 				error: error?.name,
 				model: modelId,
+				finishReason,
 			})
 		)
+		if (finishReason === 'length') {
+			throw new DescriptionTooLongError()
+		}
 		throw new ImageDescriptionError(
 			`Image description failed (${error?.name ?? 'Error'})`
 		)

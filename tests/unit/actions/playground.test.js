@@ -7,6 +7,7 @@ import {
 } from '@/services/imageDescription.service'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { DescriptionTooLongError } from '@/helpers/describeInput'
 import { chargeOneCredit } from '@/services/database.service'
 
 vi.mock('@clerk/nextjs/server')
@@ -94,6 +95,27 @@ describe('describePlaygroundAction', () => {
 		})
 		expect(chargeOneCredit).not.toHaveBeenCalled()
 		expect(getImageDescription).not.toHaveBeenCalled()
+	})
+
+	it('should return a 400 error when the answer for the schema is too long', async () => {
+		currentUser.mockResolvedValue({ id: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({
+			clerkId: 'user123',
+			credits: 10,
+		})
+		blobToBase64.mockResolvedValue('base64ImageString')
+		// chargeOneCredit refunds the credit and rethrows
+		getImageDescription.mockRejectedValue(new DescriptionTooLongError())
+
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		const result = await describePlaygroundAction(formData)
+
+		expect(result).toEqual({
+			error: new DescriptionTooLongError().message,
+			status: 400,
+		})
 	})
 
 	it('should throw an error if no file is uploaded', async () => {

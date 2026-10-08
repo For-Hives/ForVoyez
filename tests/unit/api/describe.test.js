@@ -6,6 +6,7 @@ import {
 	getImageDescription,
 } from '@/services/imageDescription.service'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { DescriptionTooLongError } from '@/helpers/describeInput'
 import { verifyJwt } from '@/services/jwt.service'
 
 // The real database.service runs against the mocked Prisma client, so these
@@ -316,6 +317,27 @@ describe('describe API', () => {
 			})
 			expect(prisma.usage.create).not.toHaveBeenCalled()
 			expectAuthorizationNeverLogged()
+		})
+
+		it('should refund the credit and return 400 JSON when the answer for the schema is too long', async () => {
+			givenValidApiKey()
+			givenCreditReserved(9)
+			blobToBase64.mockResolvedValue(mockBase64Image)
+			getImageDescription.mockRejectedValue(new DescriptionTooLongError())
+
+			const response = await POST(mockRequest(authHeader, imageForm()))
+
+			await expectJsonError(
+				response,
+				400,
+				new DescriptionTooLongError().message
+			)
+			expect(response.statusText).toBe('Bad Request')
+			expect(prisma.user.update).toHaveBeenCalledWith({
+				data: { credits: { increment: 1 } },
+				where: { clerkId: 'user123' },
+			})
+			expect(prisma.usage.create).not.toHaveBeenCalled()
 		})
 
 		it('should pass the multipart fields to the generation', async () => {

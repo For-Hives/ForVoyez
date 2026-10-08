@@ -21,6 +21,18 @@ export class InvalidDescribeInputError extends Error {
 	}
 }
 
+// The schema asks for a longer answer than one generation may return (its
+// output token cap, about 1,500 English words for all fields together). Only
+// known once the model stops at the cap; the credit is refunded.
+export class DescriptionTooLongError extends InvalidDescribeInputError {
+	constructor() {
+		super(
+			'Invalid schema: the requested fields need a longer answer than the API can return (about 1,500 words for all fields together), ask for fewer or shorter fields'
+		)
+		this.name = 'DescriptionTooLongError'
+	}
+}
+
 /**
  * Normalizes the `schema` field: a flat map `key -> description`, as an object
  * or a JSON string. Missing, empty or unparseable schemas fall back to the

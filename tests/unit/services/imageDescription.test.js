@@ -15,7 +15,10 @@ import {
 	ImageDescriptionError,
 	TestingExports,
 } from '@/services/imageDescription.service'
-import { InvalidDescribeInputError } from '@/helpers/describeInput'
+import {
+	DescriptionTooLongError,
+	InvalidDescribeInputError,
+} from '@/helpers/describeInput'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 const { buildOutputSchema, toMetadata } = TestingExports
@@ -30,7 +33,11 @@ const CONTEXT = 'Blog post about the Paris opera ballet season'
 
 function modelAnswering(
 	answer,
-	{ outputTokens = 120, inputTokens = 900 } = {}
+	{
+		finishReason = { raw: 'completed', unified: 'stop' },
+		outputTokens = 120,
+		inputTokens = 900,
+	} = {}
 ) {
 	const model = new MockLanguageModelV4({
 		doGenerate: async () => ({
@@ -49,8 +56,8 @@ function modelAnswering(
 					type: 'text',
 				},
 			],
-			finishReason: { raw: 'completed', unified: 'stop' },
 			warnings: [],
+			finishReason,
 		}),
 		modelId: 'gpt-6-luna',
 	})
@@ -501,6 +508,38 @@ describe('Image Description Service', () => {
 			expect(JSON.parse(consoleError.mock.calls[0][1])).toMatchObject({
 				usage: { outputTokens: 120, inputTokens: 900 },
 			})
+		})
+
+		it('rejects with a DescriptionTooLongError when the answer is cut at the output cap', async () => {
+			// OpenAI status "incomplete" (max_output_tokens): truncated JSON
+			modelAnswering('{"section01":"A long paragraph about the', {
+				finishReason: { raw: 'max_output_tokens', unified: 'length' },
+				outputTokens: 2000,
+			})
+
+			const error = await getImageDescription(IMAGE, {}).catch(error => error)
+
+			expect(error).toBeInstanceOf(DescriptionTooLongError)
+			expect(error).toBeInstanceOf(InvalidDescribeInputError)
+			expect(error.message).toMatch(
+				/^Invalid schema: .*fewer or shorter fields$/
+			)
+			expect(JSON.parse(consoleError.mock.calls[0][1])).toMatchObject({
+				error: 'AI_NoObjectGeneratedError',
+				usage: { outputTokens: 2000 },
+				finishReason: 'length',
+			})
+		})
+
+		it('rejects with a DescriptionTooLongError when the cap leaves no output at all', async () => {
+			modelAnswering('', {
+				finishReason: { raw: 'max_output_tokens', unified: 'length' },
+				outputTokens: 2000,
+			})
+
+			await expect(getImageDescription(IMAGE, {})).rejects.toThrow(
+				DescriptionTooLongError
+			)
 		})
 
 		it('rejects when a requested field is missing from the model output', async () => {
