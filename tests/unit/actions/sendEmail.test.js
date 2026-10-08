@@ -123,11 +123,13 @@ describe('sendEmail (mailgun.js 14)', () => {
 		const fields = await formFields(request)
 		expect(Object.keys(fields).sort()).toEqual([
 			'from',
+			'h:Reply-To',
 			'subject',
 			'text',
 			'to',
 		])
 		expect(fields.from).toBe('ForVoyez <noreply@forvoyez.com>')
+		expect(fields['h:Reply-To']).toBe('jane.doe@example.com')
 		expect(fields.to).toBe('contact@andy-cinquin.fr')
 		expect(fields.subject).toBe('New contact message - Enterprise plan')
 		for (const line of [
@@ -140,6 +142,21 @@ describe('sendEmail (mailgun.js 14)', () => {
 		]) {
 			expect(fields.text).toContain(line)
 		}
+	})
+
+	it.each([
+		['an address with a line break', 'jane@example.com\nBcc: x@evil.test'],
+		['two addresses', 'jane@example.com, x@evil.test'],
+		['a display name', 'Jane <jane@example.com>'],
+		['no domain', 'jane@'],
+		['an empty field', ''],
+		['a missing field', undefined],
+	])('sends without Reply-To when the visitor typed %s', async (_, email) => {
+		const result = await sendEmail({ ...CONTACT, email })
+
+		expect(result).toEqual({ success: true, status: 200 })
+		const fields = await formFields(requests[0])
+		expect(fields).not.toHaveProperty('h:Reply-To')
 	})
 
 	it('returns the Mailgun status when Mailgun refuses the message', async () => {
