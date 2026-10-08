@@ -55,6 +55,8 @@ If you want to configure your .env file to connect to the database, you can use 
 DATABASE_URL="postgresql://forvoyez:forvoyez@localhost:5432/forvoyez"
 ```
 
+The app reads `DATABASE_URL` the way Prisma 6 did (`src/helpers/databaseUrl.js`), so a production URL keeps working unchanged: without `sslmode` (or with `sslmode=prefer`, or a value Prisma 6 did not know such as `verify-full`), TLS is used when the server offers it and plaintext otherwise; `sslmode=require` needs TLS; `sslmode=disable` turns it off. The certificate is only verified with `sslaccept=strict`, against the CA file given in `sslcert` (relative to `prisma/`) when there is one. Add `uselibpqcompat=true` to use node-postgres' own reading of the libpq parameters instead (`sslmode=verify-full&sslrootcert=...`).
+
 Then, you can connect to the database using the following command:
 
 1. Clone the repository: `git clone https://github.com/For-Hives/ForVoyez.git`
