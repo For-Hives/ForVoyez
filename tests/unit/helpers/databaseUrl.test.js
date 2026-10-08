@@ -157,13 +157,13 @@ describe('pgAdapterConfig (Prisma 6 DATABASE_URL on the Prisma 7 pg adapter)', (
 			writeFileSync(identity, 'PKCS12')
 
 			const { poolConfig } = pgAdapterConfig(
-				`${BASE}?sslmode=require&sslidentity=${identity}&sslpassword=p%40ss`
+				`${BASE}?sslmode=require&sslidentity=${identity}&sslpassword=p%40ss` // ggignore: fake test passphrase
 			)
 
 			expect(poolConfig.ssl).toEqual({
 				pfx: Buffer.from('PKCS12'),
 				rejectUnauthorized: false,
-				passphrase: 'p@ss',
+				passphrase: 'p@ss', // ggignore: fake test passphrase
 			})
 		})
 
@@ -182,15 +182,15 @@ describe('pgAdapterConfig (Prisma 6 DATABASE_URL on the Prisma 7 pg adapter)', (
 
 	it('removes only the TLS parameters, and keeps the credentials byte for byte', () => {
 		const url =
-			'postgresql://role:p%40ss%23w%25rd%2F@db.example.com:5432/app?sslmode=require&schema=public&sslaccept=accept_invalid_certs&connection_limit=3&ssl=true&sslrootcert=/ca.crt'
+			'postgresql://role:p%40ss%23w%25rd%2F@db.example.com:5432/app?sslmode=require&schema=public&sslaccept=accept_invalid_certs&connection_limit=3&ssl=true&sslrootcert=/ca.crt' // ggignore: fake test password
 
 		const { poolConfig } = pgAdapterConfig(url)
 
 		expect(poolConfig.connectionString).toBe(
-			'postgresql://role:p%40ss%23w%25rd%2F@db.example.com:5432/app?schema=public&connection_limit=3'
+			'postgresql://role:p%40ss%23w%25rd%2F@db.example.com:5432/app?schema=public&connection_limit=3' // ggignore: fake test password
 		)
 		expect(parse(poolConfig.connectionString)).toMatchObject({
-			password: 'p@ss#w%rd/',
+			password: 'p@ss#w%rd/', // ggignore: fake test password
 			user: 'role',
 		})
 		expect(parse(poolConfig.connectionString).ssl).toBeUndefined()
