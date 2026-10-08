@@ -8,13 +8,15 @@ import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode
 import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.component'
 import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
+import { SkeletonText } from '@/components/Skeletons/SkeletonText'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { getMyCredits } from '@/app/actions/app/usage'
 
 const MAX_IMAGE_SIZE_BYTES = 10485760
 
 export function Playground() {
-	const [userCredits, setUserCredits] = useState(0)
+	// null until loaded: a placeholder, not a misleading 0
+	const [userCredits, setUserCredits] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
 
 	const [formData, setFormData] = useState({
@@ -136,12 +138,16 @@ export function Playground() {
 
 						<p className={'text-md my-4 hidden text-slate-500 sm:block'}>
 							remaining credits: &nbsp;
-							<span
-								className={'font-semibold text-slate-900'}
-								data-testid="user-credits"
-							>
-								{userCredits}
-							</span>
+							{userCredits === null ? (
+								<SkeletonText dataTestId="user-credits-loading" />
+							) : (
+								<span
+									className={'font-semibold text-slate-900'}
+									data-testid="user-credits"
+								>
+									{userCredits}
+								</span>
+							)}
 						</p>
 					</div>
 
