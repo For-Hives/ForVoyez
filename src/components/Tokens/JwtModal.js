@@ -8,7 +8,7 @@ export default function JwtModal({ setJwtModalOpen, jwtToken }) {
 	}
 
 	return (
-		<div className="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-slate-600">
+		<div className="fixed inset-0 flex items-center justify-center bg-slate-600/50">
 			<div className="w-3/4 rounded-lg bg-white p-8 shadow-lg">
 				<h2 className="text-lg font-semibold">Your JWT Token</h2>
 				<div className="relative mt-4 mb-4 w-full">
