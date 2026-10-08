@@ -1,20 +1,21 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 import { prisma } from '@/services/prisma.service'
 
 export async function createUser() {
-	const user = await currentUser()
+	// the session the Clerk proxy verified: no call to the Clerk API
+	const { userId } = await auth()
 
-	if (!user || !user.id) {
+	if (!userId) {
 		throw new Error('You must be logged to create a user')
 	}
 
 	// check if a user already exist with the same clerkId
 	const userDB = await prisma.user.findUnique({
 		where: {
-			clerkId: user.id,
+			clerkId: userId,
 		},
 	})
 
@@ -25,7 +26,7 @@ export async function createUser() {
 	return await prisma.user.create({
 		data: {
 			updatedAt: new Date().toISOString(),
-			clerkId: user.id,
+			clerkId: userId,
 		},
 	})
 }

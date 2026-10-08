@@ -1,6 +1,6 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 import {
 	InvalidDescribeInputError,
@@ -14,16 +14,17 @@ import { chargeOneCredit } from '@/services/database.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
-	const user = await currentUser()
+	// the session the Clerk proxy verified: no call to the Clerk API
+	const { userId } = await auth()
 
-	if (!user) {
+	if (!userId) {
 		console.error('User not authenticated')
 		throw new Error('Unauthorized')
 	}
 
 	const userData = await prisma.user.findUnique({
 		where: {
-			clerkId: user.id,
+			clerkId: userId,
 		},
 	})
 
@@ -63,7 +64,7 @@ export async function describePlaygroundAction(formData) {
 	let description
 	try {
 		description = await chargeOneCredit(
-			user.id,
+			userId,
 			{ reason: 'describe from PlaygroundAction' },
 			() =>
 				getImageDescription(base64Image, {

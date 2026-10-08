@@ -1,7 +1,7 @@
 // Server-only Lemon Squeezy client (uses the store API key). Client components
 // reach it through the auth-checked actions in `src/app/actions/app/plans.js`.
 import * as ls from '@lemonsqueezy/lemonsqueezy.js'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
 
@@ -45,14 +45,15 @@ export async function createCheckoutLink(variantId, userId) {
 export async function getCustomerPortalLink() {
 	await initLemonSqueezy()
 
-	const user = await currentUser()
+	// the session the Clerk proxy verified: no call to the Clerk API
+	const { userId } = await auth()
 
-	if (!user) {
+	if (!userId) {
 		throw new Error('User is not authenticated.')
 	}
 
 	// get user subscription using database.service
-	const customerId = await getCustomerIdFromUser(user.id)
+	const customerId = await getCustomerIdFromUser(userId)
 
 	if (!customerId) {
 		return null
