@@ -55,7 +55,8 @@ export default function PrivacyPolicyPage() {
 						personally-identifying information. The amount and type of information
 						that ForVoyez gathers depend on the nature of the interaction. For
 						example, we ask visitors who sign up for an account at forvoyez.com to
-						provide a name, phone number, and email address. Those who engage in
+						provide an email address and a password, or to sign in with Google or
+						GitHub, and they may add a first and last name. Those who engage in
 						transactions with ForVoyez – by purchasing access to the ForVoyez paid
 						service, for example – are asked to provide additional information,
 						including as necessary the personal and financial information required
@@ -116,18 +117,103 @@ export default function PrivacyPolicyPage() {
 				</p>
 			</section>
 
+			<section id="service-providers">
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
+					Service Providers (Sub-processors)
+				</h2>
+				<p className="mt-1 text-sm text-slate-600">
+					ForVoyez relies on the following service providers to run its websites
+					and services. For each one, we list what it does, the data it
+					processes and where it is established. For providers located outside
+					the European Economic Area (EEA), we also state the safeguard the
+					provider relies on for transfers of personal data.
+				</p>
+				<ul className="mt-4 list-disc space-y-2 pl-6 text-sm text-slate-600">
+					<li>
+						<strong>netcup GmbH</strong> (Germany): hosting of forvoyez.com
+						(website, application and API) and of the documentation at
+						doc.forvoyez.com. All traffic to these sites goes through its
+						servers: IP address, browser user agent, session cookies and server
+						logs, as well as the images you send to the API or the playground
+						and the messages sent through the contact form.
+					</li>
+					<li>
+						<strong>Contabo GmbH</strong> (Germany): hosting of the production
+						database, which stores your account identifier, credit balance, API
+						keys and usage history and, for paying customers, the name, email
+						address and order details received from Lemon Squeezy.
+					</li>
+					<li>
+						<strong>OpenAI Ireland Ltd</strong> (Ireland, with processing in the
+						United States): generation of alt texts, titles and captions. It
+						receives each image you submit through the API, the WordPress plugin
+						or the playground, with the optional context, keywords, language and
+						JSON schema sent with it. Images may contain personal data, for
+						example when they show people. We send requests with storage
+						disabled; according to OpenAI, API data is not used to train its
+						models and abuse monitoring logs are kept for up to 30 days.
+						Transfers outside the EEA: Standard Contractual Clauses or an
+						adequacy decision, under OpenAI&apos;s Data Processing Addendum.
+					</li>
+					<li>
+						<strong>Clerk, Inc.</strong> (United States): authentication
+						(accounts, sessions, sign-in with Google or GitHub, and
+						authentication emails). It processes your email address and
+						password, your first and last name if you provide them, your Google
+						or GitHub identity if you sign in with them, session cookies, your
+						IP address and browser user agent. Clerk sends authentication emails
+						through SendGrid and uses Cloudflare Turnstile to block bots.
+						Transfers outside the EEA: EU-U.S. Data Privacy Framework (with its
+						UK Extension and the Swiss-U.S. Data Privacy Framework), with
+						Standard Contractual Clauses as a fallback.
+					</li>
+					<li>
+						<strong>Sold through Link, LLC</strong>, formerly Lemon Squeezy LLC
+						(United States): payments and subscriptions, as merchant of record.
+						Lemon Squeezy collects your name, email address, billing address,
+						payment and tax information directly on its checkout. We send it
+						your ForVoyez user identifier when you start a checkout, and it
+						sends us back your name, email address and order details, which we
+						store. Transfers outside the EEA: Standard Contractual Clauses.
+					</li>
+					<li>
+						<strong>Mailgun Technologies, Inc.</strong> (Sinch Email, United
+						States): delivery of the messages sent through the contact form:
+						first name, last name, company, email address, phone number, subject
+						and message. Transfers outside the EEA: EU-U.S. Data Privacy
+						Framework (with its UK Extension), or Standard Contractual Clauses.
+					</li>
+					<li>
+						<strong>OVH SAS</strong> (France): hosting of the mailboxes that
+						receive the emails sent to contact@forvoyez.com and the messages
+						from the contact form, and registrar of the forvoyez.com domain.
+					</li>
+					<li>
+						<strong>Umami</strong> (European Union): audience measurement with
+						Umami, an open-source analytics tool, on a self-hosted instance
+						(umami.wadefade.fr) run by a member of the For-Hives team on a
+						server rented from Contabo. It records the pages viewed (URL and
+						referrer), browser, operating system, device type and the country
+						derived from your IP address; the server receives your IP address
+						and browser user agent with each request. Umami sets no cookies.
+					</li>
+				</ul>
+			</section>
+
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Cookies</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					{`A cookie is a string of information that a website stores on a
 						visitor's computer, and that the visitor's browser provides to the
-						website each time the visitor returns. ForVoyez uses cookies to help
-						ForVoyez identify and track visitors, their usage of ForVoyez's
-						website, and their website access preferences. ForVoyez visitors who
-						do not wish to have cookies placed on their computers should set their
-						browsers to refuse cookies before using ForVoyez's websites, with the
-						drawback that certain features of ForVoyez's websites may not function
-						properly without the aid of cookies.`}
+						website each time the visitor returns. ForVoyez only uses cookies
+						that are strictly necessary to provide its service: our
+						authentication provider, Clerk, sets cookies that sign you in and
+						keep your session secure. Our audience measurement tool, Umami, does
+						not use cookies; it only reads your browser's local storage to check
+						whether you have opted out. ForVoyez visitors who do not wish to have
+						cookies placed on their computers can set their browsers to refuse
+						cookies, with the drawback that they will not be able to sign in to
+						ForVoyez. Cookies set by third-party content are described below.`}
 				</p>
 			</section>
 
@@ -151,11 +237,41 @@ export default function PrivacyPolicyPage() {
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
 					Third-party content appearing on any of our websites may be delivered
-					to users by partners, who may set cookies. These cookies allow the
-					partner to recognize your computer each time you interact with the
-					content to compile information about you or others who use your
-					computer. This Privacy Policy covers the use of cookies by ForVoyez
-					and does not cover the use of cookies by any partners.
+					to users by partners, who receive information about your visit and may
+					set cookies. These cookies allow the partner to recognize your
+					computer each time you interact with the content to compile
+					information about you or others who use your computer. These partners
+					are:
+				</p>
+				<ul className="mt-4 list-disc space-y-2 pl-6 text-sm text-slate-600">
+					<li>
+						<strong>YouTube</strong>: the WordPress plugin page
+						(forvoyez.com/wordpress-plugin) embeds a YouTube video. In the EEA
+						and Switzerland, YouTube is provided by Google Ireland Limited,
+						Gordon House, Barrow Street, Dublin 4, Ireland. When the page loads,
+						YouTube receives your IP address, browser user agent and the address
+						of the page, and sets its own cookies (such as YSC,
+						VISITOR_INFO1_LIVE and VISITOR_PRIVACY_METADATA). Data may be
+						transferred to Google LLC in the United States, which is certified
+						under the EU-U.S. Data Privacy Framework.
+					</li>
+					<li>
+						<strong>unpkg</strong>: the animation on the home page loads a file
+						from the public content delivery network unpkg.com, served through
+						Cloudflare&apos;s network, or from cdn.jsdelivr.net when unpkg is
+						unavailable. These services receive your IP address, browser user
+						agent and the address of the page.
+					</li>
+					<li>
+						<strong>Google and GitHub</strong>: if you choose to sign in with
+						Google or GitHub, that provider processes your sign-in under its own
+						privacy policy.
+					</li>
+				</ul>
+				<p className="mt-4 text-sm text-slate-600">
+					These partners act independently of ForVoyez. This Privacy Policy
+					covers the use of cookies by ForVoyez and does not cover the use of
+					cookies by any partners; please refer to their own privacy policies.
 				</p>
 			</section>
 
@@ -170,6 +286,9 @@ export default function PrivacyPolicyPage() {
 						changes to its Privacy Policy. Your continued use of this site after
 						any change in this Privacy Policy will constitute your acceptance of
 						such change.`}
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
+					Last updated: October 8, 2026
 				</p>
 			</section>
 
@@ -214,41 +333,51 @@ export default function PrivacyPolicyPage() {
 					Hosting
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
+					The website, the application and its API (forvoyez.com) and the
+					documentation (doc.forvoyez.com) are hosted by:
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
+					<strong>Company details</strong>
+					<br />
+					<br />
+					netcup GmbH
+					<br />
+					Emmy-Noether-Straße 10
+					<br />
+					76131 Karlsruhe
+					<br />
+					Germany
+					<br />
+					<br />
+					<strong>Phone:</strong> +49 721 7540755-0
+					<br />
+					<strong>Register court:</strong> Amtsgericht Mannheim
+					<br />
+					<strong>Register number:</strong> HRB 705547
+					<br />
+					<strong>VAT-ID:</strong> DE262851304
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
+					The production database is hosted on a server provided by:
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
 					<strong>Company details</strong>
 					<br />
 					<br />
 					Contabo GmbH
 					<br />
-					Aschauer Straße 32a
+					Welfenstrasse 22
 					<br />
-					81549 Munich
+					81541 Munich
 					<br />
 					Germany
 					<br />
-					<br />
-					<strong>Authorized executives:</strong> Thomas Noglik & Thomas
-					Schimmel
 					<br />
 					<strong>Register court:</strong> AG München
 					<br />
 					<strong>Register number:</strong> HRB 180722
 					<br />
 					<strong>VAT-ID:</strong> DE267602842
-					<br />
-					<br />
-					<strong>IBAN:</strong> DE86 7002 0270 0661 9337 71
-					<br />
-					<strong>BIC (SWIFT):</strong> HYVEDEMMXXX
-					<br />
-					<strong>Bank name:</strong> Hypo-Vereinsbank
-					<br />
-					<strong>Bank address:</strong>
-					<br />
-					Bayerische Hypo- und Vereinsbank AG
-					<br />
-					Lindwurmstrasse 83-85
-					<br />
-					80337 Munich
 				</p>
 			</section>
 		</div>
