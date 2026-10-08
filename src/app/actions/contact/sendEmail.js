@@ -7,6 +7,9 @@ const mg = mailgun.client({
 	username: 'api',
 })
 
+// one address, no whitespace (so no header folding) and no list separators
+const REPLY_TO_PATTERN = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/
+
 export async function sendEmail(data) {
 	const {
 		'first-name': firstName,
@@ -35,6 +38,8 @@ export async function sendEmail(data) {
 			subject: `New contact message - ${subject}`,
 			from: 'ForVoyez <noreply@forvoyez.com>',
 			to: 'contact@andy-cinquin.fr',
+			// "Reply" answers the visitor instead of noreply@forvoyez.com
+			...replyToHeader(email),
 		})
 
 		return { success: true, status: 200 }
@@ -48,4 +53,15 @@ export async function sendEmail(data) {
 			success: false,
 		}
 	}
+}
+
+function replyToHeader(email) {
+	if (
+		typeof email !== 'string' ||
+		email.length > 254 ||
+		!REPLY_TO_PATTERN.test(email)
+	) {
+		return {}
+	}
+	return { 'h:Reply-To': email }
 }
