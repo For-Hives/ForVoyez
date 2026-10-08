@@ -353,13 +353,21 @@ export async function syncPlans() {
 }
 
 // Function to add (or remove, when negative) credits for the specified user.
-// The balance change is a single atomic `credits = credits + n` update.
-export async function updateCredits(userId, credits, tokenJwt, reason) {
+// The balance change is a single atomic `credits = credits + n` update. Pass
+// a transaction client as `db` to commit the credits and their Usage row
+// together with other writes (see processWebhook).
+export async function updateCredits(
+	userId,
+	credits,
+	tokenJwt,
+	reason,
+	db = prisma
+) {
 	if (typeof credits !== 'number' || isNaN(credits)) {
 		throw new Error('Invalid credits value')
 	}
 
-	const user = await prisma.user.findUnique({
+	const user = await db.user.findUnique({
 		where: { clerkId: userId },
 		select: { clerkId: true },
 	})
@@ -368,7 +376,7 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 		throw new Error('User not found')
 	}
 
-	const updatedUser = await prisma.user.update({
+	const updatedUser = await db.user.update({
 		data: { credits: { increment: credits } },
 		where: { clerkId: userId },
 		select: { credits: true },
@@ -379,12 +387,12 @@ export async function updateCredits(userId, credits, tokenJwt, reason) {
 
 	let token = null
 	if (tokenJwt) {
-		token = await prisma.token.findFirst({
+		token = await db.token.findFirst({
 			where: { jwt: tokenJwt },
 		})
 	}
 
-	await prisma.usage.create({
+	await db.usage.create({
 		data: {
 			previousCredits: previousCredits,
 			currentCredits: currentCredits,
