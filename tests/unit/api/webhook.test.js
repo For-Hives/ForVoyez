@@ -34,7 +34,7 @@ describe('POST /api/webhook', () => {
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 		vi.stubEnv('LEMON_SQUEEZY_WEBHOOK_SECRET', SECRET)
 		saveWebhooks.mockResolvedValue(12)
-		processWebhook.mockResolvedValue(undefined)
+		processWebhook.mockResolvedValue(true)
 	})
 
 	afterEach(() => {
@@ -71,6 +71,7 @@ describe('POST /api/webhook', () => {
 		processWebhook.mockImplementation(async () => {
 			await new Promise(resolve => setTimeout(resolve, 5))
 			processed = true
+			return true
 		})
 
 		const response = await POST(webhookRequest(BODY, signed(BODY)))
@@ -81,12 +82,13 @@ describe('POST /api/webhook', () => {
 		expect(processed).toBe(true)
 	})
 
-	it('should still answer 200 once stored even if processing throws (no duplicate retry)', async () => {
-		processWebhook.mockRejectedValue(new Error('db down'))
+	// processing is idempotent: a retry of a processed event is skipped
+	it('should answer 500 when processing fails, so Lemon Squeezy retries', async () => {
+		processWebhook.mockResolvedValueOnce(false)
+		expect((await POST(webhookRequest(BODY, signed(BODY)))).status).toBe(500)
 
-		const response = await POST(webhookRequest(BODY, signed(BODY)))
-
-		expect(response.status).toBe(200)
+		processWebhook.mockRejectedValueOnce(new Error('db down'))
+		expect((await POST(webhookRequest(BODY, signed(BODY)))).status).toBe(500)
 	})
 
 	it('should not log the payload when storing fails', async () => {
@@ -94,7 +96,7 @@ describe('POST /api/webhook', () => {
 
 		const response = await POST(webhookRequest(BODY, signed(BODY)))
 
-		expect(response.status).toBe(400)
+		expect(response.status).toBe(500)
 		const logged = consoleError.mock.calls.flat().map(String).join('\n')
 		expect(logged).not.toContain('jane.doe@example.com')
 		expect(await response.text()).not.toContain('jane.doe@example.com')

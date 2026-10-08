@@ -12,16 +12,10 @@ test.describe('Plans Management Functionality', () => {
 	}) => {
 		log('Page loaded')
 
-		// Check the visibility of the plans section
-		await page.waitForFunction(
-			() => {
-				const plansSection = document.querySelector(
-					'[data-testid="plans-loading"]'
-				)
-				return plansSection !== null
-			},
-			{ timeout: 50000 }
-		)
+		// Wait for the loading state to disappear (it no longer waits for
+		// Lemon Squeezy checkouts, so it can be gone already)
+		const loadingElement = page.locator('[data-testid="plans-loading"]')
+		await expect(loadingElement).toBeHidden({ timeout: 50000 })
 
 		// Wait for the plans to be loaded
 		log('Waiting for plans to be loaded')
@@ -66,13 +60,15 @@ test.describe('Plans Management Functionality', () => {
 		// Verify the presence of "Refill your credits" buttons
 		log('Verifying presence of "Refill your credits" buttons')
 		const refillButton = page
-			.locator('a:has-text("Refill your credits")')
+			.locator('button:has-text("Refill your credits")')
 			.first()
 		await expect(refillButton).toBeVisible()
 
-		// Verify the refill links are present and correct
-		log('Verifying the refill links are present and correct')
-		const refillLink = await refillButton.getAttribute('href')
-		expect(refillLink).toContain('https://forvoyez.lemonsqueezy.com/checkout')
+		// The refill checkout is created when the button is clicked
+		log('Verifying the refill button opens a checkout')
+		await refillButton.click()
+		await expect(page).toHaveURL(/forvoyez\.lemonsqueezy\.com\/checkout/, {
+			timeout: 60000,
+		})
 	})
 })

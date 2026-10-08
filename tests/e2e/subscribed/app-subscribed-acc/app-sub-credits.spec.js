@@ -162,7 +162,7 @@ test.describe('Credits of the subscribed account', () => {
 			await page.goto('/app/playground')
 			await expect(page).toHaveURL('/app/playground')
 			const credits = page.getByTestId('user-credits')
-			// 0 until the server action answers
+			// rendered once the server action answers (a placeholder until then)
 			await expect(credits).not.toHaveText('0', { timeout: 30_000 })
 			const before = Number(await credits.innerText())
 			expect(before).toBeGreaterThan(0)
