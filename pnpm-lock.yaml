@@ -42,8 +42,8 @@ importers:
         specifier: 0.5.11
         version: 0.5.11(tailwindcss@4.3.3)
       ai:
-        specifier: 7.0.133
-        version: 7.0.133(zod@4.6.5)
+        specifier: 7.0.134
+        version: 7.0.134(zod@4.6.5)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -1752,8 +1752,8 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
 
-  ai@7.0.133:
-    resolution: {integrity: sha512-OjyVMdsDp4ORPSrRB9hiYGic4bzeiOtaOzBPxOM7jiavz6tSXuMrqLwd1eILGhN669VD0G/+jxaiweRqfVulYg==}
+  ai@7.0.134:
+    resolution: {integrity: sha512-2m/hyNGsNB2Fe/BCZ/XwpjnfxEVCqS0TtAwjR/HpIIyMAtiLJJ8bQb6+uMih4MXwukDJr9AR4hxbFLUE9H3SjQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5527,7 +5527,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ai@7.0.133(zod@4.6.5):
+  ai@7.0.134(zod@4.6.5):
     dependencies:
       '@ai-sdk/gateway': 4.0.108(zod@4.6.5)
       '@ai-sdk/provider': 4.0.25
