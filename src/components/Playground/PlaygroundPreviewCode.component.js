@@ -31,18 +31,12 @@ export default function PlaygroundPreviewCode(params) {
 		Prism.highlightAll()
 	}, [selectedTab, params, disclosureOpen])
 
+	// the generated code, not the highlighted element: the cURL tab is
+	// rendered as `language-bash`, so looking up `language-curl` found nothing
 	const copySelectedEditorContent = () => {
-		const content = getSelectedEditorContent()
-		copyToClipboard(content)
+		copyToClipboard(getPreviewCode(selectedTab, params.formData))
 		setIsPreviewCopied(true)
 		setTimeout(() => setIsPreviewCopied(false), 2000)
-	}
-
-	function getSelectedEditorContent() {
-		const editor = document.querySelector(
-			`.language-${selectedTab.toLowerCase()} code`
-		)
-		return editor.textContent
 	}
 
 	return (
@@ -82,7 +76,7 @@ export default function PlaygroundPreviewCode(params) {
 							>
 								<div className={'flex hidden flex-col sm:block'}>
 									<p className="mt-1 text-sm text-slate-500 italic">
-										{`This section shows a preview of the request that will be sent to the API when you click the "Analyze your image" button. It includes the HTTP method, API URL, request headers, and the request body containing the selected image, additional context, and JSON schema.`}
+										{`This section shows the same request made to the API from your own server, with one of your API keys in place of YOUR_API_KEY. It sends the selected image, context, keywords, language and JSON schema as multipart/form-data.`}
 									</p>
 
 									<div className="">
@@ -117,14 +111,7 @@ export default function PlaygroundPreviewCode(params) {
 																<code
 																	className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()}`}
 																>
-																	{getPreviewCode(
-																		params.formData.languageToTranslate,
-																		language,
-																		params.formData.image,
-																		params.formData.context,
-																		params.formData.jsonSchema,
-																		params.formData.keywords
-																	)}
+																	{getPreviewCode(language, params.formData)}
 																</code>
 															</pre>
 															<button
