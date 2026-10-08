@@ -1,13 +1,14 @@
 import {
+	blobToBase64,
+	getImageDescription,
+	ImageTooLargeError,
+	UnsupportedImageError,
+} from '@/services/imageDescription.service'
+import {
 	InvalidDescribeInputError,
 	normalizeDescribeSchema,
 	withLegacyAltText,
 } from '@/helpers/describeInput'
-import {
-	blobToBase64,
-	getImageDescription,
-	UnsupportedImageError,
-} from '@/services/imageDescription.service'
 import {
 	chargeOneCredit,
 	findActiveApiToken,
@@ -17,6 +18,13 @@ import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
 const INVALID_IMAGE = 'Bad Request, Invalid image file'
+const IMAGE_TOO_LARGE = 'Image too large: the maximum is 10 MB'
+
+// A 10 MB image plus the multipart framing and the text fields (the schema
+// is at most about 21 KB). Bigger bodies are refused before being parsed.
+const MAX_BODY_BYTES = 11 * 1024 * 1024
+
+class PayloadTooLargeError extends Error {}
 
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
@@ -66,7 +74,22 @@ export async function POST(request) {
 			return jsonError('Unauthorized, no credit left', 401)
 		}
 
-		const formData = await request.formData()
+		// 413 before reading a body that cannot hold a 10 MB image, 400 when
+		// it is not a multipart/form-data body; no credit is charged
+		let formData
+		try {
+			formData = await readFormData(request)
+		} catch (error) {
+			if (error instanceof PayloadTooLargeError) {
+				return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
+			}
+			console.error('Unreadable multipart body:', error.name)
+			return jsonError(
+				'Bad Request, the body must be multipart/form-data',
+				400,
+				'Bad Request'
+			)
+		}
 
 		const file = formData.get('image')
 		if (!file) {
@@ -105,8 +128,11 @@ export async function POST(request) {
 			if (error instanceof UnsupportedImageError) {
 				return jsonError(INVALID_IMAGE, 400)
 			}
-			// e.g. "Image processing failed: Image size exceeds the maximum limit
-			// of 10 MB". Same status as before (500), but a readable message.
+			if (error instanceof ImageTooLargeError) {
+				return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
+			}
+			// e.g. "Image processing failed: ...". Same status as before (500),
+			// but a readable message.
 			console.error('Error processing the image:', error.message)
 			return jsonError(error.message, 500, 'Internal Server Error')
 		}
@@ -152,4 +178,31 @@ export async function POST(request) {
 // plugin parses them); the status codes are unchanged.
 function jsonError(message, status, statusText = message) {
 	return Response.json({ error: message }, { statusText, status })
+}
+
+// The multipart body, at most MAX_BODY_BYTES. A declared Content-Length is
+// checked before reading anything (Node then reads exactly that many bytes);
+// a body sent without one (chunked) is counted while it is read.
+async function readFormData(request) {
+	const declaredLength = request.headers.get('content-length')
+	if (Number(declaredLength) > MAX_BODY_BYTES) {
+		throw new PayloadTooLargeError()
+	}
+	if (declaredLength !== null || !request.body) {
+		return request.formData()
+	}
+
+	const chunks = []
+	let size = 0
+	for await (const chunk of request.body) {
+		size += chunk.byteLength
+		if (size > MAX_BODY_BYTES) {
+			// leaving the loop cancels the rest of the upload
+			throw new PayloadTooLargeError()
+		}
+		chunks.push(chunk)
+	}
+	return new Response(new Blob(chunks), {
+		headers: { 'Content-Type': request.headers.get('content-type') ?? '' },
+	}).formData()
 }

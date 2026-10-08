@@ -46,6 +46,7 @@ const KEYWORDS_TAG = 'customer_keywords'
 // (a WebP sent as application/octet-stream is fine, an SVG, AVIF or TIFF
 // sent as image/png is not).
 export const SUPPORTED_IMAGE_FORMATS = ['jpeg', 'png', 'webp', 'gif']
+export const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 // The generation failed (model error, timeout, invalid output). The message
 // never carries the prompt, the image or the customer text.
@@ -53,6 +54,14 @@ export class ImageDescriptionError extends Error {
 	constructor(message) {
 		super(message)
 		this.name = 'ImageDescriptionError'
+	}
+}
+
+// The image is over MAX_IMAGE_BYTES (the API answers 413).
+export class ImageTooLargeError extends Error {
+	constructor() {
+		super('Image too large: the maximum is 10 MB')
+		this.name = 'ImageTooLargeError'
 	}
 }
 
@@ -66,14 +75,11 @@ export class UnsupportedImageError extends Error {
 }
 
 // Convert blob to Base64 string with image optimizations.
+// @throws {ImageTooLargeError} when the image is over 10 MB
 // @throws {UnsupportedImageError} when the bytes are not a supported image
 export async function blobToBase64(blob) {
-	// Check image size
-	const maxSizeInBytes = 5 * 1024 * 1024 * 2 // 10MB
-	if (blob.size > maxSizeInBytes) {
-		throw new Error(
-			'Image processing failed: Image size exceeds the maximum limit of 10 MB'
-		)
+	if (blob.size > MAX_IMAGE_BYTES) {
+		throw new ImageTooLargeError()
 	}
 
 	const bytes = await new Response(blob).arrayBuffer()

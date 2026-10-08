@@ -134,4 +134,113 @@ describe('POST /api/describe uploads', () => {
 			expectNoCharge()
 		}
 	)
+
+	describe('request bodies', () => {
+		const MB = 1024 * 1024
+		const TOO_LARGE = { error: 'Image too large: the maximum is 10 MB' }
+
+		function post(body, headers = {}) {
+			return POST(
+				new Request('http://localhost/api/describe', {
+					headers: { Authorization: `Bearer ${JWT}`, ...headers },
+					duplex: 'half',
+					method: 'POST',
+					body,
+				})
+			)
+		}
+
+		// a body sent without Content-Length (Transfer-Encoding: chunked)
+		function chunkedBody(totalBytes, chunkBytes = MB) {
+			let sent = 0
+			const stream = new ReadableStream({
+				pull(controller) {
+					if (sent >= totalBytes) return controller.close()
+					const size = Math.min(chunkBytes, totalBytes - sent)
+					sent += size
+					controller.enqueue(new Uint8Array(size))
+				},
+			})
+			return { sent: () => sent, stream }
+		}
+
+		async function expectJson(response, status, body) {
+			expect(response.status).toBe(status)
+			expect(response.headers.get('Content-Type')).toContain('application/json')
+			expect(await response.json()).toEqual(body)
+			expectNoCharge()
+		}
+
+		it('answers 413 JSON when Content-Length is over 11 MB, without reading the body', async () => {
+			const body = chunkedBody(12 * MB)
+
+			const response = await post(body.stream, {
+				'Content-Type': 'multipart/form-data; boundary=x',
+				'Content-Length': String(12 * MB),
+			})
+
+			await expectJson(response, 413, TOO_LARGE)
+			expect(body.sent()).toBeLessThanOrEqual(MB)
+		})
+
+		it('answers 413 JSON when a body sent without Content-Length goes over 11 MB, and stops reading it', async () => {
+			const body = chunkedBody(50 * MB)
+
+			const response = await post(body.stream, {
+				'Content-Type': 'multipart/form-data; boundary=x',
+			})
+
+			await expectJson(response, 413, TOO_LARGE)
+			expect(body.sent()).toBeLessThanOrEqual(13 * MB)
+		})
+
+		it('answers 413 JSON for an image over 10 MB in a body under 11 MB', async () => {
+			const response = await POST(
+				describeRequest(Buffer.alloc(10 * MB + 1), 'image/png')
+			)
+
+			await expectJson(response, 413, TOO_LARGE)
+		})
+
+		it('describes an image sent without Content-Length', async () => {
+			// the multipart encoding of a PNG, sent in two chunks
+			const form = new FormData()
+			form.append('image', new Blob([await image('png')]), 'photo.png')
+			const encoded = new Request('http://localhost/', {
+				method: 'POST',
+				body: form,
+			})
+			const bytes = new Uint8Array(await encoded.arrayBuffer())
+
+			const response = await post(
+				new ReadableStream({
+					start(controller) {
+						controller.enqueue(bytes.slice(0, 100))
+						controller.enqueue(bytes.slice(100))
+						controller.close()
+					},
+				}),
+				{ 'Content-Type': encoded.headers.get('Content-Type') }
+			)
+
+			expect(response.status).toBe(200)
+			expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
+		})
+
+		it.each([
+			[
+				'a broken multipart body',
+				'--x\r\nContent-Disposition: form-data; name="image"',
+				'multipart/form-data; boundary=x',
+			],
+			['a JSON body', '{"image":"x"}', 'application/json'],
+			['a multipart body without boundary', 'abc', 'multipart/form-data'],
+		])('answers 400 JSON for %s', async (_case, body, contentType) => {
+			const response = await post(body, { 'Content-Type': contentType })
+
+			await expectJson(response, 400, {
+				error: 'Bad Request, the body must be multipart/form-data',
+			})
+		})
+	})
 })

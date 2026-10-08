@@ -13,6 +13,7 @@ import {
 	generateImageMetadata,
 	getImageDescription,
 	ImageDescriptionError,
+	ImageTooLargeError,
 	TestingExports,
 	UnsupportedImageError,
 } from '@/services/imageDescription.service'
@@ -179,9 +180,11 @@ describe('Image Description Service', () => {
 				type: 'image/png',
 			})
 
-			await expect(blobToBase64(largeBlob)).rejects.toThrow(
-				'Image size exceeds the maximum limit of 10 MB'
-			)
+			const error = await blobToBase64(largeBlob).catch(error => error)
+
+			expect(error).toBeInstanceOf(ImageTooLargeError)
+			expect(error.message).toBe('Image too large: the maximum is 10 MB')
+			expect(sharp).not.toHaveBeenCalled()
 		})
 	})
 

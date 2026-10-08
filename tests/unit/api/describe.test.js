@@ -4,6 +4,7 @@ import { POST } from '@/app/api/describe/route'
 import {
 	blobToBase64,
 	getImageDescription,
+	ImageTooLargeError,
 	UnsupportedImageError,
 } from '@/services/imageDescription.service'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
@@ -251,12 +252,25 @@ describe('describe API', () => {
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 		})
 
-		it('should keep 500 but return a readable JSON error when the image is too large', async () => {
+		it('should return 413 JSON when the image is over 10 MB, without charging', async () => {
+			givenValidApiKey()
+			blobToBase64.mockRejectedValue(new ImageTooLargeError())
+
+			const response = await POST(mockRequest(authHeader, imageForm()))
+
+			await expectJsonError(
+				response,
+				413,
+				'Image too large: the maximum is 10 MB'
+			)
+			expect(prisma.user.updateMany).not.toHaveBeenCalled()
+			expect(getImageDescription).not.toHaveBeenCalled()
+		})
+
+		it('should keep 500 with a readable JSON error when the image cannot be processed', async () => {
 			givenValidApiKey()
 			blobToBase64.mockRejectedValue(
-				new Error(
-					'Image processing failed: Image size exceeds the maximum limit of 10 MB'
-				)
+				new Error('Image processing failed: corrupt JPEG data')
 			)
 
 			const response = await POST(mockRequest(authHeader, imageForm()))
@@ -264,10 +278,9 @@ describe('describe API', () => {
 			await expectJsonError(
 				response,
 				500,
-				'Image processing failed: Image size exceeds the maximum limit of 10 MB'
+				'Image processing failed: corrupt JPEG data'
 			)
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
-			expect(getImageDescription).not.toHaveBeenCalled()
 		})
 	})
 
