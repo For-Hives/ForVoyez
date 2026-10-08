@@ -1,11 +1,11 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { auth } from '@clerk/nextjs/server'
+
 import {
 	createToken,
 	deleteToken,
 	getAllToken,
 } from '@/app/actions/tokens/TokensCRUD'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { currentUser } from '@clerk/nextjs/server'
-
 import { generateJwt } from '@/services/jwt.service'
 
 vi.mock('@clerk/nextjs/server')
@@ -28,7 +28,7 @@ describe('TokensCRUD', () => {
 
 	describe('createToken', () => {
 		it('should throw an error if the user is not authenticated', async () => {
-			currentUser.mockResolvedValue(null)
+			auth.mockResolvedValue({ userId: null })
 
 			await expect(
 				createToken({
@@ -53,7 +53,7 @@ describe('TokensCRUD', () => {
 				jwt: mockJwt,
 			}
 
-			currentUser.mockResolvedValue(mockUser)
+			auth.mockResolvedValue({ userId: mockUser.id })
 			generateJwt.mockResolvedValue(mockJwt)
 			prisma.token.create.mockResolvedValue(mockResult)
 
@@ -77,7 +77,7 @@ describe('TokensCRUD', () => {
 
 	describe('getAllToken', () => {
 		it('should throw an error if the user is not authenticated', async () => {
-			currentUser.mockResolvedValue(null)
+			auth.mockResolvedValue({ userId: null })
 
 			await expect(getAllToken()).rejects.toThrow(
 				'You must be logged in to view tokens'
@@ -90,7 +90,7 @@ describe('TokensCRUD', () => {
 				{ userId: mockUser.id, jwt: 'jwtToken2', id: 'token2' },
 			]
 
-			currentUser.mockResolvedValue(mockUser)
+			auth.mockResolvedValue({ userId: mockUser.id })
 			prisma.token.findMany.mockResolvedValue(mockTokens)
 
 			const result = await getAllToken()
@@ -109,7 +109,7 @@ describe('TokensCRUD', () => {
 
 	describe('deleteToken', () => {
 		it('should throw an error if the user is not authenticated', async () => {
-			currentUser.mockResolvedValue(null)
+			auth.mockResolvedValue({ userId: null })
 
 			await expect(deleteToken('token123')).rejects.toThrow(
 				'You must be logged in to delete a token'
@@ -119,7 +119,7 @@ describe('TokensCRUD', () => {
 		it('should throw an error if the token does not belong to the authenticated user', async () => {
 			const mockToken = { userId: 'differentUser', id: 'token123' }
 
-			currentUser.mockResolvedValue(mockUser)
+			auth.mockResolvedValue({ userId: mockUser.id })
 			prisma.token.findUnique.mockResolvedValue(mockToken)
 
 			await expect(deleteToken('token123')).rejects.toThrow(
@@ -130,7 +130,7 @@ describe('TokensCRUD', () => {
 		it('should delete the token if it belongs to the authenticated user', async () => {
 			const mockToken = { userId: mockUser.id, id: 'token123' }
 
-			currentUser.mockResolvedValue(mockUser)
+			auth.mockResolvedValue({ userId: mockUser.id })
 			prisma.token.findUnique.mockResolvedValue(mockToken)
 			prisma.token.delete.mockResolvedValue(mockToken)
 

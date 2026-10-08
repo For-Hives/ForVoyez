@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 import {
 	blobToBase64,
@@ -32,7 +32,7 @@ describe('describePlaygroundAction', () => {
 	})
 
 	it('should throw an error if the user is not authenticated', async () => {
-		currentUser.mockResolvedValue(null)
+		auth.mockResolvedValue({ userId: null })
 
 		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
 			'Unauthorized'
@@ -41,7 +41,7 @@ describe('describePlaygroundAction', () => {
 
 	it('should throw an error if the user has no credits left', async () => {
 		const mockUser = { id: 'user123' }
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 0 })
 
 		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
@@ -50,7 +50,7 @@ describe('describePlaygroundAction', () => {
 	})
 
 	it('should throw "No credits left" (not crash) if the user has no DB row', async () => {
-		currentUser.mockResolvedValue({ id: 'user123' })
+		auth.mockResolvedValue({ userId: 'user123' })
 		prisma.user.findUnique.mockResolvedValue(null)
 
 		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
@@ -60,7 +60,7 @@ describe('describePlaygroundAction', () => {
 	})
 
 	it('should not return a description when the atomic charge finds no credit', async () => {
-		currentUser.mockResolvedValue({ id: 'user123' })
+		auth.mockResolvedValue({ userId: 'user123' })
 		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 1 })
 		blobToBase64.mockResolvedValue('base64ImageString')
 		chargeOneCredit.mockRejectedValue(new Error('No credits left'))
@@ -75,7 +75,7 @@ describe('describePlaygroundAction', () => {
 	})
 
 	it('should return a 400 error, without charging, for a schema with too many fields', async () => {
-		currentUser.mockResolvedValue({ id: 'user123' })
+		auth.mockResolvedValue({ userId: 'user123' })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -98,7 +98,7 @@ describe('describePlaygroundAction', () => {
 	})
 
 	it('should return a 400 error when the answer for the schema is too long', async () => {
-		currentUser.mockResolvedValue({ id: 'user123' })
+		auth.mockResolvedValue({ userId: 'user123' })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -120,7 +120,7 @@ describe('describePlaygroundAction', () => {
 
 	it('should throw an error if no file is uploaded', async () => {
 		const mockUser = { id: 'user123' }
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -143,7 +143,7 @@ describe('describePlaygroundAction', () => {
 			alt: 'Alt Text',
 		}
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -189,7 +189,7 @@ describe('describePlaygroundAction', () => {
 			alt: 'Alt Text',
 		}
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -231,7 +231,7 @@ describe('describePlaygroundAction', () => {
 			title: 'Title description',
 		}
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
@@ -273,7 +273,7 @@ describe('describePlaygroundAction', () => {
 			alt: 'Alt Text',
 		}
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({
 			clerkId: 'user123',
 			credits: 10,
