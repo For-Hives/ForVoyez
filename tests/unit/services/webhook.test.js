@@ -126,6 +126,9 @@ describe('Webhook Service', () => {
 
 	beforeEach(() => {
 		vi.resetAllMocks()
+		// processWebhook runs each event in an interactive transaction: run it
+		// on the same mock (`tx` is `prisma` in these tests)
+		prisma.$transaction.mockImplementation(callback => callback(prisma))
 		prisma.webhookEvent.findMany.mockResolvedValue([])
 		consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => {})
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -234,7 +237,8 @@ describe('Webhook Service', () => {
 				'user123',
 				50,
 				null,
-				'Order created'
+				'Order created',
+				prisma
 			)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: { processed: true },
@@ -342,7 +346,8 @@ describe('Webhook Service', () => {
 				'user123',
 				100,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			expect(prisma.subscription.update).not.toHaveBeenCalled()
 		})
@@ -381,14 +386,16 @@ describe('Webhook Service', () => {
 				'user123',
 				100,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			expect(updateCredits).toHaveBeenNthCalledWith(
 				2,
 				'user123',
 				100,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			// the plan change marker is used once, then cleared
 			expect(prisma.subscription.update).toHaveBeenCalledTimes(1)
@@ -420,14 +427,16 @@ describe('Webhook Service', () => {
 				'user123',
 				400,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 			expect(updateCredits).toHaveBeenNthCalledWith(
 				2,
 				'user123',
 				500,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			expect(prisma.subscription.update).toHaveBeenCalledTimes(1)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
@@ -508,7 +517,8 @@ describe('Webhook Service', () => {
 				'user123',
 				400,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 		})
 
@@ -567,7 +577,8 @@ describe('Webhook Service', () => {
 				'user123',
 				5500,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
 		})
@@ -621,7 +632,8 @@ describe('Webhook Service', () => {
 				'user123',
 				500,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
 		})
@@ -778,14 +790,16 @@ describe('Webhook Service', () => {
 				'user123',
 				400,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 			expect(updateCredits).toHaveBeenNthCalledWith(
 				2,
 				'user123',
 				500,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 			expect(subscription.oldPlanId).toBeNull()
 		})
@@ -863,7 +877,8 @@ describe('Webhook Service', () => {
 				'user123',
 				400,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 		})
 
@@ -891,7 +906,8 @@ describe('Webhook Service', () => {
 					'user123',
 					400,
 					null,
-					'Subscription payment success (plan change)'
+					'Subscription payment success (plan change)',
+					prisma
 				)
 				expect(events.every(event => event.processed)).toBe(true)
 			}
@@ -915,7 +931,8 @@ describe('Webhook Service', () => {
 				'user123',
 				400,
 				null,
-				'Subscription payment success (plan change)'
+				'Subscription payment success (plan change)',
+				prisma
 			)
 		})
 
@@ -970,7 +987,8 @@ describe('Webhook Service', () => {
 				'user123',
 				100,
 				null,
-				'Order created'
+				'Order created',
+				prisma
 			)
 
 			// the next month
@@ -984,7 +1002,8 @@ describe('Webhook Service', () => {
 				'user123',
 				100,
 				null,
-				'Subscription payment success'
+				'Subscription payment success',
+				prisma
 			)
 		})
 	})
@@ -1071,7 +1090,8 @@ describe('Webhook Service', () => {
 				'user123',
 				50,
 				null,
-				'Order created'
+				'Order created',
+				prisma
 			)
 		})
 
