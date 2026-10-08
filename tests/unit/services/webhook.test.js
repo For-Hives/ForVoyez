@@ -36,6 +36,31 @@ async function deliver(eventName, payload) {
 	await processWebhook(1)
 }
 
+// WebhookEvent rows answered by prisma.webhookEvent.findMany, filtered like
+// the service's queries (eventName, `in`, OR, processingError startsWith,
+// processed, userId, id not)
+function givenStoredEvents(...events) {
+	prisma.webhookEvent.findMany.mockImplementation(async ({ where }) =>
+		events
+			.map(event => ({ processingError: null, processed: true, ...event }))
+			.filter(event => matchesWhere(event, where))
+	)
+}
+
+function matchesWhere(event, where) {
+	return Object.entries(where).every(([field, condition]) => {
+		if (field === 'OR') return condition.some(alt => matchesWhere(event, alt))
+		const value = event[field]
+		if (condition && typeof condition === 'object') {
+			if ('in' in condition) return condition.in.includes(value)
+			if ('not' in condition) return value !== condition.not
+			if ('startsWith' in condition)
+				return String(value ?? '').startsWith(condition.startsWith)
+		}
+		return value === condition
+	})
+}
+
 function orderCreated(variantId, status = 'paid', orderId = 'order-1') {
 	return {
 		data: {
@@ -279,12 +304,10 @@ describe('Webhook Service', () => {
 		// the processed subscription_plan_changed events of the user (the
 		// duplicate check of the invoice finds no processed invoice)
 		function givenProcessedPlanChanges(...payloads) {
-			prisma.webhookEvent.findMany.mockImplementation(async ({ where }) =>
-				where.eventName === 'subscription_plan_changed'
-					? payloads.map((payload, index) =>
-							storedEvent('subscription_plan_changed', payload, 50 + index)
-						)
-					: []
+			givenStoredEvents(
+				...payloads.map((payload, index) =>
+					storedEvent('subscription_plan_changed', payload, 50 + index)
+				)
 			)
 		}
 
@@ -510,11 +533,17 @@ describe('Webhook Service', () => {
 
 			expect(prisma.webhookEvent.findMany).toHaveBeenCalledWith({
 				where: {
-					eventName: 'subscription_plan_changed',
+					OR: [
+						{ eventName: 'subscription_plan_changed' },
+						{
+							processingError: { startsWith: 'Plan change applied' },
+							eventName: 'subscription_updated',
+						},
+					],
 					userId: 'user123',
 					processed: true,
 				},
-				select: { body: true },
+				select: { eventName: true, body: true },
 			})
 			// not 500 - 100 credited at once and marked processed
 			expect(updateCredits).not.toHaveBeenCalled()
@@ -619,6 +648,298 @@ describe('Webhook Service', () => {
 				})
 			}
 		)
+	})
+
+	// Lemon Squeezy sends no subscription_plan_changed (none in production),
+	// only subscription_updated, for every change of a subscription. Runs on
+	// an in-memory Subscription row and WebhookEvent table.
+	describe('plan change sent as subscription_updated', () => {
+		const STARTER = { variantId: 'v-starter', packageSize: 100, id: 7 }
+		const GROWTH = { variantId: 'v-growth', packageSize: 500, id: 8 }
+		const PLANS = [STARTER, GROWTH]
+		const T1 = '2026-10-08T10:00:00.000000Z'
+		const T2 = '2026-10-08T10:05:00.000000Z'
+
+		let subscription // the Subscription row
+		let events // the WebhookEvent table
+		let nextEventId
+
+		function withPlan() {
+			return (
+				subscription && {
+					...subscription,
+					plan: PLANS.find(plan => plan.id === subscription.planId) ?? null,
+				}
+			)
+		}
+
+		function givenSubscriptionOn(plan, oldPlanId = null) {
+			subscription = {
+				lemonSqueezyId: 'sub-1',
+				userId: 'user123',
+				planId: plan.id,
+				oldPlanId,
+			}
+		}
+
+		// stores the event (as the route does), then processes it
+		async function receive(eventName, payload) {
+			const event = {
+				...storedEvent(eventName, payload, nextEventId++),
+				processingError: null,
+				processed: false,
+			}
+			events.push(event)
+			await processWebhook(event.id)
+			return event
+		}
+
+		// a Lemon Squeezy subscription object (data.id is the subscription)
+		function subscriptionPayload(variantId, updatedAt = T1) {
+			return {
+				data: {
+					attributes: {
+						first_subscription_item: { subscription_id: 'sub-1' },
+						status_formatted: 'Active',
+						updated_at: updatedAt,
+						variant_id: variantId,
+						status: 'active',
+						customer_id: 42,
+						...CUSTOMER,
+					},
+					type: 'subscriptions',
+					id: 'sub-1',
+				},
+				meta: { custom_data: { user_id: 'user123' } },
+			}
+		}
+
+		beforeEach(() => {
+			givenSubscriptionOn(STARTER)
+			events = []
+			nextEventId = 100
+			prisma.user.findUnique.mockResolvedValue({
+				clerkId: 'user123',
+				customerId: 42,
+			})
+			prisma.plan.findUnique.mockImplementation(
+				async ({ where }) =>
+					PLANS.find(plan =>
+						where.id === undefined
+							? plan.variantId === where.variantId
+							: plan.id === where.id
+					) ?? null
+			)
+			prisma.subscription.findUnique.mockImplementation(async () => withPlan())
+			prisma.subscription.findFirst.mockImplementation(async () => withPlan())
+			prisma.subscription.update.mockImplementation(async ({ data }) => {
+				subscription = { ...subscription, ...data }
+			})
+			prisma.webhookEvent.findUnique.mockImplementation(
+				async ({ where }) => events.find(event => event.id === where.id) ?? null
+			)
+			prisma.webhookEvent.update.mockImplementation(async ({ where, data }) => {
+				Object.assign(
+					events.find(event => event.id === where.id),
+					data
+				)
+			})
+			prisma.webhookEvent.findMany.mockImplementation(async ({ where }) =>
+				events.filter(event => matchesWhere(event, where))
+			)
+		})
+
+		it('applies an upgrade, and its `updated` invoice credits the extra credits once', async () => {
+			const update = await receive(
+				'subscription_updated',
+				subscriptionPayload(GROWTH.variantId)
+			)
+
+			expect(subscription).toMatchObject({ oldPlanId: 7, planId: 8 })
+			expect(update).toMatchObject({
+				processingError: 'Plan change applied: plan 7 -> plan 8',
+				processed: true,
+			})
+			// the status belongs to the status events
+			expect(prisma.subscription.update).toHaveBeenCalledWith({
+				where: { lemonSqueezyId: 'sub-1' },
+				data: { oldPlanId: 7, planId: 8 },
+			})
+
+			await receive('subscription_payment_success', paymentSuccess('updated'))
+			await receive(
+				'subscription_payment_success',
+				paymentSuccess('renewal', 'invoice-2')
+			)
+
+			expect(updateCredits).toHaveBeenCalledTimes(2)
+			expect(updateCredits).toHaveBeenNthCalledWith(
+				1,
+				'user123',
+				400,
+				null,
+				'Subscription payment success (plan change)'
+			)
+			expect(updateCredits).toHaveBeenNthCalledWith(
+				2,
+				'user123',
+				500,
+				null,
+				'Subscription payment success'
+			)
+			expect(subscription.oldPlanId).toBeNull()
+		})
+
+		it('applies a downgrade, and its `updated` invoice credits nothing', async () => {
+			givenSubscriptionOn(GROWTH)
+
+			await receive(
+				'subscription_updated',
+				subscriptionPayload(STARTER.variantId)
+			)
+			const invoice = await receive(
+				'subscription_payment_success',
+				paymentSuccess('updated')
+			)
+
+			expect(subscription).toMatchObject({ oldPlanId: null, planId: 7 })
+			expect(updateCredits).not.toHaveBeenCalled()
+			expect(invoice).toMatchObject({ processingError: null, processed: true })
+		})
+
+		it('changes nothing when the variant is the current plan', async () => {
+			const update = await receive(
+				'subscription_updated',
+				subscriptionPayload(STARTER.variantId)
+			)
+
+			expect(prisma.subscription.update).not.toHaveBeenCalled()
+			expect(prisma.plan.findUnique).not.toHaveBeenCalled()
+			expect(update).toMatchObject({ processingError: null, processed: true })
+		})
+
+		it('records a processing error for an unknown variant', async () => {
+			const update = await receive(
+				'subscription_updated',
+				subscriptionPayload('v-unknown')
+			)
+
+			expect(prisma.subscription.update).not.toHaveBeenCalled()
+			expect(subscription.planId).toBe(7)
+			expect(update.processed).toBe(false)
+			expect(update.processingError).toContain(
+				'Plan not found for variant v-unknown'
+			)
+		})
+
+		it('records a processing error when the subscription is unknown', async () => {
+			subscription = null
+
+			const update = await receive(
+				'subscription_updated',
+				subscriptionPayload(GROWTH.variantId)
+			)
+
+			expect(update.processed).toBe(false)
+			expect(update.processingError).toContain('Subscription sub-1 not found')
+		})
+
+		it('credits an upgrade invoice delivered before its subscription_updated once it is resent', async () => {
+			const early = await receive(
+				'subscription_payment_success',
+				paymentSuccess('updated')
+			)
+			expect(early.processed).toBe(false)
+			expect(early.processingError).toContain('plan change not processed yet')
+
+			await receive(
+				'subscription_updated',
+				subscriptionPayload(GROWTH.variantId)
+			)
+			await receive('subscription_payment_success', paymentSuccess('updated'))
+
+			expect(updateCredits).toHaveBeenCalledTimes(1)
+			expect(updateCredits).toHaveBeenCalledWith(
+				'user123',
+				400,
+				null,
+				'Subscription payment success (plan change)'
+			)
+		})
+
+		it.each([
+			['subscription_updated', 'subscription_plan_changed'],
+			['subscription_plan_changed', 'subscription_updated'],
+		])(
+			'applies the plan change once when %s and %s both arrive',
+			async (first, second) => {
+				const payload = subscriptionPayload(GROWTH.variantId)
+
+				await receive(first, payload)
+				await receive(second, payload)
+				await receive('subscription_payment_success', paymentSuccess('updated'))
+
+				expect(prisma.subscription.update).toHaveBeenCalledWith(
+					expect.objectContaining({
+						data: expect.objectContaining({ oldPlanId: 7, planId: 8 }),
+					})
+				)
+				// the plan change, then clearing the marker after the invoice
+				expect(prisma.subscription.update).toHaveBeenCalledTimes(2)
+				expect(updateCredits).toHaveBeenCalledTimes(1)
+				expect(updateCredits).toHaveBeenCalledWith(
+					'user123',
+					400,
+					null,
+					'Subscription payment success (plan change)'
+				)
+				expect(events.every(event => event.processed)).toBe(true)
+			}
+		)
+
+		it('does not move back to the previous plan on a late delivery of an older update', async () => {
+			await receive(
+				'subscription_updated',
+				subscriptionPayload(GROWTH.variantId, T2)
+			)
+			const late = await receive(
+				'subscription_updated',
+				subscriptionPayload(STARTER.variantId, T1)
+			)
+
+			expect(subscription).toMatchObject({ oldPlanId: 7, planId: 8 })
+			expect(late).toMatchObject({ processingError: null, processed: true })
+
+			await receive('subscription_payment_success', paymentSuccess('updated'))
+			expect(updateCredits).toHaveBeenCalledWith(
+				'user123',
+				400,
+				null,
+				'Subscription payment success (plan change)'
+			)
+		})
+
+		// A marker left by the previous version (Starter -> Growth, never
+		// cleared), then a routine subscription_updated processed by this
+		// version: it does not change the plan, so it is not the plan change of
+		// the next `updated` invoice (here Growth -> a bigger plan whose own
+		// subscription_updated has not arrived yet).
+		it('does not take a routine subscription_updated for the plan change of an invoice', async () => {
+			givenSubscriptionOn(GROWTH, STARTER.id)
+
+			await receive(
+				'subscription_updated',
+				subscriptionPayload(GROWTH.variantId)
+			)
+			const invoice = await receive(
+				'subscription_payment_success',
+				paymentSuccess('updated')
+			)
+
+			expect(updateCredits).not.toHaveBeenCalled()
+			expect(invoice.processed).toBe(false)
+			expect(invoice.processingError).toContain('plan change not processed yet')
+		})
 	})
 
 	describe('first subscription purchase', () => {

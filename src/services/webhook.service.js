@@ -12,6 +12,11 @@ const CREDITING_EVENTS = new Set([
 	'subscription_payment_success',
 ])
 
+// Note stored on a processed subscription_updated event that moved its
+// subscription to another plan (see processSubscriptionUpdated): the plan
+// change marker of the next `updated` invoice (see hasProcessedPlanChange).
+const PLAN_CHANGE_NOTE = 'Plan change applied'
+
 // methode to process the webhooks #id
 // Processing errors are recorded on the WebhookEvent row (`processingError`,
 // `processed` stays false) instead of being thrown: the event is already
@@ -30,6 +35,7 @@ export async function processWebhook(id) {
 	// never log the payload: it contains the customer's name and email
 	console.info(`processing webhook ${id}: ${webhook.eventName}`)
 
+	let note = null
 	try {
 		// process the webhook
 		const parsed_webhook = JSON.parse(webhook.body)
@@ -70,7 +76,7 @@ export async function processWebhook(id) {
 				await processSubscriptionResumed(parsed_webhook)
 				break
 			case 'subscription_updated':
-				// nothing to do
+				note = await processSubscriptionUpdated(parsed_webhook, webhook)
 				break
 		}
 	} catch (error) {
@@ -87,9 +93,12 @@ export async function processWebhook(id) {
 		return
 	}
 
-	// the webhook is processed, update the webhook
+	// the webhook is processed, update the webhook (a plan change applied by
+	// subscription_updated keeps a note, see hasProcessedPlanChange)
 	await prisma.webhookEvent.update({
-		data: { processed: true },
+		data: note
+			? { processingError: note, processed: true }
+			: { processed: true },
 		where: { id: id },
 	})
 }
@@ -139,29 +148,67 @@ async function findProcessedDuplicate(webhook, parsed_webhook) {
 	)
 }
 
-// True when a processed subscription_plan_changed event moved this
-// subscription to its current plan. A plan change marker (`oldPlanId`) set by
-// this version always has one. The version before it set `oldPlanId` at every
-// plan change, never cleared it and never marked its webhook events
-// processed: such a stale marker must not be taken for the plan change of a
-// new `updated` invoice that arrives before its subscription_plan_changed.
+// True when a processed subscription_updated or subscription_plan_changed
+// event of the same subscription is more recent (Lemon Squeezy's
+// `updated_at`) than this one: a late delivery or a Resend of an old state
+// must not move the subscription back to its previous plan.
+async function hasNewerProcessedUpdate(event, payload, subscriptionId) {
+	const updatedAt = Date.parse(payload.data?.attributes?.updated_at)
+	if (Number.isNaN(updatedAt)) {
+		return false
+	}
+
+	const updates = await prisma.webhookEvent.findMany({
+		where: {
+			eventName: { in: ['subscription_updated', 'subscription_plan_changed'] },
+			id: { not: event.id },
+			userId: event.userId,
+			processed: true,
+		},
+		select: { eventName: true, body: true },
+	})
+
+	return updates.some(update => {
+		const other = parseBody(update.body)
+		return (
+			planChangeSubscriptionId(update.eventName, other) === subscriptionId &&
+			Date.parse(other?.data?.attributes?.updated_at) > updatedAt
+		)
+	})
+}
+
+// True when a processed plan change moved this subscription to its current
+// plan: a subscription_plan_changed event, or a subscription_updated event
+// that changed the plan (it carries PLAN_CHANGE_NOTE; the other, routine
+// subscription_updated events do not count). A plan change marker
+// (`oldPlanId`) set by this version always has one. The version before it
+// set `oldPlanId` at every plan change, never cleared it and never marked its
+// webhook events processed: such a stale marker must not be taken for the
+// plan change of a new `updated` invoice that arrives before its plan change.
 async function hasProcessedPlanChange(subscription, userId) {
 	// a user only has a handful of these events: compare the stored payloads
 	const planChanges = await prisma.webhookEvent.findMany({
 		where: {
-			eventName: 'subscription_plan_changed',
+			OR: [
+				{ eventName: 'subscription_plan_changed' },
+				{
+					processingError: { startsWith: PLAN_CHANGE_NOTE },
+					eventName: 'subscription_updated',
+				},
+			],
 			processed: true,
 			userId: userId,
 		},
-		select: { body: true },
+		select: { eventName: true, body: true },
 	})
 
 	return planChanges.some(event => {
-		const attributes = parseBody(event.body)?.data?.attributes
+		const payload = parseBody(event.body)
 		return (
-			String(attributes?.first_subscription_item?.subscription_id) ===
+			planChangeSubscriptionId(event.eventName, payload) ===
 				subscription.lemonSqueezyId &&
-			String(attributes?.variant_id) === subscription.plan?.variantId
+			String(payload?.data?.attributes?.variant_id) ===
+				subscription.plan?.variantId
 		)
 	})
 }
@@ -172,6 +219,18 @@ function parseBody(body) {
 	} catch {
 		return null
 	}
+}
+
+// The Lemon Squeezy subscription id of a plan change event, as stored in
+// Subscription.lemonSqueezyId: `data.id` of a subscription_updated (a
+// subscription object, like subscription_created), the subscription item's
+// subscription of a subscription_plan_changed (as processed there).
+function planChangeSubscriptionId(eventName, payload) {
+	const id =
+		eventName === 'subscription_updated'
+			? payload?.data?.id
+			: payload?.data?.attributes?.first_subscription_item?.subscription_id
+	return id == null ? undefined : String(id)
 }
 
 // private function to process the webhook "order_created": credits a paid
@@ -317,12 +376,13 @@ async function processSubscriptionCreated(webhook) {
 // - "initial": first payment, already credited by order_created (skipped)
 // - "updated": immediate invoice after a plan change, the current period was
 //   already credited with the old plan: add the extra credits of the new plan
-//   only (never negative). Fails while subscription_plan_changed is not
-//   processed yet (no `oldPlanId`, or one left by the previous version, see
-//   hasProcessedPlanChange), so the invoice can be resent after it.
+//   only (never negative). Fails while the plan change (subscription_updated
+//   or subscription_plan_changed) is not processed yet (no `oldPlanId`, or
+//   one left by the previous version, see hasProcessedPlanChange), so the
+//   invoice can be resent after it.
 // - "renewal" (and any other reason): a new period, the full current plan
-// The plan change marker (`oldPlanId`, set by subscription_plan_changed) is
-// cleared once an invoice is credited, so it is used at most once.
+// The plan change marker (`oldPlanId`, set by a plan change) is cleared once
+// an invoice is credited, so it is used at most once.
 async function processSubscriptionPaymentSuccess(webhook) {
 	// Extract the Clerk user ID and Lemon Squeezy subscription ID from the webhook data
 	const userId = webhook.meta.custom_data.user_id
@@ -380,14 +440,14 @@ async function processSubscriptionPaymentSuccess(webhook) {
 	if (billingReason === 'updated') {
 		// Lemon Squeezy does not order its webhooks: without the plan change
 		// marker the extra credits are unknown. Fail so this invoice can be
-		// resent once subscription_plan_changed is processed (crediting 0 would
+		// resent once its plan change is processed (crediting 0 would
 		// mark it processed and a resend would be skipped as a duplicate).
 		if (
 			!subscription.oldPlanId ||
 			!(await hasProcessedPlanChange(subscription, userId))
 		) {
 			throw new Error(
-				`Subscription ${subscriptionId}: plan change not processed yet, resend this invoice after its subscription_plan_changed event`
+				`Subscription ${subscriptionId}: plan change not processed yet, resend this invoice after its plan change (subscription_updated or subscription_plan_changed) event`
 			)
 		}
 		const oldPlan = await prisma.plan.findUnique({
@@ -506,6 +566,70 @@ async function processSubscriptionResumed(webhook) {
 				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
+}
+
+// private function to process the webhook "subscription_updated", sent for
+// every change of a subscription (status, renewal date, payment method,
+// plan...). Lemon Squeezy does not send subscription_plan_changed (none in
+// production): a `variant_id` other than the subscription's plan is a plan
+// change, applied like subscription_plan_changed does (`oldPlanId` keeps the
+// previous plan for the `updated` invoice, which then credits max(0, new -
+// old)). The status is left to the status events. Both events can arrive for
+// one change: the second one finds the subscription already on the new plan
+// and changes nothing. Returns the note stored on the event when the plan
+// changed, null otherwise.
+async function processSubscriptionUpdated(webhook, event) {
+	const variantId = webhook.data?.attributes?.variant_id
+	const subscriptionId = planChangeSubscriptionId(
+		'subscription_updated',
+		webhook
+	)
+	if (variantId == null || subscriptionId == null) {
+		return null
+	}
+
+	const subscription = await prisma.subscription.findUnique({
+		where: { lemonSqueezyId: subscriptionId },
+		include: { plan: true },
+	})
+
+	if (!subscription) {
+		throw new Error(
+			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
+		)
+	}
+
+	// same plan: a routine update (renewal, status, payment method...)
+	if (subscription.plan?.variantId === String(variantId)) {
+		return null
+	}
+
+	const newPlan = await prisma.plan.findUnique({
+		where: { variantId: String(variantId) },
+	})
+
+	if (!newPlan) {
+		throw new Error(
+			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
+		)
+	}
+
+	if (await hasNewerProcessedUpdate(event, webhook, subscriptionId)) {
+		console.info(
+			`subscription ${subscriptionId}: older than a processed update, plan change to variant ${variantId} skipped`
+		)
+		return null
+	}
+
+	await prisma.subscription.update({
+		data: { oldPlanId: subscription.planId, planId: newPlan.id },
+		where: { lemonSqueezyId: subscriptionId },
+	})
+
+	console.info(
+		`subscription ${subscriptionId}: plan ${subscription.planId} -> ${newPlan.id}`
+	)
+	return `${PLAN_CHANGE_NOTE}: plan ${subscription.planId} -> plan ${newPlan.id}`
 }
 
 // Lemon Squeezy ids are integers; Int columns must not receive strings.
