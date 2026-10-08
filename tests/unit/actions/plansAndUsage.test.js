@@ -9,20 +9,16 @@ import {
 	getUsageForUser,
 } from '@/services/database.service'
 import {
-	getCheckoutUrls,
 	getCustomerPortalUrl,
 	getMySubscription,
 	listPlans,
 } from '@/app/actions/app/plans'
 import {
-	getCheckoutsLinks,
-	getCustomerPortalLink,
-} from '@/services/lemonsqueezy.service'
-import {
 	getMyCredits,
 	getMyUsage,
 	getMyUsageByToken,
 } from '@/app/actions/app/usage'
+import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/database.service')
@@ -43,7 +39,6 @@ describe('client-facing server actions', () => {
 
 		it.each([
 			['getMySubscription', getMySubscription, getSubscriptionFromUserId],
-			['getCheckoutUrls', getCheckoutUrls, getCheckoutsLinks],
 			['getCustomerPortalUrl', getCustomerPortalUrl, getCustomerPortalLink],
 			['getMyCredits', getMyCredits, getCreditsFromUserId],
 			['getMyUsage', getMyUsage, getUsageForUser],
@@ -70,15 +65,6 @@ describe('client-facing server actions', () => {
 			getCustomerPortalLink.mockResolvedValue(null)
 
 			await expect(getCustomerPortalUrl()).resolves.toBeNull()
-		})
-
-		it('getCheckoutUrls should only create checkouts for the stored plans', async () => {
-			getCheckoutsLinks.mockResolvedValue({ v1: 'url1', v2: 'url2' })
-
-			await expect(
-				getCheckoutUrls([{ variantId: 'injected' }])
-			).resolves.toEqual({ v1: 'url1', v2: 'url2' })
-			expect(getCheckoutsLinks).toHaveBeenCalledWith(PLANS)
 		})
 
 		it('getMyCredits should return the balance', async () => {

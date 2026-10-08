@@ -1,7 +1,7 @@
 'use server'
 
 import {
-	getCheckoutsLinks,
+	createCheckoutLink,
 	getCustomerPortalLink,
 } from '@/services/lemonsqueezy.service'
 import {
@@ -10,12 +10,21 @@ import {
 } from '@/services/database.service'
 import { requireUserId } from '@/services/auth.service'
 
-// Checkout links are only created for the plans stored in the database, never
-// for variant ids sent by the browser.
-export async function getCheckoutUrls() {
-	await requireUserId()
+// Creates the checkout of the plan the user clicked, so that showing the plans
+// page creates none. The browser only names the variant: the checkout is
+// created for the matching enabled plan of the database, never for any other id.
+export async function createCheckoutUrl(variantId) {
+	const userId = await requireUserId()
 	const plans = await getPlans()
-	return getCheckoutsLinks(plans)
+	const plan = plans.find(
+		stored => stored.variantEnabled && stored.variantId === variantId
+	)
+
+	if (!plan) {
+		throw new Error('Unknown plan')
+	}
+
+	return createCheckoutLink(plan.variantId, userId)
 }
 
 // Returns null when the user never bought anything (no Lemon Squeezy customer).
