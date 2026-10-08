@@ -14,6 +14,13 @@
 			"matchPackageNames": ["pnpm"],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
+		},
+		{
+			"description": "The nixpacks-install CI job pins the exact Node that Nixpacks 1.41.0 installs in production (nodejs_22 from a frozen nixpkgs archive = 22.14.0). Bump it only together with the production build, never on its own.",
+			"matchManagers": ["github-actions"],
+			"matchDepNames": ["node"],
+			"matchCurrentValue": "22.14.0",
+			"enabled": false
 		}
 	]
 }
