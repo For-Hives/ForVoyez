@@ -6,6 +6,7 @@ import {
 	normalizeDescribeSchema,
 	normalizeDescribeText,
 	normalizeLanguage,
+	withLegacyAltText,
 } from '@/helpers/describeInput'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 
@@ -111,5 +112,39 @@ describe('normalizeLanguage', () => {
 		expect(normalizeLanguage('')).toBe('en')
 		expect(normalizeLanguage(undefined)).toBe('en')
 		expect(normalizeLanguage('   ')).toBe('en')
+	})
+})
+
+describe('withLegacyAltText', () => {
+	it('adds alt_text as a copy of alternativeText', () => {
+		expect(
+			withLegacyAltText({
+				alternativeText: 'Two kittens',
+				caption: 'Caption',
+				title: 'Title',
+			})
+		).toEqual({
+			alternativeText: 'Two kittens',
+			alt_text: 'Two kittens',
+			caption: 'Caption',
+			title: 'Title',
+		})
+	})
+
+	it('copies an empty alternativeText as is', () => {
+		expect(withLegacyAltText({ alternativeText: '' })).toEqual({
+			alternativeText: '',
+			alt_text: '',
+		})
+	})
+
+	it('keeps an existing alt_text and results without alternativeText', () => {
+		const withAltText = { alternativeText: 'New', alt_text: 'Own value' }
+		const withoutAlternativeText = { title: 'Title' }
+
+		expect(withLegacyAltText(withAltText)).toBe(withAltText)
+		expect(withLegacyAltText(withoutAlternativeText)).toBe(
+			withoutAlternativeText
+		)
 	})
 })

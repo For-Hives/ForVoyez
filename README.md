@@ -175,7 +175,7 @@ The full reference is at [doc.forvoyez.com](https://doc.forvoyez.com/describe). 
 - `context` (optional): additional information about the image to guide the generation.
 - `keywords` (optional): keywords to work into the metadata.
 - `language` (optional): language of the generated metadata, `en` by default.
-- `schema` (optional): a JSON string, a flat map of output field name to description. Without it, the fields are `title`, `alternativeText` and `caption`.
+- `schema` (optional): a JSON string, a flat map of output field name to description. Without it, the fields are `title`, `alternativeText` and `caption`, and the response also has `alt_text`, a copy of `alternativeText` that the WordPress plugin up to 1.1.40 reads.
 
 Example Request:
 
@@ -183,13 +183,14 @@ Example Request:
 curl -X POST -H "Authorization: Bearer <YOUR_API_TOKEN>" -F "image=@/path/to/image.jpg" -F "context=A beautiful sunset over the ocean" -F "language=en" https://forvoyez.com/api/describe
 ```
 
-Example Response (200, exactly the schema keys):
+Example Response (200, exactly the schema keys, plus `alt_text` because this request sends no `schema`):
 
 ```json
 {
 	"title": "Serene Sunset Over the Calm Ocean Waves",
 	"alternativeText": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape.",
-	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea."
+	"caption": "Witness the enchanting beauty of a serene sunset over the calm ocean waves, as the vibrant colors paint the sky and the gentle breeze carries the salty scent of the sea.",
+	"alt_text": "A breathtaking sunset with vibrant orange and pink hues reflected on the tranquil ocean surface, creating a peaceful and mesmerizing seascape."
 }
 ```
 

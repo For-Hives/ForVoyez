@@ -1,12 +1,13 @@
 import {
+	InvalidDescribeInputError,
+	normalizeDescribeSchema,
+	withLegacyAltText,
+} from '@/helpers/describeInput'
+import {
 	chargeOneCredit,
 	findActiveApiToken,
 	NoCreditsLeftError,
 } from '@/services/database.service'
-import {
-	InvalidDescribeInputError,
-	normalizeDescribeSchema,
-} from '@/helpers/describeInput'
 import {
 	blobToBase64,
 	getImageDescription,
@@ -80,9 +81,10 @@ export async function POST(request) {
 
 		// Flat map key -> description; empty or unparseable means the default
 		// fields, too many or too long fields are a 400 (no credit charged)
+		const sentSchema = formData.get('schema')
 		let schema
 		try {
-			schema = normalizeDescribeSchema(formData.get('schema'))
+			schema = normalizeDescribeSchema(sentSchema)
 		} catch (error) {
 			if (error instanceof InvalidDescribeInputError) {
 				return jsonError(error.message, 400, 'Bad Request')
@@ -116,7 +118,13 @@ export async function POST(request) {
 				})
 		)
 
-		return Response.json(descriptionResult, { status: 200 })
+		// no `schema` field: WordPress plugin <= 1.1.40 reads `alt_text`
+		return Response.json(
+			sentSchema === null
+				? withLegacyAltText(descriptionResult)
+				: descriptionResult,
+			{ status: 200 }
+		)
 	} catch (error) {
 		if (error instanceof NoCreditsLeftError) {
 			return jsonError('Unauthorized, no credit left', 401)

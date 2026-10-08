@@ -266,7 +266,10 @@ describe('describe API', () => {
 
 			expect(response.status).toBe(200)
 			expect(response.headers.get('Content-Type')).toContain('application/json')
-			expect(await response.json()).toEqual(mockDescription)
+			expect(await response.json()).toEqual({
+				...mockDescription,
+				alt_text: 'Alt Text',
+			})
 			expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
 			expect(prisma.user.updateMany).toHaveBeenCalledWith({
 				where: { credits: { gte: 1 }, clerkId: 'user123' },
@@ -342,6 +345,8 @@ describe('describe API', () => {
 					language: 'en',
 				})
 			)
+			// exactly the keys of the schema that was sent, no `alt_text` copy
+			expect(await response.json()).toEqual(mockDescription)
 		})
 
 		it('should generate the default fields when no schema is sent', async () => {
@@ -361,6 +366,45 @@ describe('describe API', () => {
 				keywords: '',
 				context: '',
 			})
+		})
+
+		it('should also return alt_text when no schema is sent (WordPress plugin <= 1.1.40)', async () => {
+			givenValidApiKey()
+			givenCreditReserved()
+			blobToBase64.mockResolvedValue(mockBase64Image)
+			getImageDescription.mockResolvedValue(mockDescription)
+			const formData = imageForm()
+			formData.append('context', '')
+			formData.append('language', 'en')
+
+			const response = await POST(mockRequest(authHeader, formData))
+
+			expect(response.status).toBe(200)
+			expect(await response.json()).toEqual({
+				alternativeText: 'Alt Text',
+				title: 'Image Title',
+				alt_text: 'Alt Text',
+				caption: 'Caption',
+			})
+			expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
+		})
+
+		it('should not add alt_text when a schema field is sent, even an empty one', async () => {
+			givenValidApiKey()
+			givenCreditReserved()
+			blobToBase64.mockResolvedValue(mockBase64Image)
+			getImageDescription.mockResolvedValue(mockDescription)
+			const formData = imageForm()
+			formData.append('schema', '')
+
+			const response = await POST(mockRequest(authHeader, formData))
+
+			expect(response.status).toBe(200)
+			expect(getImageDescription).toHaveBeenCalledWith(
+				mockBase64Image,
+				expect.objectContaining({ schema: defaultJsonTemplateSchema })
+			)
+			expect(await response.json()).toEqual(mockDescription)
 		})
 	})
 })

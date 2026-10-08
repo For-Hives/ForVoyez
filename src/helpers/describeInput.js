@@ -108,3 +108,22 @@ export function normalizeLanguage(value) {
 
 	return language || 'en'
 }
+
+/**
+ * Adds `alt_text`, a copy of `alternativeText`, to a describe result. The
+ * WordPress plugin up to 1.1.40 sends no `schema` and reads `alt_text`:
+ * without it, each analysis saved an empty alt text over the existing one.
+ * The describe route only calls this when the request has no `schema` field.
+ * @param {Record<string, string>} metadata
+ * @returns {Record<string, string>}
+ */
+export function withLegacyAltText(metadata) {
+	if (
+		typeof metadata?.alternativeText !== 'string' ||
+		Object.hasOwn(metadata, 'alt_text')
+	) {
+		return metadata
+	}
+
+	return { ...metadata, alt_text: metadata.alternativeText }
+}
