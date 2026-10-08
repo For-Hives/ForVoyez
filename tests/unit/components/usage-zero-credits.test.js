@@ -92,6 +92,7 @@ describe('UsageChartComponent', () => {
 		// nor the "never used" banner while the history is loading
 		expect(screen.queryByTestId('usage-tooltip')).toBeNull()
 		expect(screen.queryByTestId('no-usage-data')).toBeNull()
+		expect(screen.queryByTestId('no-usage-summary')).toBeNull()
 
 		await act(async () => credits.resolve(0))
 
@@ -111,8 +112,24 @@ describe('UsageChartComponent', () => {
 		expect(await screen.findByTestId('usage-chart')).toBeTruthy()
 		expect(screen.getByTestId('usage-by-token-chart')).toBeTruthy()
 		expect(screen.queryByTestId('no-usage-data')).toBeNull()
+		expect(screen.queryByTestId('no-usage-summary')).toBeNull()
 		expect(screen.queryByTestId('usage-tooltip')).toBeNull()
-		// the balance after the last operation
+		expect(
+			screen.getByText('Follow your remaining credits over time:').nextSibling
+				.textContent
+		).toBe('0 credits left')
+	})
+
+	it('should show the real balance next to the chart, not its last point', async () => {
+		// two overlapping API calls stored in the reverse order: the last point
+		// (1) is one step behind the balance (0)
+		getMyCredits.mockResolvedValue(0)
+		getMyUsage.mockResolvedValue([{ ...USAGE_DOWN_TO_ZERO[1], creditsLeft: 1 }])
+		getMyUsageByToken.mockResolvedValue([])
+
+		render(createElement(UsageChartComponent))
+
+		expect(await screen.findByTestId('usage-chart')).toBeTruthy()
 		expect(
 			screen.getByText('Follow your remaining credits over time:').nextSibling
 				.textContent
@@ -133,7 +150,14 @@ describe('UsageChartComponent', () => {
 		await act(async () => usage.resolve([]))
 
 		expect(screen.getByTestId('usage-tooltip')).toBeTruthy()
-		expect(screen.getAllByTestId('no-usage-data').length).toBeGreaterThan(0)
+		expect(screen.getByTestId('no-usage-summary').textContent).toBe(
+			'No usage yet'
+		)
+		// one element only: the e2e specs wait for it in Playwright strict mode
+		expect(screen.getAllByTestId('no-usage-data')).toHaveLength(1)
+		expect(screen.getByTestId('no-usage-data').textContent).toBe(
+			'No usage data available.'
+		)
 	})
 
 	it('should call each server action once', async () => {

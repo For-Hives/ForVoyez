@@ -110,12 +110,16 @@ export function UsageChartComponent() {
 				{isLoadingUsage ? (
 					<SkeletonText />
 				) : usage.length > 0 ? (
+					// the real balance, not the last point of the chart: that one can
+					// lag behind when two API calls overlap
 					<p className="text-forvoyez_orange-600 text-sm font-bold">
-						{usage[usage.length - 1].creditsLeft}{' '}
+						{userCredits === null ? <SkeletonText /> : userCredits}{' '}
 						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
 				) : (
-					<p className="text-sm text-slate-600" data-testid="no-usage-data">
+					// not "no-usage-data": that one is the chart placeholder below, the
+					// e2e specs expect a single element with it
+					<p className="text-sm text-slate-600" data-testid="no-usage-summary">
 						No usage yet
 					</p>
 				)}

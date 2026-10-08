@@ -580,46 +580,22 @@ describe('Database Service', () => {
 			])
 		})
 
-		it('should return hourlyUsageArray when its length is less than or equal to 5', async () => {
-			const mockUser = { id: 'user123', credits: 10 }
-			const mockUsageData = [
-				{
-					usedAt: new Date('2024-06-04T10:53:49.301Z'),
-					previousCredits: 10,
-					used: 2,
-				},
-				{
-					usedAt: new Date('2024-06-04T11:53:49.301Z'),
-					previousCredits: 8,
-					used: 1,
-				},
-				{
-					usedAt: new Date('2024-06-04T12:53:49.301Z'),
-					previousCredits: 7,
-					used: 1,
-				},
-			]
-			clerk.auth.mockResolvedValue({ userId: mockUser.id })
-			prisma.usage.findMany.mockResolvedValue(mockUsageData)
-
-			const usage = await getUsageForUser()
-
-			expect(usage.length).toBeLessThanOrEqual(5)
-		})
-
-		it('should return hourlyUsageArray when its length is greater than 5', async () => {
-			const mockUser = { id: 'user123', credits: 10 }
+		it('should return one point per hour, the whole history', async () => {
+			const mockUser = { id: 'user123', credits: 0 }
 			const mockUsageData = Array.from({ length: 10 }, (_, i) => ({
 				usedAt: new Date(`2024-06-04T${10 + i}:53:49.301Z`),
 				previousCredits: 10 - i,
-				used: 1,
+				currentCredits: 9 - i,
+				used: -1,
 			}))
 			clerk.auth.mockResolvedValue({ userId: mockUser.id })
 			prisma.usage.findMany.mockResolvedValue(mockUsageData)
 
 			const usage = await getUsageForUser()
 
-			expect(usage.length).toBeGreaterThan(5)
+			expect(usage.map(point => [point.dateHour, point.creditsLeft])).toEqual(
+				Array.from({ length: 10 }, (_, i) => [`2024-06-04T${10 + i}`, 9 - i])
+			)
 		})
 
 		it('should throw an error if the user is not authenticated', async () => {

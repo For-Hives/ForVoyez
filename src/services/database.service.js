@@ -220,7 +220,10 @@ export async function getUsageForUser() {
 		const dateHour = usage.usedAt.toISOString().slice(0, 13)
 
 		// rows are sorted, so the last one of the hour wins. currentCredits is
-		// the balance after the operation (previousCredits the one before it)
+		// the balance after the operation (previousCredits the one before it).
+		// Two overlapping API calls can end in the reverse order of their
+		// balances (usedAt is set once the work is done), so the last point may
+		// lag behind the real balance, which the page shows next to the chart.
 		hourlyCreditsLeft[dateHour] = {
 			creditsLeft: usage.currentCredits,
 			fullDate: usage.usedAt,
