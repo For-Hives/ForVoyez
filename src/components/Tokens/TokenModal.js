@@ -86,7 +86,7 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="bg-opacity-25 fixed inset-0 bg-black" />
+					<div className="fixed inset-0 bg-black/25" />
 				</Transition.Child>
 
 				<div className="fixed inset-0 overflow-y-auto">
