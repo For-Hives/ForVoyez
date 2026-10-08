@@ -2,13 +2,9 @@
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '@clerk/nextjs'
-import Link from 'next/link'
 
-import {
-	getCheckoutUrls,
-	getMySubscription,
-	listPlans,
-} from '@/app/actions/app/plans'
+import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
+import { getMySubscription, listPlans } from '@/app/actions/app/plans'
 import { sortPlans } from '@/helpers/sortPlans'
 
 export function RefillPlansComponent() {
@@ -16,7 +12,7 @@ export function RefillPlansComponent() {
 
 	const [plans, setPlans] = useState([])
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [checkoutUrls, setCheckoutUrls] = useState(null)
+	const [isSubscriptionChecked, setIsSubscriptionChecked] = useState(false)
 
 	useEffect(() => {
 		const fetchPlans = async () => {
@@ -24,7 +20,6 @@ export function RefillPlansComponent() {
 				const plans = await listPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
-				await fetchCheckoutUrls(sortedPlans)
 			} catch (error) {
 				console.error('Error fetching plans:', error)
 			}
@@ -38,17 +33,9 @@ export function RefillPlansComponent() {
 				}
 			} catch (error) {
 				console.error('Error fetching subscription:', error)
-			}
-		}
-
-		const fetchCheckoutUrls = async plans => {
-			if (!plans) return
-
-			try {
-				const checkouts = await getCheckoutUrls()
-				setCheckoutUrls(checkouts)
-			} catch (error) {
-				console.error('Error fetching checkouts:', error)
+			} finally {
+				// the refills are only shown to subscribers
+				setIsSubscriptionChecked(true)
 			}
 		}
 
@@ -56,7 +43,7 @@ export function RefillPlansComponent() {
 		fetchSubscription()
 	}, [auth.userId])
 
-	if (plans.length === 0 || !checkoutUrls) {
+	if (plans.length === 0 || !isSubscriptionChecked) {
 		return (
 			<>
 				<div className="animate-pulse">
@@ -158,9 +145,9 @@ export function RefillPlansComponent() {
 											</p>
 											<p className={''}>One time payment to refill</p>
 
-											{currentSubscription && checkoutUrls[tier.variantId] && (
+											{currentSubscription && (
 												<div>
-													<Link
+													<CheckoutButtonComponent
 														aria-describedby={tier.id}
 														className={classNames(
 															tier.mostPopular
@@ -169,10 +156,10 @@ export function RefillPlansComponent() {
 															'focus-visible:outline-forvoyez_orange-500 mt-6 block w-full rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 														)}
 														data-testid={`subscribe-${tier.variantId}`}
-														href={checkoutUrls[tier.variantId]}
+														variantId={tier.variantId}
 													>
 														Refill your credits
-													</Link>
+													</CheckoutButtonComponent>
 												</div>
 											)}
 										</div>

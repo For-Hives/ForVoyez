@@ -9,40 +9,35 @@ import 'server-only'
 
 const getStoreId = () => process.env.LEMON_SQUEEZY_STORE_ID
 
-export async function getCheckoutsLinks(plans) {
-	await initLemonSqueezy()
-
-	const STORE_ID = getStoreId()
-	const user = await currentUser()
-
-	if (!user) {
+// Creates the checkout of one plan, when the user clicks its button. The caller
+// checks that the variant is a plan of the database; `userId` is the Clerk id
+// the webhook reads back from the custom data to credit the right user.
+export async function createCheckoutLink(variantId, userId) {
+	if (!userId) {
 		console.error('User is not authenticated.')
 		throw new Error('User is not authenticated.')
 	}
 
-	const checkoutUrls = {}
+	await initLemonSqueezy()
 
-	for (const plan of plans) {
-		const newCheckout = await ls.createCheckout(STORE_ID, plan.variantId, {
-			productOptions: {
-				redirectUrl: `https://forvoyez.com/app/billing/`,
-				receiptButtonText: 'Go to Dashboard',
-				enabledVariants: [plan.variantId], //
+	const newCheckout = await ls.createCheckout(getStoreId(), variantId, {
+		productOptions: {
+			redirectUrl: `https://forvoyez.com/app/billing/`,
+			receiptButtonText: 'Go to Dashboard',
+			enabledVariants: [variantId],
+		},
+		checkoutData: {
+			custom: {
+				user_id: userId,
 			},
-			checkoutData: {
-				custom: {
-					user_id: user.id,
-				},
-			},
-			// 2 hours (7 200 000 ms = 2 hours)
-			// the checkout will expire after 2 hours, to prevent the user from using an old checkout link
-			// and avoid too many checkouts url in the system
-			expiresAt: new Date(Date.now() + 7200000),
-		})
-		checkoutUrls[plan.variantId] = newCheckout.data.data.attributes.url
-	}
+		},
+		// 2 hours (7 200 000 ms = 2 hours)
+		// the checkout will expire after 2 hours, to prevent the user from using an old checkout link
+		// and avoid too many checkouts url in the system
+		expiresAt: new Date(Date.now() + 7200000),
+	})
 
-	return checkoutUrls
+	return newCheckout.data.data.attributes.url
 }
 
 // Returns the Lemon Squeezy customer portal URL of the authenticated user, or

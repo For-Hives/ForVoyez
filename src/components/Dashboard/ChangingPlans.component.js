@@ -7,11 +7,11 @@ import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
-	getCheckoutUrls,
 	getCustomerPortalUrl,
 	getMySubscription,
 	listPlans,
 } from '@/app/actions/app/plans'
+import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import { sortPlans } from '@/helpers/sortPlans'
 
@@ -29,7 +29,7 @@ export function ChangingPlansComponent() {
 	const [frequency, setFrequency] = useState(frequencies[0])
 	const [isAnnually, setIsAnnually] = useState(false)
 	const [currentSubscription, setCurrentSubscription] = useState(null)
-	const [checkoutUrls, setCheckoutUrls] = useState(null)
+	const [isSubscriptionChecked, setIsSubscriptionChecked] = useState(false)
 	const [customerPortalUrl, setCustomerPortalUrl] = useState(null)
 	const auth = useAuth()
 
@@ -43,7 +43,6 @@ export function ChangingPlansComponent() {
 				const plans = await listPlans()
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
-				await fetchCheckoutUrls(sortedPlans)
 			} catch (error) {
 				console.error('Error fetching plans:', error)
 			}
@@ -59,17 +58,10 @@ export function ChangingPlansComponent() {
 				}
 			} catch (error) {
 				console.error('Error fetching subscription:', error)
-			}
-		}
-
-		const fetchCheckoutUrls = async plans => {
-			if (!plans) return
-
-			try {
-				const checkouts = await getCheckoutUrls()
-				setCheckoutUrls(checkouts)
-			} catch (error) {
-				console.error('Error fetching checkouts:', error)
+			} finally {
+				// a subscriber gets the portal buttons, not "Subscribe": wait for
+				// the answer before showing the plans
+				setIsSubscriptionChecked(true)
 			}
 		}
 
@@ -87,8 +79,8 @@ export function ChangingPlansComponent() {
 		fetchSubscription()
 	}, [auth.userId])
 
-	if (plans.length === 0 || !checkoutUrls) {
-		// Check if URLs are still loading
+	if (plans.length === 0 || !isSubscriptionChecked) {
+		// Check if the plans or the subscription are still loading
 		return (
 			<div className={'py-20'} data-testid="plans-loading">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -237,7 +229,7 @@ export function ChangingPlansComponent() {
 										</Link>
 									</div>
 								) : (
-									<Link
+									<CheckoutButtonComponent
 										aria-describedby={tier.id}
 										className={classNames(
 											tier.mostPopular
@@ -246,10 +238,10 @@ export function ChangingPlansComponent() {
 											'focus-visible:outline-forvoyez_orange-500 mt-6 block w-full rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 										)}
 										data-testid={`subscribe-${tier.variantId}`}
-										href={checkoutUrls[tier.variantId] ?? '#'}
+										variantId={tier.variantId}
 									>
 										{tier.buttonText || 'Subscribe'}
-									</Link>
+									</CheckoutButtonComponent>
 								)}
 								<div className={'mt-2 flex items-center'}>
 									{isAnnually ? (
