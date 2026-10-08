@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export const metadata = {
 	description:
 		"View ForVoyez's legal notice and company information. Find details about our business registration, contact information, and regulatory compliance.",
@@ -26,8 +28,11 @@ export default function LegalNoticePage() {
 				<br />
 				<strong>Director of publication</strong>: Andy Cinquin
 				<br />
-				<strong>Hosted by</strong>: Contabo GmbH, Aschauer Straße 32a, 81549
-				Munich, Germany
+				<strong>Hosted by</strong>: netcup GmbH, Emmy-Noether-Straße 10, 76131
+				Karlsruhe, Germany, +49 721 7540755-0
+				<br />
+				<strong>Database hosted by</strong>: Contabo GmbH, Welfenstrasse 22,
+				81541 Munich, Germany
 			</p>
 
 			<section>
@@ -94,6 +99,17 @@ export default function LegalNoticePage() {
 					However, we may sometimes request information to process an order,
 					identify a support request, establish correspondences, provide a
 					subscription, or apply for a position.
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
+					How this information is used, and the service providers that process
+					it on our behalf, are described in our{' '}
+					<Link
+						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
+						href="/app/legals/privacy-policy#service-providers"
+					>
+						Privacy Policy
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -167,6 +183,9 @@ export default function LegalNoticePage() {
 				<p className="mt-1 text-sm text-slate-600">
 					Should we update, amend, or make any changes to this document, those
 					changes will be prominently posted here.
+				</p>
+				<p className="mt-4 text-sm text-slate-600">
+					Last updated: October 8, 2026
 				</p>
 			</section>
 		</div>
