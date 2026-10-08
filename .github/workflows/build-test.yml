@@ -33,6 +33,27 @@ jobs:
       - name: 'Lint Code'
         run: pnpm lint
 
+  nixpacks-install:
+    # Production (Coolify, Nixpacks 1.41.0, NIXPACKS_NODE_VERSION=22, i.e. the
+    # nixpkgs nodejs_22 = 22.14.0) installs with corepack 0.24.1, which also
+    # runs the Prisma generate postinstall. Replay that path so a package
+    # manager or a dependency it cannot handle fails here, not on a deploy
+    # (Renovate automerges minor and patch updates).
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Setup Node.js 22.14.0 (the Nixpacks nodejs_22)
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.14.0
+      - name: Install like Nixpacks (corepack 0.24.1)
+        run: |
+          npm install -g corepack@0.24.1
+          corepack enable
+          pnpm --version
+          pnpm i --frozen-lockfile
+
   test-e2e:
     runs-on: ubuntu-latest
     needs: unit-test
