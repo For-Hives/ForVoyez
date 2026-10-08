@@ -4,6 +4,7 @@ import { POST } from '@/app/api/describe/route'
 import {
 	blobToBase64,
 	getImageDescription,
+	UnsupportedImageError,
 } from '@/services/imageDescription.service'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { DescriptionTooLongError } from '@/helpers/describeInput'
@@ -11,7 +12,12 @@ import { verifyJwt } from '@/services/jwt.service'
 
 // The real database.service runs against the mocked Prisma client, so these
 // tests also cover the token lookup and the atomic credit charge.
-vi.mock('@/services/imageDescription.service')
+// the image and the model are stubbed, the error classes are the real ones
+vi.mock('@/services/imageDescription.service', async importOriginal => ({
+	...(await importOriginal()),
+	getImageDescription: vi.fn(),
+	blobToBase64: vi.fn(),
+}))
 vi.mock('@/services/jwt.service')
 vi.mock('@clerk/nextjs/server')
 
@@ -182,17 +188,26 @@ describe('describe API', () => {
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 		})
 
-		it('should return 400 JSON if the uploaded file is not an image', async () => {
+		it('should return 400 JSON if the uploaded file is not a supported image, without charging', async () => {
+			givenValidApiKey()
+			blobToBase64.mockRejectedValue(new UnsupportedImageError())
+
+			const response = await POST(mockRequest(authHeader, imageForm()))
+
+			await expectJsonError(response, 400, 'Bad Request, Invalid image file')
+			expect(prisma.user.updateMany).not.toHaveBeenCalled()
+			expect(getImageDescription).not.toHaveBeenCalled()
+		})
+
+		it('should return 400 JSON if the image is sent as a text field', async () => {
 			givenValidApiKey()
 			const formData = new FormData()
-			formData.append(
-				'image',
-				new Blob(['not an image'], { type: 'text/plain' })
-			)
+			formData.append('image', 'not a file')
 
 			const response = await POST(mockRequest(authHeader, formData))
 
 			await expectJsonError(response, 400, 'Bad Request, Invalid image file')
+			expect(blobToBase64).not.toHaveBeenCalled()
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 		})
 

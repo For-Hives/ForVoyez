@@ -41,6 +41,12 @@ const AI_MAX_OUTPUT_TOKENS = 2000
 const CONTEXT_TAG = 'customer_context'
 const KEYWORDS_TAG = 'customer_keywords'
 
+// Image formats accepted by the API and the playground, as sharp names them.
+// Detected from the bytes: the MIME type sent with the file is not trusted
+// (a WebP sent as application/octet-stream is fine, an SVG, AVIF or TIFF
+// sent as image/png is not).
+export const SUPPORTED_IMAGE_FORMATS = ['jpeg', 'png', 'webp', 'gif']
+
 // The generation failed (model error, timeout, invalid output). The message
 // never carries the prompt, the image or the customer text.
 export class ImageDescriptionError extends Error {
@@ -50,33 +56,46 @@ export class ImageDescriptionError extends Error {
 	}
 }
 
+// The file is not a JPEG, PNG, WebP or GIF image, whatever its MIME type: an
+// SVG, AVIF or TIFF image, an empty file, or no image at all.
+export class UnsupportedImageError extends Error {
+	constructor() {
+		super('Unsupported image format, send a JPEG, PNG, WebP or GIF image')
+		this.name = 'UnsupportedImageError'
+	}
+}
+
 // Convert blob to Base64 string with image optimizations.
+// @throws {UnsupportedImageError} when the bytes are not a supported image
 export async function blobToBase64(blob) {
+	// Check image size
+	const maxSizeInBytes = 5 * 1024 * 1024 * 2 // 10MB
+	if (blob.size > maxSizeInBytes) {
+		throw new Error(
+			'Image processing failed: Image size exceeds the maximum limit of 10 MB'
+		)
+	}
+
+	const bytes = await new Response(blob).arrayBuffer()
+
+	// Load image with sharp, upright (EXIF orientation applied: the WebP
+	// output drops the EXIF data), and read its real format from the file
+	// header. sharp throws when it cannot: not an image, or an empty file.
+	let image
+	let metadata
 	try {
-		// Check image size
-		const maxSizeInBytes = 5 * 1024 * 1024 * 2 // 10MB
-		if (blob.size > maxSizeInBytes) {
-			throw new Error('Image size exceeds the maximum limit of 10 MB')
-		}
+		image = sharp(bytes).rotate()
+		metadata = await image.metadata()
+	} catch {
+		throw new UnsupportedImageError()
+	}
+	if (!SUPPORTED_IMAGE_FORMATS.includes(metadata.format)) {
+		throw new UnsupportedImageError()
+	}
 
-		// Check image type
-		const supportedTypes = [
-			'image/jpeg',
-			'image/jpg',
-			'image/png',
-			'image/webp',
-			'image/gif',
-		]
-		if (!supportedTypes.includes(blob.type)) {
-			throw new Error('Unsupported image type')
-		}
-
-		// Load image with sharp, upright (EXIF orientation applied: the WebP
-		// output drops the EXIF data)
-		const image = sharp(await new Response(blob).arrayBuffer()).rotate()
-
+	try {
 		// Check image dimensions
-		const { height, width } = await image.metadata()
+		const { height, width } = metadata
 		const maxDimension = 1000 // Adjust this value as needed
 		if (width > maxDimension || height > maxDimension) {
 			image.resize({
@@ -89,8 +108,7 @@ export async function blobToBase64(blob) {
 		// Optimize image
 		const optimizedImage = await image.webp({ quality: 50 }).toBuffer()
 
-		const bytes = new Uint8Array(optimizedImage)
-		return Buffer.from(bytes).toString('base64')
+		return Buffer.from(new Uint8Array(optimizedImage)).toString('base64')
 	} catch (error) {
 		throw new Error(`Image processing failed: ${error.message}`)
 	}

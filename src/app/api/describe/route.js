@@ -4,16 +4,19 @@ import {
 	withLegacyAltText,
 } from '@/helpers/describeInput'
 import {
+	blobToBase64,
+	getImageDescription,
+	UnsupportedImageError,
+} from '@/services/imageDescription.service'
+import {
 	chargeOneCredit,
 	findActiveApiToken,
 	NoCreditsLeftError,
 } from '@/services/database.service'
-import {
-	blobToBase64,
-	getImageDescription,
-} from '@/services/imageDescription.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
+
+const INVALID_IMAGE = 'Bad Request, Invalid image file'
 
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
@@ -70,9 +73,10 @@ export async function POST(request) {
 			return jsonError('Bad Request, No file uploaded', 400)
 		}
 
-		// Check if the uploaded file is an image
-		if (!isValidImageFile(file)) {
-			return jsonError('Bad Request, Invalid image file', 400)
+		// a text field, not a file (the image format itself is read from the
+		// bytes below, whatever MIME type the file was sent with)
+		if (typeof file === 'string') {
+			return jsonError(INVALID_IMAGE, 400)
 		}
 
 		const context = formData.get('context') || ''
@@ -96,6 +100,11 @@ export async function POST(request) {
 		try {
 			base64Image = await blobToBase64(file)
 		} catch (error) {
+			// not a JPEG, PNG, WebP or GIF image: same answer as before for a
+			// file sent with another MIME type
+			if (error instanceof UnsupportedImageError) {
+				return jsonError(INVALID_IMAGE, 400)
+			}
 			// e.g. "Image processing failed: Image size exceeds the maximum limit
 			// of 10 MB". Same status as before (500), but a readable message.
 			console.error('Error processing the image:', error.message)
@@ -137,18 +146,6 @@ export async function POST(request) {
 		console.error('Error processing the request:', error)
 		return jsonError('Internal Server Error', 500)
 	}
-}
-
-// Helper function to check if a file is a valid image
-function isValidImageFile(file) {
-	const validTypes = [
-		'image/jpeg',
-		'image/jpg',
-		'image/png',
-		'image/webp',
-		'image/gif',
-	]
-	return validTypes.includes(file.type)
 }
 
 // Error responses are JSON `{ "error": "<human message>" }` (the WordPress

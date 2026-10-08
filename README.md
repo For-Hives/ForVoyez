@@ -157,7 +157,7 @@ Every signed event is stored in the `WebhookEvent` table and answered with 200, 
 ForVoyez uses an OpenAI vision model (`FORVOYEZ_AI_MODEL`, see [Environment Variables](#environment-variables)) to generate image metadata, in a single call per image (`src/services/imageDescription.service.js`):
 
 1. The user sends an image file to `/api/describe` (or the playground), with an optional context, keywords, language and output schema.
-2. The image is checked (type, 10 MB maximum), turned upright and resized to fit 1000x1000 pixels.
+2. The image is checked (10 MB maximum; JPEG, PNG, WebP or GIF, read from the file itself, not from the MIME type it was sent with), turned upright and resized to fit 1000x1000 pixels.
 3. The image, the context, the keywords and the requested fields are sent to the model in one request, which must answer with structured output: exactly the requested keys, each a string.
 4. The generated metadata is returned as a flat JSON object. One credit is charged only when the generation succeeds.
 
@@ -173,7 +173,7 @@ If you encounter any bugs, have feature requests, or want to contribute to the p
 
 The full reference is at [doc.forvoyez.com](https://doc.forvoyez.com/describe). In short, send a `multipart/form-data` POST request to `https://forvoyez.com/api/describe` with an API key from the dashboard (`Authorization: Bearer <YOUR_API_TOKEN>`) and the following fields:
 
-- `image`: the image file to process (JPEG, PNG, WebP, GIF, 10 MB maximum).
+- `image`: the image file to process (JPEG, PNG, WebP, GIF, 10 MB maximum). The format is read from the file, so its MIME type does not matter (`curl -F image=@photo.webp` sends `application/octet-stream`); another format, such as SVG, AVIF or TIFF, gets a 400 `Bad Request, Invalid image file`.
 - `context` (optional): additional information about the image to guide the generation.
 - `keywords` (optional): keywords to work into the metadata.
 - `language` (optional): language of the generated metadata, `en` by default. A language code (`it`, `pt-BR`, `he_IL`) is given to the model by its name (Italian, Brazilian Portuguese, Hebrew (Israel)); any other value is passed as written.

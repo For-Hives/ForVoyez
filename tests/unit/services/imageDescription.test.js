@@ -14,6 +14,7 @@ import {
 	getImageDescription,
 	ImageDescriptionError,
 	TestingExports,
+	UnsupportedImageError,
 } from '@/services/imageDescription.service'
 import {
 	DescriptionTooLongError,
@@ -121,7 +122,7 @@ describe('Image Description Service', () => {
 			const mockBlob = new Blob(['/tests/unit/resources/sohyun.png'], {
 				type: 'image/png',
 			})
-			const pipeline = mockSharp({ height: 100, width: 100 })
+			const pipeline = mockSharp({ format: 'png', height: 100, width: 100 })
 
 			const base64String = await blobToBase64(mockBlob)
 
@@ -132,7 +133,7 @@ describe('Image Description Service', () => {
 		})
 
 		it('should fit images larger than 1000px in a 1000px box', async () => {
-			const pipeline = mockSharp({ height: 3000, width: 4000 })
+			const pipeline = mockSharp({ format: 'jpeg', height: 3000, width: 4000 })
 
 			await blobToBase64(new Blob(['image'], { type: 'image/jpeg' }))
 
@@ -143,14 +144,34 @@ describe('Image Description Service', () => {
 			})
 		})
 
-		it('should throw an error for unsupported image types', async () => {
-			const mockBlob = new Blob(['image content'], {
-				type: 'image/unsupported',
-			})
+		it('should refuse a format other than JPEG, PNG, WebP or GIF, whatever the MIME type', async () => {
+			const pipeline = mockSharp({ format: 'svg', height: 10, width: 10 })
 
-			await expect(blobToBase64(mockBlob)).rejects.toThrow(
-				'Unsupported image type'
+			await expect(
+				blobToBase64(new Blob(['<svg/>'], { type: 'image/png' }))
+			).rejects.toThrow(UnsupportedImageError)
+			expect(pipeline.webp).not.toHaveBeenCalled()
+		})
+
+		it('should refuse a file sharp cannot read', async () => {
+			const pipeline = mockSharp({})
+			pipeline.metadata.mockRejectedValue(
+				new Error('Input buffer contains unsupported image format')
 			)
+
+			await expect(
+				blobToBase64(new Blob(['not an image'], { type: 'image/jpeg' }))
+			).rejects.toThrow(UnsupportedImageError)
+		})
+
+		it('should not trust the declared MIME type of a supported image', async () => {
+			mockSharp({ format: 'webp', height: 10, width: 10 })
+
+			await expect(
+				blobToBase64(
+					new Blob(['webp bytes'], { type: 'application/octet-stream' })
+				)
+			).resolves.toBe(Buffer.from('webp').toString('base64'))
 		})
 
 		it('should throw an error if the image size exceeds the maximum limit', async () => {
