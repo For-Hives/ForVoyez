@@ -9,11 +9,11 @@ import { afterEach, describe, expect, it } from 'vitest'
 const SERVICE_PROVIDERS = [
 	'netcup GmbH',
 	'Contabo GmbH',
-	'OpenAI Ireland Ltd',
-	'Clerk, Inc.',
-	'Sold through Link, LLC',
-	'Mailgun Technologies, Inc.',
-	'OVH SAS',
+	'OpenAI',
+	'Clerk',
+	'Lemon Squeezy',
+	'Mailgun',
+	'OVH',
 	'Umami',
 ]
 
