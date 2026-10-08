@@ -16,11 +16,16 @@ import { createUser } from '@/app/actions/app/createUser'
 import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {
-	const { user } = useUser()
+	const { isSignedIn, user } = useUser()
 
+	// the database user of the signed-in visitor (the legal pages share this
+	// layout and are public: a signed-out visitor has no user to create)
 	useEffect(() => {
-		createUser()
-	}, [])
+		if (!isSignedIn) return
+		createUser().catch(error =>
+			console.error('Error creating the user:', error.message)
+		)
+	}, [isSignedIn])
 
 	const memoizedImage = useMemo(
 		() => (
