@@ -35,8 +35,12 @@ To get started with ForVoyez, follow these steps:
 
 To run the ForVoyez project locally, ensure you have the following dependencies installed:
 
-- Node.js (v24.x recommended, v22.12 or higher required; `pnpm prisma:seed` and `node check-db-connection.js` load the generated TypeScript Prisma client directly and need v22.18 or higher). `.nvmrc` pins major 22 for the Nixpacks build on Coolify, whose default would be Node 18 (too old for Next 16 and Prisma 7); a `NIXPACKS_NODE_VERSION` variable on the Coolify app overrides it.
-- pnpm (the version pinned in `package.json` `packageManager`, enable it with `corepack enable`)
+- Node.js:
+  - v24 recommended (v24.15 or higher), as in the Docker image and CI.
+  - v22.22.2 or higher (or v24.15 or higher) for the development tooling: the unit tests (jsdom 30), the pre-commit hook (lint-staged 17) and ESLint 10 need it.
+  - v22.12 or higher is enough to build and run the app (`pnpm build`, `pnpm start`); `pnpm prisma:seed` and `node check-db-connection.js` load the generated TypeScript Prisma client directly and need v22.18 or higher.
+  - `.nvmrc` pins major 22 for the Nixpacks build on Coolify, whose default would be Node 18 (too old for Next 16 and Prisma 7); a `NIXPACKS_NODE_VERSION` variable on the Coolify app overrides it.
+- pnpm (the version pinned in `package.json` `packageManager`, enable it with `corepack enable`). On Node 22.12 and 22.13, the bundled corepack cannot fetch pnpm (`Error: Cannot find matching keyid`): run `npm i -g corepack@latest` first.
 - PostgreSQL (v16.x or higher)
 
 ## Development
