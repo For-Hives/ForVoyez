@@ -70,7 +70,7 @@
 		"zustand": "5.0.15"
 	},
 	"devDependencies": {
-		"@clerk/testing": "2.2.43",
+		"@clerk/testing": "2.2.44",
 		"@eslint/compat": "2.1.1",
 		"@next/eslint-plugin-next": "16.4.0",
 		"@playwright/test": "1.63.0",
