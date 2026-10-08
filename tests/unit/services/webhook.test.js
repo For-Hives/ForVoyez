@@ -256,11 +256,36 @@ describe('Webhook Service', () => {
 	})
 
 	describe('subscription_payment_success', () => {
-		const STARTER = { packageSize: 100, id: 7 }
-		const GROWTH = { packageSize: 500, id: 8 }
+		const STARTER = { variantId: 'v-starter', packageSize: 100, id: 7 }
+		const GROWTH = { variantId: 'v-growth', packageSize: 500, id: 8 }
 		const CLEAR_OLD_PLAN = {
 			where: { lemonSqueezyId: 'sub-1' },
 			data: { oldPlanId: null },
+		}
+
+		function planChangedTo(variantId, subscriptionId = 'sub-1') {
+			return {
+				data: {
+					attributes: {
+						first_subscription_item: { subscription_id: subscriptionId },
+						variant_id: variantId,
+					},
+					id: subscriptionId,
+				},
+				meta: { custom_data: { user_id: 'user123' } },
+			}
+		}
+
+		// the processed subscription_plan_changed events of the user (the
+		// duplicate check of the invoice finds no processed invoice)
+		function givenProcessedPlanChanges(...payloads) {
+			prisma.webhookEvent.findMany.mockImplementation(async ({ where }) =>
+				where.eventName === 'subscription_plan_changed'
+					? payloads.map((payload, index) =>
+							storedEvent('subscription_plan_changed', payload, 50 + index)
+						)
+					: []
+			)
 		}
 
 		function subscriptionRow(plan, oldPlanId = null) {
@@ -352,6 +377,7 @@ describe('Webhook Service', () => {
 				.mockResolvedValueOnce(subscriptionRow(GROWTH, STARTER.id))
 				.mockResolvedValueOnce(subscriptionRow(GROWTH))
 			prisma.plan.findUnique.mockResolvedValue(STARTER)
+			givenProcessedPlanChanges(planChangedTo(GROWTH.variantId))
 
 			await deliver(
 				'subscription_payment_success',
@@ -389,6 +415,7 @@ describe('Webhook Service', () => {
 				subscriptionRow(STARTER, GROWTH.id)
 			)
 			prisma.plan.findUnique.mockResolvedValue(GROWTH)
+			givenProcessedPlanChanges(planChangedTo(STARTER.variantId))
 
 			await deliver('subscription_payment_success', paymentSuccess('updated'))
 
@@ -450,6 +477,7 @@ describe('Webhook Service', () => {
 
 			// resent after subscription_plan_changed: the failed delivery is not
 			// a processed duplicate
+			givenProcessedPlanChanges(planChangedTo(GROWTH.variantId))
 			await deliver('subscription_payment_success', paymentSuccess('updated'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(1)
@@ -459,6 +487,114 @@ describe('Webhook Service', () => {
 				null,
 				'Subscription payment success (plan change)'
 			)
+		})
+
+		// The previous version set oldPlanId at every plan change and never
+		// cleared it (nor marked its events processed): Growth monthly with a
+		// stale marker from an old Starter -> Growth change, moving to Growth
+		// yearly, with the invoice delivered before the plan change.
+		it('should fail an upgrade invoice that comes before its plan change when the marker is a stale one from the previous version', async () => {
+			const GROWTH_YEARLY = {
+				variantId: 'v-growth-year',
+				packageSize: 6000,
+				id: 9,
+			}
+			prisma.subscription.findUnique
+				.mockResolvedValueOnce(subscriptionRow(GROWTH, STARTER.id))
+				.mockResolvedValueOnce(subscriptionRow(GROWTH_YEARLY, GROWTH.id))
+			prisma.plan.findUnique.mockResolvedValue(GROWTH)
+			// the old Starter -> Growth change: stored, never marked processed
+			givenProcessedPlanChanges()
+
+			await deliver('subscription_payment_success', paymentSuccess('updated'))
+
+			expect(prisma.webhookEvent.findMany).toHaveBeenCalledWith({
+				where: {
+					eventName: 'subscription_plan_changed',
+					userId: 'user123',
+					processed: true,
+				},
+				select: { body: true },
+			})
+			// not 500 - 100 credited at once and marked processed
+			expect(updateCredits).not.toHaveBeenCalled()
+			expect(prisma.subscription.update).not.toHaveBeenCalled()
+			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
+			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
+				data: {
+					processingError: expect.stringContaining(
+						'plan change not processed yet'
+					),
+				},
+				where: { id: 1 },
+			})
+
+			// resent once this version processed the Growth -> Growth yearly change
+			givenProcessedPlanChanges(planChangedTo(GROWTH_YEARLY.variantId))
+			await deliver('subscription_payment_success', paymentSuccess('updated'))
+
+			expect(updateCredits).toHaveBeenCalledTimes(1)
+			expect(updateCredits).toHaveBeenCalledWith(
+				'user123',
+				5500,
+				null,
+				'Subscription payment success (plan change)'
+			)
+			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
+		})
+
+		it.each([
+			['another subscription', planChangedTo('v-growth', 'sub-2')],
+			['another plan', planChangedTo('v-starter')],
+			[
+				'no subscription item',
+				{
+					data: {
+						attributes: {
+							first_subscription_item: null,
+							variant_id: 'v-growth',
+						},
+						id: 'sub-1',
+					},
+				},
+			],
+		])(
+			'should not take a processed plan change of %s for the plan change of this invoice',
+			async (_case, payload) => {
+				prisma.subscription.findUnique.mockResolvedValue(
+					subscriptionRow(GROWTH, STARTER.id)
+				)
+				prisma.plan.findUnique.mockResolvedValue(STARTER)
+				givenProcessedPlanChanges(payload)
+
+				await deliver('subscription_payment_success', paymentSuccess('updated'))
+
+				expect(updateCredits).not.toHaveBeenCalled()
+				expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
+					data: {
+						processingError: expect.stringContaining(
+							'plan change not processed yet'
+						),
+					},
+					where: { id: 1 },
+				})
+			}
+		)
+
+		it('should credit a renewal in full and clear a stale marker from the previous version', async () => {
+			prisma.subscription.findUnique.mockResolvedValue(
+				subscriptionRow(GROWTH, STARTER.id)
+			)
+
+			await deliver('subscription_payment_success', paymentSuccess('renewal'))
+
+			expect(updateCredits).toHaveBeenCalledWith(
+				'user123',
+				500,
+				null,
+				'Subscription payment success'
+			)
+			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
 		})
 
 		it.each([

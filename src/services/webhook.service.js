@@ -139,6 +139,33 @@ async function findProcessedDuplicate(webhook, parsed_webhook) {
 	)
 }
 
+// True when a processed subscription_plan_changed event moved this
+// subscription to its current plan. A plan change marker (`oldPlanId`) set by
+// this version always has one. The version before it set `oldPlanId` at every
+// plan change, never cleared it and never marked its webhook events
+// processed: such a stale marker must not be taken for the plan change of a
+// new `updated` invoice that arrives before its subscription_plan_changed.
+async function hasProcessedPlanChange(subscription, userId) {
+	// a user only has a handful of these events: compare the stored payloads
+	const planChanges = await prisma.webhookEvent.findMany({
+		where: {
+			eventName: 'subscription_plan_changed',
+			processed: true,
+			userId: userId,
+		},
+		select: { body: true },
+	})
+
+	return planChanges.some(event => {
+		const attributes = parseBody(event.body)?.data?.attributes
+		return (
+			String(attributes?.first_subscription_item?.subscription_id) ===
+				subscription.lemonSqueezyId &&
+			String(attributes?.variant_id) === subscription.plan?.variantId
+		)
+	})
+}
+
 function parseBody(body) {
 	try {
 		return JSON.parse(body)
@@ -291,7 +318,8 @@ async function processSubscriptionCreated(webhook) {
 // - "updated": immediate invoice after a plan change, the current period was
 //   already credited with the old plan: add the extra credits of the new plan
 //   only (never negative). Fails while subscription_plan_changed is not
-//   processed yet (no `oldPlanId`), so the invoice can be resent after it.
+//   processed yet (no `oldPlanId`, or one left by the previous version, see
+//   hasProcessedPlanChange), so the invoice can be resent after it.
 // - "renewal" (and any other reason): a new period, the full current plan
 // The plan change marker (`oldPlanId`, set by subscription_plan_changed) is
 // cleared once an invoice is credited, so it is used at most once.
@@ -354,7 +382,10 @@ async function processSubscriptionPaymentSuccess(webhook) {
 		// marker the extra credits are unknown. Fail so this invoice can be
 		// resent once subscription_plan_changed is processed (crediting 0 would
 		// mark it processed and a resend would be skipped as a duplicate).
-		if (!subscription.oldPlanId) {
+		if (
+			!subscription.oldPlanId ||
+			!(await hasProcessedPlanChange(subscription, userId))
+		) {
 			throw new Error(
 				`Subscription ${subscriptionId}: plan change not processed yet, resend this invoice after its subscription_plan_changed event`
 			)

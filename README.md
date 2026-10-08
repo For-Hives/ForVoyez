@@ -147,7 +147,7 @@ Every signed event is stored in the `WebhookEvent` table and answered with 200, 
 
 - A processing failure is logged as `webhook <id> (<event>) processing failed` and its message is stored in `WebhookEvent.processingError` (`processed` stays `false`). For example `Plan not found for variant ...` means the plans must be synced first (`GET /api/sync`).
 - To replay a failed event once the cause is fixed, resend it from the Lemon Squeezy dashboard (Settings > Webhooks). Find the failed ones with `SELECT id, "eventName", "processingError" FROM "WebhookEvent" WHERE processed = false AND "processingError" IS NOT NULL;`.
-- Lemon Squeezy does not order its webhooks: the invoice of an upgrade (`subscription_payment_success`, billing reason `updated`) processed before its `subscription_plan_changed` fails with `plan change not processed yet`. Resend it once the plan change is processed.
+- Lemon Squeezy does not order its webhooks: the invoice of an upgrade (`subscription_payment_success`, billing reason `updated`) processed before its `subscription_plan_changed` fails with `plan change not processed yet`. Resend it once the plan change is processed. The plan change must be a processed `subscription_plan_changed` event to the subscription's current plan: an `oldPlanId` left by the previous version of the app (which never cleared it and never marked events processed) is not taken for it.
 - Events that add credits (`order_created`, `subscription_payment_success`) are credited once per Lemon Squeezy order or invoice (`data.id`): a redelivery of an already processed one is stored, marked `processed` with a `Duplicate of webhook event <id>` note, and not credited again.
 
 ## Image Metadata Generation Process
