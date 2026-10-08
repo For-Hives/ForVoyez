@@ -6,6 +6,13 @@ import { toast } from 'react-toastify'
 
 import Link from 'next/link'
 
+import {
+	formatSaving,
+	getAnnualSaving,
+	getEnterpriseFeatures,
+	getMaxAnnualSaving,
+	getPlanFeatures,
+} from '@/helpers/planFeatures'
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import { listPlans } from '@/app/actions/app/plans'
 import { sortPlans } from '@/helpers/sortPlans'
@@ -42,6 +49,9 @@ export function PricingComponent() {
 			})
 			.catch(error => console.error('Error fetching usage data:', error))
 	}, [])
+
+	// derived from the plans' credits and prices, see planFeatures
+	const maxAnnualSaving = getMaxAnnualSaving(plans)
 
 	return (
 		<div className="bg-white py-24 sm:py-32">
@@ -87,11 +97,17 @@ export function PricingComponent() {
 							>
 								<div className={'transition-none'}>
 									<span className={'transition-none'}>{option.label}</span>
-									<div
-										className={`${option.value === 'annually' ? 'block' : 'hidden'} border-forvoyez_orange-500 text-forvoyez_orange-500 absolute -top-7 -right-20 rounded-full border bg-white/80 p-1 px-2.5 text-xs backdrop-blur-[2px] transition-none`}
-									>
-										20%&nbsp;more&nbsp;tokens
-									</div>
+									{option.value === 'annually' && maxAnnualSaving !== null ? (
+										<div
+											className={
+												'border-forvoyez_orange-500 text-forvoyez_orange-500 absolute -top-7 -right-20 block rounded-full border bg-white/80 p-1 px-2.5 text-xs backdrop-blur-[2px] transition-none'
+											}
+											data-testid="annual-saving-badge"
+										>
+											Up&nbsp;to&nbsp;{formatSaving(maxAnnualSaving)}
+											&nbsp;cheaper
+										</div>
+									) : null}
 								</div>
 							</RadioGroup.Option>
 						))}
@@ -104,6 +120,8 @@ export function PricingComponent() {
 								if (!isAnnually && tier.billingCycle === 'year') return null
 								if (isAnnually && tier.billingCycle === 'month') return null
 								if (!tier.billingCycle) return null
+
+								const annualSaving = getAnnualSaving(tier, plans)
 
 								return (
 									<div
@@ -163,9 +181,11 @@ export function PricingComponent() {
 											{tier.buttonText}
 										</Link>
 										<div className={'mt-2 flex items-center'}>
-											{isAnnually ? (
+											{annualSaving === null ? null : isAnnually ? (
 												<span className="text-xs text-slate-500">
-													<span className={'font-bold'}>20% more tokens</span>{' '}
+													<span className={'font-bold'}>
+														{formatSaving(annualSaving)} cheaper
+													</span>{' '}
 													than monthly
 												</span>
 											) : (
@@ -175,8 +195,10 @@ export function PricingComponent() {
 													onClick={() => setFrequency(frequencies[1])}
 												>
 													<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
-														Get{' '}
-														<span className={'font-bold'}>20% more tokens</span>
+														Pay annually:{' '}
+														<span className={'font-bold'}>
+															{formatSaving(annualSaving)} cheaper
+														</span>
 													</span>
 													<div className={'flex h-full items-center'}>
 														<ArrowUpRightIcon
@@ -187,7 +209,7 @@ export function PricingComponent() {
 											)}
 										</div>
 										<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
-											{JSON.parse(tier.features).map(feature => (
+											{getPlanFeatures(tier, plans).map(feature => (
 												<li className="flex gap-x-3" key={feature}>
 													<CheckIcon
 														aria-hidden="true"
@@ -244,9 +266,7 @@ export function PricingComponent() {
 						</Link>
 
 						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
-							{JSON.parse(
-								'["All Growth plan features","Unlimited image descriptions*","Advanced metadata generation","24/7 dedicated support","Custom SLAs","Volume discounts","Access to beta features","Priority access to new features","Priority access to the playground","Dedicated hosting option","Deep integration with existing systems"]'
-							).map(feature => (
+							{getEnterpriseFeatures(plans).map(feature => (
 								<li className="flex gap-x-3" key={feature}>
 									<CheckIcon
 										aria-hidden="true"
