@@ -24,14 +24,15 @@ import {
 	getMyUsageByToken,
 } from '@/app/actions/app/usage'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
+import { SkeletonText } from '@/components/Skeletons/SkeletonText'
 
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
 	const [usageByToken, setUsageByToken] = useState([])
 	const [isLoadingUsage, setIsLoadingUsage] = useState(true)
 	const [isLoadingUsageByToken, setIsLoadingUsageByToken] = useState(true)
-	const [showTooltip, setShowTooltip] = useState(false)
-	const [userCredits, setUserCredits] = useState(0)
+	// null until loaded: a placeholder, not a misleading "0 credits left"
+	const [userCredits, setUserCredits] = useState(null)
 
 	const { userId } = useAuth()
 
@@ -46,46 +47,37 @@ export function UsageChartComponent() {
 	useEffect(() => {
 		async function fetchUsage() {
 			try {
-				const data = await getMyUsage()
-				setUsage(data)
+				setUsage(await getMyUsage())
 			} catch (error) {
 				console.error('Error fetching usage data:', error)
+			} finally {
+				setIsLoadingUsage(false)
 			}
 		}
 
 		async function fetchUsageByToken() {
-			const data = await getMyUsageByToken()
-			const formattedData = data.map(entry => ({
-				token: entry.token,
-				used: entry.used,
-			}))
-			setUsageByToken(formattedData)
+			try {
+				setUsageByToken(await getMyUsageByToken())
+			} catch (error) {
+				console.error('Error fetching usage by token:', error)
+			} finally {
+				setIsLoadingUsageByToken(false)
+			}
 		}
 
+		// once each: Next.js runs server actions one at a time per client
 		if (userId) {
 			fetchUsage()
 			fetchUsageByToken()
-			Promise.all([fetchUsage(), fetchUsageByToken()])
-				.finally(() => {
-					setIsLoadingUsage(false)
-					setIsLoadingUsageByToken(false)
-					if (usage.length === 0 && usageByToken.length === 0) {
-						setShowTooltip(true)
-					} else {
-						setShowTooltip(false)
-					}
-				})
-				.catch(error => console.error('Error fetching usage data:', error))
 		}
 	}, [userId])
 
-	useEffect(() => {
-		if (usage.length === 0 && usageByToken.length === 0) {
-			setShowTooltip(true)
-		} else {
-			setShowTooltip(false)
-		}
-	}, [usage, usageByToken])
+	// only once both answered, not while they are still loading
+	const showTooltip =
+		!isLoadingUsage &&
+		!isLoadingUsageByToken &&
+		usage.length === 0 &&
+		usageByToken.length === 0
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -97,7 +89,12 @@ export function UsageChartComponent() {
 					<p className="text-md text-slate-600">
 						You have{' '}
 						<span className="text-forvoyez_orange-600 font-bold">
-							{userCredits} credits left
+							{userCredits === null ? (
+								<SkeletonText dataTestId="user-credits-loading" />
+							) : (
+								userCredits
+							)}{' '}
+							credits left
 						</span>
 					</p>
 				</div>
@@ -110,13 +107,19 @@ export function UsageChartComponent() {
 				<p className="text-sm text-slate-600">
 					Follow your remaining credits over time:
 				</p>
-				{usage.length > 0 ? (
+				{isLoadingUsage ? (
+					<SkeletonText />
+				) : usage.length > 0 ? (
+					// the real balance, not the last point of the chart: that one can
+					// lag behind when two API calls overlap
 					<p className="text-forvoyez_orange-600 text-sm font-bold">
-						{usage[usage.length - 1].creditsLeft}{' '}
+						{userCredits === null ? <SkeletonText /> : userCredits}{' '}
 						<span className="font-semibold text-slate-500">credits left</span>
 					</p>
 				) : (
-					<p className="text-sm text-slate-600" data-testid="no-usage-data">
+					// not "no-usage-data": that one is the chart placeholder below, the
+					// e2e specs expect a single element with it
+					<p className="text-sm text-slate-600" data-testid="no-usage-summary">
 						No usage yet
 					</p>
 				)}

@@ -14,7 +14,7 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		log('Page loaded')
 
 		// the tooltip depends on the credits, shown once the server action
-		// answered (0 until then)
+		// answered (a loading placeholder until then)
 		await expect(page.getByTestId('user-credits')).not.toHaveText('0', {
 			timeout: 30_000,
 		})
