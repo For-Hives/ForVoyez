@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { auth } from '@clerk/nextjs/server'
+
 import { createUser } from '@/app/actions/app/createUser'
-import { currentUser } from '@clerk/nextjs/server'
 
 import { prisma } from '/tests/unit/mocks/prisma.mock'
 
@@ -19,7 +20,7 @@ describe('createUser', () => {
 	})
 
 	it('should throw an error if the user is not authenticated', async () => {
-		currentUser.mockResolvedValue(null)
+		auth.mockResolvedValue({ userId: null })
 
 		await expect(createUser()).rejects.toThrow(
 			'You must be logged to create a user'
@@ -30,7 +31,7 @@ describe('createUser', () => {
 		const mockUser = { id: 'user123' }
 		const mockExistingUser = { clerkId: 'user123', id: 'dbUser123' }
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue(mockExistingUser)
 
 		const user = await createUser()
@@ -45,7 +46,7 @@ describe('createUser', () => {
 		const mockUser = { id: 'user123' }
 		const mockNewUser = { clerkId: 'user123', id: 'newUser123' }
 
-		currentUser.mockResolvedValue(mockUser)
+		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue(null)
 		prisma.user.create.mockResolvedValue(mockNewUser)
 

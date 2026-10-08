@@ -122,7 +122,7 @@ describe('Lemon Squeezy Service', () => {
 					},
 				},
 			}
-			clerk.currentUser.mockResolvedValue(mockUser)
+			clerk.auth.mockResolvedValue({ userId: mockUser.id })
 			getCustomerIdFromUser.mockResolvedValue(mockCustomerId)
 			lemonsqueezy.getCustomer.mockResolvedValue(mockCustomer)
 
@@ -134,7 +134,7 @@ describe('Lemon Squeezy Service', () => {
 		})
 
 		it('should throw an error if the user is not authenticated', async () => {
-			clerk.currentUser.mockResolvedValue(null)
+			clerk.auth.mockResolvedValue({ userId: null })
 
 			await expect(getCustomerPortalLink()).rejects.toThrow(
 				'User is not authenticated.'
@@ -143,7 +143,7 @@ describe('Lemon Squeezy Service', () => {
 
 		it('should return null (not throw) for a user who never bought anything', async () => {
 			const mockUser = { id: 'user123' }
-			clerk.currentUser.mockResolvedValue(mockUser)
+			clerk.auth.mockResolvedValue({ userId: mockUser.id })
 			getCustomerIdFromUser.mockResolvedValue(null)
 
 			await expect(getCustomerPortalLink()).resolves.toBeNull()
