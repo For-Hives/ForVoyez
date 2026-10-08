@@ -101,8 +101,9 @@ describe('OpenAI request built by the image description service', () => {
 			model: 'gpt-6-luna',
 			store: false,
 		})
-		// gpt-6-luna takes no sampling temperature: the AI SDK leaves it out
-		expect(body).not.toHaveProperty('temperature')
+		// with reasoning disabled, gpt-6-luna takes a sampling temperature: the
+		// AI SDK sends it since @ai-sdk/openai 4.0.90 (it used to drop it)
+		expect(body.temperature).toBe(0.3)
 		expect(body.text.format.schema.required.sort()).toEqual([
 			'alternativeText',
 			'caption',

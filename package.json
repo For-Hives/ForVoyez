@@ -37,7 +37,7 @@
 		"*.css": "prettier --write"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "4.0.89",
+		"@ai-sdk/openai": "4.0.90",
 		"@clerk/nextjs": "7.9.12",
 		"@headlessui/react": "2.2.10",
 		"@heroicons/react": "2.2.0",
