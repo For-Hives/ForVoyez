@@ -102,7 +102,7 @@
 		"prettier-plugin-tailwindcss": "0.8.1",
 		"tailwindcss": "4.3.3",
 		"typescript": "6.0.3",
-		"vite": "8.3.3",
+		"vite": "8.3.4",
 		"vitest": "5.0.3",
 		"vitest-mock-extended": "5.1.1"
 	}
