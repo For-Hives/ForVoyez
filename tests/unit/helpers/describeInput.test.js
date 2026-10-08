@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
 	DESCRIBE_LIMITS,
 	InvalidDescribeInputError,
+	languageName,
 	normalizeDescribeSchema,
 	normalizeDescribeText,
 	normalizeLanguage,
@@ -146,5 +147,25 @@ describe('withLegacyAltText', () => {
 		expect(withLegacyAltText(withoutAlternativeText)).toBe(
 			withoutAlternativeText
 		)
+	})
+})
+
+describe('languageName', () => {
+	it('names ISO 639 and BCP 47 codes, with - or _', () => {
+		expect(languageName('it')).toBe('Italian')
+		expect(languageName('no')).toBe('Norwegian')
+		expect(languageName('el')).toBe('Greek')
+		expect(languageName('he')).toBe('Hebrew')
+		expect(languageName('EN')).toBe('English')
+		expect(languageName('fr-FR')).toBe('French (France)')
+		expect(languageName('pt_BR')).toBe('Brazilian Portuguese')
+		expect(languageName('he_IL')).toBe('Hebrew (Israel)')
+	})
+
+	it('returns undefined for names, free text and unknown codes', () => {
+		expect(languageName('French')).toBeUndefined()
+		expect(languageName('English (US)')).toBeUndefined()
+		expect(languageName('Español')).toBeUndefined()
+		expect(languageName('xx')).toBeUndefined()
 	})
 })

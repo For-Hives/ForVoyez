@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import {
 	DESCRIBE_LIMITS,
+	languageName,
 	normalizeDescribeSchema,
 	normalizeDescribeText,
 	normalizeLanguage,
@@ -217,7 +218,7 @@ function buildInstructions({ schemaDefinition, hasKeywords, language }) {
 		hasKeywords &&
 			`Ensure the output naturally incorporates the keywords given between the <${KEYWORDS_TAG}> tags.`,
 		`Please generate the following metadata fields:\n${fieldDescriptions}`,
-		`Each value must be a natural, human-readable sentence tailored for the requested language.\nUse ${language} for every field.`,
+		`Each value must be a natural, human-readable sentence tailored for the requested language.\n${languageInstruction(language)}`,
 	]
 		.filter(Boolean)
 		.join('\n\n')
@@ -251,6 +252,14 @@ function getImageDetail() {
 
 function getModelId() {
 	return process.env.FORVOYEZ_AI_MODEL?.trim() || DEFAULT_AI_MODEL
+}
+
+// The language by name when it is a known code: "Use it for every field."
+// was read as an English sentence. The customer's value stays quoted.
+function languageInstruction(language) {
+	const name = languageName(language)
+	const label = name ? `${name} (language code "${language}")` : `"${language}"`
+	return `Write every field in this language: ${label}.`
 }
 
 // OpenAI's error body ({ error: { type, code, message } }) parsed by the AI SDK

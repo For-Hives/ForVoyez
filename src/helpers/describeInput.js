@@ -109,6 +109,29 @@ export function normalizeLanguage(value) {
 	return language || 'en'
 }
 
+const languageNames = new Intl.DisplayNames(['en'], {
+	fallback: 'none',
+	type: 'language',
+})
+
+/**
+ * The English name of a language code, ISO 639 or BCP 47, with `-` or `_`:
+ * "it" → "Italian", "he_IL" → "Hebrew (Israel)". Undefined when the value is
+ * not a known code, e.g. a name ("French") or free text ("English (US)").
+ * The model reads a bare code such as "it", "no" or "el" as an English or
+ * Spanish word, and then answers in the wrong language.
+ * @param {string} language - output of normalizeLanguage
+ * @returns {string | undefined}
+ */
+export function languageName(language) {
+	try {
+		return languageNames.of(language.replace(/_/g, '-'))
+	} catch {
+		// RangeError: not a well-formed language tag
+		return undefined
+	}
+}
+
 /**
  * Adds `alt_text`, a copy of `alternativeText`, to a describe result. The
  * WordPress plugin up to 1.1.40 sends no `schema` and reads `alt_text`:

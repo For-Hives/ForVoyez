@@ -225,7 +225,9 @@ describe('Image Description Service', () => {
 			expect(system.content).toContain(
 				'Ensure the output naturally incorporates the keywords'
 			)
-			expect(system.content).toContain('Use fr for every field.')
+			expect(system.content).toContain(
+				'Write every field in this language: French (language code "fr").'
+			)
 			// the customer text is not part of the instructions
 			expect(system.content).not.toContain(CONTEXT)
 			expect(system.content).not.toContain('ballet, opera')
@@ -349,7 +351,32 @@ describe('Image Description Service', () => {
 			expect(prompt[0].content).not.toContain(
 				'Ensure the output naturally incorporates'
 			)
-			expect(prompt[0].content).toContain('Use en for every field.')
+			expect(prompt[0].content).toContain(
+				'Write every field in this language: English (language code "en").'
+			)
+		})
+
+		// "Use it for every field." was read as an English sentence (same for
+		// no, is, id, he, my, or...) and "Use el" as the Spanish article
+		it.each([
+			['it', 'Italian (language code "it")'],
+			['no', 'Norwegian (language code "no")'],
+			['he', 'Hebrew (language code "he")'],
+			['el', 'Greek (language code "el")'],
+			['sr', 'Serbian (language code "sr")'],
+			['id', 'Indonesian (language code "id")'],
+			['he_IL', 'Hebrew (Israel) (language code "he_IL")'],
+			['it ', 'Italian (language code "it")'],
+			['Italian', '"Italian"'],
+			['English (US)', '"English (US)"'],
+		])('names the language %j in the instructions', async (language, label) => {
+			const model = modelAnswering(defaultAnswer)
+
+			await getImageDescription(IMAGE, { language })
+
+			const { content } = model.doGenerateCalls[0].prompt[0]
+			expect(content).toContain(`Write every field in this language: ${label}.`)
+			expect(content).not.toMatch(/Use \S+ for every field/)
 		})
 
 		it('logs the token usage and the model, never the image or the customer text', async () => {

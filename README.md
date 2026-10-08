@@ -174,7 +174,7 @@ The full reference is at [doc.forvoyez.com](https://doc.forvoyez.com/describe). 
 - `image`: the image file to process (JPEG, PNG, WebP, GIF, 10 MB maximum).
 - `context` (optional): additional information about the image to guide the generation.
 - `keywords` (optional): keywords to work into the metadata.
-- `language` (optional): language of the generated metadata, `en` by default.
+- `language` (optional): language of the generated metadata, `en` by default. A language code (`it`, `pt-BR`, `he_IL`) is given to the model by its name (Italian, Brazilian Portuguese, Hebrew (Israel)); any other value is passed as written.
 - `schema` (optional): a JSON string, a flat map of output field name to description. Without it, the fields are `title`, `alternativeText` and `caption`, and the response also has `alt_text`, a copy of `alternativeText` that the WordPress plugin up to 1.1.40 reads.
 
 Example Request:
