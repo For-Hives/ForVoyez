@@ -1,7 +1,8 @@
 const { test: baseTest, expect } = require('@playwright/test')
 require('dotenv').config()
-const fs = require('fs')
 const path = require('path')
+const fs = require('fs')
+
 const { getNextPublicUrl, signIn, log } = require('../tests-helpers')
 
 const TEST_EMAIL = process.env.TEST_EMAIL
@@ -15,11 +16,16 @@ module.exports = {
 		// Authenticate once per worker with a worker-scoped fixture.
 		workerStorageState: [
 			async ({ browser }, use, testInfo) => {
-				// Use parallelIndex as a unique identifier for each worker.
+				// Check if subscribed mode is enabled
+				const isSubscribedMode = testInfo.project.name.includes('subscribed')
+
+				// Use parallelIndex as a unique identifier for each worker. The
+				// account is part of the name: both projects share the output
+				// directory and the worker indexes when they run together.
 				const id = baseTest.info().parallelIndex
 				const fileName = path.resolve(
 					baseTest.info().project.outputDir,
-					`.auth/${id}.json`
+					`.auth/${isSubscribedMode ? 'subscribed' : 'basic'}-${id}.json`
 				)
 
 				if (fs.existsSync(fileName)) {
@@ -27,9 +33,6 @@ module.exports = {
 					await use(fileName)
 					return
 				}
-
-				// Check if subscribed mode is enabled
-				const isSubscribedMode = testInfo.project.name.includes('subscribed')
 
 				// Important: make sure we authenticate in a clean environment by unsetting storage state.
 				const page = await browser.newPage({ storageState: undefined })

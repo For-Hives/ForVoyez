@@ -24,8 +24,9 @@
 		"test:ui": "vitest --ui --coverage --coverage.enabled=true",
 		"test:ci": "vitest --coverage --coverage.enabled=true",
 		"test:e2e": "playwright test",
-		"test:e2e:general": "playwright test tests/e2e/general && playwright test tests/e2e/subscribed/app-subscribed-acc",
-		"test:e2e:sub": "playwright test tests/e2e/subscribed/premium"
+		"test:e2e:general": "pnpm test:e2e:basic && pnpm test:e2e:sub",
+		"test:e2e:basic": "playwright test tests/e2e/general --output test-results/basic",
+		"test:e2e:sub": "playwright test tests/e2e/subscribed --output test-results/subscribed"
 	},
 	"lint-staged": {
 		"*.js": [
