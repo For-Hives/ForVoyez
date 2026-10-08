@@ -476,28 +476,125 @@ describe('Image Description Service', () => {
 			expect(everythingLogged()).not.toContain('no credits remaining')
 		})
 
-		it('retries a failed call only once', async () => {
-			const model = modelFailingWith(
-				new APICallError({
+		describe('retries', () => {
+			// `retry-after-ms: 0` makes the AI SDK retry at once instead of
+			// waiting its exponential backoff (2 s, then 4 s)
+			function serverError(responseHeaders = { 'retry-after-ms': '0' }) {
+				return new APICallError({
 					url: 'https://api.openai.com/v1/responses',
 					message: 'Server error',
 					requestBodyValues: {},
 					isRetryable: true,
 					statusCode: 500,
+					responseHeaders,
 				})
-			)
+			}
 
-			await expect(getImageDescription(IMAGE, {})).rejects.toThrow(
-				ImageDescriptionError
-			)
-			// first attempt + 1 retry (the AI SDK waits ~2 s before retrying)
-			expect(model.doGenerateCalls).toHaveLength(2)
-			expect(JSON.parse(consoleError.mock.calls[0][1])).toMatchObject({
-				lastError: 'AI_APICallError',
-				error: 'AI_RetryError',
-				statusCode: 500,
+			// fails with each error in turn, then answers defaultAnswer
+			function modelFailingThenAnswering(...errors) {
+				const pending = [...errors]
+				const model = new MockLanguageModelV4({
+					doGenerate: async () => {
+						if (pending.length > 0) throw pending.shift()
+						return {
+							usage: {
+								inputTokens: {
+									cacheWrite: undefined,
+									noCache: 900,
+									cacheRead: 0,
+									total: 900,
+								},
+								outputTokens: { reasoning: 0, total: 120, text: 120 },
+							},
+							content: [{ text: JSON.stringify(defaultAnswer), type: 'text' }],
+							finishReason: { raw: 'completed', unified: 'stop' },
+							warnings: [],
+						}
+					},
+					modelId: 'gpt-6-luna',
+				})
+				openai.mockReturnValue(model)
+				return model
+			}
+
+			it('succeeds after two transient server errors in a row', async () => {
+				const model = modelFailingThenAnswering(serverError(), serverError())
+
+				const result = await getImageDescription(IMAGE, {})
+
+				expect(result).toEqual(defaultAnswer)
+				expect(model.doGenerateCalls).toHaveLength(3)
+				expect(consoleError).not.toHaveBeenCalled()
 			})
-		}, 10_000)
+
+			it('gives up after the second retry', async () => {
+				const model = modelFailingWith(serverError())
+
+				await expect(getImageDescription(IMAGE, {})).rejects.toThrow(
+					ImageDescriptionError
+				)
+				// first attempt + 2 retries
+				expect(model.doGenerateCalls).toHaveLength(3)
+				expect(JSON.parse(consoleError.mock.calls[0][1])).toMatchObject({
+					lastError: 'AI_APICallError',
+					error: 'AI_RetryError',
+					statusCode: 500,
+				})
+			})
+
+			it('does not retry a request error', async () => {
+				const model = modelFailingWith(
+					new APICallError({
+						url: 'https://api.openai.com/v1/responses',
+						message: 'Invalid request',
+						requestBodyValues: {},
+						isRetryable: false,
+						statusCode: 400,
+					})
+				)
+
+				await expect(getImageDescription(IMAGE, {})).rejects.toThrow(
+					ImageDescriptionError
+				)
+				expect(model.doGenerateCalls).toHaveLength(1)
+			})
+
+			// The WordPress plugin gives up after 30 s: the 25 s timeout is one
+			// abort signal for the whole call, attempts and backoff waits included.
+			it('stops retrying when the 25 s budget of the whole call runs out', async () => {
+				const budget = new AbortController()
+				const timeout = vi
+					.spyOn(AbortSignal, 'timeout')
+					.mockReturnValue(budget.signal)
+				const model = new MockLanguageModelV4({
+					doGenerate: async () => {
+						// the 25 s run out while the SDK waits its 2 s backoff
+						setTimeout(() =>
+							budget.abort(
+								new DOMException('25 s timeout exceeded', 'TimeoutError')
+							)
+						)
+						throw serverError({})
+					},
+				})
+				openai.mockReturnValue(model)
+
+				const startedAt = Date.now()
+				const error = await getImageDescription(IMAGE, {}).catch(error => error)
+
+				expect(error).toBeInstanceOf(ImageDescriptionError)
+				expect(Date.now() - startedAt).toBeLessThan(1500)
+				// one timer for the whole call, not one per attempt
+				expect(timeout).toHaveBeenCalledTimes(1)
+				expect(timeout).toHaveBeenCalledWith(25_000)
+				// every attempt gets the call's signal: an attempt in flight is
+				// aborted too
+				expect(model.doGenerateCalls[0].abortSignal.aborted).toBe(true)
+				// no retry after the budget ran out
+				expect(model.doGenerateCalls).toHaveLength(1)
+				timeout.mockRestore()
+			})
+		})
 
 		it('rejects when the model output is not the requested object', async () => {
 			modelAnswering('Sorry, I cannot describe this image.')
