@@ -8,6 +8,12 @@
 			"automerge": true,
 			"automergeType": "pr",
 			"automergeStrategy": "squash"
+		},
+		{
+			"description": "Coolify builds with Nixpacks 1.41.0, whose corepack 0.24.1 cannot start pnpm 11+ (it looks for bin/pnpm.cjs). Hold pnpm majors until the deploy path supports them; the nixpacks-install CI job checks it.",
+			"matchPackageNames": ["pnpm"],
+			"matchUpdateTypes": ["major"],
+			"enabled": false
 		}
 	]
 }
