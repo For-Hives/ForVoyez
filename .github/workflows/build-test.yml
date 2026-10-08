@@ -34,8 +34,9 @@ jobs:
         run: pnpm lint
 
   nixpacks-install:
-    # Production (Coolify, Nixpacks 1.41.0, NIXPACKS_NODE_VERSION=22, i.e. the
-    # nixpkgs nodejs_22 = 22.14.0) installs with corepack 0.24.1, which also
+    # Production (Coolify, Nixpacks 1.41.0, NIXPACKS_NODE_VERSION=22) gets the
+    # nodejs_22 of the nixpkgs archive Nixpacks pins for the .nvmrc major (24:
+    # 23f9169c, nodejs_22 = 22.19.0) and installs with corepack 0.24.1, which also
     # runs the Prisma generate postinstall. Replay that path so a package
     # manager or a dependency it cannot handle fails here, not on a deploy
     # (Renovate automerges minor and patch updates).
@@ -43,10 +44,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - name: Setup Node.js 22.14.0 (the Nixpacks nodejs_22)
+      - name: Setup Node.js 22.19.0 (the Nixpacks nodejs_22)
         uses: actions/setup-node@v7
         with:
-          node-version: 22.14.0
+          node-version: 22.19.0
       - name: Install like Nixpacks (corepack 0.24.1)
         run: |
           npm install -g corepack@0.24.1
