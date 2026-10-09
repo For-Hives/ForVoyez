@@ -18,9 +18,7 @@ test.describe('Pricing Component', () => {
 		await expect(pricingTitle).toBeVisible()
 		await expect(pricingTitle).toHaveText('Pricing')
 
-		const pricingSubtitle = await pricingSection.locator(
-			'p:has-text("Plans for every stage of your growth")'
-		)
+		const pricingSubtitle = await pricingSection.locator('p:has-text("Choose credits for your WordPress images")')
 		log('Checking pricing section subtitle')
 		await expect(pricingSubtitle).toBeVisible()
 
@@ -31,9 +29,7 @@ test.describe('Pricing Component', () => {
 		await expect(pricingDescription).toBeVisible()
 	})
 
-	test('Payment frequency options are present and functional', async ({
-		page,
-	}) => {
+	test('Payment frequency options are present and functional', async ({ page }) => {
 		await page.goto('/')
 
 		log('Page loaded')
@@ -47,20 +43,14 @@ test.describe('Pricing Component', () => {
 
 		log('Selecting annually payment frequency')
 		await frequencyAnnually.click()
-		await expect(frequencyAnnually).toHaveClass(
-			/bg-forvoyez_orange-500 text-white/
-		)
+		await expect(frequencyAnnually).toHaveClass(/bg-forvoyez_orange-500 text-white/)
 
 		log('Selecting monthly payment frequency')
 		await frequencyMonthly.click()
-		await expect(frequencyMonthly).toHaveClass(
-			/bg-forvoyez_orange-500 text-white/
-		)
+		await expect(frequencyMonthly).toHaveClass(/bg-forvoyez_orange-500 text-white/)
 	})
 
-	test('Pricing plans are displayed correctly based on selected frequency', async ({
-		page,
-	}) => {
+	test('Pricing plans are displayed correctly based on selected frequency', async ({ page }) => {
 		await page.goto('/')
 
 		log('Page loaded')

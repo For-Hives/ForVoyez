@@ -15,31 +15,30 @@ export const metadata = {
 	openGraph: {
 		images: [
 			{
-				alt: 'ForVoyez Developer Dashboard Interface',
+				alt: 'ForVoyez Account Dashboard',
 				url: '/og/dashboard.png',
 				width: 1200,
 				height: 630,
 			},
 		],
-		description:
-			'Access powerful image metadata generation tools, manage API keys, and monitor usage all in one place.',
-		title: 'ForVoyez Developer Platform',
+		description: 'Connect your WordPress plugin, manage your credits and plan, and review your image generation usage.',
+		title: 'Your ForVoyez Account',
 		type: 'website',
 	},
 	keywords: [
-		'developer dashboard',
+		'account dashboard',
 		'API management',
 		'usage monitoring',
 		'API keys',
 		'image metadata',
-		'developer tools',
+		'WordPress plugin',
 		'ForVoyez platform',
 		'API analytics',
-		'developer console',
+		'image descriptions',
 	].join(', '),
 
 	description:
-		'Manage your ForVoyez API integration, monitor usage metrics, and access our powerful image metadata generation tools in one central dashboard.',
+		'Manage your WordPress plugin connection, image generation credits, and subscription from your ForVoyez account.',
 
 	robots: {
 		'max-snippet': -1,
@@ -50,7 +49,7 @@ export const metadata = {
 	},
 
 	title: {
-		default: 'Developer Dashboard - ForVoyez',
+		default: 'Your Account - ForVoyez',
 		template: '%s | ForVoyez Dashboard',
 	},
 
@@ -59,6 +58,7 @@ export const metadata = {
 	},
 }
 
+// biome-ignore lint/suspicious/useAwait: Keep the existing async contract and promise rejection behavior.
 export default async function Layout({ children }) {
 	return (
 		<div className="flex min-h-full bg-white antialiased">

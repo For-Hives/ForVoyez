@@ -6,9 +6,7 @@ const TEST_EMAIL = process.env.TEST_EMAIL
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 
 test.describe('Sign-in - Sign-out Functionality', () => {
-	test('User can sign in successfully, access manage account, and sign out', async ({
-		page,
-	}) => {
+	test('User can sign in successfully, access manage account, and sign out', async ({ page }) => {
 		await page.goto(getNextPublicUrl())
 
 		log('Page loaded')
@@ -30,9 +28,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		log('Filling in sign-in form')
 		await emailInput.fill(TEST_EMAIL)
 
-		const continueButton = page.locator(
-			'button[data-localization-key="formButtonPrimary"]'
-		)
+		const continueButton = page.locator('button[data-localization-key="formButtonPrimary"]')
 		log('Waiting for continue button to be visible')
 		await continueButton.waitFor({ state: 'visible', timeout: 15000 })
 		await continueButton.click()
@@ -62,9 +58,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		await expect(userProfileDialog).toBeVisible()
 
 		const userName = userProfileDialog.locator('.cl-userPreviewMainIdentifier')
-		const userEmail = userProfileDialog.locator(
-			'.cl-userPreviewSecondaryIdentifier'
-		)
+		const userEmail = userProfileDialog.locator('.cl-userPreviewSecondaryIdentifier')
 
 		log('Checking user name in profile dialog')
 		await expect(userName).toHaveText('Test Test')
@@ -73,9 +67,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		await expect(userEmail).toHaveText(TEST_EMAIL)
 
 		// Check the "Manage account" button and click it
-		const manageAccountButton = userProfileDialog.locator(
-			'.cl-userButtonPopoverActionButton__manageAccount'
-		)
+		const manageAccountButton = userProfileDialog.locator('.cl-userButtonPopoverActionButton__manageAccount')
 		log('Checking presence of "Manage account" button')
 		await expect(manageAccountButton).toBeVisible()
 
@@ -88,9 +80,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 
 		// Check for the presence of the email address on the manage account page
 		log('Checking presence of email address on manage account page')
-		const emailElement = page
-			.locator('.cl-profileSectionItem__emailAddresses')
-			.getByText(TEST_EMAIL)
+		const emailElement = page.locator('.cl-profileSectionItem__emailAddresses').getByText(TEST_EMAIL)
 		await expect(emailElement).toBeVisible()
 
 		log('Sign-in and manage account test completed successfully')
@@ -103,9 +93,7 @@ test.describe('Sign-in - Sign-out Functionality', () => {
 		await userButton.click()
 
 		// Check the "Sign out" button and click it
-		const signOutButton = userProfileDialog.locator(
-			'.cl-userButtonPopoverActionButton__signOut'
-		)
+		const signOutButton = userProfileDialog.locator('.cl-userButtonPopoverActionButton__signOut')
 		log('Checking presence of "Sign out" button')
 		await expect(signOutButton).toBeVisible()
 

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { logger } from '@/services/logger.service'
 
 import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
@@ -8,9 +9,7 @@ import { database } from '/tests/unit/mocks/webhook-idempotency.db'
 // transactions roll back and whose advisory lock blocks.
 vi.mock('@/services/lemonsqueezy.service')
 vi.mock('@/services/prisma.service', async () => {
-	const { database } = await vi.importActual(
-		'/tests/unit/mocks/webhook-idempotency.db'
-	)
+	const { database } = await vi.importActual('/tests/unit/mocks/webhook-idempotency.db')
 	return { prisma: database.client }
 })
 
@@ -70,9 +69,7 @@ function orderCreated(orderId = 'order-1', userId = 'user123') {
 }
 
 function subscription() {
-	return database.tables.subscription.find(
-		row => row.lemonSqueezyId === 'sub-1'
-	)
+	return database.tables.subscription.find(row => row.lemonSqueezyId === 'sub-1')
 }
 
 function subscriptionCreated() {
@@ -129,6 +126,7 @@ const CREDITING_DELIVERIES = [
 	],
 ]
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 describe('Lemon Squeezy webhook idempotency', () => {
 	let consoleInfo
 	let consoleError
@@ -147,7 +145,7 @@ describe('Lemon Squeezy webhook idempotency', () => {
 			userId: 'user123',
 			oldPlanId: null,
 		})
-		consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => {})
+		consoleInfo = vi.spyOn(logger, 'info').mockImplementation(() => {})
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 	})
 
@@ -219,56 +217,35 @@ describe('Lemon Squeezy webhook idempotency', () => {
 	})
 
 	it('locks each crediting event on its own key, in a READ COMMITTED transaction', async () => {
-		await Promise.all([
-			deliver(orderCreated('order-1')),
-			deliver(orderCreated('order-2')),
-		])
+		await Promise.all([deliver(orderCreated('order-1')), deliver(orderCreated('order-2'))])
 		await deliver(subscriptionUpdated(STARTER.variantId, '2026-10-08T10:00Z'))
 
 		expect(database.credits('user123')).toBe(2 * PACK.packageSize)
 		// subscription_updated adds no credits: no lock
-		expect(database.lockedKeys).toEqual([
-			'lemonsqueezy:order_created:order-1',
-			'lemonsqueezy:order_created:order-2',
-		])
+		expect(database.lockedKeys).toEqual(['lemonsqueezy:order_created:order-1', 'lemonsqueezy:order_created:order-2'])
 		expect(database.transactions).toHaveLength(3)
-		expect(
-			database.transactions.every(
-				options => options.isolationLevel === 'ReadCommitted'
-			)
-		).toBe(true)
+		expect(database.transactions.every(options => options.isolationLevel === 'ReadCommitted')).toBe(true)
 	})
 
 	describe('processing failures', () => {
 		// a database error at each step after the duplicate check (the credits
 		// are already added when one of the last two fails)
-		const FAILURE_POINTS = [
-			'plan.findUnique',
-			'user.update',
-			'usage.create',
-			'webhookEvent.update',
-		]
+		const FAILURE_POINTS = ['plan.findUnique', 'user.update', 'usage.create', 'webhookEvent.update']
 
-		it.each(FAILURE_POINTS)(
-			'rolls back everything and records the error when %s fails',
-			async failingCall => {
-				database.failOnce(failingCall, new Error('Connection terminated'))
+		it.each(FAILURE_POINTS)('rolls back everything and records the error when %s fails', async failingCall => {
+			database.failOnce(failingCall, new Error('Connection terminated'))
 
-				const { processed, event } = await deliver(orderCreated())
+			const { processed, event } = await deliver(orderCreated())
 
-				expect(processed).toBe(false)
-				expect(database.credits('user123')).toBe(0)
-				expect(usageRows()).toHaveLength(0)
-				expect(event).toMatchObject({
-					processingError: 'Connection terminated',
-					processed: false,
-				})
-				expect(consoleError).toHaveBeenCalledWith(
-					`webhook ${event.id} (order_created) processing failed:`,
-					'Error'
-				)
-			}
-		)
+			expect(processed).toBe(false)
+			expect(database.credits('user123')).toBe(0)
+			expect(usageRows()).toHaveLength(0)
+			expect(event).toMatchObject({
+				processingError: 'Connection terminated',
+				processed: false,
+			})
+			expect(consoleError).toHaveBeenCalledWith(`webhook ${event.id} (order_created) processing failed:`, 'Error')
+		})
 
 		it.each(FAILURE_POINTS)(
 			'credits once when an event that failed at %s is retried, then resent',
@@ -279,11 +256,7 @@ describe('Lemon Squeezy webhook idempotency', () => {
 				const retry = await deliver(orderCreated())
 				const resend = await deliver(orderCreated())
 
-				expect([failed, retry, resend].map(d => d.processed)).toEqual([
-					false,
-					true,
-					true,
-				])
+				expect([failed, retry, resend].map(d => d.processed)).toEqual([false, true, true])
 				expect(database.credits('user123')).toBe(PACK.packageSize)
 				expect(usageRows()).toHaveLength(1)
 				expect(usageRows()[0]).toMatchObject({
@@ -296,17 +269,14 @@ describe('Lemon Squeezy webhook idempotency', () => {
 					processingError: null,
 					processed: true,
 				})
-				expect(resend.event.processingError).toBe(
-					`Duplicate of webhook event ${retry.id}, already processed: skipped`
-				)
+				expect(resend.event.processingError).toBe(`Duplicate of webhook event ${retry.id}, already processed: skipped`)
 			}
 		)
 
 		it('rolls back the credits of a renewal when clearing the plan change marker fails', async () => {
 			subscription().oldPlanId = GROWTH.id
 			database.failOnce('subscription.update', new Error('deadlock detected'))
-			const renewal = () =>
-				invoicePaid('renewal', 'invoice-9', '2026-10-08T10:00:00Z')
+			const renewal = () => invoicePaid('renewal', 'invoice-9', '2026-10-08T10:00:00Z')
 
 			const failed = await deliver(renewal())
 
@@ -351,9 +321,7 @@ describe('Lemon Squeezy webhook idempotency', () => {
 
 			await deliver(orderCreated())
 
-			expect(database.tables.user).toEqual([
-				{ clerkId: 'user123', customerId: 7, credits: 50 },
-			])
+			expect(database.tables.user).toEqual([{ clerkId: 'user123', customerId: 7, credits: 50 }])
 		})
 	})
 
@@ -362,9 +330,7 @@ describe('Lemon Squeezy webhook idempotency', () => {
 		const second = await deliver(subscriptionCreated())
 
 		expect([first.processed, second.processed]).toEqual([true, true])
-		expect(
-			database.tables.subscription.filter(row => row.lemonSqueezyId === 'sub-2')
-		).toHaveLength(1)
+		expect(database.tables.subscription.filter(row => row.lemonSqueezyId === 'sub-2')).toHaveLength(1)
 		expect(second.event).toMatchObject({
 			processingError: null,
 			processed: true,
@@ -384,37 +350,30 @@ describe('Lemon Squeezy webhook idempotency', () => {
 		it.each([
 			['a downgrade', GROWTH, STARTER],
 			['an upgrade billed at the renewal', STARTER, GROWTH],
-		])(
-			'waits for its own plan change after %s',
-			async (_case, firstPlan, secondPlan) => {
-				subscription().planId = firstPlan.id
-				await deliver(subscriptionUpdated(secondPlan.variantId, DAY_1))
-				expect(subscription()).toMatchObject({
-					oldPlanId: firstPlan.id,
-					planId: secondPlan.id,
-				})
+		])('waits for its own plan change after %s', async (_case, firstPlan, secondPlan) => {
+			subscription().planId = firstPlan.id
+			await deliver(subscriptionUpdated(secondPlan.variantId, DAY_1))
+			expect(subscription()).toMatchObject({
+				oldPlanId: firstPlan.id,
+				planId: secondPlan.id,
+			})
 
-				// day 5: moves to Pro, its invoice comes first
-				const invoice = () => invoicePaid('updated', 'invoice-7', DAY_5_INVOICE)
-				const early = await deliver(invoice())
+			// day 5: moves to Pro, its invoice comes first
+			const invoice = () => invoicePaid('updated', 'invoice-7', DAY_5_INVOICE)
+			const early = await deliver(invoice())
 
-				expect(early.processed).toBe(false)
-				expect(early.event.processingError).toContain(
-					'plan change not processed yet'
-				)
-				expect(database.credits('user123')).toBe(0)
+			expect(early.processed).toBe(false)
+			expect(early.event.processingError).toContain('plan change not processed yet')
+			expect(database.credits('user123')).toBe(0)
 
-				await deliver(subscriptionUpdated(PRO.variantId, DAY_5))
-				// Lemon Squeezy retries the invoice
-				const retried = await deliver(invoice())
+			await deliver(subscriptionUpdated(PRO.variantId, DAY_5))
+			// Lemon Squeezy retries the invoice
+			const retried = await deliver(invoice())
 
-				expect(retried.processed).toBe(true)
-				expect(database.credits('user123')).toBe(
-					PRO.packageSize - secondPlan.packageSize
-				)
-				expect(subscription().oldPlanId).toBeNull()
-			}
-		)
+			expect(retried.processed).toBe(true)
+			expect(database.credits('user123')).toBe(PRO.packageSize - secondPlan.packageSize)
+			expect(subscription().oldPlanId).toBeNull()
+		})
 
 		it('credits an `updated` invoice created with its plan change, whatever the order', async () => {
 			const invoice = () => invoicePaid('updated', 'invoice-7', DAY_5_INVOICE)
@@ -424,9 +383,7 @@ describe('Lemon Squeezy webhook idempotency', () => {
 			await deliver(invoice())
 			await deliver(invoice()) // a late duplicate
 
-			expect(database.credits('user123')).toBe(
-				GROWTH.packageSize - STARTER.packageSize
-			)
+			expect(database.credits('user123')).toBe(GROWTH.packageSize - STARTER.packageSize)
 		})
 	})
 })

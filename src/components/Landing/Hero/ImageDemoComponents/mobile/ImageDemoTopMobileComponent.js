@@ -6,16 +6,14 @@ export function ImageDemoTopMobileComponent() {
 	return (
 		<div className="relative">
 			<GlassmorphismComponent
-				alt={
-					'Close-up of a kitten with striking, wide eyes and patterned fur, peering curiously'
-				}
+				alt={'Close-up of a kitten with striking, wide eyes and patterned fur, peering curiously'}
 				caption={
 					"Captivated by curiosity, this kitten's gaze pierces through the lens, inviting a moment of connection."
 				}
 				title={"Whiskered Wonder: A Kitten's Gaze"}
 			/>
 			<Image
-				alt="Image of an abstract expressionist painting, demo of the generated alt text API"
+				alt="Example image for AI-generated alt text"
 				className="aspect-2/3 w-full rounded-xl bg-slate-900/5 object-cover shadow-lg"
 				height={350}
 				src="/images/cute_cat.webp"

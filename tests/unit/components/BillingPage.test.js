@@ -1,14 +1,13 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import { createElement, Fragment, StrictMode } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import BillingPage from '@/app/(dashboard)/app/billing/page'
 
 import { getCustomerPortalUrl } from '@/app/actions/app/plans'
 
-const NOT_SUBSCRIBED_MESSAGE =
-	'You must have been subscribed at least once to access this page.'
+const NOT_SUBSCRIBED_MESSAGE = 'You must have been subscribed at least once to access this page.'
 const PORTAL_URL = 'https://forvoyez.lemonsqueezy.com/billing?expires=1'
 
 const router = { replace: vi.fn(), push: vi.fn() }
@@ -62,17 +61,13 @@ describe('Billing page', () => {
 		renderBillingPage()
 
 		await waitFor(() => expect(router.replace).toHaveBeenCalledWith(PORTAL_URL))
-		expect(
-			await screen.findByText('Redirecting to your billing home...')
-		).toBeTruthy()
+		expect(await screen.findByText('Redirecting to your billing home...')).toBeTruthy()
 		expect(router.push).not.toHaveBeenCalled()
 		expect(screen.queryByRole('alert')).toBeNull()
 	})
 
 	it('still explains and redirects to the plans when the portal lookup fails', async () => {
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {})
+		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 		getCustomerPortalUrl.mockRejectedValue(new Error('Lemon Squeezy is down'))
 		renderBillingPage()
 
@@ -80,9 +75,7 @@ describe('Billing page', () => {
 		expect(alert.textContent).toContain(NOT_SUBSCRIBED_MESSAGE)
 		expect(router.push).toHaveBeenCalledWith('/app/plans')
 		expect(router.replace).not.toHaveBeenCalled()
-		expect(
-			await screen.findByText('Failed to load data. Please try again later.')
-		).toBeTruthy()
+		expect(await screen.findByText('Failed to load data. Please try again later.')).toBeTruthy()
 		consoleErrorSpy.mockRestore()
 	})
 })

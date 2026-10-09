@@ -1,7 +1,11 @@
-const { test: baseTest, expect } = require('@playwright/test')
-require('dotenv').config()
-const path = require('path')
-const fs = require('fs')
+const { test: baseTest } = require('@playwright/test')
+try {
+	process.loadEnvFile()
+} catch (error) {
+	if (error.code !== 'ENOENT') throw error
+}
+const path = require('node:path')
+const fs = require('node:fs')
 
 const { getNextPublicUrl, signIn, log } = require('../tests-helpers')
 
@@ -38,16 +42,9 @@ module.exports = {
 				const page = await browser.newPage({ storageState: undefined })
 
 				// Perform authentication steps based on the mode
-				log(
-					`Authenticating in ${isSubscribedMode ? 'subscribed' : 'basic'} mode`
-				)
+				log(`Authenticating in ${isSubscribedMode ? 'subscribed' : 'basic'} mode`)
 				if (isSubscribedMode) {
-					await signIn(
-						page,
-						getNextPublicUrl(),
-						TEST_EMAIL_SUB,
-						TEST_PASSWORD_SUB
-					)
+					await signIn(page, getNextPublicUrl(), TEST_EMAIL_SUB, TEST_PASSWORD_SUB)
 				} else {
 					await signIn(page, getNextPublicUrl(), TEST_EMAIL, TEST_PASSWORD)
 				}

@@ -7,9 +7,7 @@ test.describe('Plans Management Functionality', () => {
 		await expect(page).toHaveURL('/app/plans')
 	})
 
-	test('View and manage subscription plans as subscribed user', async ({
-		page,
-	}) => {
+	test('View and manage subscription plans as subscribed user', async ({ page }) => {
 		log('Page loaded')
 
 		// Wait for the loading state to disappear (it no longer waits for
@@ -33,12 +31,8 @@ test.describe('Plans Management Functionality', () => {
 		expect(await plans.count()).toBeGreaterThan(0)
 
 		// Verify the presence of "Manage my Subscription" and "Change Plan" buttons
-		log(
-			'Verifying presence of "Manage my Subscription" and "Change Plan" buttons'
-		)
-		const manageSubscriptionButton = page.locator(
-			'a:has-text("Manage my Subscription")'
-		)
+		log('Verifying presence of "Manage my Subscription" and "Change Plan" buttons')
+		const manageSubscriptionButton = page.locator('a:has-text("Manage my Subscription")')
 		const changePlanButton = page.locator('a:has-text("Change Plan")')
 
 		await expect(manageSubscriptionButton).toBeVisible()
@@ -46,22 +40,15 @@ test.describe('Plans Management Functionality', () => {
 
 		// Verify the links are present and correct
 		log('Verifying the links are present and correct')
-		const manageSubscriptionLink =
-			await manageSubscriptionButton.getAttribute('href')
+		const manageSubscriptionLink = await manageSubscriptionButton.getAttribute('href')
 		const changePlanLink = await changePlanButton.getAttribute('href')
 
-		expect(manageSubscriptionLink).toContain(
-			'https://forvoyez.lemonsqueezy.com/billing'
-		)
-		expect(changePlanLink).toContain(
-			'https://forvoyez.lemonsqueezy.com/billing'
-		)
+		expect(manageSubscriptionLink).toContain('https://forvoyez.lemonsqueezy.com/billing')
+		expect(changePlanLink).toContain('https://forvoyez.lemonsqueezy.com/billing')
 
 		// Verify the presence of "Refill your credits" buttons
 		log('Verifying presence of "Refill your credits" buttons')
-		const refillButton = page
-			.locator('button:has-text("Refill your credits")')
-			.first()
+		const refillButton = page.locator('button:has-text("Refill your credits")').first()
 		await expect(refillButton).toBeVisible()
 
 		// The refill checkout is created when the button is clicked

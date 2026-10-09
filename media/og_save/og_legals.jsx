@@ -21,6 +21,7 @@ export const div = () => {
 					top: 42,
 				}}
 			>
+				{/* biome-ignore lint/performance/noImgElement: Standalone Open Graph artwork rendered outside Next.js requires a native image. */}
 				<img
 					alt="ForVoyez Logo"
 					src="https://r2-andycinquin.andy-cinquin.fr/logo_square_6455de6ad1.png"

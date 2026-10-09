@@ -65,9 +65,7 @@ export function normalizeDescribeSchema(schema) {
 	}
 
 	if (entries.length > DESCRIBE_LIMITS.maxSchemaKeys) {
-		throw new InvalidDescribeInputError(
-			`Invalid schema: at most ${DESCRIBE_LIMITS.maxSchemaKeys} fields are allowed`
-		)
+		throw new InvalidDescribeInputError(`Invalid schema: at most ${DESCRIBE_LIMITS.maxSchemaKeys} fields are allowed`)
 	}
 
 	for (const [key, description] of entries) {
@@ -77,9 +75,7 @@ export function normalizeDescribeSchema(schema) {
 			)
 		}
 		if (key === '__proto__') {
-			throw new InvalidDescribeInputError(
-				'Invalid schema: "__proto__" is not allowed as a field name'
-			)
+			throw new InvalidDescribeInputError('Invalid schema: "__proto__" is not allowed as a field name')
 		}
 		if (description.length > DESCRIBE_LIMITS.maxSchemaDescriptionLength) {
 			throw new InvalidDescribeInputError(
@@ -113,6 +109,7 @@ export function normalizeDescribeText(value, maxLength) {
  */
 export function normalizeLanguage(value) {
 	const language = String(value ?? '')
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: Intentionally strip control characters from customer-provided language names.
 		.replace(/[\u0000-\u001f\u007f\s]+/g, ' ')
 		.trim()
 		.slice(0, DESCRIBE_LIMITS.maxLanguageLength)
@@ -153,10 +150,7 @@ export function languageName(language) {
  * @returns {Record<string, string>}
  */
 export function withLegacyAltText(metadata) {
-	if (
-		typeof metadata?.alternativeText !== 'string' ||
-		Object.hasOwn(metadata, 'alt_text')
-	) {
+	if (typeof metadata?.alternativeText !== 'string' || Object.hasOwn(metadata, 'alt_text')) {
 		return metadata
 	}
 

@@ -1,7 +1,8 @@
 'use client'
+import { useAuth } from '@clerk/nextjs'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-
 import {
 	Area,
 	AreaChart,
@@ -14,18 +15,12 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
-import { useAuth } from '@clerk/nextjs'
-import { fr } from 'date-fns/locale'
-import { format } from 'date-fns'
 
-import {
-	getMyCredits,
-	getMyUsage,
-	getMyUsageByToken,
-} from '@/app/actions/app/usage'
+import { getMyCredits, getMyUsage, getMyUsageByToken } from '@/app/actions/app/usage'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 import { SkeletonText } from '@/components/Skeletons/SkeletonText'
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 export function UsageChartComponent() {
 	const [usage, setUsage] = useState([])
 	const [usageByToken, setUsageByToken] = useState([])
@@ -39,9 +34,7 @@ export function UsageChartComponent() {
 	useEffect(() => {
 		getMyCredits()
 			.then(credits => setUserCredits(credits))
-			.catch(error =>
-				console.error('Error fetching credits from user id:', error)
-			)
+			.catch(error => console.error('Error fetching credits from user id:', error))
 	}, [])
 
 	useEffect(() => {
@@ -73,42 +66,28 @@ export function UsageChartComponent() {
 	}, [userId])
 
 	// only once both answered, not while they are still loading
-	const showTooltip =
-		!isLoadingUsage &&
-		!isLoadingUsageByToken &&
-		usage.length === 0 &&
-		usageByToken.length === 0
+	const showTooltip = !(isLoadingUsage || isLoadingUsageByToken) && usage.length === 0 && usageByToken.length === 0
 
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
 			<div className="">
-				<h2 className="mb-0 text-2xl font-bold text-slate-800">
-					How many credits do I have left?
-				</h2>
+				<h2 className="mb-0 text-2xl font-bold text-slate-800">How many credits do I have left?</h2>
 				<div className="mt-0 flex gap-2">
 					<p className="text-md text-slate-600">
 						You have{' '}
 						<span className="text-forvoyez_orange-600 font-bold">
-							{userCredits === null ? (
-								<SkeletonText dataTestId="user-credits-loading" />
-							) : (
-								userCredits
-							)}{' '}
-							credits left
+							{userCredits === null ? <SkeletonText dataTestId="user-credits-loading" /> : userCredits} credits left
 						</span>
 					</p>
 				</div>
 			</div>
 
-			<h2 className="mb-0 text-2xl font-bold text-slate-800">
-				Remaining Credits Over Time
-			</h2>
+			<h2 className="mb-0 text-2xl font-bold text-slate-800">Remaining Credits Over Time</h2>
 			<div className="mt-0 flex gap-2">
-				<p className="text-sm text-slate-600">
-					Follow your remaining credits over time:
-				</p>
+				<p className="text-sm text-slate-600">Follow your remaining credits over time:</p>
 				{isLoadingUsage ? (
 					<SkeletonText />
+					// biome-ignore lint/style/noNestedTernary: Preserve the existing conditional rendering and value selection during the tooling migration.
 				) : usage.length > 0 ? (
 					// the real balance, not the last point of the chart: that one can
 					// lag behind when two API calls overlap
@@ -132,15 +111,10 @@ export function UsageChartComponent() {
 					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4">
 						<p className="text-sm leading-6 text-white">
 							<strong className="font-semibold">Usage Data</strong>
-							<svg
-								aria-hidden="true"
-								className="mx-2 inline h-0.5 w-0.5 fill-current"
-								viewBox="0 0 2 2"
-							>
+							<svg aria-hidden="true" className="mx-2 inline h-0.5 w-0.5 fill-current" viewBox="0 0 2 2">
 								<circle cx="1" cy="1" r="1" />
 							</svg>
-							You need to have used the application at least once to see the
-							usage data.
+							You need to have used the application at least once to see the usage data.
 						</p>
 					</div>
 				</div>
@@ -148,12 +122,9 @@ export function UsageChartComponent() {
 			<div className="mt-8 h-[400px]" data-testid="usage-chart-container">
 				{isLoadingUsage ? (
 					<SkeletonLoader dataTestId="skeleton-loader" />
+					// biome-ignore lint/style/noNestedTernary: Preserve the existing conditional rendering and value selection during the tooling migration.
 				) : usage.length > 0 ? (
-					<ResponsiveContainer
-						data-testid="usage-chart"
-						height="100%"
-						width="100%"
-					>
+					<ResponsiveContainer data-testid="usage-chart" height="100%" width="100%">
 						<AreaChart
 							data={usage}
 							margin={{
@@ -164,13 +135,7 @@ export function UsageChartComponent() {
 							}}
 						>
 							<defs>
-								<linearGradient
-									id="colorCreditsLeft"
-									x1="0"
-									x2="0"
-									y1="0"
-									y2="1"
-								>
+								<linearGradient id="colorCreditsLeft" x1="0" x2="0" y1="0" y2="1">
 									<stop offset="0%" stopColor="#ff6545" stopOpacity={0.3} />
 									<stop offset="100%" stopColor="#ff6545" stopOpacity={0.05} />
 								</linearGradient>
@@ -179,9 +144,7 @@ export function UsageChartComponent() {
 							<XAxis
 								dataKey="fullDate"
 								minTickGap={50}
-								tickFormatter={fullDate =>
-									format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })
-								}
+								tickFormatter={fullDate => format(new Date(fullDate), 'd MMM, HH:mm', { locale: fr })}
 								tickMargin={10}
 								tickSize={10}
 							/>
@@ -217,27 +180,18 @@ export function UsageChartComponent() {
 					</div>
 				)}
 			</div>
-			<h2 className="mt-12 mb-0 text-2xl font-bold text-slate-800">
-				Usage by Token
-			</h2>
+			<h2 className="mt-12 mb-0 text-2xl font-bold text-slate-800">Usage by Token</h2>
 			<div className="mt-0 flex gap-2">
 				<p className={'text-sm text-slate-600'}>
-					Track your usage by token, and identify which tokens are being used
-					the most.
+					Track your usage by token, and identify which tokens are being used the most.
 				</p>
 			</div>
-			<div
-				className="mt-8 h-[400px]"
-				data-testid="usage-by-token-chart-container"
-			>
+			<div className="mt-8 h-[400px]" data-testid="usage-by-token-chart-container">
 				{isLoadingUsageByToken ? (
 					<SkeletonLoader data-testid="skeleton-loader" />
+					// biome-ignore lint/style/noNestedTernary: Preserve the existing conditional rendering and value selection during the tooling migration.
 				) : usageByToken.length > 0 ? (
-					<ResponsiveContainer
-						data-testid="usage-by-token-chart"
-						height="100%"
-						width="100%"
-					>
+					<ResponsiveContainer data-testid="usage-by-token-chart" height="100%" width="100%">
 						<BarChart
 							barSize={20}
 							data={usageByToken}
@@ -249,24 +203,12 @@ export function UsageChartComponent() {
 							}}
 						>
 							<defs>
-								<linearGradient
-									id="colorUsedTokens"
-									x1="0"
-									x2="0"
-									y1="0"
-									y2="1"
-								>
+								<linearGradient id="colorUsedTokens" x1="0" x2="0" y1="0" y2="1">
 									<stop offset="0%" stopColor="#ff6545" stopOpacity={1} />
 									<stop offset="100%" stopColor="#ff6545" stopOpacity={0.7} />
 								</linearGradient>
 							</defs>
-							<XAxis
-								dataKey="token"
-								padding={{ right: 10, left: 10 }}
-								scale={'point'}
-								tickMargin={10}
-								tickSize={10}
-							/>
+							<XAxis dataKey="token" padding={{ right: 10, left: 10 }} scale={'point'} tickMargin={10} tickSize={10} />
 							<YAxis allowDecimals={false} tickMargin={10} tickSize={0} />
 							<Tooltip />
 							<Legend
@@ -275,20 +217,12 @@ export function UsageChartComponent() {
 								}}
 							/>
 							<CartesianGrid strokeDasharray="3 3" />
-							<Bar
-								dataKey="used"
-								fill="url(#colorUsedTokens)"
-								fillOpacity={1}
-								name="Used Tokens"
-							/>
+							<Bar dataKey="used" fill="url(#colorUsedTokens)" fillOpacity={1} name="Used Tokens" />
 						</BarChart>
 					</ResponsiveContainer>
 				) : (
 					<div className="flex h-full items-center justify-center">
-						<p
-							className="text-sm text-slate-600"
-							data-testid="no-usage-by-token-data"
-						>
+						<p className="text-sm text-slate-600" data-testid="no-usage-by-token-data">
 							No usage data available by token.
 						</p>
 					</div>

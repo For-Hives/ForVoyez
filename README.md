@@ -37,9 +37,9 @@ To run the ForVoyez project locally, ensure you have the following dependencies 
 
 - Node.js:
   - v24 recommended (v24.15 or higher), as in the Docker image and CI.
-  - v22.22.2 or higher (or v24.15 or higher) for the development tooling: the unit tests (jsdom 30), the pre-commit hook (lint-staged 17) and ESLint 10 need it.
+  - v22.22.2 or higher (or v24.15 or higher) for the development tooling: the unit tests (jsdom 30) and the pre-commit hook (lint-staged 17) need it.
   - v22.12 or higher is enough to build and run the app (`pnpm build`, `pnpm start`); `pnpm prisma:seed` and `node check-db-connection.js` load the generated TypeScript Prisma client directly and need v22.18 or higher.
-  - `.nvmrc` pins major 22 for the Nixpacks build on Coolify, whose default would be Node 18 (too old for Next 16 and Prisma 7); a `NIXPACKS_NODE_VERSION` variable on the Coolify app overrides it.
+  - `.nvmrc` pins major 24 for the Nixpacks build on Coolify, whose default would be Node 18 (too old for Next 16 and Prisma 7); a `NIXPACKS_NODE_VERSION` variable on the Coolify app overrides it.
 - pnpm (the version pinned in `package.json` `packageManager`, enable it with `corepack enable`). On Node 22.12 and 22.13, the bundled corepack cannot fetch pnpm (`Error: Cannot find matching keyid`): run `npm i -g corepack@latest` first.
 - PostgreSQL (v16.x or higher)
 
@@ -72,6 +72,29 @@ Then, you can connect to the database using the following command:
 7. Run database migrations: `pnpm prisma:migrate` (Prisma reads `DATABASE_URL` through `prisma.config.ts`, which loads `.env`)
 8. Start the development server: `pnpm dev`
 
+### Code quality
+
+Biome 2.5.13 handles linting, formatting and import organization with `biome.json`.
+
+```bash
+pnpm tsc
+pnpm lint              # biome check --error-on-warnings .
+pnpm lint:fix          # biome check --write .
+pnpm format            # biome format --write .
+pnpm test              # unit tests, one run
+pnpm test:watch        # unit tests in watch mode
+pnpm test:ci           # unit tests with coverage, one run
+pnpm test:integration  # real PostgreSQL in a disposable Docker container
+pnpm build
+pnpm test:smoke        # HTTP + Chromium checks against the production build
+```
+
+The pre-commit hook checks staged JavaScript, TypeScript, JSON and CSS files with Biome, treating warnings as failures. The TypeScript configuration preserves the existing JavaScript setup (`allowJs: true`, `checkJs: false`) and checks the TypeScript sources. Local Biome suppressions document existing async contracts, complex flows and UI behavior preserved during the migration.
+
+The sample execution tests require Python 3 with Requests, bash, cURL and PHP CLI with cURL. On Linux, PHP can instead run through Docker after `docker pull php:8.5-cli`. Missing runtimes fail the suite explicitly; tests are never silently skipped. PostgreSQL integration and production smoke tests require Docker and create/remove their own database container. Smoke tests also require `pnpm build` and `pnpm exec playwright install chromium`. Authenticated E2E tests retain their existing Clerk/OpenAI credentials requirements.
+
+See [the test and Next.js audit](docs/testing-and-next-audit.md) for input boundaries, cache decisions, coverage scope and verification limits.
+
 ### Comparing AI models
 
 `scripts/compare-models.mjs` runs the previous pipeline (3 sequential `gpt-4o-mini` calls, kept in `scripts/legacy-image-description.mjs`) and the current one (a single vision call with structured output, `src/services/imageDescription.service.js`) on every image of a folder, then writes a side-by-side report with the generated fields, the token usage and the latency. It calls the OpenAI API (4 calls per image), so try it on a small folder first:
@@ -96,7 +119,7 @@ To test and develop the Lemonsqueezy webhook locally, follow these steps:
 1. Go to [https://webhook.site/](https://webhook.site/) and copy your unique URL.
 
 2. Start your local development server by running the following command in the terminal at the root of your project:
-   `npm run dev` or `bun dev`  
+   `pnpm dev`
    This will start your Next.js server, which will listen on `http://localhost:3000` by default.
 
 3. Globally install the `@webhooksite/cli` package by running the following command:
@@ -129,7 +152,7 @@ you can use ngrok to create a secure tunnel to your local server and receive web
 
 1. Download and install ngrok from [https://ngrok.com/download](https://ngrok.com/download).
 2. Start your local development server by running the following command in the terminal at the root of your project:
-   `npm run dev` or `bun dev`
+   `pnpm dev`
    This will start your Next.js server, which will listen on `http://localhost:3000` by default.
 3. Go to ngrok's admin interface on the website [https://dashboard.ngrok.com/get-started/setup](https://dashboard.ngrok.com/get-started/setup) and copy your unique URL.
 4. You can create a static domain on the interface and use it for your webhook.
@@ -222,3 +245,11 @@ If you encounter any issues, have questions, or need assistance, please don't he
 ---
 
 🌟 Boost your image SEO with ForVoyez - the ultimate AI-powered image metadata generation solution! 🌟
+
+## Production startup and database migrations
+
+`pnpm build` generates the Prisma client and builds Next.js; it does not change the production database. `pnpm start` applies pending migrations with `prisma migrate deploy` before starting Next.js. The Docker entrypoint (`pnpm launch`) follows the same sequence, so a normal deployment applies the committed index migration automatically. Configure Coolify/Nixpacks to use `pnpm start` (or `pnpm launch`); a custom command that calls `next start` directly bypasses migrations.
+
+Prisma records applied migrations, so subsequent starts do not reapply them. If a migration fails, startup stops instead of serving an incompatible schema. The dashboard migration adds PostgreSQL indexes for existing query filters; it does not alter business records. Smoke tests also run this startup against a disposable PostgreSQL database.
+
+Navigation uses the native React 19.3 `ViewTransition` API: short page fades, shared brand images, marketing headings and descriptions, WordPress plugin content, and dashboard resource headings. Existing Next links coordinate transitions automatically. Reduced-motion preferences disable animations; browsers without the API retain normal navigation.

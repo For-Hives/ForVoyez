@@ -1,29 +1,28 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
 
 import Image from 'next/image'
-
-import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightBottom.component'
-import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
-import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightTop.component'
-import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
+import { useEffect, useMemo, useState } from 'react'
 import { ImageDemoLeftComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoLeft.component'
+import { ImageDemoMidBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidBottom.component'
+import { ImageDemoMidTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoMidTop.component'
+import { ImageDemoRightBottomComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightBottom.component'
+import { ImageDemoRightTopComponent } from '@/components/Landing/Hero/ImageDemoComponents/desktop/ImageDemoRightTop.component'
 
 export function AnimateSideHeroComponent() {
 	const [textInButton, setTextInButton] = useState('Generate Now!')
 	useEffect(() => {
-		let animateButton = function (e) {
+		const animateButton = e => {
 			e.preventDefault
 			//reset animation
 			e.target.classList.remove('animate')
 
 			e.target.classList.add('animate')
-			setTimeout(function () {
+			setTimeout(() => {
 				e.target.classList.remove('animate')
 			}, 700)
 		}
 
-		let bubblyButtons = document.getElementsByClassName('bubbly-button')
+		const bubblyButtons = document.getElementsByClassName('bubbly-button')
 
 		for (let i = 0; i < bubblyButtons.length; i++) {
 			bubblyButtons[i].addEventListener('click', animateButton, false)
@@ -50,26 +49,11 @@ export function AnimateSideHeroComponent() {
 		}
 	}, [])
 
-	const memoizedImageDemoLeftComponent = useMemo(
-		() => <ImageDemoLeftComponent />,
-		[]
-	)
-	const memoizedImageDemoMidTopComponent = useMemo(
-		() => <ImageDemoMidTopComponent />,
-		[]
-	)
-	const memoizedImageDemoMidBottomComponent = useMemo(
-		() => <ImageDemoMidBottomComponent />,
-		[]
-	)
-	const memoizedImageDemoRightTopComponent = useMemo(
-		() => <ImageDemoRightTopComponent />,
-		[]
-	)
-	const memoizedImageDemoRightBottomComponent = useMemo(
-		() => <ImageDemoRightBottomComponent />,
-		[]
-	)
+	const memoizedImageDemoLeftComponent = useMemo(() => <ImageDemoLeftComponent />, [])
+	const memoizedImageDemoMidTopComponent = useMemo(() => <ImageDemoMidTopComponent />, [])
+	const memoizedImageDemoMidBottomComponent = useMemo(() => <ImageDemoMidBottomComponent />, [])
+	const memoizedImageDemoRightTopComponent = useMemo(() => <ImageDemoRightTopComponent />, [])
+	const memoizedImageDemoRightBottomComponent = useMemo(() => <ImageDemoRightBottomComponent />, [])
 
 	return (
 		<div className="relative mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
@@ -94,25 +78,15 @@ export function AnimateSideHeroComponent() {
 				{memoizedImageDemoRightTopComponent}
 				{memoizedImageDemoRightBottomComponent}
 			</div>
-			<div
-				className={
-					'container-animation absolute top-0 left-0 flex h-full w-full items-center justify-center'
-				}
-			>
-				<div
-					className={
-						'relative h-full w-full lg:-translate-x-1/3 xl:translate-x-0'
-					}
-				>
-					<div
-						className={'cursor cursor-animation pointer-events-none absolute'}
-					>
+			<div className={'container-animation absolute top-0 left-0 flex h-full w-full items-center justify-center'}>
+				<div className={'relative h-full w-full lg:-translate-x-1/3 xl:translate-x-0'}>
+					<div className={'cursor cursor-animation pointer-events-none absolute'}>
 						<Image alt={'cursor'} height={35} src={'/cursor.svg'} width={35} />
 					</div>
 					<div className={'absolute right-0 bottom-0'}>
 						<div>
 							<div className={'relative'}>
-								<button className={'bubbly-button font-bold text-slate-950'}>
+								<button type="submit" className={'bubbly-button font-bold text-slate-950'}>
 									{textInButton}
 								</button>
 							</div>

@@ -1,9 +1,10 @@
 // Server-side code. With Vitest 5 + jsdom 30 the jsdom environment no longer
 // automocks Node built-ins (crypto) and its Blob has no stream(), so use Node.
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { createSecretKey } from 'node:crypto'
 import { jwtVerify, SignJWT } from 'jose'
-import { createSecretKey } from 'crypto'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { generateJwt, verifyJwt } from '@/services/jwt.service'
 
@@ -38,9 +39,7 @@ describe('JWT Service', () => {
 			})
 			expect(SignJWT.prototype.setIssuer).toHaveBeenCalledWith('ForVoyez')
 			expect(SignJWT.prototype.setAudience).toHaveBeenCalledWith('ForVoyez')
-			expect(SignJWT.prototype.setExpirationTime).toHaveBeenCalledWith(
-				expiredAt
-			)
+			expect(SignJWT.prototype.setExpirationTime).toHaveBeenCalledWith(expiredAt)
 			expect(SignJWT.prototype.sign).toHaveBeenCalledWith(secret)
 			expect(generatedToken).toBe(token)
 		})
@@ -53,6 +52,7 @@ describe('JWT Service', () => {
 			const verifiedPayload = await verifyJwt(`Bearer ${token}`)
 
 			expect(jwtVerify).toHaveBeenCalledWith(token, secret, {
+				algorithms: ['HS256'],
 				audience: 'ForVoyez',
 				issuer: 'ForVoyez',
 			})
@@ -62,9 +62,7 @@ describe('JWT Service', () => {
 		it('should throw an error for an invalid JWT token', async () => {
 			jwtVerify.mockRejectedValue(new Error('Token is invalid'))
 
-			await expect(verifyJwt(`Bearer ${token}`)).rejects.toThrow(
-				'Token is not signed by the server'
-			)
+			await expect(verifyJwt(`Bearer ${token}`)).rejects.toThrow('Token is not signed by the server')
 		})
 	})
 })

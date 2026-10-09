@@ -15,7 +15,7 @@ export function ImageDemoMidTopComponent() {
 				title={'The City of Tomorrow'}
 			/>
 			<Image
-				alt="Image of an abstract expressionist painting, demo of the generated alt text API"
+				alt="Example image for AI-generated alt text"
 				className="aspect-2/3 w-full rounded-xl bg-slate-900/5 object-cover shadow-lg"
 				height={350}
 				src="/images/futuristic_city_skyscrapers.webp"

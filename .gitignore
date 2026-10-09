@@ -75,3 +75,7 @@ e2e-screenshots
 
 # scripts/compare-models.mjs output (model outputs for local images)
 /compare-models-report
+
+# Next.js and TypeScript generated metadata
+/next-env.d.ts
+*.tsbuildinfo

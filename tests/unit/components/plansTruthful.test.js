@@ -1,16 +1,9 @@
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	within,
-} from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { createElement } from 'react'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
 import { getMySubscription, listPlans } from '@/app/actions/app/plans'
+import { ChangingPlansComponent } from '@/components/Dashboard/ChangingPlans.component'
 
 vi.mock('next/navigation', () => ({
 	useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
@@ -25,7 +18,7 @@ vi.mock('@/app/actions/app/plans', () => ({
 const COMMON_FEATURES = [
 	'Title, alternative text and caption for each image',
 	'JPEG, PNG, WebP and non-animated GIF, up to 10 MB',
-	'API, WordPress plugin and playground',
+	'Generate directly from your WordPress media library',
 	'Email support',
 ]
 
@@ -137,14 +130,8 @@ describe('Plans page promises', () => {
 	it('shows the monthly plans with their credits, not the database features', async () => {
 		const section = await renderPlans()
 
-		expect(featuresOf(screen.getByTestId('plan-1'))).toEqual([
-			'250 credits*/month',
-			...COMMON_FEATURES,
-		])
-		expect(featuresOf(screen.getByTestId('plan-3'))).toEqual([
-			'All Starter plan features',
-			'2,500 credits*/month',
-		])
+		expect(featuresOf(screen.getByTestId('plan-1'))).toEqual(['250 credits*/month', ...COMMON_FEATURES])
+		expect(featuresOf(screen.getByTestId('plan-3'))).toEqual(['All Starter plan features', '2,500 credits*/month'])
 		expect(screen.getByTestId('feature-250 credits*/month')).toBeTruthy()
 		expect(screen.getByTestId('feature-Email support')).toBeTruthy()
 		expect(screen.queryByTestId('plan-2')).toBeNull()
@@ -155,9 +142,7 @@ describe('Plans page promises', () => {
 	it('shows the real annual saving on the toggle and the monthly cards', async () => {
 		await renderPlans()
 
-		expect(text(screen.getByTestId('annual-saving-badge'))).toBe(
-			'Up to 16.6% cheaper'
-		)
+		expect(text(screen.getByTestId('annual-saving-badge'))).toBe('Up to 16.6% cheaper')
 		expect(screen.getAllByTestId('get-more-tokens-button').map(text)).toEqual([
 			'Pay annually: 14.7% cheaper',
 			'Pay annually: 16.6% cheaper',
@@ -171,20 +156,10 @@ describe('Plans page promises', () => {
 
 		const starter = await screen.findByTestId('plan-2')
 		const growth = screen.getByTestId('plan-4')
-		expect(featuresOf(starter)).toEqual([
-			'3,000 credits*/year',
-			...COMMON_FEATURES,
-		])
-		expect(featuresOf(growth)).toEqual([
-			'All Starter plan features',
-			'30,000 credits*/year',
-		])
-		expect(within(starter).getByText(/cheaper/).parentElement.textContent).toBe(
-			'14.7% cheaper than monthly'
-		)
-		expect(within(growth).getByText(/cheaper/).parentElement.textContent).toBe(
-			'16.6% cheaper than monthly'
-		)
+		expect(featuresOf(starter)).toEqual(['3,000 credits*/year', ...COMMON_FEATURES])
+		expect(featuresOf(growth)).toEqual(['All Starter plan features', '30,000 credits*/year'])
+		expect(within(starter).getByText(/cheaper/).parentElement.textContent).toBe('14.7% cheaper than monthly')
+		expect(within(growth).getByText(/cheaper/).parentElement.textContent).toBe('16.6% cheaper than monthly')
 		expect(screen.queryByTestId('get-more-tokens-button')).toBeNull()
 		expect(screen.getByTestId('subscribe-422065')).toBeTruthy()
 		expect(screen.getByTestId('subscribe-422068')).toBeTruthy()
@@ -198,34 +173,22 @@ describe('Plans page promises', () => {
 
 		expect(await screen.findByTestId('plan-4')).toBeTruthy()
 		expect(screen.getByText('16.6% cheaper')).toBeTruthy()
-		expect(text(screen.getByTestId('annual-saving-badge'))).toBe(
-			'Up to 16.6% cheaper'
-		)
+		expect(text(screen.getByTestId('annual-saving-badge'))).toBe('Up to 16.6% cheaper')
 	})
 
 	it('offers on Enterprise only what the Growth plan has, plus custom credits', async () => {
 		const section = await renderPlans()
 
 		const enterprise = screen.getByTestId('plan-custom')
-		expect(featuresOf(enterprise)).toEqual([
-			'All Growth plan features',
-			'Custom credit volume',
-			'Volume discounts',
-		])
-		expect(screen.getByTestId('contact-us-link').getAttribute('href')).toBe(
-			'/contact'
-		)
-		expect(section.textContent).toContain(
-			'(*), 1 credit correspond to 1 image description with ForVoyez API.'
-		)
+		expect(featuresOf(enterprise)).toEqual(['All Growth plan features', 'Custom credit volume', 'Volume discounts'])
+		expect(screen.getByTestId('contact-us-link').getAttribute('href')).toBe('/contact')
+		expect(section.textContent).toContain('(*), 1 credit correspond to 1 image description with ForVoyez API.')
 	})
 
 	it('shows no saving when the yearly plans do not give 12 times the monthly credits', async () => {
 		listPlans.mockImplementation(async () =>
 			productionPlans().map(tier =>
-				tier.billingCycle === 'year'
-					? { ...tier, packageSize: tier.packageSize + tier.packageSize / 5 }
-					: tier
+				tier.billingCycle === 'year' ? { ...tier, packageSize: tier.packageSize + tier.packageSize / 5 } : tier
 			)
 		)
 		const section = await renderPlans()

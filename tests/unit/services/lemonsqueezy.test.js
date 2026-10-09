@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
 import * as clerk from '@clerk/nextjs/server'
-
+import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getCustomerIdFromUser } from '@/services/database.service'
 import {
 	getCustomerPortalLink,
 	getVariant,
@@ -9,7 +9,6 @@ import {
 	listPrice,
 	listProducts,
 } from '@/services/lemonsqueezy.service'
-import { getCustomerIdFromUser } from '@/services/database.service'
 
 vi.mock('@lemonsqueezy/lemonsqueezy.js')
 vi.mock('@clerk/nextjs/server')
@@ -34,9 +33,7 @@ describe('Lemon Squeezy Service', () => {
 		})
 
 		it('should handle errors during initialization', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 			const mockError = new Error('Initialization error')
 
 			// Mock lemonsqueezySetup to call the onError callback
@@ -51,9 +48,7 @@ describe('Lemon Squeezy Service', () => {
 		})
 
 		it('should handle errors thrown by onError', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 			const mockError = new Error('Initialization error')
 
 			// Mock lemonsqueezySetup to throw an error
@@ -136,9 +131,7 @@ describe('Lemon Squeezy Service', () => {
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.auth.mockResolvedValue({ userId: null })
 
-			await expect(getCustomerPortalLink()).rejects.toThrow(
-				'User is not authenticated.'
-			)
+			await expect(getCustomerPortalLink()).rejects.toThrow('User is not authenticated.')
 		})
 
 		it('should return null (not throw) for a user who never bought anything', async () => {

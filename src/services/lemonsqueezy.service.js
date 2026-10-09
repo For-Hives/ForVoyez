@@ -1,7 +1,8 @@
 // Server-only Lemon Squeezy client (uses the store API key). Client components
 // reach it through the auth-checked actions in `src/app/actions/app/plans.js`.
-import * as ls from '@lemonsqueezy/lemonsqueezy.js'
+
 import { auth } from '@clerk/nextjs/server'
+import * as ls from '@lemonsqueezy/lemonsqueezy.js'
 
 import { getCustomerIdFromUser } from '@/services/database.service'
 
@@ -75,6 +76,7 @@ export async function getVariant(variantId) {
 	}
 }
 
+// biome-ignore lint/suspicious/useAwait: Keep the existing async contract and promise rejection behavior.
 export async function initLemonSqueezy() {
 	try {
 		ls.lemonSqueezySetup({

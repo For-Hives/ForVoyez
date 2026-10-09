@@ -2,8 +2,8 @@
 import { useMemo } from 'react'
 
 import { ImageDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoBottomMobileComponent'
-import { TextDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/TextDemoBottomMobileComponent'
 import { ImageDemoTopMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/ImageDemoTopMobileComponent'
+import { TextDemoBottomMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/TextDemoBottomMobileComponent'
 import { TextDemoTopMobileComponent } from '@/components/Landing/Hero/ImageDemoComponents/mobile/TextDemoTopMobileComponent'
 
 export function AnimateSideHeroMobileComponent() {
@@ -33,9 +33,7 @@ export function AnimateSideHeroMobileComponent() {
 			<div className="mr-auto block w-44 flex-none space-y-8 sm:mr-0 sm:hidden sm:pt-52 lg:pt-36">
 				{imageComponents}
 			</div>
-			<div className="block w-44 flex-none space-y-8 pt-32 sm:hidden sm:pt-0">
-				{textComponents}
-			</div>
+			<div className="block w-44 flex-none space-y-8 pt-32 sm:hidden sm:pt-0">{textComponents}</div>
 		</div>
 	)
 }

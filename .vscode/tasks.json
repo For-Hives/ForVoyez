@@ -2,9 +2,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Run ESLint Fix",
+			"label": "Run Biome Fix",
 			"type": "shell",
-			"command": "bun run lint:fix",
+			"command": "pnpm lint:fix",
 			"group": "build",
 			"presentation": {
 				"reveal": "silent",

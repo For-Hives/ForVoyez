@@ -25,9 +25,7 @@ test.describe('Plans Management Functionality', () => {
 
 		// Plan interaction: the checkout is created when the button is clicked
 		log('Attempting to change the plan')
-		const changePlanButton = page
-			.locator('button:has-text("Subscribe")')
-			.first()
+		const changePlanButton = page.locator('button:has-text("Subscribe")').first()
 		await changePlanButton.click()
 
 		// Wait for external navigation

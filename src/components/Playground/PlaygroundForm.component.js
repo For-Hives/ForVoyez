@@ -1,7 +1,9 @@
 import { Disclosure } from '@headlessui/react'
-import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 export default function PlaygroundForm(props) {
 	const [isDraggingOver, setIsDraggingOver] = useState(false)
 
@@ -21,7 +23,7 @@ export default function PlaygroundForm(props) {
 		try {
 			JSON.parse(json)
 			return true
-		} catch (error) {
+		} catch (_error) {
 			return false
 		}
 	}
@@ -91,10 +93,7 @@ export default function PlaygroundForm(props) {
 		<div className={'flex flex-col gap-4'}>
 			<div>
 				<h3>Image upload</h3>
-				<label
-					className="block text-sm leading-6 font-medium text-slate-900"
-					htmlFor="image"
-				>
+				<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="image">
 					Your image
 				</label>
 				<p className="mt-1 text-sm text-slate-500 italic">
@@ -103,6 +102,8 @@ export default function PlaygroundForm(props) {
 							the "Upload a file" button or drag and drop an image into the
 							designated area.`}
 				</p>
+				{/* biome-ignore lint/a11y/useFocusableInteractive: Preserve the existing drop zone; its nested file input and label handle file selection. */}
+				{/* biome-ignore lint/a11y/useSemanticElements: The drop zone contains a file input and reset button and cannot be a nested button. */}
 				<div
 					className={`mt-2 flex w-full cursor-auto justify-center rounded-lg border border-dashed ${isDraggingOver ? 'border-forvoyez_orange-600 bg-forvoyez_orange-50' : 'border-slate-900/25'}`}
 					onDragEnter={handleDragEnter}
@@ -113,12 +114,17 @@ export default function PlaygroundForm(props) {
 				>
 					{imagePreview ? (
 						<div className={'relative'}>
-							<img
+							<Image
 								alt="Uploaded"
 								className="max-h-48 rounded-lg"
 								src={imagePreview}
+								width={0}
+								height={0}
+								unoptimized
+								style={{ width: 'auto', height: 'auto' }}
 							/>
 							<button
+								type="submit"
 								className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus:ring-forvoyez_orange-500 absolute top-[1.25rem] -right-4 rounded-full p-1 text-white shadow-md focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
 								data-testid="reset-image"
 								onClick={handleResetImage}
@@ -130,12 +136,7 @@ export default function PlaygroundForm(props) {
 									viewBox="0 0 24 24"
 									xmlns="http://www.w3.org/2000/svg"
 								>
-									<path
-										d="M6 18L18 6M6 6l12 12"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-									/>
+									<path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
 								</svg>
 							</button>
 						</div>
@@ -158,9 +159,7 @@ export default function PlaygroundForm(props) {
 										fillRule="evenodd"
 									/>
 								</svg>
-								<div
-									className={'m-0 flex items-center justify-center gap-1 p-0'}
-								>
+								<div className={'m-0 flex items-center justify-center gap-1 p-0'}>
 									<span className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500 text-sm font-semibold">
 										Upload a file
 									</span>
@@ -173,9 +172,7 @@ export default function PlaygroundForm(props) {
 										type="file"
 									/>
 									<p className="m-0 p-0 text-sm text-slate-600">
-										{isDraggingOver
-											? 'Drop the image here'
-											: 'or drag and drop'}
+										{isDraggingOver ? 'Drop the image here' : 'or drag and drop'}
 									</p>
 								</div>
 								<p className="m-0 p-0 text-center text-xs text-slate-600 italic">
@@ -193,10 +190,7 @@ export default function PlaygroundForm(props) {
 					<>
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-								<label
-									className="block text-sm leading-6 font-medium text-slate-900"
-									htmlFor="comment"
-								>
+								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="comment">
 									Add Your Context (Optional)
 								</label>
 								<span className="ml-6 flex h-7 items-center">
@@ -208,11 +202,7 @@ export default function PlaygroundForm(props) {
 										strokeWidth="1.5"
 										viewBox="0 0 24 24"
 									>
-										<path
-											d="M19 9l-7 7-7-7"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
+										<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 									</motion.svg>
 								</span>
 							</Disclosure.Button>
@@ -252,8 +242,7 @@ export default function PlaygroundForm(props) {
 											className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.context, 300)}`}
 											data-testid="context-counter"
 										>
-											Remaining {300 - props.formData.context.length}/300
-											characters
+											Remaining {300 - props.formData.context.length}/300 characters
 										</p>
 									</div>
 								</div>
@@ -267,10 +256,7 @@ export default function PlaygroundForm(props) {
 					<>
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-								<label
-									className="block text-sm leading-6 font-medium text-slate-900"
-									htmlFor="comment"
-								>
+								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="comment">
 									Keywords (Optional)
 								</label>
 								<span className="ml-6 flex h-7 items-center">
@@ -282,11 +268,7 @@ export default function PlaygroundForm(props) {
 										strokeWidth="1.5"
 										viewBox="0 0 24 24"
 									>
-										<path
-											d="M19 9l-7 7-7-7"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
+										<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 									</motion.svg>
 								</span>
 							</Disclosure.Button>
@@ -326,8 +308,7 @@ export default function PlaygroundForm(props) {
 											className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.context, 200)}`}
 											data-testid="context-counter"
 										>
-											Remaining {200 - props.formData.context.length}/200
-											characters
+											Remaining {200 - props.formData.context.length}/200 characters
 										</p>
 									</div>
 								</div>
@@ -342,10 +323,7 @@ export default function PlaygroundForm(props) {
 					<>
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-								<label
-									className="block text-sm leading-6 font-medium text-slate-900"
-									htmlFor="languageToTranslate"
-								>
+								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="languageToTranslate">
 									Language (Optional)
 								</label>
 								<span className="ml-6 flex h-7 items-center">
@@ -357,11 +335,7 @@ export default function PlaygroundForm(props) {
 										strokeWidth="1.5"
 										viewBox="0 0 24 24"
 									>
-										<path
-											d="M19 9l-7 7-7-7"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
+										<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 									</motion.svg>
 								</span>
 							</Disclosure.Button>
@@ -375,8 +349,8 @@ export default function PlaygroundForm(props) {
 							>
 								<div className={'mb-4'}>
 									<p className="mt-1 text-sm text-slate-500 italic">
-										Specify the language for the generated metadata. You can
-										select from the list or enter a custom language code.
+										Specify the language for the generated metadata. You can select from the list or enter a custom
+										language code.
 									</p>
 									<div className="mt-2">
 										<input
@@ -407,10 +381,7 @@ export default function PlaygroundForm(props) {
 					<>
 						<dt>
 							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-								<label
-									className="block text-sm leading-6 font-medium text-slate-900"
-									htmlFor="jsonSchema"
-								>
+								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="jsonSchema">
 									JSON Schema (Optional)
 								</label>
 								<span className="ml-6 flex h-7 items-center">
@@ -422,11 +393,7 @@ export default function PlaygroundForm(props) {
 										strokeWidth="1.5"
 										viewBox="0 0 24 24"
 									>
-										<path
-											d="M19 9l-7 7-7-7"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
+										<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 									</motion.svg>
 								</span>
 							</Disclosure.Button>
@@ -450,17 +417,11 @@ export default function PlaygroundForm(props) {
 										<div className={'absolute top-2 right-3'}>
 											<div className="flex items-center justify-end">
 												{isJsonValid ? (
-													<span
-														className="text-sm text-green-600"
-														data-testid="json-valid"
-													>
+													<span className="text-sm text-green-600" data-testid="json-valid">
 														Valid JSON
 													</span>
 												) : (
-													<span
-														className="text-sm text-red-600"
-														data-testid="json-invalid"
-													>
+													<span className="text-sm text-red-600" data-testid="json-invalid">
 														Invalid JSON
 													</span>
 												)}
@@ -471,8 +432,7 @@ export default function PlaygroundForm(props) {
 										className={`mt-1 text-sm ${determineTextColorBasedOnLength(props.formData.jsonSchema, 1000)}`}
 										data-testid="json-schema-counter"
 									>
-										Remaining {1000 - props.formData.jsonSchema.length}/1000
-										characters
+										Remaining {1000 - props.formData.jsonSchema.length}/1000 characters
 									</p>
 								</div>
 							</motion.p>
@@ -483,11 +443,9 @@ export default function PlaygroundForm(props) {
 
 			<div>
 				<button
-					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!isJsonValid || !props.formData.image || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
+					className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${!(isJsonValid && props.formData.image) || props.userCredits === 0 ? 'cursor-not-allowed bg-slate-400' : 'bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600'}`}
 					data-testid="analyze-button"
-					disabled={
-						!isJsonValid || !props.formData.image || props.userCredits === 0
-					}
+					disabled={!(isJsonValid && props.formData.image) || props.userCredits === 0}
 					onClick={props.handleSubmit}
 					type="button"
 				>

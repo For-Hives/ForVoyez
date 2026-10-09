@@ -1,10 +1,9 @@
 'use client'
-import { useEffect, useState } from 'react'
 
 import { useAuth } from '@clerk/nextjs'
-
-import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
+import { useEffect, useState } from 'react'
 import { getMySubscription, listPlans } from '@/app/actions/app/plans'
+import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
 import { sortPlans } from '@/helpers/sortPlans'
 
 export function RefillPlansComponent() {
@@ -73,42 +72,29 @@ export function RefillPlansComponent() {
 				<>
 					<h2 className="text-xl font-bold text-slate-800">Refill Plans</h2>
 					<p className="mt-1 text-sm text-slate-600">
-						This is where you can view and manage your refill options. Refill
-						plans allow you to add additional resources to your current
-						subscription as needed. Select the refill plan that matches your
-						anticipated usage to ensure you have enough resources available at
-						all times.
+						This is where you can view and manage your refill options. Refill plans allow you to add additional
+						resources to your current subscription as needed. Select the refill plan that matches your anticipated usage
+						to ensure you have enough resources available at all times.
 					</p>
 					<div className="pb-20">
 						<div className="mx-auto max-w-7xl px-6 lg:px-8">
 							<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+								{/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing conditional behavior during the tooling migration. */}
 								{plans.map(tier => {
 									if (tier.billingCycle) return null
 
 									// Add a check to ensure currentSubscription.planName exists
-									const isCurrentPlanGrowth =
-										currentSubscription?.plan?.name?.includes('Growth')
-									const isCurrentPlanStarter =
-										currentSubscription?.plan?.name?.includes('Starter')
+									const isCurrentPlanGrowth = currentSubscription?.plan?.name?.includes('Growth')
+									const isCurrentPlanStarter = currentSubscription?.plan?.name?.includes('Starter')
 
 									// Filter plans based on current subscription
-									if (
-										isCurrentPlanGrowth &&
-										!tier.productName.includes('Growth')
-									)
-										return null
-									if (
-										isCurrentPlanStarter &&
-										!tier.productName.includes('Starter')
-									)
-										return null
+									if (isCurrentPlanGrowth && !tier.productName.includes('Growth')) return null
+									if (isCurrentPlanStarter && !tier.productName.includes('Starter')) return null
 
 									return (
 										<div
 											className={classNames(
-												tier.mostPopular
-													? 'ring-forvoyez_orange-500 ring-2'
-													: 'ring-1 ring-slate-200',
+												tier.mostPopular ? 'ring-forvoyez_orange-500 ring-2' : 'ring-1 ring-slate-200',
 												'flex flex-col rounded-3xl p-8'
 											)}
 											data-testid={`plan-${tier.id}`}
@@ -117,9 +103,7 @@ export function RefillPlansComponent() {
 											<div className="flex h-1/4 items-start justify-between gap-x-4">
 												<h3
 													className={classNames(
-														tier.mostPopular
-															? 'text-forvoyez_orange-500'
-															: 'text-slate-900',
+														tier.mostPopular ? 'text-forvoyez_orange-500' : 'text-slate-900',
 														'text-lg leading-8 font-semibold'
 													)}
 													id={tier.id}
@@ -167,8 +151,7 @@ export function RefillPlansComponent() {
 								})}
 							</div>
 							<p className={'mt-4 w-full text-right text-slate-600'}>
-								(*), 1 credit correspond to 1 image description with ForVoyez
-								API.
+								(*), 1 credit correspond to 1 image description with ForVoyez API.
 							</p>
 						</div>
 					</div>

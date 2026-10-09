@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../../../../src/helpers/forEachInSequence.js')
 const { expect, test } = require('../../auth/fixtures')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 
@@ -28,12 +29,12 @@ test.describe('Legal Section Navigation Functionality', () => {
 			},
 		]
 
-		for (const link of legalLinks) {
+		await forEachInSequence(legalLinks, async link => {
 			log(`Checking legal link: ${link.name}`)
 			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`)
 			await expect(linkLocator).toBeVisible()
 			await expect(linkLocator).toHaveAttribute('href', link.href)
-		}
+		})
 
 		log('Legal links presence and attributes test completed successfully')
 	})
@@ -59,7 +60,7 @@ test.describe('Legal Section Navigation Functionality', () => {
 			},
 		]
 
-		for (const link of legalLinks) {
+		await forEachInSequence(legalLinks, async link => {
 			log(`Checking legal link: ${link.name}`)
 			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`)
 			await expect(linkLocator).toBeVisible()
@@ -70,7 +71,7 @@ test.describe('Legal Section Navigation Functionality', () => {
 
 			// Go back to the legal page for the next iteration
 			await page.goto(`${getNextPublicUrl()}/app/legals`)
-		}
+		})
 
 		log('Legal internal links navigation test completed successfully')
 	})

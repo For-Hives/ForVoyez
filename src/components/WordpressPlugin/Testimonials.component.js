@@ -83,9 +83,7 @@ export function TestimonialsComponent() {
 			</div>
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-xl text-center">
-					<h2 className="text-forvoyez_orange-500 text-lg leading-8 font-semibold tracking-tight">
-						Testimonials
-					</h2>
+					<h2 className="text-forvoyez_orange-500 text-lg leading-8 font-semibold tracking-tight">Testimonials</h2>
 					<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 						Hear from our satisfied users
 					</p>
@@ -104,9 +102,7 @@ export function TestimonialsComponent() {
 								width={40}
 							/>
 							<div className="flex-auto">
-								<div className="font-semibold">
-									{featuredTestimonial.author.name}
-								</div>
+								<div className="font-semibold">{featuredTestimonial.author.name}</div>
 								<div className="text-gray-600">{`@${featuredTestimonial.author.handle}`}</div>
 							</div>
 							<Image
@@ -119,21 +115,17 @@ export function TestimonialsComponent() {
 						</figcaption>
 					</figure>
 					{testimonials.map((columnGroup, columnGroupIdx) => (
-						<div
-							className="space-y-8 xl:contents xl:space-y-0"
-							key={columnGroupIdx}
-						>
+						<div className="space-y-8 xl:contents xl:space-y-0" key={columnGroup[0][0].author.handle}>
 							{columnGroup.map((column, columnIdx) => (
 								<div
 									className={classNames(
 										(columnGroupIdx === 0 && columnIdx === 0) ||
-											(columnGroupIdx === testimonials.length - 1 &&
-												columnIdx === columnGroup.length - 1)
+											(columnGroupIdx === testimonials.length - 1 && columnIdx === columnGroup.length - 1)
 											? 'xl:row-span-2'
 											: 'xl:row-start-1',
 										'space-y-8'
 									)}
-									key={columnIdx}
+									key={column[0].author.handle}
 								>
 									{column.map(testimonial => (
 										<figure
@@ -152,9 +144,7 @@ export function TestimonialsComponent() {
 													width={40}
 												/>
 												<div>
-													<div className="font-semibold">
-														{testimonial.author.name}
-													</div>
+													<div className="font-semibold">{testimonial.author.name}</div>
 													<div className="text-gray-600">{`@${testimonial.author.handle}`}</div>
 												</div>
 											</figcaption>

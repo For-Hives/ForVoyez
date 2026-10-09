@@ -1,13 +1,13 @@
 'use client'
 
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
-import { Dialog } from '@headlessui/react'
-import { useState } from 'react'
-
 import { Show, SignInButton, UserButton } from '@clerk/nextjs'
+import { Dialog } from '@headlessui/react'
+import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 const navigation = [
 	{ testId: 'nav-home', name: 'Home', href: '/' },
@@ -16,12 +16,7 @@ const navigation = [
 	{
 		testId: 'nav-wordpress-plugin',
 		href: '/wordpress-plugin',
-		name: 'Plugins',
-	},
-	{
-		href: 'https://doc.forvoyez.com/',
-		testId: 'nav-documentation',
-		name: 'Documentation',
+		name: 'WordPress plugin',
 	},
 	{ testId: 'nav-contact', href: '/contact', name: 'Contact' },
 ]
@@ -31,21 +26,20 @@ export function NavbarComponent() {
 
 	return (
 		<header className="absolute inset-x-0 top-0 z-50">
-			<nav
-				aria-label="Global"
-				className="navbar mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
-			>
+			<nav aria-label="Global" className="navbar mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
 				<div className="flex lg:flex-1">
 					<Link className="-m-1.5 p-1.5" data-testid="logo-link" href="/">
 						<span className="sr-only">ForVoyez</span>
-						<Image
-							alt="ForVoyez navigation logo"
-							className="h-8 w-auto"
-							data-testid="logo-image"
-							height={80}
-							src="/logo/logo.webp"
-							width={80}
-						/>
+						<Transition name="brand-logo">
+							<Image
+								alt="ForVoyez navigation logo"
+								className="h-8 w-auto"
+								data-testid="logo-image"
+								height={80}
+								src="/logo/logo.webp"
+								width={80}
+							/>
+						</Transition>
 					</Link>
 				</div>
 				<div className="flex lg:hidden">
@@ -66,7 +60,7 @@ export function NavbarComponent() {
 					{navigation.map(item => (
 						<Link
 							className="text-sm leading-6 font-semibold text-slate-900"
-							data-testid={`nav-${item.name.toLowerCase()}`}
+							data-testid={item.testId}
 							href={item.href}
 							key={item.name}
 						>
@@ -87,8 +81,7 @@ export function NavbarComponent() {
 							data-testid="dashboard-link"
 							href="/app"
 						>
-							Go to dashboard{' '}
-							<ArrowUpRightIcon className={'size-3.5'}></ArrowUpRightIcon>
+							Go to dashboard <ArrowUpRightIcon className={'size-3.5'}></ArrowUpRightIcon>
 						</Link>
 					</Show>
 					<Show when="signed-out">
@@ -101,12 +94,7 @@ export function NavbarComponent() {
 					</Show>
 				</div>
 			</nav>
-			<Dialog
-				as="div"
-				className="lg:hidden"
-				onClose={setMobileMenuOpen}
-				open={mobileMenuOpen}
-			>
+			<Dialog as="div" className="lg:hidden" onClose={setMobileMenuOpen} open={mobileMenuOpen}>
 				<div className="fixed inset-0 z-50" />
 				<Dialog.Panel
 					className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
@@ -140,7 +128,7 @@ export function NavbarComponent() {
 								{navigation.map(item => (
 									<Link
 										className="-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
-										data-testid={`nav-${item.name.toLowerCase()}`}
+										data-testid={item.testId}
 										href={item.href}
 										key={item.name}
 									>
@@ -156,10 +144,7 @@ export function NavbarComponent() {
 											data-testid="dashboard-link"
 											href="/app"
 										>
-											Go to dashboard{' '}
-											<ArrowUpRightIcon
-												className={'size-3.5'}
-											></ArrowUpRightIcon>
+											Go to dashboard <ArrowUpRightIcon className={'size-3.5'}></ArrowUpRightIcon>
 										</Link>
 										<UserButton
 											data-testid="user-button"

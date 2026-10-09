@@ -11,6 +11,9 @@ const mg = mailgun.client({
 const REPLY_TO_PATTERN = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/
 
 export async function sendEmail(data) {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) {
+		return { success: false, status: 400, details: 'Invalid contact form data' }
+	}
 	const {
 		'first-name': firstName,
 		'last-name': lastName,
@@ -56,11 +59,7 @@ export async function sendEmail(data) {
 }
 
 function replyToHeader(email) {
-	if (
-		typeof email !== 'string' ||
-		email.length > 254 ||
-		!REPLY_TO_PATTERN.test(email)
-	) {
+	if (typeof email !== 'string' || email.length > 254 || !REPLY_TO_PATTERN.test(email)) {
 		return {}
 	}
 	return { 'h:Reply-To': email }

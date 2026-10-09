@@ -16,6 +16,8 @@ model Token {
   expiredAt DateTime
   name      String?
   Usage     Usage[]
+
+  @@index([userId, expiredAt])
 }
 
 model User {
@@ -42,6 +44,9 @@ model Usage {
   token           Token?   @relation(fields: [tokenId], references: [id])
   tokenId         String?
   reason          String?
+
+  @@index([userId, usedAt])
+  @@index([userId, used])
 }
 
 model Plan {
@@ -83,6 +88,8 @@ model Subscription {
 
   user User @relation(fields: [userId], references: [clerkId])
   plan Plan @relation(fields: [planId], references: [id])
+
+  @@index([userId, status, renewsAt])
 }
 
 model WebhookEvent {

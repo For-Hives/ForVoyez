@@ -1,19 +1,18 @@
 // node-postgres and a local TCP server: Node environment
 // @vitest-environment node
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import pg from 'pg'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { pgAdapterConfig, preferTlsClient } from '@/helpers/databaseUrl'
 
 // the URL parser node-postgres uses, as installed (not a direct dependency)
-const parse = createRequire(createRequire(import.meta.url).resolve('pg'))(
-	'pg-connection-string'
-)
+const parse = createRequire(createRequire(import.meta.url).resolve('pg'))('pg-connection-string')
 
 const BASE = 'postgresql://fvtest:fvtest@127.0.0.1:54329/fvtest'
 const UNVERIFIED = { rejectUnauthorized: false }
@@ -61,28 +60,18 @@ describe('pgAdapterConfig (Prisma 6 DATABASE_URL on the Prisma 7 pg adapter)', (
 	})
 
 	it('maps connection_limit to the pool size and the longer timeout', () => {
-		const { poolConfig } = pgAdapterConfig(
-			`${BASE}?connection_limit=5&connect_timeout=20&pool_timeout=3`
-		)
+		const { poolConfig } = pgAdapterConfig(`${BASE}?connection_limit=5&connect_timeout=20&pool_timeout=3`)
 		expect(poolConfig.max).toBe(5)
 		expect(poolConfig.connectionTimeoutMillis).toBe(20_000)
 	})
 
 	it('disables the timeout only when both Prisma 6 timeouts are 0', () => {
-		expect(
-			pgAdapterConfig(`${BASE}?connect_timeout=0&pool_timeout=0`).poolConfig
-				.connectionTimeoutMillis
-		).toBe(0)
-		expect(
-			pgAdapterConfig(`${BASE}?connect_timeout=0`).poolConfig
-				.connectionTimeoutMillis
-		).toBe(10_000)
+		expect(pgAdapterConfig(`${BASE}?connect_timeout=0&pool_timeout=0`).poolConfig.connectionTimeoutMillis).toBe(0)
+		expect(pgAdapterConfig(`${BASE}?connect_timeout=0`).poolConfig.connectionTimeoutMillis).toBe(10_000)
 	})
 
 	it('ignores invalid values', () => {
-		const { poolConfig } = pgAdapterConfig(
-			`${BASE}?connection_limit=abc&pool_timeout=-1`
-		)
+		const { poolConfig } = pgAdapterConfig(`${BASE}?connection_limit=abc&pool_timeout=-1`)
 		expect(poolConfig.max).toBeUndefined()
 		expect(poolConfig.connectionTimeoutMillis).toBe(10_000)
 	})
@@ -168,9 +157,7 @@ describe('pgAdapterConfig (Prisma 6 DATABASE_URL on the Prisma 7 pg adapter)', (
 		})
 
 		it('resolves relative paths from the prisma/ folder and does not throw for a missing file', () => {
-			const { poolConfig } = pgAdapterConfig(
-				`${BASE}?sslaccept=strict&sslcert=missing-ca.crt`
-			)
+			const { poolConfig } = pgAdapterConfig(`${BASE}?sslaccept=strict&sslcert=missing-ca.crt`)
 
 			expect(poolConfig.ssl).toEqual({ rejectUnauthorized: true })
 			expect(consoleError).toHaveBeenCalledWith(
@@ -236,12 +223,7 @@ async function serverWithoutTls() {
 				server.tlsRequests += 1
 				socket.write('N')
 			} else if (code === 196608) {
-				socket.write(
-					Buffer.from([
-						...[0x52, 0, 0, 0, 8, 0, 0, 0, 0],
-						...[0x5a, 0, 0, 0, 5, 0x49],
-					])
-				)
+				socket.write(Buffer.from([...[0x52, 0, 0, 0, 8, 0, 0, 0, 0], ...[0x5a, 0, 0, 0, 5, 0x49]]))
 			} else if (data[0] === 0x58) {
 				socket.end()
 			}
@@ -269,9 +251,7 @@ describe('preferTlsClient (Prisma 6 sslmode=prefer)', () => {
 
 		// plain node-postgres refuses this server
 		const plain = new pg.Client(config)
-		await expect(plain.connect()).rejects.toThrow(
-			'The server does not support SSL connections'
-		)
+		await expect(plain.connect()).rejects.toThrow('The server does not support SSL connections')
 		server.tlsRequests = 0
 
 		const first = new PreferTlsClient(config)
@@ -281,11 +261,7 @@ describe('preferTlsClient (Prisma 6 sslmode=prefer)', () => {
 
 		// callback style, as pg-pool calls it
 		const second = new PreferTlsClient(config)
-		await new Promise((resolve, reject) =>
-			second.connect((error, client) =>
-				error ? reject(error) : resolve(client)
-			)
-		)
+		await new Promise((resolve, reject) => second.connect((error, client) => (error ? reject(error) : resolve(client))))
 		expect(second.ssl).toBe(false)
 		expect(server.tlsRequests).toBe(1)
 
@@ -294,9 +270,7 @@ describe('preferTlsClient (Prisma 6 sslmode=prefer)', () => {
 
 	it('works through a pg Pool, as the Prisma adapter uses it', async () => {
 		server = await serverWithoutTls()
-		const { poolConfig } = pgAdapterConfig(
-			`postgresql://fvtest:fvtest@127.0.0.1:${server.address().port}/fvtest`
-		)
+		const { poolConfig } = pgAdapterConfig(`postgresql://fvtest:fvtest@127.0.0.1:${server.address().port}/fvtest`)
 		const pool = new pg.Pool(poolConfig)
 
 		const clients = await Promise.all([pool.connect(), pool.connect()])
@@ -316,9 +290,7 @@ describe('preferTlsClient (Prisma 6 sslmode=prefer)', () => {
 		server = null
 		const PreferTlsClient = preferTlsClient()
 
-		await expect(
-			new PreferTlsClient(clientConfig(port)).connect()
-		).rejects.toThrow(/ECONNREFUSED/)
+		await expect(new PreferTlsClient(clientConfig(port)).connect()).rejects.toThrow(/ECONNREFUSED/)
 
 		// a server without TLS: asked again, then plaintext
 		server = await serverWithoutTls()

@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/describe/route'
-
+import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { DescriptionTooLongError } from '@/helpers/describeInput'
 import {
 	blobToBase64,
 	getImageDescription,
 	ImageTooLargeError,
 	UnsupportedImageError,
 } from '@/services/imageDescription.service'
-import { defaultJsonTemplateSchema } from '@/constants/playground'
-import { DescriptionTooLongError } from '@/helpers/describeInput'
 import { verifyJwt } from '@/services/jwt.service'
+import { logger } from '@/services/logger.service'
 
 // The real database.service runs against the mocked Prisma client, so these
 // tests also cover the token lookup and the atomic credit charge.
@@ -33,6 +33,7 @@ vi.mock('@/services/prisma.service', async () => {
 
 const JWT = 'header.payload.signature-of-the-api-key'
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 describe('describe API', () => {
 	let consoleError
 	let consoleInfo
@@ -40,7 +41,7 @@ describe('describe API', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
-		consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => {})
+		consoleInfo = vi.spyOn(logger, 'info').mockImplementation(() => {})
 		// batch transactions resolve their queries in order
 		prisma.$transaction.mockImplementation(queries => Promise.all(queries))
 	})
@@ -84,9 +85,7 @@ describe('describe API', () => {
 	function givenCreditReserved(creditsAfter = 9) {
 		prisma.user.updateMany.mockResolvedValue({ count: 1 })
 		// 1st findUnique: route's fast check, 2nd: inside the charge transaction
-		prisma.user.findUnique
-			.mockResolvedValueOnce(mockUser)
-			.mockResolvedValueOnce({ credits: creditsAfter })
+		prisma.user.findUnique.mockResolvedValueOnce(mockUser).mockResolvedValueOnce({ credits: creditsAfter })
 	}
 
 	function imageForm() {
@@ -113,20 +112,12 @@ describe('describe API', () => {
 		it('should return 401 JSON if the Authorization header is missing', async () => {
 			const response = await POST(mockRequest([], new FormData()))
 
-			await expectJsonError(
-				response,
-				401,
-				'Unauthorized, missing Authorization header'
-			)
-			expect(response.statusText).toBe(
-				'Unauthorized, missing Authorization header'
-			)
+			await expectJsonError(response, 401, 'Unauthorized, missing Authorization header')
+			expect(response.statusText).toBe('Unauthorized, missing Authorization header')
 		})
 
 		it('should return 401 JSON if the token signature is invalid, without logging the header', async () => {
-			verifyJwt.mockRejectedValue(
-				new Error('Token is not signed by the server')
-			)
+			verifyJwt.mockRejectedValue(new Error('Token is not signed by the server'))
 
 			const response = await POST(mockRequest(authHeader, new FormData()))
 
@@ -217,20 +208,12 @@ describe('describe API', () => {
 			const formData = imageForm()
 			formData.append(
 				'schema',
-				JSON.stringify(
-					Object.fromEntries(
-						Array.from({ length: 21 }, (_, index) => [`field${index}`, 'text'])
-					)
-				)
+				JSON.stringify(Object.fromEntries(Array.from({ length: 21 }, (_, index) => [`field${index}`, 'text'])))
 			)
 
 			const response = await POST(mockRequest(authHeader, formData))
 
-			await expectJsonError(
-				response,
-				400,
-				'Invalid schema: at most 20 fields are allowed'
-			)
+			await expectJsonError(response, 400, 'Invalid schema: at most 20 fields are allowed')
 			expect(response.statusText).toBe('Bad Request')
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 			expect(blobToBase64).not.toHaveBeenCalled()
@@ -244,11 +227,7 @@ describe('describe API', () => {
 
 			const response = await POST(mockRequest(authHeader, formData))
 
-			await expectJsonError(
-				response,
-				400,
-				'Invalid schema: field names must be at most 64 characters'
-			)
+			await expectJsonError(response, 400, 'Invalid schema: field names must be at most 64 characters')
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 		})
 
@@ -258,28 +237,18 @@ describe('describe API', () => {
 
 			const response = await POST(mockRequest(authHeader, imageForm()))
 
-			await expectJsonError(
-				response,
-				413,
-				'Image too large: the maximum is 10 MB'
-			)
+			await expectJsonError(response, 413, 'Image too large: the maximum is 10 MB')
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 			expect(getImageDescription).not.toHaveBeenCalled()
 		})
 
 		it('should keep 500 with a readable JSON error when the image cannot be processed', async () => {
 			givenValidApiKey()
-			blobToBase64.mockRejectedValue(
-				new Error('Image processing failed: corrupt JPEG data')
-			)
+			blobToBase64.mockRejectedValue(new Error('Image processing failed: corrupt JPEG data'))
 
 			const response = await POST(mockRequest(authHeader, imageForm()))
 
-			await expectJsonError(
-				response,
-				500,
-				'Image processing failed: corrupt JPEG data'
-			)
+			await expectJsonError(response, 500, 'Image processing failed: corrupt JPEG data')
 			expect(prisma.user.updateMany).not.toHaveBeenCalled()
 		})
 	})
@@ -355,11 +324,7 @@ describe('describe API', () => {
 
 			const response = await POST(mockRequest(authHeader, imageForm()))
 
-			await expectJsonError(
-				response,
-				400,
-				new DescriptionTooLongError().message
-			)
+			await expectJsonError(response, 400, new DescriptionTooLongError().message)
 			expect(response.statusText).toBe('Bad Request')
 			expect(prisma.user.update).toHaveBeenCalledWith({
 				data: { credits: { increment: 1 } },

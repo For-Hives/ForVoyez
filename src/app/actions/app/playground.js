@@ -2,15 +2,9 @@
 
 import { auth } from '@clerk/nextjs/server'
 
-import {
-	InvalidDescribeInputError,
-	normalizeDescribeSchema,
-} from '@/helpers/describeInput'
-import {
-	blobToBase64,
-	getImageDescription,
-} from '@/services/imageDescription.service'
+import { InvalidDescribeInputError, normalizeDescribeSchema } from '@/helpers/describeInput'
 import { chargeOneCredit } from '@/services/database.service'
+import { blobToBase64, getImageDescription } from '@/services/imageDescription.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
@@ -34,21 +28,22 @@ export async function describePlaygroundAction(formData) {
 		throw new Error('No credits left')
 	}
 
+	if (!formData || typeof formData.get !== 'function') {
+		return { error: 'Invalid playground form data', status: 400 }
+	}
+
 	const file = formData.get('image')
 	if (!file) {
 		console.error('No file uploaded')
 		throw new Error('No file uploaded')
 	}
 
-	const data = JSON.parse(formData.get('data') || '{}')
-	const context = data.context || ''
-	const keywords = data.keywords || ''
-	const language = data.language || 'en' // Default language is English
-
 	// same limits as the API: a schema with too many or too long fields is
 	// refused before any credit is charged
 	let schema
+	let data
 	try {
+		data = parsePlaygroundData(formData.get('data'))
 		schema = normalizeDescribeSchema(data.schema)
 	} catch (error) {
 		if (error instanceof InvalidDescribeInputError) {
@@ -57,22 +52,23 @@ export async function describePlaygroundAction(formData) {
 		throw error
 	}
 
+	const context = data.context || ''
+	const keywords = data.keywords || ''
+	const language = data.language || 'en'
+
 	const base64Image = await blobToBase64(file)
 
 	// Get image description using base64 encoded image. One credit is reserved
 	// atomically before the generation and refunded if it fails.
 	let description
 	try {
-		description = await chargeOneCredit(
-			userId,
-			{ reason: 'describe from PlaygroundAction' },
-			() =>
-				getImageDescription(base64Image, {
-					keywords,
-					language,
-					context,
-					schema,
-				})
+		description = await chargeOneCredit(userId, { reason: 'describe from PlaygroundAction' }, () =>
+			getImageDescription(base64Image, {
+				keywords,
+				language,
+				context,
+				schema,
+			})
 		)
 	} catch (error) {
 		// e.g. a schema that needs a longer answer than the output cap (the
@@ -88,4 +84,17 @@ export async function describePlaygroundAction(formData) {
 		data: description,
 		status: 200,
 	}
+}
+
+function parsePlaygroundData(value) {
+	let data
+	try {
+		data = JSON.parse(value || '{}')
+	} catch {
+		throw new InvalidDescribeInputError('Invalid playground data: expected a JSON object')
+	}
+	if (!data || typeof data !== 'object' || Array.isArray(data)) {
+		throw new InvalidDescribeInputError('Invalid playground data: expected a JSON object')
+	}
+	return data
 }

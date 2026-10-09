@@ -20,10 +20,12 @@ export default function PlaygroundResponse(props) {
 					{props.response == null && 'No response yet.'}
 
 					<button
+						type="submit"
 						className="focus:ring-forvoyez_orange-500 absolute top-2 right-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:ring-2 focus:outline-hidden"
 						data-testid="response-copy-button"
-						onClick={() => {
-							copyToClipboard(JSON.stringify(props.response, null, 4))
+						aria-label={isResponseCopied ? 'Copied response' : 'Copy response'}
+						onClick={async () => {
+							if (!(await copyToClipboard(JSON.stringify(props.response, null, 4)))) return
 							setIsResponseCopied(true)
 							setTimeout(() => setIsResponseCopied(false), 2000)
 						}}

@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../src/helpers/forEachInSequence.js')
 const { PrismaPg } = require('@prisma/adapter-pg')
 
 const { PrismaClient } = require('../src/generated/prisma/client.ts')
@@ -28,8 +29,7 @@ const userData = [
 const planData = [
 	{
 		features: `["100 credits*/month","Basic metadata generation","Community support","Classic image formats (JPEG, PNG, WebP)","Full HD image support (up to 1080p)","Limited access to playground"]`,
-		description:
-			'<p>Perfect for small projects, freelancers, and personal use.</p>',
+		description: '<p>Perfect for small projects, freelancers, and personal use.</p>',
 		createdAt: new Date('2024-05-14 12:09:59.457'),
 		productName: 'Credit Refill (Starter)',
 		buttonText: 'Subscribe',
@@ -45,8 +45,7 @@ const planData = [
 	},
 	{
 		features: `["All Starter plan features","1,000 credits*/month","Advanced metadata generation","Priority support","Full access to playground","Ultra HD image support (up to 4K)"]`,
-		description:
-			'<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
+		description: '<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
 		createdAt: new Date('2024-05-14 12:10:01.054'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
@@ -62,8 +61,7 @@ const planData = [
 	},
 	{
 		features: `["120 credits*/month","Basic metadata generation","Community support","Classic image formats (JPEG, PNG, WebP)","Full HD image support (up to 1080p)","Limited access to playground"]`,
-		description:
-			'<p>Perfect for small projects, freelancers, and personal use.</p>',
+		description: '<p>Perfect for small projects, freelancers, and personal use.</p>',
 		createdAt: new Date('2024-05-14 12:10:00.343'),
 		productName: 'Credit refill (Starter)',
 		buttonText: 'Subscribe',
@@ -175,8 +173,7 @@ const planData = [
 	},
 	{
 		features: `["All Starter plan features","1,200 credits*/month","Advanced metadata generation","Priority support","Full access to playground","Ultra HD image support (up to 4K)"]`,
-		description:
-			'<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
+		description: '<p>Ideal for growing businesses, automatic tools and advanced users.</p>',
 		createdAt: new Date('2024-05-14 12:10:01.667'),
 		productName: 'Credit refill (Growth)',
 		buttonText: 'Subscribe',
@@ -426,35 +423,35 @@ const usageData = [
 // webhookevent (not needed
 
 async function main() {
-	for (const u of userData) {
+	await forEachInSequence(userData, async u => {
 		const user = await prisma.user.create({
 			data: u,
 		})
-		console.info(`Created user with id: ${user.clerkId}`)
-	}
+		process.stdout.write(`Created user with id: ${user.clerkId}\n`)
+	})
 
-	for (const p of planData) {
+	await forEachInSequence(planData, async p => {
 		const plan = await prisma.plan.create({
 			data: p,
 		})
-		console.info(`Created plan with id: ${plan.id}`)
-	}
+		process.stdout.write(`Created plan with id: ${plan.id}\n`)
+	})
 
-	for (const s of subscriptionData) {
+	await forEachInSequence(subscriptionData, async s => {
 		const subscription = await prisma.subscription.create({
 			data: s,
 		})
-		console.info(`Created subscription with id: ${subscription.id}`)
-	}
+		process.stdout.write(`Created subscription with id: ${subscription.id}\n`)
+	})
 
-	for (const u of usageData) {
+	await forEachInSequence(usageData, async u => {
 		const usage = await prisma.usage.create({
 			data: u,
 		})
-		console.info(`Created usage with id: ${usage.id}`)
-	}
+		process.stdout.write(`Created usage with id: ${usage.id}\n`)
+	})
 
-	console.info(`Seeding finished.`)
+	process.stdout.write(`Seeding finished.` + '\n')
 }
 
 main()

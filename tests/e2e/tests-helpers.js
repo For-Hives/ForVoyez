@@ -1,15 +1,9 @@
 import { expect } from '@playwright/test'
 
-const fs = require('fs')
-const path = require('path')
-
 export const getNextPublicUrl = () => {
 	let NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 
-	if (
-		!NEXT_PUBLIC_URL.startsWith('http://') &&
-		!NEXT_PUBLIC_URL.startsWith('https://')
-	) {
+	if (!(NEXT_PUBLIC_URL.startsWith('http://') || NEXT_PUBLIC_URL.startsWith('https://'))) {
 		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 	}
 	return NEXT_PUBLIC_URL
@@ -18,20 +12,12 @@ export const getNextPublicUrl = () => {
 export const log = message => {
 	const ENABLE_TEST_LOGS = process.env.ENABLE_TEST_LOGS === 'true'
 	if (ENABLE_TEST_LOGS) {
-		console.info(`[TEST LOG - ${new Date().toISOString()}] ${message}`)
+		process.stdout.write(`[TEST LOG - ${new Date().toISOString()}] ${message}\n`)
 	}
 }
 
-export const signIn = async (
-	page,
-	NEXT_PUBLIC_URL,
-	TEST_EMAIL,
-	TEST_PASSWORD
-) => {
-	if (
-		!NEXT_PUBLIC_URL.startsWith('http://') &&
-		!NEXT_PUBLIC_URL.startsWith('https://')
-	) {
+export const signIn = async (page, NEXT_PUBLIC_URL, TEST_EMAIL, TEST_PASSWORD) => {
+	if (!(NEXT_PUBLIC_URL.startsWith('http://') || NEXT_PUBLIC_URL.startsWith('https://'))) {
 		NEXT_PUBLIC_URL = `http://${NEXT_PUBLIC_URL}`
 	}
 	await page.goto(NEXT_PUBLIC_URL)
@@ -54,9 +40,7 @@ export const signIn = async (
 	await emailInput.fill(TEST_EMAIL)
 
 	// const continueButton = page.locator('button:has-text("Continue")')
-	const continueButton = page.locator(
-		'button[data-localization-key="formButtonPrimary"]'
-	)
+	const continueButton = page.locator('button[data-localization-key="formButtonPrimary"]')
 	log('Waiting for continue button to be visible')
 	await continueButton.waitFor({ state: 'visible', timeout: 15000 })
 	await continueButton.click()

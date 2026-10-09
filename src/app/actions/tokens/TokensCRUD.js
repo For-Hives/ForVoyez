@@ -2,24 +2,27 @@
 
 import { auth } from '@clerk/nextjs/server'
 
+import { parseTokenInput, requireTokenId } from '@/helpers/tokenInput'
 import { generateJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
-export async function createToken(token) {
+export async function createToken(input) {
 	const userId = (await auth()).userId
 
 	if (!userId) {
 		throw new Error('You must be logged in to create a token')
 	}
 
-	let jwt = await generateJwt({
+	const token = parseTokenInput(input)
+
+	const jwt = await generateJwt({
 		createdAt: token.createdAt,
 		expiredAt: token.expiredAt,
 		name: token.name,
 		userId: userId,
 	})
 
-	let jwt_shortened = truncateToken(jwt)
+	const jwt_shortened = truncateToken(jwt)
 
 	const result = await prisma.token.create({
 		data: {
@@ -41,6 +44,8 @@ export async function deleteToken(tokenId) {
 		throw new Error('You must be logged in to delete a token')
 	}
 
+	requireTokenId(tokenId)
+
 	const token = await prisma.token.findUnique({
 		where: {
 			id: tokenId,
@@ -53,6 +58,7 @@ export async function deleteToken(tokenId) {
 
 	return await prisma.token.delete({
 		where: {
+			userId,
 			id: tokenId,
 		},
 	})
@@ -80,5 +86,5 @@ export async function getAllToken() {
 function truncateToken(token) {
 	if (!token) return ''
 	// 	slice, and return the first 5 characters of the token string, then append '...', terminating the string with the 5 last characters.
-	return token.slice(0, 5) + '*****' + token.slice(-5)
+	return `${token.slice(0, 5)}*****${token.slice(-5)}`
 }

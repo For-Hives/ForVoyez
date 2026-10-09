@@ -1,9 +1,9 @@
-import { timingSafeEqual } from 'crypto'
-
+import { timingSafeEqual } from 'node:crypto'
+import { revalidateTag } from 'next/cache'
 import { syncPlans } from '@/services/database.service'
+import { logger } from '@/services/logger.service'
 
 // never prerendered nor cached: every call is an authenticated trigger
-export const dynamic = 'force-dynamic'
 
 /**
  * Syncs the Lemon Squeezy products/variants into the Plan table.
@@ -24,8 +24,10 @@ export async function GET(request) {
 	}
 
 	try {
-		console.info('Plan Syncing Started')
+		logger.info('Plan Syncing Started')
 		await syncPlans()
+		// Route Handlers use explicit expiration; updateTag is for Server Actions.
+		revalidateTag('plans', { expire: 0 })
 
 		return new Response('Plans have been synced', { status: 200 })
 	} catch (error) {
@@ -42,10 +44,7 @@ function isSameSecret(provided, expected) {
 	const providedBuffer = Buffer.from(provided, 'utf8')
 	const expectedBuffer = Buffer.from(expected, 'utf8')
 
-	return (
-		providedBuffer.length === expectedBuffer.length &&
-		timingSafeEqual(providedBuffer, expectedBuffer)
-	)
+	return providedBuffer.length === expectedBuffer.length && timingSafeEqual(providedBuffer, expectedBuffer)
 }
 
 function notFound() {

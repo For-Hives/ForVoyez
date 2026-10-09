@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../../../../src/helpers/forEachInSequence.js')
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
 
@@ -42,12 +43,12 @@ test.describe('Sidebar Navigation Functionality', () => {
 			},
 		]
 
-		for (const link of sidebarLinks) {
+		await forEachInSequence(sidebarLinks, async link => {
 			log(`Checking sidebar link: ${link.title}`)
 			const linkLocator = page.locator(`[data-testid="${link.testId}"]`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 			await expect(linkLocator).toHaveAttribute('href', link.href)
-		}
+		})
 
 		log('Sidebar links presence and attributes test completed successfully')
 	})

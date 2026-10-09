@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-
+import { defaultJsonTemplateSchema } from '@/constants/playground'
 import {
 	DESCRIBE_LIMITS,
 	InvalidDescribeInputError,
@@ -9,12 +9,9 @@ import {
 	normalizeLanguage,
 	withLegacyAltText,
 } from '@/helpers/describeInput'
-import { defaultJsonTemplateSchema } from '@/constants/playground'
 
 function schemaWithKeys(count) {
-	return Object.fromEntries(
-		Array.from({ length: count }, (_, index) => [`field${index}`, 'text'])
-	)
+	return Object.fromEntries(Array.from({ length: count }, (_, index) => [`field${index}`, 'text']))
 }
 
 describe('normalizeDescribeSchema', () => {
@@ -59,13 +56,9 @@ describe('normalizeDescribeSchema', () => {
 	})
 
 	it(`accepts ${DESCRIBE_LIMITS.maxSchemaKeys} fields and refuses more`, () => {
-		expect(
-			Object.keys(normalizeDescribeSchema(schemaWithKeys(20)))
-		).toHaveLength(20)
+		expect(Object.keys(normalizeDescribeSchema(schemaWithKeys(20)))).toHaveLength(20)
 		expect(() => normalizeDescribeSchema(schemaWithKeys(21))).toThrow(
-			new InvalidDescribeInputError(
-				'Invalid schema: at most 20 fields are allowed'
-			)
+			new InvalidDescribeInputError('Invalid schema: at most 20 fields are allowed')
 		)
 	})
 
@@ -73,23 +66,19 @@ describe('normalizeDescribeSchema', () => {
 		expect(normalizeDescribeSchema({ ['k'.repeat(64)]: 'ok' })).toEqual({
 			['k'.repeat(64)]: 'ok',
 		})
-		expect(() =>
-			normalizeDescribeSchema({ ['k'.repeat(65)]: 'too long' })
-		).toThrow('Invalid schema: field names must be at most 64 characters')
+		expect(() => normalizeDescribeSchema({ ['k'.repeat(65)]: 'too long' })).toThrow(
+			'Invalid schema: field names must be at most 64 characters'
+		)
 	})
 
 	it('refuses field descriptions longer than 1000 characters', () => {
-		expect(() =>
-			normalizeDescribeSchema(JSON.stringify({ alt: 'd'.repeat(1001) }))
-		).toThrow(
+		expect(() => normalizeDescribeSchema(JSON.stringify({ alt: 'd'.repeat(1001) }))).toThrow(
 			'Invalid schema: field descriptions must be at most 1000 characters'
 		)
 	})
 
 	it('refuses a __proto__ field', () => {
-		expect(() => normalizeDescribeSchema('{"__proto__":"x"}')).toThrow(
-			InvalidDescribeInputError
-		)
+		expect(() => normalizeDescribeSchema('{"__proto__":"x"}')).toThrow(InvalidDescribeInputError)
 	})
 })
 
@@ -144,9 +133,7 @@ describe('withLegacyAltText', () => {
 		const withoutAlternativeText = { title: 'Title' }
 
 		expect(withLegacyAltText(withAltText)).toBe(withAltText)
-		expect(withLegacyAltText(withoutAlternativeText)).toBe(
-			withoutAlternativeText
-		)
+		expect(withLegacyAltText(withoutAlternativeText)).toBe(withoutAlternativeText)
 	})
 })
 
@@ -167,5 +154,62 @@ describe('languageName', () => {
 		expect(languageName('English (US)')).toBeUndefined()
 		expect(languageName('Español')).toBeUndefined()
 		expect(languageName('xx')).toBeUndefined()
+	})
+})
+
+describe('describe input type and limit matrix', () => {
+	it.each([null, undefined, true, false, 0, 1, [], ['field'], 'null', '[]', 'true'])(
+		'defaults non-map schemas %j',
+		value => {
+			expect(normalizeDescribeSchema(value)).toEqual(defaultJsonTemplateSchema)
+		}
+	)
+
+	it('accepts the exact description limit and preserves falsy field descriptions', () => {
+		const description = 'x'.repeat(DESCRIBE_LIMITS.maxSchemaDescriptionLength)
+		expect(normalizeDescribeSchema({ field: description, zero: 0, false: false, missing: undefined })).toEqual({
+			field: description,
+			zero: '0',
+			false: 'false',
+			missing: '',
+		})
+	})
+
+	it.each([
+		[null, ''],
+		[undefined, ''],
+		[0, '0'],
+		[false, 'false'],
+		[['a', 'b'], 'a,b'],
+		[{}, '[object Object]'],
+	])('retains existing text coercion for %j', (value, expected) => {
+		expect(normalizeDescribeText(value, 100)).toBe(expected)
+	})
+
+	it.each([0, 1, 999, 1000, 1001])('bounds text length for %i characters', length => {
+		expect(normalizeDescribeText('x'.repeat(length), 1000)).toHaveLength(Math.min(length, 1000))
+	})
+
+	it('handles a zero text limit and unicode without changing the established UTF-16 limit', () => {
+		expect(normalizeDescribeText('abc', 0)).toBe('')
+		expect(normalizeDescribeText('é漢字', 3)).toBe('é漢字')
+		expect(normalizeLanguage('\u0000 fr\tFR\u007f')).toBe('fr FR')
+	})
+
+	it.each([null, undefined, false, 123, {}, []])('handles non-string language display values %j', value => {
+		expect(languageName(value)).toBeUndefined()
+	})
+
+	it.each([null, undefined, false, 0, [], {}])(
+		'preserves legacy results without a string alternative text %j',
+		value => {
+			expect(withLegacyAltText(value)).toBe(value)
+		}
+	)
+
+	it('does not mutate existing metadata when adding the legacy alias', () => {
+		const metadata = Object.freeze({ alternativeText: 'An image' })
+		expect(withLegacyAltText(metadata)).toEqual({ alternativeText: 'An image', alt_text: 'An image' })
+		expect(metadata).not.toHaveProperty('alt_text')
 	})
 })

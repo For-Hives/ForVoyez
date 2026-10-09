@@ -1,19 +1,14 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 import { createCheckoutUrl } from '@/app/actions/app/plans'
 
 // Plan button of the dashboard. The Lemon Squeezy checkout is created when the
 // user clicks it, not when the plans are shown, then the browser goes to it.
-export function CheckoutButtonComponent({
-	className,
-	variantId,
-	children,
-	...props
-}) {
+export function CheckoutButtonComponent({ className, variantId, children, ...props }) {
 	const router = useRouter()
 	const [isPending, setIsPending] = useState(false)
 

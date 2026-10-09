@@ -1,19 +1,28 @@
-export default function copyToClipboard(content) {
-	if (navigator.clipboard) {
-		navigator.clipboard.writeText(content).catch(err => {
-			console.error('Failed to copy:', err)
-		})
-	} else {
-		// Fallback to older execCommand approach
-		const textarea = document.createElement('textarea')
-		textarea.value = content
-		document.body.appendChild(textarea)
-		textarea.select()
+/** Returns true only after the browser actually accepts the copy operation. */
+export default async function copyToClipboard(content) {
+	if (typeof content !== 'string') return false
+	if (navigator.clipboard?.writeText) {
 		try {
-			document.execCommand('copy')
-		} catch (err) {
-			console.error('Failed to copy with execCommand:', err)
+			await navigator.clipboard.writeText(content)
+			return true
+		} catch (error) {
+			console.error('Failed to copy:', error)
+			return false
 		}
-		document.body.removeChild(textarea)
+	}
+
+	const textarea = document.createElement('textarea')
+	textarea.value = content
+	textarea.style.position = 'fixed'
+	textarea.style.opacity = '0'
+	document.body.appendChild(textarea)
+	textarea.select()
+	try {
+		return document.execCommand?.('copy') === true
+	} catch (error) {
+		console.error('Failed to copy with execCommand:', error)
+		return false
+	} finally {
+		textarea.remove()
 	}
 }

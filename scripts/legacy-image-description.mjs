@@ -8,8 +8,9 @@
 // structured output, no timeout. The prompts are verbatim; the only changes
 // are the AI SDK 7 image part (`file` instead of the deprecated `image`, same
 // request) and the returned token usage and latency.
-import { generateText } from 'ai'
+
 import { openai } from '@ai-sdk/openai'
+import { generateText } from 'ai'
 
 import { defaultJsonTemplateSchema } from '../src/constants/playground.js'
 
@@ -21,11 +22,7 @@ export const LEGACY_AI_MODEL = 'gpt-4o-mini'
  * @param options - { model } (default gpt-4o-mini)
  * @returns {Promise<{ metadata: object, model: string, usage: object, latencyMs: number }>}
  */
-export async function legacyGenerateImageMetadata(
-	base64Image,
-	data,
-	{ model = LEGACY_AI_MODEL } = {}
-) {
+export async function legacyGenerateImageMetadata(base64Image, data, { model = LEGACY_AI_MODEL } = {}) {
 	const startedAt = Date.now()
 	const steps = []
 
@@ -76,9 +73,7 @@ export async function legacyGenerateImageMetadata(
 		...data,
 		schemaDefinition,
 	})
-	const rawSeoMetadata = await call('seo metadata', [
-		{ content: seoPrompt, role: 'user' },
-	])
+	const rawSeoMetadata = await call('seo metadata', [{ content: seoPrompt, role: 'user' }])
 
 	return {
 		usage: {
@@ -109,28 +104,18 @@ function buildSchemaDefinition(template) {
 
 	// Ensure we have a valid object
 	const normalizedTemplate =
-		parsedTemplate &&
-		typeof parsedTemplate === 'object' &&
-		!Array.isArray(parsedTemplate)
-			? parsedTemplate
-			: {}
+		parsedTemplate && typeof parsedTemplate === 'object' && !Array.isArray(parsedTemplate) ? parsedTemplate : {}
 
-	const sanitizedEntries = Object.entries(normalizedTemplate).reduce(
-		(acc, [key, value]) => {
-			const safeValue =
-				typeof value === 'string' && value.trim().length > 0
-					? value.trim()
-					: String(value ?? '').trim()
+	const sanitizedEntries = Object.entries(normalizedTemplate).reduce((acc, [key, value]) => {
+		const safeValue = typeof value === 'string' && value.trim().length > 0 ? value.trim() : String(value ?? '').trim()
 
-			if (key.trim().length === 0) {
-				return acc
-			}
-
-			acc[key] = safeValue
+		if (key.trim().length === 0) {
 			return acc
-		},
-		{}
-	)
+		}
+
+		acc[key] = safeValue
+		return acc
+	}, {})
 
 	if (Object.keys(sanitizedEntries).length === 0) {
 		return { ...defaultJsonTemplateSchema }
@@ -141,15 +126,12 @@ function buildSchemaDefinition(template) {
 
 // Function to generate the SEO prompt
 function getSeoPrompt(result, cleanedContext, data) {
-	const schemaDefinition =
-		data.schemaDefinition || buildSchemaDefinition(data.schema)
+	const schemaDefinition = data.schemaDefinition || buildSchemaDefinition(data.schema)
 
 	const fieldDescriptions = Object.entries(schemaDefinition)
 		.map(([key, description]) => {
 			const safeDescription =
-				typeof description === 'string' && description.trim().length > 0
-					? description.trim()
-					: `${key} for the image`
+				typeof description === 'string' && description.trim().length > 0 ? description.trim() : `${key} for the image`
 			return `- "${key}": ${safeDescription}`
 		})
 		.join('\n')
@@ -213,14 +195,10 @@ function parseMetadataResponse(rawResponse, schemaDefinition) {
 
 	const allowedKeys = Object.keys(schemaDefinition)
 	return allowedKeys.reduce((acc, key) => {
-		if (Object.prototype.hasOwnProperty.call(parsed, key)) {
+		if (Object.hasOwn(parsed, key)) {
 			const value = parsed[key]
-			acc[key] =
-				typeof value === 'string'
-					? value.trim()
-					: value != null
-						? String(value).trim()
-						: ''
+			// biome-ignore lint/style/noNestedTernary: Preserve the existing conditional rendering and value selection during the tooling migration.
+			acc[key] = typeof value === 'string' ? value.trim() : value != null ? String(value).trim() : ''
 		} else {
 			acc[key] = ''
 		}

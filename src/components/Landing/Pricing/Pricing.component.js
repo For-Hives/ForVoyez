@@ -1,11 +1,10 @@
 'use client'
-import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-
+import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-
+import { useEffect, useState } from 'react'
+import { listPlans } from '@/app/actions/app/plans'
+import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import {
 	formatSaving,
 	getAnnualSaving,
@@ -13,8 +12,6 @@ import {
 	getMaxAnnualSaving,
 	getPlanFeatures,
 } from '@/helpers/planFeatures'
-import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
-import { listPlans } from '@/app/actions/app/plans'
 import { sortPlans } from '@/helpers/sortPlans'
 
 const frequencies = [
@@ -56,21 +53,15 @@ export function PricingComponent() {
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div
-					className="mx-auto max-w-4xl text-center"
-					data-testid="pricing-section"
-					id="pricing"
-				>
-					<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
-						Pricing
-					</h2>
+				<div className="mx-auto max-w-4xl text-center" data-testid="pricing-section" id="pricing">
+					<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">Pricing</h2>
 					<p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-						Plans for every stage of your growth
+						Choose credits for your WordPress images
 					</p>
 				</div>
 				<p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-slate-600">
-					Choose the plan that fits your needs and scale as your usage grows.
-					Upgrade, downgrade, or cancel anytime.
+					The plugin is free to install. Choose a ForVoyez plan for image generation: one credit covers the alt text,
+					title, and caption for one successfully processed image.
 				</p>
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
@@ -78,16 +69,12 @@ export function PricingComponent() {
 						onChange={setFrequency}
 						value={frequency}
 					>
-						<RadioGroup.Label className="sr-only">
-							Payment frequency
-						</RadioGroup.Label>
+						<RadioGroup.Label className="sr-only">Payment frequency</RadioGroup.Label>
 						{frequencies.map(option => (
 							<RadioGroup.Option
 								className={({ checked }) =>
 									classNames(
-										checked
-											? 'bg-forvoyez_orange-500 text-white'
-											: 'text-slate-500',
+										checked ? 'bg-forvoyez_orange-500 text-white' : 'text-slate-500',
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
@@ -115,8 +102,9 @@ export function PricingComponent() {
 				</div>
 				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 					{plans.length <= 0
-						? [...Array(2)].map((_, i) => <SkeletonLoaderPricing key={i} />)
-						: plans.map(tier => {
+						? ['first-plan', 'second-plan'].map(placeholderId => <SkeletonLoaderPricing key={placeholderId} />)
+						: // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
+							plans.map(tier => {
 								if (!isAnnually && tier.billingCycle === 'year') return null
 								if (isAnnually && tier.billingCycle === 'month') return null
 								if (!tier.billingCycle) return null
@@ -126,9 +114,7 @@ export function PricingComponent() {
 								return (
 									<div
 										className={classNames(
-											tier.mostPopular
-												? 'ring-forvoyez_orange-500 ring-2'
-												: 'ring-1 ring-slate-200',
+											tier.mostPopular ? 'ring-forvoyez_orange-500 ring-2' : 'ring-1 ring-slate-200',
 											'rounded-3xl p-8 xl:p-10'
 										)}
 										data-testid={`plan-${tier.billingCycle}`}
@@ -137,9 +123,7 @@ export function PricingComponent() {
 										<div className="flex items-center justify-between gap-x-4">
 											<h3
 												className={classNames(
-													tier.mostPopular
-														? 'text-forvoyez_orange-500'
-														: 'text-slate-900',
+													tier.mostPopular ? 'text-forvoyez_orange-500' : 'text-slate-900',
 													'text-lg leading-8 font-semibold'
 												)}
 												id={tier.id}
@@ -160,13 +144,9 @@ export function PricingComponent() {
 											<span className="text-4xl font-bold tracking-tight text-slate-900">
 												{(tier.price / 100).toFixed(2).replace('.', ',')}€
 											</span>
-											<span className="text-sm leading-6 font-semibold text-slate-600">
-												{frequency.priceSuffix}
-											</span>
+											<span className="text-sm leading-6 font-semibold text-slate-600">{frequency.priceSuffix}</span>
 										</p>
-										<p className={''}>
-											Billed {isAnnually ? 'annually' : 'monthly'}
-										</p>
+										<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 										<Link
 											aria-describedby={tier.id}
 											className={classNames(
@@ -181,29 +161,23 @@ export function PricingComponent() {
 											{tier.buttonText}
 										</Link>
 										<div className={'mt-2 flex items-center'}>
+											{/* biome-ignore lint/style/noNestedTernary: Preserve the existing conditional behavior during the tooling migration. */}
 											{annualSaving === null ? null : isAnnually ? (
 												<span className="text-xs text-slate-500">
-													<span className={'font-bold'}>
-														{formatSaving(annualSaving)} cheaper
-													</span>{' '}
-													than monthly
+													<span className={'font-bold'}>{formatSaving(annualSaving)} cheaper</span> than monthly
 												</span>
 											) : (
 												<button
+													type="submit"
 													className={'group m-0 flex gap-1 p-0'}
 													data-testid="get-more-tokens"
 													onClick={() => setFrequency(frequencies[1])}
 												>
 													<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
-														Pay annually:{' '}
-														<span className={'font-bold'}>
-															{formatSaving(annualSaving)} cheaper
-														</span>
+														Pay annually: <span className={'font-bold'}>{formatSaving(annualSaving)} cheaper</span>
 													</span>
 													<div className={'flex h-full items-center'}>
-														<ArrowUpRightIcon
-															className={'h-3 w-3 text-slate-600'}
-														/>
+														<ArrowUpRightIcon className={'h-3 w-3 text-slate-600'} />
 													</div>
 												</button>
 											)}
@@ -211,10 +185,7 @@ export function PricingComponent() {
 										<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 											{getPlanFeatures(tier, plans).map(feature => (
 												<li className="flex gap-x-3" key={feature}>
-													<CheckIcon
-														aria-hidden="true"
-														className="text-forvoyez_orange-500 h-6 w-5 flex-none"
-													/>
+													<CheckIcon aria-hidden="true" className="text-forvoyez_orange-500 h-6 w-5 flex-none" />
 													{feature}
 												</li>
 											))}
@@ -223,34 +194,21 @@ export function PricingComponent() {
 								)
 							})}
 					<div
-						className={classNames(
-							'ring-1 ring-slate-200',
-							'rounded-3xl p-8 xl:p-10'
-						)}
+						className={classNames('ring-1 ring-slate-200', 'rounded-3xl p-8 xl:p-10')}
 						data-testid="plan-custom"
 						key="custom"
 					>
 						<div className="flex items-center justify-between gap-x-4">
-							<h3
-								className={classNames(
-									'text-slate-900',
-									'text-lg leading-8 font-semibold'
-								)}
-								id="custom"
-							>
+							<h3 className={classNames('text-slate-900', 'text-lg leading-8 font-semibold')} id="custom">
 								Entreprise
 							</h3>
 						</div>
 						<p className="mt-4 text-sm leading-6 text-slate-600">
-							Tailored for large-scale deployments and complex requirements.
+							Have a large media library or manage several WordPress websites? Talk to us about your image volume.
 						</p>
 						<p className="mt-6 flex items-baseline gap-x-1">
-							<span className="text-4xl font-bold tracking-tight text-slate-900">
-								Custom
-							</span>
-							<span className="text-sm leading-6 font-semibold text-slate-600">
-								{frequency.priceSuffix}
-							</span>
+							<span className="text-4xl font-bold tracking-tight text-slate-900">Custom</span>
+							<span className="text-sm leading-6 font-semibold text-slate-600">{frequency.priceSuffix}</span>
 						</p>
 						<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 						<Link
@@ -268,10 +226,7 @@ export function PricingComponent() {
 						<ul className="mt-8 space-y-3 text-sm leading-6 text-slate-600 xl:mt-10">
 							{getEnterpriseFeatures(plans).map(feature => (
 								<li className="flex gap-x-3" key={feature}>
-									<CheckIcon
-										aria-hidden="true"
-										className="text-forvoyez_orange-500 h-6 w-5 flex-none"
-									/>
+									<CheckIcon aria-hidden="true" className="text-forvoyez_orange-500 h-6 w-5 flex-none" />
 									{feature}
 								</li>
 							))}
@@ -279,7 +234,8 @@ export function PricingComponent() {
 					</div>
 				</div>
 				<p className={'mt-4 w-full text-right text-slate-600'}>
-					(*), 1 credit correspond to 1 image description with ForVoyez API.
+					(*) One credit covers one successfully processed image, whether generated with the WordPress plugin or another
+					ForVoyez tool.
 				</p>
 			</div>
 		</div>

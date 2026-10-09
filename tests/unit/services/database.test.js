@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as clerk from '@clerk/nextjs/server'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
 	chargeOneCredit,
@@ -28,6 +28,7 @@ vi.mock('@/services/prisma.service', async () => {
 	}
 })
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 describe('Database Service', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
@@ -79,9 +80,7 @@ describe('Database Service', () => {
 
 	describe('syncPlans', () => {
 		it('should log an error if variant ID is undefined', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
 			ls.listProducts.mockResolvedValue([
 				{
@@ -113,18 +112,13 @@ describe('Database Service', () => {
 
 			await syncPlans()
 
-			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'Variant ID is undefined for variant:',
-				expect.any(Object)
-			)
+			expect(consoleErrorSpy).toHaveBeenCalledWith('Variant ID is undefined for variant:', expect.any(Object))
 
 			consoleErrorSpy.mockRestore()
 		})
 
 		it('should continue if product relationships variants data is missing', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
 			ls.listProducts.mockResolvedValue([
 				{
@@ -141,9 +135,7 @@ describe('Database Service', () => {
 		})
 
 		it('should continue if variant details attributes are missing', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
 			ls.listProducts.mockResolvedValue([
 				{
@@ -169,9 +161,7 @@ describe('Database Service', () => {
 		})
 
 		it('should log an error if currentPriceObj or its attributes are missing', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
 			ls.listProducts.mockResolvedValue([
 				{
@@ -196,28 +186,20 @@ describe('Database Service', () => {
 
 			await syncPlans()
 
-			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'Price object is missing attributes:',
-				expect.any(Object)
-			)
+			expect(consoleErrorSpy).toHaveBeenCalledWith('Price object is missing attributes:', expect.any(Object))
 
 			consoleErrorSpy.mockRestore()
 		})
 
 		it('should log and throw an error if an exception occurs during sync', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 			const mockError = new Error('Sync error')
 
 			ls.listProducts.mockRejectedValue(mockError)
 
 			await expect(syncPlans()).rejects.toThrow('Sync error')
 
-			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'Error syncing plans:',
-				mockError
-			)
+			expect(consoleErrorSpy).toHaveBeenCalledWith('Error syncing plans:', mockError)
 
 			consoleErrorSpy.mockRestore()
 		})
@@ -286,13 +268,13 @@ describe('Database Service', () => {
 	describe('getCustomerIdFromUser', () => {
 		it('should return the customer ID of the authenticated user', async () => {
 			const mockUser = { id: 'user123' }
-			const mockSubscription = { customerId: 'customer123' }
+			const mockSubscription = { customerId: '42', userId: 'user123' }
 			clerk.auth.mockResolvedValue({ userId: mockUser.id })
 			prisma.subscription.findFirst.mockResolvedValue(mockSubscription)
 
 			const customerId = await getCustomerIdFromUser()
 
-			expect(customerId).toBe('customer123')
+			expect(customerId).toBe('42')
 		})
 
 		it('should return null if the user has no subscription', async () => {
@@ -308,9 +290,7 @@ describe('Database Service', () => {
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.auth.mockResolvedValue({ userId: null })
 
-			await expect(getCustomerIdFromUser()).rejects.toThrow(
-				'User not authenticated'
-			)
+			await expect(getCustomerIdFromUser()).rejects.toThrow('User not authenticated')
 		})
 	})
 
@@ -349,17 +329,13 @@ describe('Database Service', () => {
 		})
 
 		it('should throw an error for invalid credits value', async () => {
-			await expect(
-				updateCredits('user123', 'invalid', 'token123', 'test')
-			).rejects.toThrow('Invalid credits value')
+			await expect(updateCredits('user123', 'invalid', 'token123', 'test')).rejects.toThrow('Invalid credits value')
 		})
 
 		it('should throw an error if the user is not found', async () => {
 			prisma.user.findUnique.mockResolvedValue(null)
 
-			await expect(
-				updateCredits('user123', 10, 'token123', 'test')
-			).rejects.toThrow('User not found')
+			await expect(updateCredits('user123', 10, 'token123', 'test')).rejects.toThrow('User not found')
 			expect(prisma.user.update).not.toHaveBeenCalled()
 		})
 	})
@@ -376,18 +352,14 @@ describe('Database Service', () => {
 			prisma.user.findUnique.mockResolvedValue({ credits: 4 })
 			const work = vi.fn().mockResolvedValue('result')
 
-			await expect(chargeOneCredit('user123', usage, work)).resolves.toBe(
-				'result'
-			)
+			await expect(chargeOneCredit('user123', usage, work)).resolves.toBe('result')
 
 			expect(prisma.user.updateMany).toHaveBeenCalledWith({
 				where: { credits: { gte: 1 }, clerkId: 'user123' },
 				data: { credits: { decrement: 1 } },
 			})
 			// reservation happens before the paid work
-			expect(prisma.user.updateMany.mock.invocationCallOrder[0]).toBeLessThan(
-				work.mock.invocationCallOrder[0]
-			)
+			expect(prisma.user.updateMany.mock.invocationCallOrder[0]).toBeLessThan(work.mock.invocationCallOrder[0])
 			expect(prisma.usage.create).toHaveBeenCalledWith({
 				data: {
 					reason: 'test reason',
@@ -405,9 +377,7 @@ describe('Database Service', () => {
 			prisma.user.findUnique.mockResolvedValue({ credits: 0 })
 			const work = vi.fn()
 
-			await expect(chargeOneCredit('user123', usage, work)).rejects.toThrow(
-				NoCreditsLeftError
-			)
+			await expect(chargeOneCredit('user123', usage, work)).rejects.toThrow(NoCreditsLeftError)
 			expect(work).not.toHaveBeenCalled()
 			expect(prisma.usage.create).not.toHaveBeenCalled()
 		})
@@ -417,9 +387,7 @@ describe('Database Service', () => {
 			prisma.user.findUnique.mockResolvedValue({ credits: 4 })
 			const failure = new Error('generation failed')
 
-			await expect(
-				chargeOneCredit('user123', usage, () => Promise.reject(failure))
-			).rejects.toBe(failure)
+			await expect(chargeOneCredit('user123', usage, () => Promise.reject(failure))).rejects.toBe(failure)
 
 			expect(prisma.user.update).toHaveBeenCalledWith({
 				data: { credits: { increment: 1 } },
@@ -432,13 +400,9 @@ describe('Database Service', () => {
 			prisma.user.updateMany.mockResolvedValue({ count: 1 })
 			prisma.user.findUnique.mockResolvedValue({ credits: 4 })
 			prisma.usage.create.mockRejectedValue(new Error('db down'))
-			const consoleError = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-			await expect(
-				chargeOneCredit('user123', usage, async () => 'result')
-			).resolves.toBe('result')
+			await expect(chargeOneCredit('user123', usage, async () => 'result')).resolves.toBe('result')
 			expect(prisma.user.update).not.toHaveBeenCalled()
 			consoleError.mockRestore()
 		})
@@ -460,17 +424,11 @@ describe('Database Service', () => {
 			}))
 
 			const results = await Promise.allSettled(
-				Array.from({ length: 5 }, () =>
-					chargeOneCredit('user123', usage, async () => 'ok')
-				)
+				Array.from({ length: 5 }, () => chargeOneCredit('user123', usage, async () => 'ok'))
 			)
 
 			expect(results.filter(r => r.status === 'fulfilled')).toHaveLength(2)
-			expect(
-				results.filter(
-					r => r.status === 'rejected' && r.reason instanceof NoCreditsLeftError
-				)
-			).toHaveLength(3)
+			expect(results.filter(r => r.status === 'rejected' && r.reason instanceof NoCreditsLeftError)).toHaveLength(3)
 			expect(balance).toBe(0)
 		})
 	})
@@ -659,9 +617,7 @@ describe('Database Service', () => {
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.auth.mockResolvedValue({ userId: null })
 
-			await expect(getSubscriptionFromUserId()).rejects.toThrow(
-				'User not authenticated'
-			)
+			await expect(getSubscriptionFromUserId()).rejects.toThrow('User not authenticated')
 		})
 	})
 
@@ -680,9 +636,209 @@ describe('Database Service', () => {
 		it('should throw an error if the user is not authenticated', async () => {
 			clerk.auth.mockResolvedValue({ userId: null })
 
-			await expect(getCreditsFromUserId()).rejects.toThrow(
-				'User not authenticated'
-			)
+			await expect(getCreditsFromUserId()).rejects.toThrow('User not authenticated')
 		})
+	})
+})
+
+describe('database input boundaries', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it.each([NaN, Infinity, -Infinity, 0.1, -0.1, Number.MAX_SAFE_INTEGER + 1, '1', null, undefined, true, [], {}])(
+		'rejects unsupported credit values %j before querying storage',
+		async credits => {
+			await expect(updateCredits('owner', credits, null, 'test')).rejects.toThrow('Invalid credits value')
+			expect(prisma.user.findUnique).not.toHaveBeenCalled()
+			expect(prisma.user.update).not.toHaveBeenCalled()
+		}
+	)
+
+	it.each([null, undefined, false, 0, {}, [], ''])(
+		'rejects invalid JWT and ownership inputs %j before storage',
+		async value => {
+			await expect(findActiveApiToken(value, 'owner')).resolves.toBeNull()
+			await expect(findActiveApiToken('jwt', value)).resolves.toBeNull()
+			expect(prisma.token.findUnique).not.toHaveBeenCalled()
+		}
+	)
+
+	it.each([new Date(Date.now() - 1), new Date('invalid')])(
+		'refuses expired or invalid stored expiry %j',
+		async expiredAt => {
+			prisma.token.findUnique.mockResolvedValue({ userId: 'owner', expiredAt })
+			await expect(findActiveApiToken('jwt', 'owner')).resolves.toBeNull()
+		}
+	)
+
+	it('treats exactly-current expiry as expired', async () => {
+		vi.useFakeTimers()
+		try {
+			vi.setSystemTime(new Date('2026-10-09T12:00:00Z'))
+			prisma.token.findUnique.mockResolvedValue({ userId: 'owner', expiredAt: new Date() })
+			await expect(findActiveApiToken('jwt', 'owner')).resolves.toBeNull()
+		} finally {
+			vi.useRealTimers()
+		}
+	})
+})
+
+describe('account data edge cases', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+		clerk.auth.mockResolvedValue({ userId: 'owner' })
+	})
+
+	it('recovers the customer id from an existing subscription without losing its original return type', async () => {
+		prisma.user.findUnique.mockResolvedValue({ customerId: null })
+		prisma.subscription.findFirst.mockResolvedValue({ customerId: '42', userId: 'owner' })
+		await expect(getCustomerIdFromUser()).resolves.toBe('42')
+		expect(prisma.user.update).toHaveBeenCalledWith({ where: { clerkId: 'owner' }, data: { customerId: 42 } })
+	})
+
+	it('returns zero for a missing account row, preserving genuine zero balances', async () => {
+		prisma.user.findFirst.mockResolvedValue(null)
+		await expect(getCreditsFromUserId()).resolves.toBe(0)
+		prisma.user.findFirst.mockResolvedValue({ credits: 0 })
+		await expect(getCreditsFromUserId()).resolves.toBe(0)
+	})
+
+	it.each([0, -1, 1])('keeps valid signed credit changes %i and optional missing token attribution', async credits => {
+		prisma.user.findUnique.mockResolvedValue({ clerkId: 'owner' })
+		prisma.user.update.mockResolvedValue({ credits: 7 })
+		prisma.token.findFirst.mockResolvedValue(null)
+		await updateCredits('owner', credits, 'deleted-jwt', 'adjustment')
+		expect(prisma.user.update).toHaveBeenCalledWith(
+			expect.objectContaining({ data: { credits: { increment: credits } } })
+		)
+		expect(prisma.usage.create).toHaveBeenCalledWith({
+			data: {
+				previousCredits: 7 - credits,
+				currentCredits: 7,
+				used: credits,
+				userId: 'owner',
+				tokenId: undefined,
+				reason: 'adjustment',
+			},
+		})
+	})
+
+	it('groups UTC history across calendar boundaries and preserves zero balances', async () => {
+		prisma.usage.findMany.mockResolvedValue([
+			{ usedAt: new Date('2026-12-31T23:59:59Z'), currentCredits: 1 },
+			{ usedAt: new Date('2027-01-01T01:00:00+01:00'), currentCredits: 0 },
+		])
+		expect((await getUsageForUser()).map(point => [point.dateHour, point.creditsLeft])).toEqual([
+			['2026-12-31T23', 1],
+			['2027-01-01T00', 0],
+		])
+	})
+
+	it('groups deleted and null-named tokens as playground usage while preserving empty names', async () => {
+		prisma.usage.findMany.mockResolvedValue([{ token: null }, { token: { name: null } }, { token: { name: '' } }])
+		await expect(getUsageByToken()).resolves.toEqual([
+			{ token: 'Playground', used: 2 },
+			{ token: '', used: 1 },
+		])
+		expect(prisma.usage.findMany).toHaveBeenCalledWith({
+			where: { userId: 'owner', used: { lt: 0 } },
+			include: { token: true },
+		})
+	})
+
+	it.each([undefined, null, '', false, 0])(
+		'preserves an unfiltered plan catalog for falsy filters %j',
+		async filter => {
+			const plans = [{ billingCycle: 'month' }, { billingCycle: null }]
+			prisma.plan.findMany.mockResolvedValue(plans)
+			await expect(getPlans(filter)).resolves.toBe(plans)
+		}
+	)
+
+	it('returns an empty catalog for an unknown billing cycle', async () => {
+		prisma.plan.findMany.mockResolvedValue([{ billingCycle: 'month' }])
+		await expect(getPlans('unknown')).resolves.toEqual([])
+	})
+})
+
+describe('provider and reservation error boundaries', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('returns a stored customer id without querying or modifying subscriptions', async () => {
+		clerk.auth.mockResolvedValue({ userId: 'owner' })
+		prisma.user.findUnique.mockResolvedValue({ customerId: 42 })
+		await expect(getCustomerIdFromUser()).resolves.toBe(42)
+		expect(prisma.subscription.findFirst).not.toHaveBeenCalled()
+		expect(prisma.user.update).not.toHaveBeenCalled()
+	})
+
+	it.each([
+		[null, 195, undefined, 195],
+		['sum', undefined, '0x10', 16],
+		['sum', undefined, '125', 125],
+	])(
+		'syncs subscription prices using the existing provider conversion %j',
+		async (aggregation, unitPrice, decimalPrice, expectedPrice) => {
+			ls.listProducts.mockResolvedValue([
+				{ attributes: { name: 'Starter' }, relationships: { variants: { data: [{ id: 'monthly' }] } } },
+			])
+			ls.getVariant.mockResolvedValue({
+				data: { attributes: { name: 'Monthly', product_id: 42, is_subscription: true } },
+			})
+			ls.listPrice.mockResolvedValue([
+				{
+					attributes: {
+						usage_aggregation: aggregation,
+						unit_price: unitPrice,
+						unit_price_decimal: decimalPrice,
+						renewal_interval_unit: 'month',
+						package_size: 250,
+					},
+				},
+			])
+			await syncPlans()
+			expect(prisma.plan.upsert).toHaveBeenCalledWith({
+				where: { variantId: 'monthly' },
+				create: expect.objectContaining({
+					name: 'Starter',
+					price: expectedPrice,
+					billingCycle: 'month',
+					packageSize: 250,
+					productId: '42',
+				}),
+				update: expect.objectContaining({ price: expectedPrice }),
+			})
+		}
+	)
+
+	it('does not insert a subscription plan without price attributes', async () => {
+		const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+		try {
+			ls.listProducts.mockResolvedValue([
+				{ attributes: { name: 'Starter' }, relationships: { variants: { data: [{ id: 'monthly' }] } } },
+			])
+			ls.getVariant.mockResolvedValue({
+				data: { attributes: { name: 'Monthly', product_id: 42, is_subscription: true } },
+			})
+			ls.listPrice.mockResolvedValue([])
+			await expect(syncPlans()).resolves.toEqual([])
+			expect(prisma.plan.upsert).not.toHaveBeenCalled()
+			expect(errorLog).toHaveBeenCalledWith('Price object is missing attributes:', undefined)
+		} finally {
+			errorLog.mockRestore()
+		}
+	})
+
+	it('preserves the original work error if its refund also fails', async () => {
+		const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+		try {
+			prisma.$transaction.mockResolvedValue([{ count: 1 }, { credits: 0 }])
+			prisma.user.update.mockRejectedValue(new Error('database unavailable'))
+			const failure = new Error('provider failed')
+			await expect(chargeOneCredit('owner', { reason: 'test' }, () => Promise.reject(failure))).rejects.toBe(failure)
+			expect(prisma.usage.create).not.toHaveBeenCalled()
+			expect(errorLog).toHaveBeenCalledWith('Failed to refund 1 credit to user owner:', 'database unavailable')
+		} finally {
+			errorLog.mockRestore()
+		}
 	})
 })

@@ -4,10 +4,13 @@ import { ContactComponent } from '@/components/Contact/Contact.component'
 import { FooterComponent } from '@/components/Footer.component'
 import { NavbarComponent } from '@/components/Navbar.component'
 
+// Fail the build if marketing navigation unexpectedly starts requiring server work.
+export const ensureStatic = 'navigation'
+
 export const metadata = {
 	openGraph: {
 		description:
-			"Get in touch with our team for support, partnerships, or inquiries about ForVoyez's AI-powered image metadata generation services.",
+			'Need help with the ForVoyez WordPress plugin? Contact us about installation, your account, credits, or image descriptions.',
 		images: [
 			{
 				alt: 'Contact ForVoyez Team',
@@ -16,11 +19,10 @@ export const metadata = {
 				height: 630,
 			},
 		],
-		title: 'Contact ForVoyez - AI Image Metadata Solutions',
+		title: 'Get Help with the ForVoyez WordPress Plugin',
 	},
 	twitter: {
-		description:
-			'Reach out to ForVoyez for technical support and partnership opportunities.',
+		description: 'Get help installing and using the ForVoyez WordPress plugin.',
 		title: 'Contact ForVoyez Support Team',
 		card: 'summary_large_image',
 		images: '/og/contact.png',
@@ -28,17 +30,17 @@ export const metadata = {
 
 	keywords: [
 		'ForVoyez contact',
-		'technical support',
-		'partnership inquiries',
+		'WordPress plugin support',
+		'plugin installation',
 		'AI support',
-		'image metadata help',
-		'SEO consultation',
+		'image description help',
+		'ForVoyez credits',
 		'customer service',
 		'business inquiries',
 	].join(', '),
 
 	description:
-		'Connect with ForVoyez for technical support, partnership opportunities, or inquiries about our AI-powered image metadata services. Our team is here to help you optimize your image SEO.',
+		'Contact ForVoyez for help with the WordPress plugin, connecting your account, credits, and generating image descriptions.',
 
 	robots: {
 		'max-image-preview': 'large',
@@ -48,7 +50,7 @@ export const metadata = {
 		index: true,
 	},
 
-	title: 'Contact Us - Get Support & Partnership Inquiries | ForVoyez',
+	title: 'WordPress Plugin Support',
 
 	alternates: {
 		canonical: '/contact',

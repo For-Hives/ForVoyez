@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { auth } from '@clerk/nextjs/server'
-
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getCustomerPortalUrl, getMySubscription, listPlans } from '@/app/actions/app/plans'
+import { getMyCredits, getMyUsage, getMyUsageByToken } from '@/app/actions/app/usage'
 import {
 	getCreditsFromUserId,
 	getPlans,
@@ -8,16 +9,6 @@ import {
 	getUsageByToken,
 	getUsageForUser,
 } from '@/services/database.service'
-import {
-	getCustomerPortalUrl,
-	getMySubscription,
-	listPlans,
-} from '@/app/actions/app/plans'
-import {
-	getMyCredits,
-	getMyUsage,
-	getMyUsageByToken,
-} from '@/app/actions/app/usage'
 import { getCustomerPortalLink } from '@/services/lemonsqueezy.service'
 
 vi.mock('@clerk/nextjs/server')
@@ -43,13 +34,10 @@ describe('client-facing server actions', () => {
 			['getMyCredits', getMyCredits, getCreditsFromUserId],
 			['getMyUsage', getMyUsage, getUsageForUser],
 			['getMyUsageByToken', getMyUsageByToken, getUsageByToken],
-		])(
-			'%s should reject before touching the data',
-			async (_, action, service) => {
-				await expect(action()).rejects.toThrow('Unauthorized')
-				expect(service).not.toHaveBeenCalled()
-			}
-		)
+		])('%s should reject before touching the data', async (_, action, service) => {
+			await expect(action()).rejects.toThrow('Unauthorized')
+			expect(service).not.toHaveBeenCalled()
+		})
 
 		it('listPlans should stay public (landing pricing table)', async () => {
 			await expect(listPlans()).resolves.toBe(PLANS)
@@ -71,6 +59,16 @@ describe('client-facing server actions', () => {
 			getCreditsFromUserId.mockResolvedValue(12)
 
 			await expect(getMyCredits()).resolves.toBe(12)
+		})
+		it.each([
+			['usage', getMyUsage, getUsageForUser, []],
+			['token usage', getMyUsageByToken, getUsageByToken, [{ token: 'API', used: 1 }]],
+			['subscription', getMySubscription, getSubscriptionFromUserId, null],
+		])('returns authenticated %s and propagates storage errors', async (_, action, service, result) => {
+			service.mockResolvedValue(result)
+			await expect(action()).resolves.toEqual(result)
+			service.mockRejectedValue(new Error('storage unavailable'))
+			await expect(action()).rejects.toThrow('storage unavailable')
 		})
 	})
 })

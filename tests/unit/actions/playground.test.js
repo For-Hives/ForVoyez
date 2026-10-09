@@ -1,14 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { auth } from '@clerk/nextjs/server'
-
-import {
-	blobToBase64,
-	getImageDescription,
-} from '@/services/imageDescription.service'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { DescriptionTooLongError } from '@/helpers/describeInput'
 import { chargeOneCredit } from '@/services/database.service'
+import { blobToBase64, getImageDescription } from '@/services/imageDescription.service'
 
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/imageDescription.service')
@@ -24,19 +20,18 @@ vi.mock('@/services/prisma.service', async () => {
 	}
 })
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 describe('describePlaygroundAction', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
 		// charge succeeds: run the paid work and return its result
-		chargeOneCredit.mockImplementation((userId, usage, work) => work())
+		chargeOneCredit.mockImplementation((_userId, _usage, work) => work())
 	})
 
 	it('should throw an error if the user is not authenticated', async () => {
 		auth.mockResolvedValue({ userId: null })
 
-		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
-			'Unauthorized'
-		)
+		await expect(describePlaygroundAction(new FormData())).rejects.toThrow('Unauthorized')
 	})
 
 	it('should throw an error if the user has no credits left', async () => {
@@ -44,18 +39,14 @@ describe('describePlaygroundAction', () => {
 		auth.mockResolvedValue({ userId: mockUser.id })
 		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 0 })
 
-		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
-			'No credits left'
-		)
+		await expect(describePlaygroundAction(new FormData())).rejects.toThrow('No credits left')
 	})
 
 	it('should throw "No credits left" (not crash) if the user has no DB row', async () => {
 		auth.mockResolvedValue({ userId: 'user123' })
 		prisma.user.findUnique.mockResolvedValue(null)
 
-		await expect(describePlaygroundAction(new FormData())).rejects.toThrow(
-			'No credits left'
-		)
+		await expect(describePlaygroundAction(new FormData())).rejects.toThrow('No credits left')
 		expect(chargeOneCredit).not.toHaveBeenCalled()
 	})
 
@@ -68,9 +59,7 @@ describe('describePlaygroundAction', () => {
 		const formData = new FormData()
 		formData.append('image', new Blob(['image'], { type: 'image/png' }))
 
-		await expect(describePlaygroundAction(formData)).rejects.toThrow(
-			'No credits left'
-		)
+		await expect(describePlaygroundAction(formData)).rejects.toThrow('No credits left')
 		expect(getImageDescription).not.toHaveBeenCalled()
 	})
 
@@ -80,9 +69,7 @@ describe('describePlaygroundAction', () => {
 			clerkId: 'user123',
 			credits: 10,
 		})
-		const schema = Object.fromEntries(
-			Array.from({ length: 21 }, (_, index) => [`field${index}`, 'text'])
-		)
+		const schema = Object.fromEntries(Array.from({ length: 21 }, (_, index) => [`field${index}`, 'text']))
 		const formData = new FormData()
 		formData.append('image', new Blob(['image'], { type: 'image/png' }))
 		formData.append('data', JSON.stringify({ schema: JSON.stringify(schema) }))
@@ -128,9 +115,7 @@ describe('describePlaygroundAction', () => {
 
 		const formData = new FormData()
 
-		await expect(describePlaygroundAction(formData)).rejects.toThrow(
-			'No file uploaded'
-		)
+		await expect(describePlaygroundAction(formData)).rejects.toThrow('No file uploaded')
 	})
 
 	it('should return the image description and decrement the user credits', async () => {
@@ -153,10 +138,7 @@ describe('describePlaygroundAction', () => {
 
 		const formData = new FormData()
 		formData.append('image', mockFile)
-		formData.append(
-			'data',
-			JSON.stringify({ context: 'Test Context', language: 'fr', schema: {} })
-		)
+		formData.append('data', JSON.stringify({ context: 'Test Context', language: 'fr', schema: {} }))
 
 		const result = await describePlaygroundAction(formData)
 
@@ -199,10 +181,7 @@ describe('describePlaygroundAction', () => {
 
 		const formData = new FormData()
 		formData.append('image', mockFile)
-		formData.append(
-			'data',
-			JSON.stringify({ context: 'Test Context', schema: {} })
-		)
+		formData.append('data', JSON.stringify({ context: 'Test Context', schema: {} }))
 
 		await describePlaygroundAction(formData)
 
@@ -305,4 +284,30 @@ describe('describePlaygroundAction', () => {
 			})
 		)
 	})
+})
+
+describe('playground malformed input boundaries', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+		auth.mockResolvedValue({ userId: 'owner' })
+		prisma.user.findUnique.mockResolvedValue({ credits: 1 })
+	})
+
+	it.each([null, undefined, false, 0, {}, []])('rejects non-form input %j without charging', async input => {
+		await expect(describePlaygroundAction(input)).resolves.toMatchObject({ status: 400 })
+		expect(chargeOneCredit).not.toHaveBeenCalled()
+		expect(blobToBase64).not.toHaveBeenCalled()
+	})
+
+	it.each(['not json', 'null', '[]', '1', 'true', '"text"'])(
+		'rejects non-object JSON metadata %j without charging',
+		async data => {
+			const form = new FormData()
+			form.append('image', new Blob(['image'], { type: 'image/png' }))
+			form.append('data', data)
+			await expect(describePlaygroundAction(form)).resolves.toMatchObject({ status: 400 })
+			expect(chargeOneCredit).not.toHaveBeenCalled()
+			expect(blobToBase64).not.toHaveBeenCalled()
+		}
+	)
 })

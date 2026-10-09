@@ -1,49 +1,49 @@
 'use client'
-import {
-	CloudArrowUpIcon,
-	LockClosedIcon,
-	ServerIcon,
-} from '@heroicons/react/24/outline'
+import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/24/outline'
 import { motion } from 'motion/react'
+import Link from 'next/link'
 
 const features = [
 	{
+		name: '1. Install the plugin',
 		description:
-			'Install our plugin directly from your WordPress dashboard or upload it manually. Get started in minutes.',
-		name: 'Easy Installation',
+			'In WordPress, open Plugins \u2192 Add New and search for Auto Alt Text for Images. Install and activate it.',
 		icon: CloudArrowUpIcon,
 	},
 	{
+		name: '2. Connect your ForVoyez account',
 		description:
-			'Our AI automatically generates alt text, titles, and captions for your images as you upload them.',
-		name: 'Automatic Processing',
-		icon: ServerIcon,
+			'Create an account, choose a plan, and copy your API key into the plugin settings. This key connects the plugin to your account; no coding is needed.',
+		icon: LockClosedIcon,
 	},
 	{
+		name: '3. Generate and review your descriptions',
 		description:
-			'Improve your search engine rankings with optimized image metadata that helps search engines understand your content.',
-		name: 'SEO Optimization',
-		icon: LockClosedIcon,
+			'Select images in your media library to generate descriptions in bulk. Review the text, edit it if needed, and enable automatic generation for future uploads if you want.',
+		icon: ServerIcon,
 	},
 ]
 
 export function HowItWorksComponent() {
 	return (
-		<div className="overflow-hidden bg-white py-24 sm:py-32">
+		<div className="overflow-hidden bg-white py-24 sm:py-32" id="how-it-works">
 			<div className="mx-auto max-w-7xl md:px-6 lg:px-8">
 				<div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
 					<div className="px-6 lg:px-0 lg:pt-4 lg:pr-4">
 						<div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
 							<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
-								Streamlined Process
+								From installation to your first descriptions
 							</h2>
 							<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-								How It Works
+								Three steps. No code to write.
 							</p>
 							<p className="mt-6 text-lg leading-8 text-gray-600">
-								{`Our plugin simplifies the process of optimizing your WordPress
-									images for better SEO and accessibility. Here's how it works:`}
+								The plugin is free to install. A ForVoyez account with available credits is required to generate
+								descriptions.
 							</p>
+							<Link className="mt-4 inline-block font-semibold text-forvoyez_orange-500 underline" href="/app/tokens">
+								Get your connection key →
+							</Link>
 							<dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
 								{features.map(feature => (
 									<motion.div

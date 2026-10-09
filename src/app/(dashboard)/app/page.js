@@ -7,10 +7,8 @@ import {
 	KeyIcon,
 	QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { useEffect } from 'react'
-
 import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
-import { createUser } from '@/app/actions/app/createUser'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 const mainResources = [
 	{
@@ -21,10 +19,10 @@ const mainResources = [
 			],
 			y: 16,
 		},
-		description: 'Discover our features and API reference.',
-		href: 'https://doc.forvoyez.com/',
-		testId: 'link-documentation',
-		name: 'Documentation',
+		description: 'Install the WordPress plugin and follow the steps to connect your account.',
+		href: '/wordpress-plugin',
+		testId: 'link-wordpress-plugin',
+		name: 'WordPress plugin',
 		icon: BookOpenIcon,
 	},
 	{
@@ -35,7 +33,7 @@ const mainResources = [
 			],
 			y: -6,
 		},
-		description: 'Explore and test our API endpoints.',
+		description: 'Try generating descriptions for an image before using the plugin.',
 		testId: 'link-playground',
 		href: '/app/playground',
 		icon: CodeBracketIcon,
@@ -52,14 +50,14 @@ const configResources = [
 			],
 			y: 32,
 		},
-		description: 'Manage your API keys and authentication.',
+		description: 'Create the key to connect your WordPress plugin, or revoke keys you no longer use.',
 		testId: 'link-api-keys',
 		href: '/app/tokens',
 		name: 'API Keys',
 		icon: KeyIcon,
 	},
 	{
-		description: 'Track your API usage and limits.',
+		description: 'See your remaining credits and the images you have processed.',
 		pattern: {
 			squares: [[0, 1]],
 			y: 22,
@@ -84,8 +82,7 @@ const configResources = [
 		name: 'Plans',
 	},
 	{
-		description:
-			'Get help, view frequently asked questions, and contact our support team.',
+		description: 'Get help, view frequently asked questions, and contact our support team.',
 		pattern: {
 			squares: [
 				[-1, 2],
@@ -103,13 +100,11 @@ const configResources = [
 export default function AppPage() {
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
-			<h1 className="mb-8 text-3xl font-bold">
-				Welcome to the ForVoyez Developer Platform
-			</h1>
+			<Transition name="resource-home-title">
+				<h1 className="mb-8 text-3xl font-bold">Your ForVoyez account</h1>
+			</Transition>
 			<div className="mt-12">
-				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">
-					Start with the Basics
-				</h2>
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">Start with the Basics</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-2">
 					{mainResources.map(resource => (
 						<ResourceCardAppComponent key={resource.href} resource={resource} />
@@ -117,9 +112,7 @@ export default function AppPage() {
 				</div>
 			</div>
 			<div className="mt-12">
-				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">
-					Configuration
-				</h2>
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">Configuration</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
 					{configResources.map(resource => (
 						<ResourceCardAppComponent key={resource.href} resource={resource} />

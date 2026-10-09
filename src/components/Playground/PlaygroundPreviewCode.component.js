@@ -1,40 +1,25 @@
 'use client'
-import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { Disclosure, Tab } from '@headlessui/react'
-import { useEffect, useState } from 'react'
+import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { motion } from 'motion/react'
-
-import Prism from 'prismjs'
+import { useState } from 'react'
 
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
+import { RequestCode } from '@/components/Playground/RequestCode.component'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
-import 'prismjs/components/prism-markup-templating'
 import 'prismjs/themes/prism-tomorrow.min.css'
-import 'prismjs/components/prism-javascript'
-import 'prismjs/components/prism-python'
-import 'prismjs/components/prism-markup'
-import 'prismjs/components/prism-json'
-import 'prismjs/components/prism-bash'
-import 'prismjs/components/prism-http'
-import 'prismjs/components/prism-php'
 
 export default function PlaygroundPreviewCode(params) {
 	const previewLanguages = ['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP']
 
 	const [selectedTab, setSelectedTab] = useState(previewLanguages[0])
 	const [isPreviewCopied, setIsPreviewCopied] = useState(false)
-	const [disclosureOpen, setDisclosureOpen] = useState(false)
-
-	// Utiliser useEffect pour Prism et éviter les problèmes d'hydratation ( vite fait, marche pas bien)
-	useEffect(() => {
-		Prism.highlightAll()
-	}, [selectedTab, params, disclosureOpen])
 
 	// the generated code, not the highlighted element: the cURL tab is
 	// rendered as `language-bash`, so looking up `language-curl` found nothing
-	const copySelectedEditorContent = () => {
-		copyToClipboard(getPreviewCode(selectedTab, params.formData))
+	const copySelectedEditorContent = async () => {
+		if (!(await copyToClipboard(getPreviewCode(selectedTab, params.formData)))) return
 		setIsPreviewCopied(true)
 		setTimeout(() => setIsPreviewCopied(false), 2000)
 	}
@@ -42,8 +27,6 @@ export default function PlaygroundPreviewCode(params) {
 	return (
 		<Disclosure as="div" className="hidden sm:block" key="code preview">
 			{({ open }) => {
-				setDisclosureOpen(open)
-
 				return (
 					<>
 						<dt>
@@ -58,17 +41,13 @@ export default function PlaygroundPreviewCode(params) {
 										strokeWidth="1.5"
 										viewBox="0 0 24 24"
 									>
-										<path
-											d="M19 9l-7 7-7-7"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
+										<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 									</motion.svg>
 								</span>
 							</Disclosure.Button>
 						</dt>
 						<Disclosure.Panel as="dd" className="mt-2 pr-12 pl-0">
-							<motion.p
+							<motion.div
 								animate={{ opacity: 1, y: 0 }}
 								className="text-base leading-7 text-gray-600"
 								exit={{ opacity: 0, y: -10 }}
@@ -80,12 +59,7 @@ export default function PlaygroundPreviewCode(params) {
 									</p>
 
 									<div className="">
-										<Tab.Group
-											data-testid="language-tabs"
-											onChange={index =>
-												setSelectedTab(previewLanguages[index])
-											}
-										>
+										<Tab.Group data-testid="language-tabs" onChange={index => setSelectedTab(previewLanguages[index])}>
 											<Tab.List className="flex">
 												{previewLanguages.map(language => (
 													<Tab
@@ -102,21 +76,19 @@ export default function PlaygroundPreviewCode(params) {
 												))}
 											</Tab.List>
 											<Tab.Panels>
-												{previewLanguages.map((language, index) => (
+												{previewLanguages.map(language => (
 													<Tab.Panel key={language}>
 														<div className="relative mt-2 w-full overflow-hidden border-0 text-slate-900">
 															<pre
 																className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()} rounded-md`}
 															>
-																<code
-																	className={`language-${language.toLowerCase() === 'curl' ? 'bash' : language.toLowerCase()}`}
-																>
-																	{getPreviewCode(language, params.formData)}
-																</code>
+																<RequestCode language={language} formData={params.formData} />
 															</pre>
 															<button
+																type="submit"
 																className="focus:ring-forvoyez_orange-500 absolute top-3 right-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:ring-2 focus:outline-hidden"
 																data-testid="copy-button"
+																aria-label={isPreviewCopied ? 'Copied request' : 'Copy request'}
 																onClick={copySelectedEditorContent}
 															>
 																{isPreviewCopied ? (
@@ -132,7 +104,7 @@ export default function PlaygroundPreviewCode(params) {
 										</Tab.Group>
 									</div>
 								</div>
-							</motion.p>
+							</motion.div>
 						</Disclosure.Panel>
 					</>
 				)

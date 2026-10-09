@@ -1,18 +1,13 @@
 'use client'
-import {
-	BuildingOffice2Icon,
-	EnvelopeIcon,
-	PhoneIcon,
-} from '@heroicons/react/24/outline'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-
+import { BuildingOffice2Icon, EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import * as yup from 'yup'
-
-import { FaqComponent } from '@/components/Contact/Faq.component'
 import { sendEmail } from '@/app/actions/contact/sendEmail'
+import { FaqComponent } from '@/components/Contact/Faq.component'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 const schema = yup.object().shape({
 	email: yup.string().email('Invalid email').required('Email is required'),
@@ -26,7 +21,7 @@ const schema = yup.object().shape({
 
 export function ContactComponent() {
 	const {
-		formState: { errors },
+		formState: { errors, isSubmitting },
 		handleSubmit,
 		register,
 		reset,
@@ -35,7 +30,10 @@ export function ContactComponent() {
 	})
 
 	async function onSubmit(data) {
-		const response = await sendEmail(data)
+		const response = await sendEmail(data).catch(() => ({
+			success: false,
+			details: 'Please try again later.',
+		}))
 
 		if (response.success) {
 			toast('Message sent successfully!', {
@@ -79,30 +77,25 @@ export function ContactComponent() {
 								<svg className="overflow-visible fill-slate-50" x="100%" y={-1}>
 									<path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
 								</svg>
-								<rect
-									fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)"
-									height="100%"
-									strokeWidth={0}
-									width="100%"
-								/>
+								<rect fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)" height="100%" strokeWidth={0} width="100%" />
 							</svg>
 						</div>
-						<h2 className="text-3xl font-bold tracking-tight text-slate-900">
-							Get in touch
-						</h2>
-						<p className="mt-6 text-lg leading-8 text-slate-600">
-							{`We'd love to hear from you! If you have any questions, feedback,
-							or inquiries, please don't hesitate to reach out to us. Our team
-							is dedicated to providing you with the best possible support.`}
-						</p>
+						<Transition name="marketing-title">
+							<h2 className="text-3xl font-bold tracking-tight text-slate-900">
+								Need a hand with your WordPress images?
+							</h2>
+						</Transition>
+						<Transition name="marketing-description">
+							<p className="mt-6 text-lg leading-8 text-slate-600">
+								Tell us what you need help with: installing the plugin, connecting your account, choosing credits, or
+								generating image descriptions.
+							</p>
+						</Transition>
 						<dl className="mt-10 space-y-4 text-base leading-7 text-slate-600">
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Address</span>
-									<BuildingOffice2Icon
-										aria-hidden="true"
-										className="text-forvoyez_orange-500 h-7 w-6"
-									/>
+									<BuildingOffice2Icon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
 									4 Impasse de la marchaisière
@@ -113,16 +106,10 @@ export function ContactComponent() {
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Telephone</span>
-									<PhoneIcon
-										aria-hidden="true"
-										className="text-forvoyez_orange-500 h-7 w-6"
-									/>
+									<PhoneIcon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
-									<Link
-										className="hover:text-[#e05d45] hover:underline"
-										href="tel:+33621582684"
-									>
+									<Link className="hover:text-[#e05d45] hover:underline" href="tel:+33621582684">
 										+33 6 21 58 26 84
 									</Link>
 								</dd>
@@ -130,16 +117,10 @@ export function ContactComponent() {
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Email</span>
-									<EnvelopeIcon
-										aria-hidden="true"
-										className="text-forvoyez_orange-500 h-7 w-6"
-									/>
+									<EnvelopeIcon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
-									<Link
-										className="hover:text-[#e05d45] hover:underline"
-										href="mailto:contact@forvoyez.com"
-									>
+									<Link className="hover:text-[#e05d45] hover:underline" href="mailto:contact@forvoyez.com">
 										contact@forvoyez.com
 									</Link>
 								</dd>
@@ -147,18 +128,11 @@ export function ContactComponent() {
 						</dl>
 					</div>
 				</div>
-				<form
-					className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48"
-					method="POST"
-					onSubmit={handleSubmit(onSubmit)}
-				>
+				<form className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48" method="POST" onSubmit={handleSubmit(onSubmit)}>
 					<div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
 						<div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
 							<div>
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="first-name"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="first-name">
 									First name *
 								</label>
 								<div className="mt-2.5">
@@ -172,18 +146,11 @@ export function ContactComponent() {
 										type="text"
 										{...register('first-name')}
 									/>
-									{errors['first-name'] && (
-										<span className="text-sm text-red-500">
-											{errors['first-name'].message}
-										</span>
-									)}
+									{errors['first-name'] && <span className="text-sm text-red-500">{errors['first-name'].message}</span>}
 								</div>
 							</div>
 							<div>
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="last-name"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="last-name">
 									Last name *
 								</label>
 								<div className="mt-2.5">
@@ -197,18 +164,11 @@ export function ContactComponent() {
 										type="text"
 										{...register('last-name')}
 									/>
-									{errors['last-name'] && (
-										<span className="text-sm text-red-500">
-											{errors['last-name'].message}
-										</span>
-									)}
+									{errors['last-name'] && <span className="text-sm text-red-500">{errors['last-name'].message}</span>}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="company"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="company">
 									Company
 								</label>
 								<div className="mt-2.5">
@@ -222,18 +182,11 @@ export function ContactComponent() {
 										type="text"
 										{...register('company')}
 									/>
-									{errors.company && (
-										<span className="text-sm text-red-500">
-											{errors.company.message}
-										</span>
-									)}
+									{errors.company && <span className="text-sm text-red-500">{errors.company.message}</span>}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="email"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="email">
 									Email *
 								</label>
 								<div className="mt-2.5">
@@ -247,18 +200,11 @@ export function ContactComponent() {
 										type="email"
 										{...register('email')}
 									/>
-									{errors.email && (
-										<span className="text-sm text-red-500">
-											{errors.email.message}
-										</span>
-									)}
+									{errors.email && <span className="text-sm text-red-500">{errors.email.message}</span>}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="phone-number"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="phone-number">
 									Phone number
 								</label>
 								<div className="mt-2.5">
@@ -273,17 +219,12 @@ export function ContactComponent() {
 										{...register('phone-number')}
 									/>
 									{errors['phone-number'] && (
-										<span className="text-sm text-red-500">
-											{errors['phone-number'].message}
-										</span>
+										<span className="text-sm text-red-500">{errors['phone-number'].message}</span>
 									)}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="subject"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="subject">
 									Subject
 								</label>
 								<div className="mt-2.5">
@@ -296,18 +237,11 @@ export function ContactComponent() {
 										type="text"
 										{...register('subject')}
 									/>
-									{errors.subject && (
-										<span className="text-sm text-red-500">
-											{errors.subject.message}
-										</span>
-									)}
+									{errors.subject && <span className="text-sm text-red-500">{errors.subject.message}</span>}
 								</div>
 							</div>
 							<div className="sm:col-span-2">
-								<label
-									className="block text-sm leading-6 font-semibold text-slate-900"
-									htmlFor="message"
-								>
+								<label className="block text-sm leading-6 font-semibold text-slate-900" htmlFor="message">
 									Message *
 								</label>
 								<div className="mt-2.5">
@@ -321,25 +255,19 @@ export function ContactComponent() {
 										rows={4}
 										{...register('message')}
 									/>
-									{errors.message && (
-										<span className="text-sm text-red-500">
-											{errors.message.message}
-										</span>
-									)}
+									{errors.message && <span className="text-sm text-red-500">{errors.message.message}</span>}
 								</div>
 							</div>
 						</div>
 						<div className={'flex flex-col'}>
 							<p className={'w-full text-right'}>
-								<span className="w-full text-xs text-slate-600">
-									Fields marked with an asterisk (*) are required.
-								</span>
+								<span className="w-full text-xs text-slate-600">Fields marked with an asterisk (*) are required.</span>
 								<br />
 							</p>
 							<p className={'mt-2 text-right'}>
 								<span className={'text-xs text-slate-600 italic'}>
-									By submitting this form, you agree that we may use the
-									provided contact information to respond to your inquiry.
+									By submitting this form, you agree that we may use the provided contact information to respond to your
+									inquiry.
 								</span>
 							</p>
 						</div>
@@ -348,6 +276,7 @@ export function ContactComponent() {
 							<button
 								className="bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-500 rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 								type="submit"
+								disabled={isSubmitting}
 							>
 								Send message
 							</button>

@@ -1,10 +1,12 @@
+import { logger } from '@/services/logger.service'
 // POST /api/describe with real multipart requests and the real sharp: what a
 // client such as `curl -F image=@photo.webp` sends. Only the API key check,
 // the database and the model are stubbed.
 // @vitest-environment node
+
+import sharp from 'sharp'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/describe/route'
-import sharp from 'sharp'
 
 import { getImageDescription } from '@/services/imageDescription.service'
 import { verifyJwt } from '@/services/jwt.service'
@@ -53,7 +55,7 @@ describe('POST /api/describe uploads', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
 		vi.spyOn(console, 'error').mockImplementation(() => {})
-		vi.spyOn(console, 'info').mockImplementation(() => {})
+		vi.spyOn(logger, 'info').mockImplementation(() => {})
 		verifyJwt.mockResolvedValue({ userId: 'user_a' })
 		prisma.token.findUnique.mockResolvedValue({
 			expiredAt: new Date(Date.now() + 3600 * 1000),
@@ -80,13 +82,7 @@ describe('POST /api/describe uploads', () => {
 	}
 
 	it('describes a WebP sent as application/octet-stream (curl -F image=@x.webp)', async () => {
-		const response = await POST(
-			describeRequest(
-				await image('webp'),
-				'application/octet-stream',
-				'photo.webp'
-			)
-		)
+		const response = await POST(describeRequest(await image('webp'), 'application/octet-stream', 'photo.webp'))
 
 		expect(response.status).toBe(200)
 		expect(await response.json()).toEqual({
@@ -96,20 +92,15 @@ describe('POST /api/describe uploads', () => {
 		expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
 		// the model gets the image converted to WebP
 		const [base64] = getImageDescription.mock.calls[0]
-		expect((await sharp(Buffer.from(base64, 'base64')).metadata()).format).toBe(
-			'webp'
-		)
+		expect((await sharp(Buffer.from(base64, 'base64')).metadata()).format).toBe('webp')
 	})
 
-	it.each(['jpeg', 'png', 'gif'])(
-		'describes a %s sent without a MIME type',
-		async format => {
-			const response = await POST(describeRequest(await image(format), ''))
+	it.each(['jpeg', 'png', 'gif'])('describes a %s sent without a MIME type', async format => {
+		const response = await POST(describeRequest(await image(format), ''))
 
-			expect(response.status).toBe(200)
-			expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
-		}
-	)
+		expect(response.status).toBe(200)
+		expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
+	})
 
 	// same 400 JSON, and no credit, whether the MIME type is right or wrong
 	it.each([
@@ -121,19 +112,16 @@ describe('POST /api/describe uploads', () => {
 		['TIFF', 'image/png', () => image('tiff')],
 		['text file', 'image/jpeg', async () => Buffer.from('not an image')],
 		['empty file', 'image/png', async () => Buffer.alloc(0)],
-	])(
-		'answers 400 JSON for a %s sent as %s, without charging',
-		async (_name, type, makeBytes) => {
-			const response = await POST(describeRequest(await makeBytes(), type))
+	])('answers 400 JSON for a %s sent as %s, without charging', async (_name, type, makeBytes) => {
+		const response = await POST(describeRequest(await makeBytes(), type))
 
-			expect(response.status).toBe(400)
-			expect(response.headers.get('Content-Type')).toContain('application/json')
-			expect(await response.json()).toEqual({
-				error: 'Bad Request, Invalid image file',
-			})
-			expectNoCharge()
-		}
-	)
+		expect(response.status).toBe(400)
+		expect(response.headers.get('Content-Type')).toContain('application/json')
+		expect(await response.json()).toEqual({
+			error: 'Bad Request, Invalid image file',
+		})
+		expectNoCharge()
+	})
 
 	describe('request bodies', () => {
 		const MB = 1024 * 1024
@@ -195,9 +183,7 @@ describe('POST /api/describe uploads', () => {
 		})
 
 		it('answers 413 JSON for an image over 10 MB in a body under 11 MB', async () => {
-			const response = await POST(
-				describeRequest(Buffer.alloc(10 * MB + 1), 'image/png')
-			)
+			const response = await POST(describeRequest(Buffer.alloc(10 * MB + 1), 'image/png'))
 
 			await expectJson(response, 413, TOO_LARGE)
 		})

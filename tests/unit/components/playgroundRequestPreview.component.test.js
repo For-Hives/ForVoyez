@@ -2,9 +2,8 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { createElement } from 'react'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
-
-import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
+import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
@@ -24,22 +23,17 @@ describe('PlaygroundPreviewCode', () => {
 		vi.clearAllMocks()
 	})
 
-	it.each(['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP'])(
-		'shows and copies the %s code of the form',
-		language => {
-			render(createElement(PlaygroundPreviewCode, { formData }))
-			fireEvent.click(screen.getByText('Request Preview'))
-			fireEvent.click(screen.getByTestId(`tab-${language.toLowerCase()}`))
+	it.each(['JavaScript', 'cURL', 'Python', 'PHP', 'HTTP'])('shows and copies the %s code of the form', language => {
+		render(createElement(PlaygroundPreviewCode, { formData }))
+		fireEvent.click(screen.getByText('Request Preview'))
+		fireEvent.click(screen.getByTestId(`tab-${language.toLowerCase()}`))
 
-			const code = getPreviewCode(language, formData)
-			expect(screen.getByText(language).getAttribute('aria-selected')).toBe(
-				'true'
-			)
-			expect(document.querySelector('pre code').textContent).toBe(code)
+		const code = getPreviewCode(language, formData)
+		expect(screen.getByText(language).getAttribute('aria-selected')).toBe('true')
+		expect(document.querySelector('pre code').textContent).toBe(code)
 
-			// the cURL tab used to throw here: its code element is `language-bash`
-			fireEvent.click(screen.getByTestId('copy-button'))
-			expect(copyToClipboard).toHaveBeenCalledWith(code)
-		}
-	)
+		// the cURL tab used to throw here: its code element is `language-bash`
+		fireEvent.click(screen.getByTestId('copy-button'))
+		expect(copyToClipboard).toHaveBeenCalledWith(code)
+	})
 })

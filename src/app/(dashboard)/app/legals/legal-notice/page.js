@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export const metadata = {
 	description:
@@ -12,27 +13,24 @@ export const metadata = {
 export default function LegalNoticePage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto px-6">
-			<h1 className="mb-8 text-3xl font-bold text-slate-800">Legal Notice</h1>
+			<Transition name="resource-legals-legal-notice-title">
+				<h1 className="mb-8 text-3xl font-bold text-slate-800">Legal Notice</h1>
+			</Transition>
 
-			<p className="mt-1 text-sm text-slate-600">
-				ForVoyez, a SaaS operated by the auto-entreprise Cinquin Andy
-			</p>
+			<p className="mt-1 text-sm text-slate-600">ForVoyez, a SaaS operated by the auto-entreprise Cinquin Andy</p>
 
 			<p className="mt-4 text-sm text-slate-600">
 				<strong>SIRET</strong>: 880 505 276 00019
 				<br />
-				<strong>Registered office</strong>: 4 Impasse de la marchaisière, 44115,
-				France
+				<strong>Registered office</strong>: 4 Impasse de la marchaisière, 44115, France
 				<br />
 				<strong>VAT number</strong>: FR 35 880505276
 				<br />
 				<strong>Director of publication</strong>: Andy Cinquin
 				<br />
-				<strong>Hosted by</strong>: netcup GmbH, Emmy-Noether-Straße 10, 76131
-				Karlsruhe, Germany, +49 721 7540755-0
+				<strong>Hosted by</strong>: netcup GmbH, Emmy-Noether-Straße 10, 76131 Karlsruhe, Germany, +49 721 7540755-0
 				<br />
-				<strong>Database hosted by</strong>: Contabo GmbH, Welfenstrasse 22,
-				81541 Munich, Germany
+				<strong>Database hosted by</strong>: Contabo GmbH, Welfenstrasse 22, 81541 Munich, Germany
 			</p>
 
 			<section>
@@ -49,10 +47,7 @@ export default function LegalNoticePage() {
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Contact</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					<a
-						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
-						href="mailto:contact@forvoyez.com"
-					>
+					<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="mailto:contact@forvoyez.com">
 						contact@forvoyez.com
 					</a>
 					<br />
@@ -63,12 +58,9 @@ export default function LegalNoticePage() {
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Abuse</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					To report contentious content or if you are a victim of fraudulent use
-					of a ForVoyez service, please contact us via the{' '}
-					<a
-						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
-						href="mailto:contact@forvoyez.com"
-					>
+					To report contentious content or if you are a victim of fraudulent use of a ForVoyez service, please contact
+					us via the{' '}
+					<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="mailto:contact@forvoyez.com">
 						contact@forvoyez.com
 					</a>{' '}
 					email.
@@ -76,33 +68,24 @@ export default function LegalNoticePage() {
 			</section>
 
 			<section>
-				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
-					Intellectual Property
-				</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Intellectual Property</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					This website and all its contents (including data, information,
-					photos, logos, and trademarks) are the exclusive property of ForVoyez
-					or its partners. Any reproduction, representation, translation,
-					adaptation, or quotation, in whole or in part, whatever the process or
-					medium, is strictly prohibited except as provided by law or expressly
-					authorized by their owner. Photos are not contractual.
+					This website and all its contents (including data, information, photos, logos, and trademarks) are the
+					exclusive property of ForVoyez or its partners. Any reproduction, representation, translation, adaptation, or
+					quotation, in whole or in part, whatever the process or medium, is strictly prohibited except as provided by
+					law or expressly authorized by their owner. Photos are not contractual.
 				</p>
 			</section>
 
 			<section>
-				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">
-					Personal Data
-				</h2>
+				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Personal Data</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					You can visit our website on the Internet without having to disclose
-					your identity or to provide any personal information about yourself.
-					However, we may sometimes request information to process an order,
-					identify a support request, establish correspondences, provide a
-					subscription, or apply for a position.
+					You can visit our website on the Internet without having to disclose your identity or to provide any personal
+					information about yourself. However, we may sometimes request information to process an order, identify a
+					support request, establish correspondences, provide a subscription, or apply for a position.
 				</p>
 				<p className="mt-4 text-sm text-slate-600">
-					How this information is used, and the service providers that process
-					it on our behalf, are described in our{' '}
+					How this information is used, and the service providers that process it on our behalf, are described in our{' '}
 					<Link
 						className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500"
 						href="/app/legals/privacy-policy#service-providers"
@@ -118,30 +101,21 @@ export default function LegalNoticePage() {
 					Notice and Procedure for Making Claims of Copyright Infringement
 				</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					If you believe that your work has been copied in a way that
-					constitutes copyright infringement, please provide our copyright agent
-					the written information specified below. Please note that this
-					procedure is exclusively for notifying ForVoyez that your copyrighted
-					material has been infringed.
+					If you believe that your work has been copied in a way that constitutes copyright infringement, please provide
+					our copyright agent the written information specified below. Please note that this procedure is exclusively
+					for notifying ForVoyez that your copyrighted material has been infringed.
 				</p>
 				<ul className="mt-4 list-disc pl-6 text-sm text-slate-600">
 					<li>
-						An electronic or physical signature of the person authorized to act
-						on behalf of the owner of the copyright interest;
+						An electronic or physical signature of the person authorized to act on behalf of the owner of the copyright
+						interest;
 					</li>
-					<li>
-						A description of the copyrighted work that you claim has been
-						infringed upon;
-					</li>
-					<li>
-						A description of where the material that you claim is infringing is
-						located on the Site;
-					</li>
+					<li>A description of the copyrighted work that you claim has been infringed upon;</li>
+					<li>A description of where the material that you claim is infringing is located on the Site;</li>
 					<li>Your address, telephone number, and e-mail address;</li>
 					<li>
-						A statement by you that you have a good-faith belief that the
-						disputed use is not authorized by the copyright owner, its agent, or
-						the law;
+						A statement by you that you have a good-faith belief that the disputed use is not authorized by the
+						copyright owner, its agent, or the law;
 					</li>
 					<li>
 						{`A statement by you, made under penalty of perjury, that the above
@@ -169,8 +143,7 @@ export default function LegalNoticePage() {
 					Copyright Agent/ForVoyez
 					<br />
 					ForVoyez Legal Department
-					<br />
-					4 Impasse de la marchaisière
+					<br />4 Impasse de la marchaisière
 					<br />
 					44115, France
 					<br />
@@ -181,12 +154,9 @@ export default function LegalNoticePage() {
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Update</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					Should we update, amend, or make any changes to this document, those
-					changes will be prominently posted here.
+					Should we update, amend, or make any changes to this document, those changes will be prominently posted here.
 				</p>
-				<p className="mt-4 text-sm text-slate-600">
-					Last updated: October 8, 2026
-				</p>
+				<p className="mt-4 text-sm text-slate-600">Last updated: October 8, 2026</p>
 			</section>
 		</div>
 	)

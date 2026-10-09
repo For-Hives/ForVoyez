@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 import { updateCredits } from '@/services/database.service'
+import { logger } from '@/services/logger.service'
+import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
 import { prisma } from '/tests/unit/mocks/prisma.mock'
 
@@ -30,9 +30,7 @@ const CREDIT_PACK_PLAN = {
 }
 
 async function deliver(eventName, payload) {
-	prisma.webhookEvent.findUnique.mockResolvedValueOnce(
-		storedEvent(eventName, payload)
-	)
+	prisma.webhookEvent.findUnique.mockResolvedValueOnce(storedEvent(eventName, payload))
 	await processWebhook(1)
 }
 
@@ -54,8 +52,7 @@ function matchesWhere(event, where) {
 		if (condition && typeof condition === 'object') {
 			if ('in' in condition) return condition.in.includes(value)
 			if ('not' in condition) return value !== condition.not
-			if ('startsWith' in condition)
-				return String(value ?? '').startsWith(condition.startsWith)
+			if ('startsWith' in condition) return String(value ?? '').startsWith(condition.startsWith)
 		}
 		return value === condition
 	})
@@ -120,6 +117,7 @@ function subscriptionCreated(variantId = 'v-sub') {
 	}
 }
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 describe('Webhook Service', () => {
 	let consoleInfo
 	let consoleError
@@ -130,7 +128,7 @@ describe('Webhook Service', () => {
 		// on the same mock (`tx` is `prisma` in these tests)
 		prisma.$transaction.mockImplementation(callback => callback(prisma))
 		prisma.webhookEvent.findMany.mockResolvedValue([])
-		consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => {})
+		consoleInfo = vi.spyOn(logger, 'info').mockImplementation(() => {})
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 	})
 
@@ -194,17 +192,13 @@ describe('Webhook Service', () => {
 			})
 			prisma.plan.findUnique.mockResolvedValue(null) // plans not synced
 
-			await expect(
-				deliver('subscription_created', subscriptionCreated('v-unknown'))
-			).resolves.toBeUndefined()
+			await expect(deliver('subscription_created', subscriptionCreated('v-unknown'))).resolves.toBeUndefined()
 
 			expect(prisma.subscription.create).not.toHaveBeenCalled()
 			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'Plan not found for variant v-unknown'
-					),
+					processingError: expect.stringContaining('Plan not found for variant v-unknown'),
 				},
 				where: { id: 1 },
 			})
@@ -233,13 +227,7 @@ describe('Webhook Service', () => {
 
 			await deliver('order_created', orderCreated('v-pack'))
 
-			expect(updateCredits).toHaveBeenCalledWith(
-				'user123',
-				50,
-				null,
-				'Order created',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenCalledWith('user123', 50, null, 'Order created', prisma)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: { processed: true },
 				where: { id: 1 },
@@ -284,6 +272,7 @@ describe('Webhook Service', () => {
 		})
 	})
 
+	// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 	describe('subscription_payment_success', () => {
 		const STARTER = { variantId: 'v-starter', packageSize: 100, id: 7 }
 		const GROWTH = { variantId: 'v-growth', packageSize: 500, id: 8 }
@@ -309,9 +298,7 @@ describe('Webhook Service', () => {
 		// duplicate check of the invoice finds no processed invoice)
 		function givenProcessedPlanChanges(...payloads) {
 			givenStoredEvents(
-				...payloads.map((payload, index) =>
-					storedEvent('subscription_plan_changed', payload, 50 + index)
-				)
+				...payloads.map((payload, index) => storedEvent('subscription_plan_changed', payload, 50 + index))
 			)
 		}
 
@@ -342,13 +329,7 @@ describe('Webhook Service', () => {
 				include: { plan: true },
 			})
 			expect(updateCredits).toHaveBeenCalledTimes(1)
-			expect(updateCredits).toHaveBeenCalledWith(
-				'user123',
-				100,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenCalledWith('user123', 100, null, 'Subscription payment success', prisma)
 			expect(prisma.subscription.update).not.toHaveBeenCalled()
 		})
 
@@ -371,32 +352,12 @@ describe('Webhook Service', () => {
 				.mockResolvedValueOnce(subscriptionRow(STARTER))
 			prisma.plan.findUnique.mockResolvedValue(GROWTH)
 
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-1')
-			)
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-2')
-			)
+			await deliver('subscription_payment_success', paymentSuccess('renewal', 'invoice-1'))
+			await deliver('subscription_payment_success', paymentSuccess('renewal', 'invoice-2'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(2)
-			expect(updateCredits).toHaveBeenNthCalledWith(
-				1,
-				'user123',
-				100,
-				null,
-				'Subscription payment success',
-				prisma
-			)
-			expect(updateCredits).toHaveBeenNthCalledWith(
-				2,
-				'user123',
-				100,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenNthCalledWith(1, 'user123', 100, null, 'Subscription payment success', prisma)
+			expect(updateCredits).toHaveBeenNthCalledWith(2, 'user123', 100, null, 'Subscription payment success', prisma)
 			// the plan change marker is used once, then cleared
 			expect(prisma.subscription.update).toHaveBeenCalledTimes(1)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
@@ -409,14 +370,8 @@ describe('Webhook Service', () => {
 			prisma.plan.findUnique.mockResolvedValue(STARTER)
 			givenProcessedPlanChanges(planChangedTo(GROWTH.variantId))
 
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('updated', 'invoice-1')
-			)
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-2')
-			)
+			await deliver('subscription_payment_success', paymentSuccess('updated', 'invoice-1'))
+			await deliver('subscription_payment_success', paymentSuccess('renewal', 'invoice-2'))
 
 			expect(prisma.plan.findUnique).toHaveBeenCalledWith({
 				where: { id: STARTER.id },
@@ -430,22 +385,13 @@ describe('Webhook Service', () => {
 				'Subscription payment success (plan change)',
 				prisma
 			)
-			expect(updateCredits).toHaveBeenNthCalledWith(
-				2,
-				'user123',
-				500,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenNthCalledWith(2, 'user123', 500, null, 'Subscription payment success', prisma)
 			expect(prisma.subscription.update).toHaveBeenCalledTimes(1)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
 		})
 
 		it('should not take credits back for the invoice of a downgrade', async () => {
-			prisma.subscription.findUnique.mockResolvedValue(
-				subscriptionRow(STARTER, GROWTH.id)
-			)
+			prisma.subscription.findUnique.mockResolvedValue(subscriptionRow(STARTER, GROWTH.id))
 			prisma.plan.findUnique.mockResolvedValue(GROWTH)
 			givenProcessedPlanChanges(planChangedTo(STARTER.variantId))
 
@@ -468,9 +414,7 @@ describe('Webhook Service', () => {
 			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'Subscription sub-1 not found'
-					),
+					processingError: expect.stringContaining('Subscription sub-1 not found'),
 				},
 				where: { id: 1 },
 			})
@@ -500,9 +444,7 @@ describe('Webhook Service', () => {
 			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'plan change not processed yet'
-					),
+					processingError: expect.stringContaining('plan change not processed yet'),
 				},
 				where: { id: 1 },
 			})
@@ -561,9 +503,7 @@ describe('Webhook Service', () => {
 			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'plan change not processed yet'
-					),
+					processingError: expect.stringContaining('plan change not processed yet'),
 				},
 				where: { id: 1 },
 			})
@@ -598,73 +538,52 @@ describe('Webhook Service', () => {
 					},
 				},
 			],
-		])(
-			'should not take a processed plan change of %s for the plan change of this invoice',
-			async (_case, payload) => {
-				prisma.subscription.findUnique.mockResolvedValue(
-					subscriptionRow(GROWTH, STARTER.id)
-				)
-				prisma.plan.findUnique.mockResolvedValue(STARTER)
-				givenProcessedPlanChanges(payload)
+		])('should not take a processed plan change of %s for the plan change of this invoice', async (_case, payload) => {
+			prisma.subscription.findUnique.mockResolvedValue(subscriptionRow(GROWTH, STARTER.id))
+			prisma.plan.findUnique.mockResolvedValue(STARTER)
+			givenProcessedPlanChanges(payload)
 
-				await deliver('subscription_payment_success', paymentSuccess('updated'))
+			await deliver('subscription_payment_success', paymentSuccess('updated'))
 
-				expect(updateCredits).not.toHaveBeenCalled()
-				expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
-					data: {
-						processingError: expect.stringContaining(
-							'plan change not processed yet'
-						),
-					},
-					where: { id: 1 },
-				})
-			}
-		)
+			expect(updateCredits).not.toHaveBeenCalled()
+			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
+				data: {
+					processingError: expect.stringContaining('plan change not processed yet'),
+				},
+				where: { id: 1 },
+			})
+		})
 
 		it('should credit a renewal in full and clear a stale marker from the previous version', async () => {
-			prisma.subscription.findUnique.mockResolvedValue(
-				subscriptionRow(GROWTH, STARTER.id)
-			)
+			prisma.subscription.findUnique.mockResolvedValue(subscriptionRow(GROWTH, STARTER.id))
 
 			await deliver('subscription_payment_success', paymentSuccess('renewal'))
 
-			expect(updateCredits).toHaveBeenCalledWith(
-				'user123',
-				500,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenCalledWith('user123', 500, null, 'Subscription payment success', prisma)
 			expect(prisma.subscription.update).toHaveBeenCalledWith(CLEAR_OLD_PLAN)
 		})
 
 		it.each([
 			['the user is unknown', null, 'User user123 not found'],
-			[
-				'the user has no customer id',
-				{ clerkId: 'user123', customerId: null },
-				'CustomerId not set for user user123',
-			],
-		])(
-			'should record an error, not mark the invoice processed, when %s',
-			async (_case, user, message) => {
-				prisma.user.findUnique.mockResolvedValue(user)
+			['the user has no customer id', { clerkId: 'user123', customerId: null }, 'CustomerId not set for user user123'],
+		])('should record an error, not mark the invoice processed, when %s', async (_case, user, message) => {
+			prisma.user.findUnique.mockResolvedValue(user)
 
-				await deliver('subscription_payment_success', paymentSuccess('renewal'))
+			await deliver('subscription_payment_success', paymentSuccess('renewal'))
 
-				expect(updateCredits).not.toHaveBeenCalled()
-				expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
-				expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
-					data: { processingError: expect.stringContaining(message) },
-					where: { id: 1 },
-				})
-			}
-		)
+			expect(updateCredits).not.toHaveBeenCalled()
+			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
+			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
+				data: { processingError: expect.stringContaining(message) },
+				where: { id: 1 },
+			})
+		})
 	})
 
 	// Lemon Squeezy sends no subscription_plan_changed (none in production),
 	// only subscription_updated, for every change of a subscription. Runs on
 	// an in-memory Subscription row and WebhookEvent table.
+	// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 	describe('plan change sent as subscription_updated', () => {
 		const STARTER = { variantId: 'v-starter', packageSize: 100, id: 7 }
 		const GROWTH = { variantId: 'v-growth', packageSize: 500, id: 8 }
@@ -736,11 +655,8 @@ describe('Webhook Service', () => {
 			})
 			prisma.plan.findUnique.mockImplementation(
 				async ({ where }) =>
-					PLANS.find(plan =>
-						where.id === undefined
-							? plan.variantId === where.variantId
-							: plan.id === where.id
-					) ?? null
+					PLANS.find(plan => (where.id === undefined ? plan.variantId === where.variantId : plan.id === where.id)) ??
+					null
 			)
 			prisma.subscription.findUnique.mockImplementation(async () => withPlan())
 			prisma.subscription.findFirst.mockImplementation(async () => withPlan())
@@ -762,10 +678,7 @@ describe('Webhook Service', () => {
 		})
 
 		it('applies an upgrade, and its `updated` invoice credits the extra credits once', async () => {
-			const update = await receive(
-				'subscription_updated',
-				subscriptionPayload(GROWTH.variantId)
-			)
+			const update = await receive('subscription_updated', subscriptionPayload(GROWTH.variantId))
 
 			expect(subscription).toMatchObject({ oldPlanId: 7, planId: 8 })
 			expect(update).toMatchObject({
@@ -779,10 +692,7 @@ describe('Webhook Service', () => {
 			})
 
 			await receive('subscription_payment_success', paymentSuccess('updated'))
-			await receive(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-2')
-			)
+			await receive('subscription_payment_success', paymentSuccess('renewal', 'invoice-2'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(2)
 			expect(updateCredits).toHaveBeenNthCalledWith(
@@ -793,28 +703,15 @@ describe('Webhook Service', () => {
 				'Subscription payment success (plan change)',
 				prisma
 			)
-			expect(updateCredits).toHaveBeenNthCalledWith(
-				2,
-				'user123',
-				500,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenNthCalledWith(2, 'user123', 500, null, 'Subscription payment success', prisma)
 			expect(subscription.oldPlanId).toBeNull()
 		})
 
 		it('applies a downgrade, and its `updated` invoice credits nothing', async () => {
 			givenSubscriptionOn(GROWTH)
 
-			await receive(
-				'subscription_updated',
-				subscriptionPayload(STARTER.variantId)
-			)
-			const invoice = await receive(
-				'subscription_payment_success',
-				paymentSuccess('updated')
-			)
+			await receive('subscription_updated', subscriptionPayload(STARTER.variantId))
+			const invoice = await receive('subscription_payment_success', paymentSuccess('updated'))
 
 			expect(subscription).toMatchObject({ oldPlanId: null, planId: 7 })
 			expect(updateCredits).not.toHaveBeenCalled()
@@ -822,10 +719,7 @@ describe('Webhook Service', () => {
 		})
 
 		it('changes nothing when the variant is the current plan', async () => {
-			const update = await receive(
-				'subscription_updated',
-				subscriptionPayload(STARTER.variantId)
-			)
+			const update = await receive('subscription_updated', subscriptionPayload(STARTER.variantId))
 
 			expect(prisma.subscription.update).not.toHaveBeenCalled()
 			expect(prisma.plan.findUnique).not.toHaveBeenCalled()
@@ -833,43 +727,29 @@ describe('Webhook Service', () => {
 		})
 
 		it('records a processing error for an unknown variant', async () => {
-			const update = await receive(
-				'subscription_updated',
-				subscriptionPayload('v-unknown')
-			)
+			const update = await receive('subscription_updated', subscriptionPayload('v-unknown'))
 
 			expect(prisma.subscription.update).not.toHaveBeenCalled()
 			expect(subscription.planId).toBe(7)
 			expect(update.processed).toBe(false)
-			expect(update.processingError).toContain(
-				'Plan not found for variant v-unknown'
-			)
+			expect(update.processingError).toContain('Plan not found for variant v-unknown')
 		})
 
 		it('records a processing error when the subscription is unknown', async () => {
 			subscription = null
 
-			const update = await receive(
-				'subscription_updated',
-				subscriptionPayload(GROWTH.variantId)
-			)
+			const update = await receive('subscription_updated', subscriptionPayload(GROWTH.variantId))
 
 			expect(update.processed).toBe(false)
 			expect(update.processingError).toContain('Subscription sub-1 not found')
 		})
 
 		it('credits an upgrade invoice delivered before its subscription_updated once it is resent', async () => {
-			const early = await receive(
-				'subscription_payment_success',
-				paymentSuccess('updated')
-			)
+			const early = await receive('subscription_payment_success', paymentSuccess('updated'))
 			expect(early.processed).toBe(false)
 			expect(early.processingError).toContain('plan change not processed yet')
 
-			await receive(
-				'subscription_updated',
-				subscriptionPayload(GROWTH.variantId)
-			)
+			await receive('subscription_updated', subscriptionPayload(GROWTH.variantId))
 			await receive('subscription_payment_success', paymentSuccess('updated'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(1)
@@ -885,43 +765,34 @@ describe('Webhook Service', () => {
 		it.each([
 			['subscription_updated', 'subscription_plan_changed'],
 			['subscription_plan_changed', 'subscription_updated'],
-		])(
-			'applies the plan change once when %s and %s both arrive',
-			async (first, second) => {
-				const payload = subscriptionPayload(GROWTH.variantId)
+		])('applies the plan change once when %s and %s both arrive', async (first, second) => {
+			const payload = subscriptionPayload(GROWTH.variantId)
 
-				await receive(first, payload)
-				await receive(second, payload)
-				await receive('subscription_payment_success', paymentSuccess('updated'))
+			await receive(first, payload)
+			await receive(second, payload)
+			await receive('subscription_payment_success', paymentSuccess('updated'))
 
-				expect(prisma.subscription.update).toHaveBeenCalledWith(
-					expect.objectContaining({
-						data: expect.objectContaining({ oldPlanId: 7, planId: 8 }),
-					})
-				)
-				// the plan change, then clearing the marker after the invoice
-				expect(prisma.subscription.update).toHaveBeenCalledTimes(2)
-				expect(updateCredits).toHaveBeenCalledTimes(1)
-				expect(updateCredits).toHaveBeenCalledWith(
-					'user123',
-					400,
-					null,
-					'Subscription payment success (plan change)',
-					prisma
-				)
-				expect(events.every(event => event.processed)).toBe(true)
-			}
-		)
+			expect(prisma.subscription.update).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({ oldPlanId: 7, planId: 8 }),
+				})
+			)
+			// the plan change, then clearing the marker after the invoice
+			expect(prisma.subscription.update).toHaveBeenCalledTimes(2)
+			expect(updateCredits).toHaveBeenCalledTimes(1)
+			expect(updateCredits).toHaveBeenCalledWith(
+				'user123',
+				400,
+				null,
+				'Subscription payment success (plan change)',
+				prisma
+			)
+			expect(events.every(event => event.processed)).toBe(true)
+		})
 
 		it('does not move back to the previous plan on a late delivery of an older update', async () => {
-			await receive(
-				'subscription_updated',
-				subscriptionPayload(GROWTH.variantId, T2)
-			)
-			const late = await receive(
-				'subscription_updated',
-				subscriptionPayload(STARTER.variantId, T1)
-			)
+			await receive('subscription_updated', subscriptionPayload(GROWTH.variantId, T2))
+			const late = await receive('subscription_updated', subscriptionPayload(STARTER.variantId, T1))
 
 			expect(subscription).toMatchObject({ oldPlanId: 7, planId: 8 })
 			expect(late).toMatchObject({ processingError: null, processed: true })
@@ -944,14 +815,8 @@ describe('Webhook Service', () => {
 		it('does not take a routine subscription_updated for the plan change of an invoice', async () => {
 			givenSubscriptionOn(GROWTH, STARTER.id)
 
-			await receive(
-				'subscription_updated',
-				subscriptionPayload(GROWTH.variantId)
-			)
-			const invoice = await receive(
-				'subscription_payment_success',
-				paymentSuccess('updated')
-			)
+			await receive('subscription_updated', subscriptionPayload(GROWTH.variantId))
+			const invoice = await receive('subscription_payment_success', paymentSuccess('updated'))
 
 			expect(updateCredits).not.toHaveBeenCalled()
 			expect(invoice.processed).toBe(false)
@@ -977,34 +842,16 @@ describe('Webhook Service', () => {
 			// Lemon Squeezy sends these three events for one checkout
 			await deliver('order_created', orderCreated('v-sub'))
 			await deliver('subscription_created', subscriptionCreated())
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('initial', 'invoice-1')
-			)
+			await deliver('subscription_payment_success', paymentSuccess('initial', 'invoice-1'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(1)
-			expect(updateCredits).toHaveBeenCalledWith(
-				'user123',
-				100,
-				null,
-				'Order created',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenCalledWith('user123', 100, null, 'Order created', prisma)
 
 			// the next month
-			await deliver(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-2')
-			)
+			await deliver('subscription_payment_success', paymentSuccess('renewal', 'invoice-2'))
 
 			expect(updateCredits).toHaveBeenCalledTimes(2)
-			expect(updateCredits).toHaveBeenLastCalledWith(
-				'user123',
-				100,
-				null,
-				'Subscription payment success',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenLastCalledWith('user123', 100, null, 'Subscription payment success', prisma)
 		})
 	})
 
@@ -1018,16 +865,12 @@ describe('Webhook Service', () => {
 		})
 
 		async function deliverAgain(eventName, payload) {
-			prisma.webhookEvent.findUnique.mockResolvedValueOnce(
-				storedEvent(eventName, payload, 2)
-			)
+			prisma.webhookEvent.findUnique.mockResolvedValueOnce(storedEvent(eventName, payload, 2))
 			await processWebhook(2)
 		}
 
 		it('should not credit an order twice when its order_created is delivered again', async () => {
-			prisma.webhookEvent.findMany.mockResolvedValue([
-				storedEvent('order_created', orderCreated('v-pack'), 1),
-			])
+			prisma.webhookEvent.findMany.mockResolvedValue([storedEvent('order_created', orderCreated('v-pack'), 1)])
 
 			await deliverAgain('order_created', orderCreated('v-pack'))
 
@@ -1045,9 +888,7 @@ describe('Webhook Service', () => {
 			expect(prisma.webhookEvent.update).toHaveBeenCalledTimes(1)
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'Duplicate of webhook event 1'
-					),
+					processingError: expect.stringContaining('Duplicate of webhook event 1'),
 					processed: true,
 				},
 				where: { id: 2 },
@@ -1056,17 +897,10 @@ describe('Webhook Service', () => {
 
 		it('should not credit a renewal invoice twice', async () => {
 			prisma.webhookEvent.findMany.mockResolvedValue([
-				storedEvent(
-					'subscription_payment_success',
-					paymentSuccess('renewal', 'invoice-9'),
-					1
-				),
+				storedEvent('subscription_payment_success', paymentSuccess('renewal', 'invoice-9'), 1),
 			])
 
-			await deliverAgain(
-				'subscription_payment_success',
-				paymentSuccess('renewal', 'invoice-9')
-			)
+			await deliverAgain('subscription_payment_success', paymentSuccess('renewal', 'invoice-9'))
 
 			expect(prisma.subscription.findUnique).not.toHaveBeenCalled()
 			expect(updateCredits).not.toHaveBeenCalled()
@@ -1074,25 +908,12 @@ describe('Webhook Service', () => {
 
 		it('should credit another order of the same user', async () => {
 			prisma.webhookEvent.findMany.mockResolvedValue([
-				storedEvent(
-					'order_created',
-					orderCreated('v-pack', 'paid', 'order-1'),
-					1
-				),
+				storedEvent('order_created', orderCreated('v-pack', 'paid', 'order-1'), 1),
 			])
 
-			await deliverAgain(
-				'order_created',
-				orderCreated('v-pack', 'paid', 'order-2')
-			)
+			await deliverAgain('order_created', orderCreated('v-pack', 'paid', 'order-2'))
 
-			expect(updateCredits).toHaveBeenCalledWith(
-				'user123',
-				50,
-				null,
-				'Order created',
-				prisma
-			)
+			expect(updateCredits).toHaveBeenCalledWith('user123', 50, null, 'Order created', prisma)
 		})
 
 		it('should only look for duplicates of events that add credits', async () => {
@@ -1229,9 +1050,7 @@ describe('Webhook Service', () => {
 			expect(prisma.subscription.update).not.toHaveBeenCalled()
 			expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
 				data: {
-					processingError: expect.stringContaining(
-						'Plan not found for variant variant123'
-					),
+					processingError: expect.stringContaining('Plan not found for variant variant123'),
 				},
 				where: { id: 1 },
 			})

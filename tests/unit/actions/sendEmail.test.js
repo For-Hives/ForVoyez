@@ -2,19 +2,12 @@
 // form-data: only the client's `url` option is changed, to a local HTTP
 // server standing in for api.mailgun.net. No mail is sent.
 // @vitest-environment node
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from 'vitest'
-import { createRequire } from 'module'
-import { readFileSync } from 'fs'
-import http from 'http'
-import path from 'path'
+
+import { readFileSync } from 'node:fs'
+import http from 'node:http'
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const require = createRequire(import.meta.url)
 
@@ -98,10 +91,7 @@ describe('sendEmail (mailgun.js 14)', () => {
 	}
 
 	it('runs against mailgun.js 14', () => {
-		const manifest = path.join(
-			path.dirname(require.resolve('mailgun.js')),
-			'../package.json'
-		)
+		const manifest = path.join(path.dirname(require.resolve('mailgun.js')), '../package.json')
 		expect(JSON.parse(readFileSync(manifest, 'utf8')).version).toMatch(/^14\./)
 	})
 
@@ -113,21 +103,11 @@ describe('sendEmail (mailgun.js 14)', () => {
 		const [request] = requests
 		expect(request.method).toBe('POST')
 		expect(request.url).toBe(`/v3/${DOMAIN}/messages`)
-		expect(request.headers.authorization).toBe(
-			`Basic ${Buffer.from(`api:${API_KEY}`).toString('base64')}`
-		)
-		expect(request.headers['content-type']).toMatch(
-			/^multipart\/form-data; boundary=/
-		)
+		expect(request.headers.authorization).toBe(`Basic ${Buffer.from(`api:${API_KEY}`).toString('base64')}`)
+		expect(request.headers['content-type']).toMatch(/^multipart\/form-data; boundary=/)
 
 		const fields = await formFields(request)
-		expect(Object.keys(fields).sort()).toEqual([
-			'from',
-			'h:Reply-To',
-			'subject',
-			'text',
-			'to',
-		])
+		expect(Object.keys(fields).sort()).toEqual(['from', 'h:Reply-To', 'subject', 'text', 'to'])
 		expect(fields.from).toBe('ForVoyez <noreply@forvoyez.com>')
 		expect(fields['h:Reply-To']).toBe('jane.doe@example.com')
 		expect(fields.to).toBe('contact@andy-cinquin.fr')
@@ -166,8 +146,25 @@ describe('sendEmail (mailgun.js 14)', () => {
 
 		expect(requests).toHaveLength(1)
 		expect(result).toMatchObject({ success: false, status: 401 })
-		expect(result.details).toContain(
-			'An error occurred while sending the email'
-		)
+		expect(result.details).toContain('An error occurred while sending the email')
 	})
+	it.each([undefined, null, false, 0, '', 'message', []])(
+		'rejects non-object contact data %j before sending mail',
+		async data => {
+			await expect(sendEmail(data)).resolves.toEqual({
+				success: false,
+				status: 400,
+				details: 'Invalid contact form data',
+			})
+			expect(requests).toHaveLength(0)
+		}
+	)
+
+	it.each([null, false, 0, {}, [], 'a'.repeat(255)])(
+		'omits unsupported or oversized reply-to values %j',
+		async email => {
+			await expect(sendEmail({ ...CONTACT, email })).resolves.toEqual({ success: true, status: 200 })
+			expect(await formFields(requests[0])).not.toHaveProperty('h:Reply-To')
+		}
+	)
 })

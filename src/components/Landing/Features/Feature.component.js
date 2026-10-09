@@ -1,4 +1,3 @@
-'use client'
 import {
 	ClockIcon,
 	EyeIcon,
@@ -7,55 +6,48 @@ import {
 	PuzzlePieceIcon,
 	SparklesIcon,
 } from '@heroicons/react/20/solid'
-import RiveComponent from '@rive-app/react-canvas'
-import { useEffect, useState } from 'react'
+import { FeatureAnimation } from '@/components/Landing/Features/FeatureAnimation.component'
 
 const features = [
 	{
+		name: 'Write image descriptions for you',
 		description:
-			'Automatically generate SEO-optimized alt texts, titles, and captions with our AI-powered tool. Save time and focus on what matters most.',
-		name: 'Automate Metadata Input',
+			'Generate alt text, titles, and captions for your WordPress images, instead of filling in every field by hand.',
 		icon: SparklesIcon,
 	},
 	{
+		name: 'Work inside WordPress',
 		description:
-			'Our well-documented RESTful API allows for seamless integration with your existing applications and workflows. Start generating optimized image metadata in no time.',
-		name: 'Seamless Integration in Minutes',
+			'Install the plugin, connect your ForVoyez account, and manage image descriptions from your familiar WordPress dashboard.',
 		icon: PuzzlePieceIcon,
 	},
 	{
+		name: 'Give search engines useful context',
 		description:
-			'Gain a competitive edge with our SEO-optimized image metadata. Improve your rankings, drive more organic traffic, and increase user engagement.',
-		name: 'Boost Your Search Engine Visibility',
+			'Add descriptive text that helps search engines understand what your images show, alongside the rest of your SEO work.',
 		icon: MagnifyingGlassIcon,
 	},
 	{
+		name: 'Catch up on your media library',
 		description:
-			'Whether you have dozens, hundreds, or thousands of images, our tool can handle the job. Take advantage of our powerful batch processing to generate metadata for entire image libraries in a flash.',
-		name: 'Large-Scale Metadata in a Snap',
+			'Select existing images and generate their descriptions in bulk. Tackle the images you have been putting off, without opening each one.',
 		icon: FolderOpenIcon,
 	},
 	{
+		name: 'Help visitors understand your images',
 		description:
-			'By generating accurate alt texts and captions for your images, our tool helps make your content accessible to a wider audience. Improve the experience for all users and show your commitment to digital inclusivity.',
-		name: 'Create Accessible Images for Everyone',
+			'Alt text describes images for people using screen readers. Review the generated text so it fits the image and its purpose on your page.',
 		icon: EyeIcon,
 	},
 	{
+		name: 'Spend more time on your content',
 		description:
-			'By automating image metadata creation, our tool allows you to save valuable time and free up resources. Focus on creating quality content, innovating, and growing your business.',
-		name: 'Free Up Your Time for What Really Counts',
+			'Enable automatic generation for new uploads, so image descriptions become part of your publishing routine.',
 		icon: ClockIcon,
 	},
 ]
 
 export function FeatureComponent() {
-	const [isRiveLoaded, setIsRiveLoaded] = useState(false)
-
-	useEffect(() => {
-		setIsRiveLoaded(true)
-	}, [])
-
 	return (
 		<div className="py-16 sm:py-32">
 			<div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -63,15 +55,14 @@ export function FeatureComponent() {
 					<div className="lg:pt-4 lg:pr-8">
 						<div className="lg:max-w-lg" id={'features'}>
 							<h2 className="text-forvoyez_orange-500 text-base leading-7 font-semibold">
-								AI-Powered Image Metadata
+								Made for your WordPress media library
 							</h2>
 							<p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-								Optimize Your Images Effortlessly
+								Less time writing alt text. More time publishing.
 							</p>
 							<p className="mt-6 text-lg leading-8 text-slate-600">
-								Our AI-powered tool simplifies the process of generating
-								SEO-optimized image metadata, saving you time and effort while
-								boosting your online visibility.
+								For your blog, business website, or online shop: take care of image descriptions directly in WordPress,
+								with AI to help with the repetitive work.
 							</p>
 							<dl className="mt-16 max-w-xl space-y-12 text-base leading-7 text-slate-600 lg:max-w-none">
 								{features.map(feature => (
@@ -90,17 +81,7 @@ export function FeatureComponent() {
 							</dl>
 						</div>
 					</div>
-					<div className="sticky top-[25vh] flex h-[50vh] w-full items-center justify-center">
-						{isRiveLoaded && (
-							<RiveComponent
-								autoPlay={true}
-								className="h-[50vh] w-[50vh]"
-								data-testid="rive-component"
-								src="/animation_features/landing_art_forvoyez.riv"
-								stateMachines={'State Machine 1'}
-							/>
-						)}
-					</div>
+					<FeatureAnimation />
 				</div>
 			</div>
 		</div>

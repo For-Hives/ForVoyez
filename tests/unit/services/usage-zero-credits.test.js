@@ -1,11 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as clerk from '@clerk/nextjs/server'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-	getCreditsFromUserId,
-	getUsageByToken,
-	getUsageForUser,
-} from '@/services/database.service'
+import { getCreditsFromUserId, getUsageByToken, getUsageForUser } from '@/services/database.service'
 
 import { prisma } from '/tests/unit/mocks/prisma.mock'
 
@@ -103,9 +99,7 @@ describe('usage dashboard at 0 credits', () => {
 
 			const usage = await getUsageForUser()
 
-			expect(usage).toEqual([
-				expect.objectContaining({ dateHour: '2026-10-01T09', creditsLeft: 2 }),
-			])
+			expect(usage).toEqual([expect.objectContaining({ dateHour: '2026-10-01T09', creditsLeft: 2 })])
 		})
 
 		it('should not call the Clerk Backend API', async () => {

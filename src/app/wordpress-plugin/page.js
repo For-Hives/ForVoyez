@@ -1,11 +1,14 @@
-import { FeatureHighlightsComponent } from '@/components/WordpressPlugin/FeatureHighlights.component'
-import { TestimonialsComponent } from '@/components/WordpressPlugin/Testimonials.component'
-import { HeroSectionComponent } from '@/components/WordpressPlugin/HeroSection.component'
-import { HowItWorksComponent } from '@/components/WordpressPlugin/HowItWorks.component'
+import { FooterComponent } from '@/components/Footer.component'
+import { NavbarComponent } from '@/components/Navbar.component'
 import { CtaPluginComponent } from '@/components/WordpressPlugin/CtaPlugin.component'
 import { FaqPluginComponent } from '@/components/WordpressPlugin/FaqPlugin.component'
-import { NavbarComponent } from '@/components/Navbar.component'
-import { FooterComponent } from '@/components/Footer.component'
+import { FeatureHighlightsComponent } from '@/components/WordpressPlugin/FeatureHighlights.component'
+import { HeroSectionComponent } from '@/components/WordpressPlugin/HeroSection.component'
+import { HowItWorksComponent } from '@/components/WordpressPlugin/HowItWorks.component'
+import { TestimonialsComponent } from '@/components/WordpressPlugin/Testimonials.component'
+
+// Fail the build if marketing navigation unexpectedly starts requiring server work.
+export const ensureStatic = 'navigation'
 
 export const metadata = {
 	openGraph: {
@@ -18,13 +21,13 @@ export const metadata = {
 			},
 		],
 		description:
-			'Boost your WordPress SEO with AI-generated alt text. Our free plugin creates high-quality image descriptions automatically.',
+			'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 		title: 'WordPress Plugin - Automate Image Alt Text Generation',
 		type: 'website',
 	},
 	twitter: {
 		description:
-			'Transform your WordPress image SEO with AI-powered alt text generation. Free plugin with bulk processing.',
+			'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 		title: 'ForVoyez WordPress Plugin - AI Alt Text Generator',
 		images: '/og/wordpress-plugin.png',
 		card: 'summary_large_image',
@@ -44,7 +47,7 @@ export const metadata = {
 	].join(', '),
 
 	description:
-		"Enhance your WordPress site's SEO and accessibility with ForVoyez's AI-powered alt text generator. Automatically create high-quality image descriptions for your entire media library.",
+		'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 
 	alternates: {
 		canonical: '/wordpress-plugin',
