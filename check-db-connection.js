@@ -11,7 +11,7 @@ async function checkDatabaseConnection() {
 		await prisma.$connect()
 		// with a driver adapter $connect() is lazy: run a query to really connect
 		await prisma.$queryRaw`SELECT 1`
-		console.info('Connected to the database successfully')
+		process.stdout.write('Connected to the database successfully' + '\n')
 		process.exit(0)
 	} catch (error) {
 		console.error('Failed to connect to the database:', error)

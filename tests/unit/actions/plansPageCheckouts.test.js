@@ -1,9 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { auth } from '@clerk/nextjs/server'
-
-import { createCheckoutLink } from '@/services/lemonsqueezy.service'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as plansActions from '@/app/actions/app/plans'
 import { getPlans } from '@/services/database.service'
+import { createCheckoutLink } from '@/services/lemonsqueezy.service'
 
 vi.mock('@clerk/nextjs/server')
 vi.mock('@/services/database.service')

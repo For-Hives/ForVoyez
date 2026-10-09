@@ -2,15 +2,15 @@
 // 'use server'): client components go through the dedicated, auth-checked
 // actions in `src/app/actions/app/` instead of importing it.
 import { auth } from '@clerk/nextjs/server'
-
-import {
-	getVariant,
-	listPrice,
-	listProducts,
-} from '@/services/lemonsqueezy.service'
+import { forEachInSequence } from '@/helpers/forEachInSequence'
+import { getVariant, listPrice, listProducts } from '@/services/lemonsqueezy.service'
+import { logger } from '@/services/logger.service'
 import { prisma } from '@/services/prisma.service'
 
 import 'server-only'
+
+// Preserve parseInt's existing hexadecimal detection when making the radix explicit.
+const HEX_PRICE = /^\s*[+-]?0x/i
 
 export class NoCreditsLeftError extends Error {
 	constructor() {
@@ -35,11 +35,7 @@ export class NoCreditsLeftError extends Error {
  * @throws {NoCreditsLeftError} when the user has no credit left
  * @template T
  */
-export async function chargeOneCredit(
-	userId,
-	{ tokenId = null, reason },
-	work
-) {
+export async function chargeOneCredit(userId, { tokenId = null, reason }, work) {
 	const [reservation, userAfterReservation] = await prisma.$transaction([
 		prisma.user.updateMany({
 			where: { credits: { gte: 1 }, clerkId: userId },
@@ -83,7 +79,7 @@ export async function chargeOneCredit(
 		console.error(`Failed to record usage for user ${userId}:`, error.message)
 	}
 
-	console.info(`User ${userId} used 1 credit`)
+	logger.info(`User ${userId} used 1 credit`)
 	return result
 }
 
@@ -91,7 +87,7 @@ export async function chargeOneCredit(
 // only if it still exists (not deleted from the dashboard), belongs to
 // `userId` and has not expired; null otherwise.
 export async function findActiveApiToken(jwt, userId) {
-	if (!jwt || !userId) {
+	if (!(typeof jwt === 'string' && jwt.length > 0 && typeof userId === 'string' && userId.length > 0)) {
 		return null
 	}
 
@@ -149,7 +145,7 @@ export async function getCustomerIdFromUser() {
 	})
 
 	if (!userPrisma?.customerId) {
-		let subscriptionClient = await prisma.subscription.findFirst({
+		const subscriptionClient = await prisma.subscription.findFirst({
 			where: { userId: user.id },
 		})
 		if (!subscriptionClient?.customerId) {
@@ -198,7 +194,7 @@ export async function getUsageByToken() {
 		const tokenName = usage.token?.name ?? 'Playground'
 		acc[tokenName] = (acc[tokenName] ?? 0) + 1
 		return acc
-	}, {})
+	}, Object.create(null))
 
 	return Object.entries(usageByToken).map(([token, used]) => ({ token, used }))
 }
@@ -250,18 +246,18 @@ export async function syncPlans() {
 
 	try {
 		const allProducts = await listProducts()
-		let allVariants = []
+		const allVariants = []
 
-		for (const product of allProducts) {
+		await forEachInSequence(allProducts, async product => {
 			if (!product?.relationships?.variants?.data) {
-				continue
+				return
 			}
 
 			const productVariants = product.relationships.variants.data
-			for (const variant of productVariants) {
+			await forEachInSequence(productVariants, async variant => {
 				const variantDetails = await getVariant(variant.id)
 				if (!variantDetails?.data?.attributes) {
-					continue
+					return
 				}
 
 				allVariants.push({
@@ -269,34 +265,26 @@ export async function syncPlans() {
 					productName: product.attributes.name,
 					variantId: variant.id,
 				})
-			}
-		}
+			})
+		})
 
-		const refillVariants = allVariants.filter(
-			v => !v.is_subscription && v.name !== 'Default'
-		)
+		const refillVariants = allVariants.filter(v => !v.is_subscription && v.name !== 'Default')
 
-		const baseVariants = allVariants.filter(
-			v => v.is_subscription && v.name !== 'Default'
-		)
+		const baseVariants = allVariants.filter(v => v.is_subscription && v.name !== 'Default')
 
-		for (const variant of refillVariants) {
+		await forEachInSequence(refillVariants, async variant => {
 			const variantPriceObject = await listPrice(variant.variantId)
 			const currentPriceObj = variantPriceObject?.[0]
 
-			if (!currentPriceObj || !currentPriceObj.attributes) {
+			if (!currentPriceObj?.attributes) {
 				console.error('Price object is missing attributes:', currentPriceObj)
-				continue
+				return
 			}
 
 			const isUsageBased = currentPriceObj.attributes.usage_aggregation !== null
-			const interval = variant.is_subscription
-				? currentPriceObj?.attributes.renewal_interval_unit
-				: null
+			const interval = variant.is_subscription ? currentPriceObj?.attributes.renewal_interval_unit : null
 			const packageSize = currentPriceObj.attributes.package_size
-			const price = isUsageBased
-				? currentPriceObj.attributes.unit_price_decimal
-				: currentPriceObj.attributes.unit_price
+			const price = isUsageBased ? currentPriceObj.attributes.unit_price_decimal : currentPriceObj.attributes.unit_price
 			const priceString = price?.toString() ?? ''
 
 			await _addVariant({
@@ -304,32 +292,28 @@ export async function syncPlans() {
 				description: variant.description,
 				productName: variant.productName,
 				variantId: variant.variantId,
-				price: parseInt(priceString),
+				price: parseInt(priceString, HEX_PRICE.test(priceString) ? 16 : 10),
 				billingCycle: interval,
 				variantEnabled: true,
 				name: variant.name,
 				packageSize,
 			})
-		}
-		console.info('refills variants are synced')
+		})
+		logger.info('refills variants are synced')
 
-		for (const variant of baseVariants) {
+		await forEachInSequence(baseVariants, async variant => {
 			const variantPriceObject = await listPrice(variant.variantId)
 			const currentPriceObj = variantPriceObject?.[0]
 
-			if (!currentPriceObj || !currentPriceObj.attributes) {
+			if (!currentPriceObj?.attributes) {
 				console.error('Price object is missing attributes:', currentPriceObj)
-				continue
+				return
 			}
 
 			const isUsageBased = currentPriceObj.attributes.usage_aggregation !== null
-			const interval = variant.is_subscription
-				? currentPriceObj?.attributes.renewal_interval_unit
-				: null
+			const interval = variant.is_subscription ? currentPriceObj?.attributes.renewal_interval_unit : null
 			const packageSize = currentPriceObj.attributes.package_size
-			const price = isUsageBased
-				? currentPriceObj.attributes.unit_price_decimal
-				: currentPriceObj.attributes.unit_price
+			const price = isUsageBased ? currentPriceObj.attributes.unit_price_decimal : currentPriceObj.attributes.unit_price
 			const priceString = price?.toString() ?? ''
 
 			await _addVariant({
@@ -337,14 +321,14 @@ export async function syncPlans() {
 				description: variant.description,
 				productName: variant.productName,
 				variantId: variant.variantId,
-				price: parseInt(priceString),
+				price: parseInt(priceString, HEX_PRICE.test(priceString) ? 16 : 10),
 				name: variant.productName,
 				billingCycle: interval,
 				variantEnabled: true,
 				packageSize,
 			})
-		}
-		console.info('base variants are synced')
+		})
+		logger.info('base variants are synced')
 
 		return refillVariants
 	} catch (error) {
@@ -357,14 +341,8 @@ export async function syncPlans() {
 // The balance change is a single atomic `credits = credits + n` update. Pass
 // a transaction client as `db` to commit the credits and their Usage row
 // together with other writes (see processWebhook).
-export async function updateCredits(
-	userId,
-	credits,
-	tokenJwt,
-	reason,
-	db = prisma
-) {
-	if (typeof credits !== 'number' || isNaN(credits)) {
+export async function updateCredits(userId, credits, tokenJwt, reason, db = prisma) {
+	if (!Number.isSafeInteger(credits)) {
 		throw new Error('Invalid credits value')
 	}
 

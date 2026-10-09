@@ -1,5 +1,7 @@
 // methode to save webhooks in the database with prisma
 import { updateCredits } from '@/services/database.service'
+import { ensureUser } from '@/services/ensureUser.service'
+import { logger } from '@/services/logger.service'
 import { prisma } from '@/services/prisma.service'
 
 // Events that add credits. Each one pays for one Lemon Squeezy resource,
@@ -7,10 +9,7 @@ import { prisma } from '@/services/prisma.service'
 // (subscription_payment_success). A redelivery of an already processed
 // resource (lost 200, Lemon Squeezy retry, "Resend" from its dashboard) must
 // not credit it again.
-const CREDITING_EVENTS = new Set([
-	'order_created',
-	'subscription_payment_success',
-])
+const CREDITING_EVENTS = new Set(['order_created', 'subscription_payment_success'])
 
 // Note stored on a processed subscription_updated event that moved its
 // subscription to another plan (see processSubscriptionUpdated): the plan
@@ -55,29 +54,21 @@ export async function processWebhook(id) {
 	}
 
 	// never log the payload: it contains the customer's name and email
-	console.info(`processing webhook ${id}: ${webhook.eventName}`)
+	logger.info(`processing webhook ${id}: ${webhook.eventName}`)
 
 	let duplicateOf
 	try {
-		duplicateOf = await prisma.$transaction(
-			tx => processInTransaction(tx, webhook),
-			TRANSACTION_OPTIONS
-		)
+		duplicateOf = await prisma.$transaction(tx => processInTransaction(tx, webhook), TRANSACTION_OPTIONS)
 	} catch (error) {
 		// Prisma errors can echo the query arguments (customer name/email): log
 		// only the error kind, the full message goes to the WebhookEvent row.
-		console.error(
-			`webhook ${id} (${webhook.eventName}) processing failed:`,
-			error.code ?? error.name
-		)
+		console.error(`webhook ${id} (${webhook.eventName}) processing failed:`, error.code ?? error.name)
 		await recordProcessingError(id, error)
 		return false
 	}
 
 	if (duplicateOf) {
-		console.info(
-			`webhook ${id} (${webhook.eventName}): duplicate of processed webhook ${duplicateOf.id}, skipped`
-		)
+		logger.info(`webhook ${id} (${webhook.eventName}): duplicate of processed webhook ${duplicateOf.id}, skipped`)
 	}
 	return true
 }
@@ -89,11 +80,7 @@ export async function saveWebhooks(webhooks) {
 	// WebhookEvent.userId references User.clerkId. The dashboard creates the
 	// User row without waiting for it (LayoutApp): if that failed, the event of
 	// a paid order could not be stored at all, so create the user here.
-	await prisma.user.upsert({
-		create: { clerkId: userId, customerId },
-		where: { clerkId: userId },
-		update: {},
-	})
+	await ensureUser({ clerkId: userId, customerId })
 
 	// save the webhooks in the database
 	const webhook = await prisma.webhookEvent.create({
@@ -105,7 +92,7 @@ export async function saveWebhooks(webhooks) {
 		},
 	})
 
-	console.info('webhook saved in the database')
+	logger.info('webhook saved in the database')
 	return webhook.id
 }
 
@@ -181,12 +168,7 @@ async function hasNewerProcessedUpdate(tx, event, payload, subscriptionId) {
 // - one left by an older plan change that sent no `updated` invoice (a
 //   downgrade, or proration billed at the renewal): its plan change is
 //   processed, but hours or days before this invoice.
-async function hasProcessedPlanChange(
-	tx,
-	subscription,
-	userId,
-	invoiceCreatedAt
-) {
+async function hasProcessedPlanChange(tx, subscription, userId, invoiceCreatedAt) {
 	// a user only has a handful of these events: compare the stored payloads
 	const planChanges = await tx.webhookEvent.findMany({
 		where: {
@@ -206,10 +188,8 @@ async function hasProcessedPlanChange(
 	return planChanges.some(event => {
 		const payload = parseBody(event.body)
 		return (
-			planChangeSubscriptionId(event.eventName, payload) ===
-				subscription.lemonSqueezyId &&
-			String(payload?.data?.attributes?.variant_id) ===
-				subscription.plan?.variantId &&
+			planChangeSubscriptionId(event.eventName, payload) === subscription.lemonSqueezyId &&
+			String(payload?.data?.attributes?.variant_id) === subscription.plan?.variantId &&
 			isCloseInTime(payload?.data?.attributes?.updated_at, invoiceCreatedAt)
 		)
 	})
@@ -315,9 +295,7 @@ async function processInTransaction(tx, webhook) {
 	// the webhook is processed, update the webhook (a plan change applied by
 	// subscription_updated keeps a note, see hasProcessedPlanChange)
 	await tx.webhookEvent.update({
-		data: note
-			? { processingError: note, processed: true }
-			: { processed: true },
+		data: note ? { processingError: note, processed: true } : { processed: true },
 		where: { id: id },
 	})
 	return null
@@ -359,8 +337,7 @@ async function processOrderCreated(tx, parsed_webhook) {
 	// check if the order is paid
 	if (parsed_webhook.data.attributes.status === 'paid') {
 		// get the variant_id from the first_order_item
-		const variantId =
-			parsed_webhook.data.attributes.first_order_item.variant_id.toString()
+		const variantId = parsed_webhook.data.attributes.first_order_item.variant_id.toString()
 
 		// get the plan associated with the variantId
 		const plan = await tx.plan.findUnique({
@@ -370,19 +347,11 @@ async function processOrderCreated(tx, parsed_webhook) {
 		})
 
 		if (!plan) {
-			throw new Error(
-				`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
-			)
+			throw new Error(`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`)
 		}
 
 		// add the credits to the user
-		await updateCredits(
-			user.clerkId,
-			plan.packageSize ?? 0,
-			null,
-			'Order created',
-			tx
-		)
+		await updateCredits(user.clerkId, plan.packageSize ?? 0, null, 'Order created', tx)
 	}
 }
 
@@ -395,8 +364,7 @@ async function processSubscriptionCancelled(tx, webhook) {
 			status: 'cancelled',
 		},
 		where: {
-			lemonSqueezyId:
-				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
+			lemonSqueezyId: webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
 }
@@ -408,7 +376,7 @@ async function processSubscriptionCreated(tx, webhook) {
 		where: { lemonSqueezyId: String(webhook.data.id) },
 	})
 	if (existing) {
-		console.info(`subscription ${webhook.data.id}: already created, skipped`)
+		logger.info(`subscription ${webhook.data.id}: already created, skipped`)
 		return
 	}
 
@@ -431,10 +399,7 @@ async function processSubscriptionCreated(tx, webhook) {
 			})
 		}
 	} else {
-		console.error(
-			'User not found for userId:',
-			webhook.meta.custom_data.user_id
-		)
+		console.error('User not found for userId:', webhook.meta.custom_data.user_id)
 	}
 
 	// link plan with variantId
@@ -446,9 +411,7 @@ async function processSubscriptionCreated(tx, webhook) {
 	})
 
 	if (!plan) {
-		throw new Error(
-			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
-		)
+		throw new Error(`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`)
 	}
 
 	// create a new subscription in the database for the user
@@ -484,6 +447,7 @@ async function processSubscriptionCreated(tx, webhook) {
 // - "renewal" (and any other reason): a new period, the full current plan
 // The plan change marker (`oldPlanId`, set by a plan change) is cleared once
 // an invoice is credited, so it is used at most once.
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 async function processSubscriptionPaymentSuccess(tx, webhook) {
 	// Extract the Clerk user ID and Lemon Squeezy subscription ID from the webhook data
 	const userId = webhook.meta.custom_data.user_id
@@ -494,9 +458,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 	// with every purchase, it carries the variant and does not depend on
 	// subscription_created having been processed first).
 	if (billingReason === 'initial') {
-		console.info(
-			`subscription ${subscriptionId}: initial payment already credited by order_created`
-		)
+		logger.info(`subscription ${subscriptionId}: initial payment already credited by order_created`)
 		return
 	}
 
@@ -515,9 +477,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 	}
 
 	if (!user.customerId) {
-		throw new Error(
-			`CustomerId not set for user ${user.clerkId}, invoice not credited`
-		)
+		throw new Error(`CustomerId not set for user ${user.clerkId}, invoice not credited`)
 	}
 
 	// The subscription this invoice pays, with its current plan
@@ -531,9 +491,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 	})
 
 	if (!subscription) {
-		throw new Error(
-			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
-		)
+		throw new Error(`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`)
 	}
 
 	const packageSize = subscription.plan?.packageSize ?? 0
@@ -544,13 +502,10 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 		// retried (or resent) once its plan change is processed (crediting 0
 		// would mark it processed and a resend would be skipped as a duplicate).
 		if (
-			!subscription.oldPlanId ||
-			!(await hasProcessedPlanChange(
-				tx,
-				subscription,
-				userId,
-				webhook.data.attributes.created_at
-			))
+			!(
+				subscription.oldPlanId &&
+				(await hasProcessedPlanChange(tx, subscription, userId, webhook.data.attributes.created_at))
+			)
 		) {
 			throw new Error(
 				`Subscription ${subscriptionId}: plan change not processed yet, resend this invoice after its plan change (subscription_updated or subscription_plan_changed) event`
@@ -559,31 +514,15 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 		const oldPlan = await tx.plan.findUnique({
 			where: { id: subscription.oldPlanId },
 		})
-		const extraCredits = oldPlan
-			? Math.max(0, packageSize - (oldPlan.packageSize ?? 0))
-			: 0
+		const extraCredits = oldPlan ? Math.max(0, packageSize - (oldPlan.packageSize ?? 0)) : 0
 
 		if (extraCredits > 0) {
-			await updateCredits(
-				user.clerkId,
-				extraCredits,
-				null,
-				'Subscription payment success (plan change)',
-				tx
-			)
+			await updateCredits(user.clerkId, extraCredits, null, 'Subscription payment success (plan change)', tx)
 		} else {
-			console.info(
-				`subscription ${subscriptionId}: plan change invoice, no extra credits`
-			)
+			logger.info(`subscription ${subscriptionId}: plan change invoice, no extra credits`)
 		}
 	} else {
-		await updateCredits(
-			user.clerkId,
-			packageSize,
-			null,
-			'Subscription payment success',
-			tx
-		)
+		await updateCredits(user.clerkId, packageSize, null, 'Subscription payment success', tx)
 	}
 
 	if (subscription.oldPlanId) {
@@ -599,8 +538,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
 async function processSubscriptionPlanChanged(tx, webhook) {
 	// Get the subscription ID from the webhook data
-	const subscriptionId =
-		webhook.data.attributes.first_subscription_item?.subscription_id
+	const subscriptionId = webhook.data.attributes.first_subscription_item?.subscription_id
 
 	if (!subscriptionId) {
 		console.error('Subscription ID not found in the webhook data')
@@ -618,9 +556,7 @@ async function processSubscriptionPlanChanged(tx, webhook) {
 	})
 
 	if (!subscription) {
-		throw new Error(
-			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
-		)
+		throw new Error(`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`)
 	}
 
 	// Get the new plan associated with the variantId
@@ -632,17 +568,13 @@ async function processSubscriptionPlanChanged(tx, webhook) {
 	})
 
 	if (!newPlan) {
-		throw new Error(
-			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
-		)
+		throw new Error(`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`)
 	}
 
 	// Already on this plan: a redelivery of this event. Overwriting the old
 	// plan with the current one would lose the extra credits of the upgrade.
 	if (subscription.planId === newPlan.id) {
-		console.info(
-			`subscription ${subscriptionId}: already on plan ${newPlan.id}, plan change skipped`
-		)
+		logger.info(`subscription ${subscriptionId}: already on plan ${newPlan.id}, plan change skipped`)
 		return
 	}
 
@@ -670,8 +602,7 @@ async function processSubscriptionResumed(tx, webhook) {
 			isPaused: false,
 		},
 		where: {
-			lemonSqueezyId:
-				webhook.data.attributes.first_subscription_item.subscription_id.toString(),
+			lemonSqueezyId: webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
 }
@@ -688,10 +619,7 @@ async function processSubscriptionResumed(tx, webhook) {
 // changed, null otherwise.
 async function processSubscriptionUpdated(tx, webhook, event) {
 	const variantId = webhook.data?.attributes?.variant_id
-	const subscriptionId = planChangeSubscriptionId(
-		'subscription_updated',
-		webhook
-	)
+	const subscriptionId = planChangeSubscriptionId('subscription_updated', webhook)
 	if (variantId == null || subscriptionId == null) {
 		return null
 	}
@@ -702,9 +630,7 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 	})
 
 	if (!subscription) {
-		throw new Error(
-			`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`
-		)
+		throw new Error(`Subscription ${subscriptionId} not found, process its subscription_created event and reprocess`)
 	}
 
 	// same plan: a routine update (renewal, status, payment method...)
@@ -717,13 +643,11 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 	})
 
 	if (!newPlan) {
-		throw new Error(
-			`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`
-		)
+		throw new Error(`Plan not found for variant ${variantId}, sync the plans (/api/sync) and reprocess`)
 	}
 
 	if (await hasNewerProcessedUpdate(tx, event, webhook, subscriptionId)) {
-		console.info(
+		logger.info(
 			`subscription ${subscriptionId}: older than a processed update, plan change to variant ${variantId} skipped`
 		)
 		return null
@@ -734,9 +658,7 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 		where: { lemonSqueezyId: subscriptionId },
 	})
 
-	console.info(
-		`subscription ${subscriptionId}: plan ${subscription.planId} -> ${newPlan.id}`
-	)
+	logger.info(`subscription ${subscriptionId}: plan ${subscription.planId} -> ${newPlan.id}`)
 	return `${PLAN_CHANGE_NOTE}: plan ${subscription.planId} -> plan ${newPlan.id}`
 }
 
@@ -747,10 +669,7 @@ async function recordProcessingError(id, error) {
 			where: { id: id },
 		})
 	} catch (updateError) {
-		console.error(
-			`webhook ${id}: processing error not recorded:`,
-			updateError.code ?? updateError.name
-		)
+		console.error(`webhook ${id}: processing error not recorded:`, updateError.code ?? updateError.name)
 	}
 }
 

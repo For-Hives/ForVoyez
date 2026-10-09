@@ -1,4 +1,8 @@
-require('dotenv').config()
+try {
+	process.loadEnvFile()
+} catch (error) {
+	if (error.code !== 'ENOENT') throw error
+}
 
 module.exports = {
 	projects: [

@@ -8,15 +8,11 @@ import { prisma } from '@/services/prisma.service'
  * to get account information and available credits.
  */
 export async function GET(request) {
+	// Read request data outside application error handling: Next.js can suspend prerendering.
+	const authHeader = request.headers.get('Authorization')
 	try {
-		// Get authentication token from header
-		const authHeader = request.headers.get('Authorization')
-
-		if (!authHeader || !authHeader.startsWith('Bearer ')) {
-			return Response.json(
-				{ error: 'Missing or invalid authentication token' },
-				{ status: 401 }
-			)
+		if (!authHeader?.startsWith('Bearer ')) {
+			return privateJson({ error: 'Missing or invalid authentication token' }, { status: 401 })
 		}
 
 		const token = authHeader.replace('Bearer ', '')
@@ -27,18 +23,12 @@ export async function GET(request) {
 			payload = await verifyJwt(token)
 		} catch (error) {
 			console.error('Token verification error:', error)
-			return Response.json(
-				{ error: 'Invalid or expired token' },
-				{ status: 401 }
-			)
+			return privateJson({ error: 'Invalid or expired token' }, { status: 401 })
 		}
 
 		// Verify that userId exists in the token
-		if (!payload.userId) {
-			return Response.json(
-				{ error: 'Malformed token: missing userId' },
-				{ status: 400 }
-			)
+		if (typeof payload?.userId !== 'string' || payload.userId.length === 0) {
+			return privateJson({ error: 'Malformed token: missing userId' }, { status: 400 })
 		}
 
 		// Same rule as /api/describe: the API key must still exist (not deleted
@@ -46,11 +36,8 @@ export async function GET(request) {
 		const tokenRecord = await findActiveApiToken(token, payload.userId)
 
 		if (!tokenRecord) {
-			console.error(
-				'Unauthorized, revoked or expired token, user:',
-				payload.userId
-			)
-			return Response.json(
+			console.error('Unauthorized, revoked or expired token, user:', payload.userId)
+			return privateJson(
 				{ error: 'Unauthorized, invalid token' },
 				{ statusText: 'Unauthorized, invalid token', status: 401 }
 			)
@@ -79,7 +66,7 @@ export async function GET(request) {
 		})
 
 		if (!user) {
-			return Response.json({ error: 'User not found' }, { status: 404 })
+			return privateJson({ error: 'User not found' }, { status: 404 })
 		}
 
 		// Get additional information from Clerk
@@ -105,12 +92,11 @@ export async function GET(request) {
 		}
 
 		// Determine if user is subscribed
-		const hasActiveSubscription =
-			user.Subscription && user.Subscription.length > 0
+		const hasActiveSubscription = user.Subscription && user.Subscription.length > 0
 		const subscription = hasActiveSubscription ? user.Subscription[0] : null
 
 		// Return complete information
-		return Response.json(
+		return privateJson(
 			{
 				subscription: {
 					isSubscribed: hasActiveSubscription,
@@ -144,6 +130,11 @@ export async function GET(request) {
 		// the details stay in the server log: database errors can name
 		// internal hosts
 		console.error('Error while retrieving information:', error)
-		return Response.json({ error: 'Server error' }, { status: 500 })
+		return privateJson({ error: 'Server error' }, { status: 500 })
 	}
+}
+
+// Account balances and API credentials must never be stored by browsers or shared caches.
+function privateJson(data, options = {}) {
+	return Response.json(data, { ...options, headers: { 'Cache-Control': 'private, no-store' } })
 }

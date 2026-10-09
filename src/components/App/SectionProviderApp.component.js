@@ -1,12 +1,6 @@
 'use client'
 
-import {
-	createContext,
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useState,
-} from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react'
 
 import { createStore, useStore } from 'zustand'
 
@@ -15,47 +9,39 @@ import { remToPx } from '@/components/App/RemToPxApp.component'
 function createSectionStore(sections) {
 	return createStore()(set => ({
 		setVisibleSections: visibleSections =>
-			set(state =>
-				state.visibleSections.join() === visibleSections.join()
-					? {}
-					: { visibleSections }
-			),
+			set(state => (state.visibleSections.join() === visibleSections.join() ? {} : { visibleSections })),
 		visibleSections: [],
 		sections,
 	}))
 }
 
 function useVisibleSections(sectionStore) {
-	let setVisibleSections = useStore(sectionStore, s => s.setVisibleSections)
-	let sections = useStore(sectionStore, s => s.sections)
+	const setVisibleSections = useStore(sectionStore, s => s.setVisibleSections)
+	const sections = useStore(sectionStore, s => s.sections)
 
 	useEffect(() => {
+		// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 		function checkVisibleSections() {
-			let { innerHeight, scrollY } = window
-			let newVisibleSections = []
+			const { innerHeight, scrollY } = window
+			const newVisibleSections = []
 
-			for (
-				let sectionIndex = 0;
-				sectionIndex < sections.length;
-				sectionIndex++
-			) {
-				let { offsetRem = 0, headingRef, id } = sections[sectionIndex]
+			for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+				const { offsetRem = 0, headingRef, id } = sections[sectionIndex]
 
 				if (!headingRef?.current) {
 					continue
 				}
 
-				let offset = remToPx(offsetRem)
-				let top = headingRef.current.getBoundingClientRect().top + scrollY
+				const offset = remToPx(offsetRem)
+				const top = headingRef.current.getBoundingClientRect().top + scrollY
 
 				if (sectionIndex === 0 && top - offset > scrollY) {
 					newVisibleSections.push('_top')
 				}
 
-				let nextSection = sections[sectionIndex + 1]
-				let bottom =
-					(nextSection?.headingRef?.current?.getBoundingClientRect().top ??
-						Infinity) +
+				const nextSection = sections[sectionIndex + 1]
+				const bottom =
+					(nextSection?.headingRef?.current?.getBoundingClientRect().top ?? Infinity) +
 					scrollY -
 					remToPx(nextSection?.offsetRem ?? 0)
 
@@ -71,7 +57,7 @@ function useVisibleSections(sectionStore) {
 			setVisibleSections(newVisibleSections)
 		}
 
-		let raf = window.requestAnimationFrame(() => checkVisibleSections())
+		const raf = window.requestAnimationFrame(() => checkVisibleSections())
 		window.addEventListener('scroll', checkVisibleSections, { passive: true })
 		window.addEventListener('resize', checkVisibleSections)
 
@@ -85,11 +71,10 @@ function useVisibleSections(sectionStore) {
 
 const SectionStoreContext = createContext(null)
 
-const useIsomorphicLayoutEffect =
-	typeof window === 'undefined' ? useEffect : useLayoutEffect
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 export function SectionProviderAppComponent({ sections = [], children }) {
-	let [sectionStore] = useState(() => createSectionStore(sections))
+	const [sectionStore] = useState(() => createSectionStore(sections))
 
 	useVisibleSections(sectionStore)
 
@@ -98,14 +83,10 @@ export function SectionProviderAppComponent({ sections = [], children }) {
 		sectionStore.setState({ sections })
 	}, [sectionStore, sections])
 
-	return (
-		<SectionStoreContext.Provider value={sectionStore}>
-			{children}
-		</SectionStoreContext.Provider>
-	)
+	return <SectionStoreContext.Provider value={sectionStore}>{children}</SectionStoreContext.Provider>
 }
 
 export function useSectionStore(selector) {
-	let store = useContext(SectionStoreContext)
+	const store = useContext(SectionStoreContext)
 	return useStore(store, selector)
 }

@@ -1,8 +1,10 @@
+const PLAN_NUMBER = /\d+/
+
 export function sortPlans(plans) {
 	plans.sort((a, b) => {
 		// Extract the numbers from the plan names
-		const numA = parseInt(a.name.match(/\d+/)?.[0] || '0')
-		const numB = parseInt(b.name.match(/\d+/)?.[0] || '0')
+		const numA = parseInt(a.name.match(PLAN_NUMBER)?.[0] || '0', 10)
+		const numB = parseInt(b.name.match(PLAN_NUMBER)?.[0] || '0', 10)
 
 		// Compare the numbers
 		if (numA !== numB) {

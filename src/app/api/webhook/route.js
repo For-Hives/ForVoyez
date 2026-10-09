@@ -1,4 +1,5 @@
-import { createHmac, timingSafeEqual } from 'crypto'
+import { createHmac, timingSafeEqual } from 'node:crypto'
+import { logger } from '@/services/logger.service'
 
 import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
@@ -8,7 +9,7 @@ export async function POST(request) {
 	let webhookId
 	let eventName
 	try {
-		console.info('webhook request received')
+		logger.info('webhook request received')
 		const secret = WEBHOOK_SECRET()
 		if (!secret) {
 			console.error('Lemon Squeezy Webhook Secret not set in .env')
@@ -22,16 +23,10 @@ export async function POST(request) {
 
 		const hmac = createHmac('sha256', secret)
 		const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
-		const signature = Buffer.from(
-			request.headers.get('X-Signature') ?? '',
-			'utf8'
-		)
+		const signature = Buffer.from(request.headers.get('X-Signature') ?? '', 'utf8')
 
 		// timingSafeEqual throws when the lengths differ
-		if (
-			digest.length !== signature.length ||
-			!timingSafeEqual(digest, signature)
-		) {
+		if (digest.length !== signature.length || !timingSafeEqual(digest, signature)) {
 			console.error('webhook not authorized')
 			return new Response(`Webhook not authorized`, {
 				status: 401,
@@ -40,9 +35,7 @@ export async function POST(request) {
 
 		const payload = parseJson(rawBody)
 		if (!isStorable(payload)) {
-			console.error(
-				`webhook rejected: malformed payload (event ${String(payload?.meta?.event_name)})`
-			)
+			console.error(`webhook rejected: malformed payload (event ${String(payload?.meta?.event_name)})`)
 			return new Response('Malformed webhook payload', {
 				status: 400,
 			})
@@ -69,10 +62,7 @@ export async function POST(request) {
 	} catch (error) {
 		// processWebhook records processing errors itself: this one could not
 		// even be recorded (database unreachable...)
-		console.error(
-			`webhook ${webhookId} (${eventName}) error:`,
-			error.code ?? error.name
-		)
+		console.error(`webhook ${webhookId} (${eventName}) error:`, error.code ?? error.name)
 	}
 
 	if (!processed) {

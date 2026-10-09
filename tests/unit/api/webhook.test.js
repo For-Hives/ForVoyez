@@ -1,7 +1,9 @@
+import { logger } from '@/services/logger.service'
 // @vitest-environment node
+
+import { createHmac } from 'node:crypto'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/webhook/route'
-import { createHmac } from 'crypto'
 
 import { processWebhook, saveWebhooks } from '@/services/webhook.service'
 
@@ -30,7 +32,7 @@ describe('POST /api/webhook', () => {
 
 	beforeEach(() => {
 		vi.resetAllMocks()
-		vi.spyOn(console, 'info').mockImplementation(() => {})
+		vi.spyOn(logger, 'info').mockImplementation(() => {})
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 		vi.stubEnv('LEMON_SQUEEZY_WEBHOOK_SECRET', SECRET)
 		saveWebhooks.mockResolvedValue(12)
@@ -60,9 +62,7 @@ describe('POST /api/webhook', () => {
 
 	it('should answer 401 for a missing or forged signature', async () => {
 		expect((await POST(webhookRequest(BODY))).status).toBe(401)
-		expect(
-			(await POST(webhookRequest(BODY, signed(BODY, 'other-secret')))).status
-		).toBe(401)
+		expect((await POST(webhookRequest(BODY, signed(BODY, 'other-secret')))).status).toBe(401)
 		expect(saveWebhooks).not.toHaveBeenCalled()
 	})
 

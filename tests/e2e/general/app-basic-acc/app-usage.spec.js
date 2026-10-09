@@ -18,9 +18,7 @@ test.describe('Usage Functionality', () => {
 		log('Waiting for usage data or no data message to be displayed')
 		const noDataMessage = page.locator('[data-testid="no-usage-data"]')
 		const usageChart = page.locator('[data-testid="usage-chart"]')
-		const usageByTokenChart = page.locator(
-			'[data-testid="usage-by-token-chart"]'
-		)
+		const usageByTokenChart = page.locator('[data-testid="usage-by-token-chart"]')
 
 		await Promise.race([
 			expect(noDataMessage).toBeVisible(),
@@ -35,16 +33,11 @@ test.describe('Usage Functionality', () => {
 			await expect(tooltipLocator).toBeVisible()
 			const tooltipText = await tooltipLocator.innerText()
 			expect(tooltipText).toContain('Usage Data')
-			expect(tooltipText).toContain(
-				'You need to have used the application at least once to see the usage data.'
-			)
+			expect(tooltipText).toContain('You need to have used the application at least once to see the usage data.')
 		}
 
 		// Verify charts if data is available
-		if (
-			(await usageChart.isVisible()) &&
-			(await usageByTokenChart.isVisible())
-		) {
+		if ((await usageChart.isVisible()) && (await usageByTokenChart.isVisible())) {
 			log('Usage data available, verifying charts')
 
 			const areaChart = page.locator('text=Credits Left')

@@ -23,8 +23,7 @@ export const metadata = {
 		type: 'website',
 	},
 	twitter: {
-		description:
-			'Official legal documentation and policies for ForVoyez image metadata services.',
+		description: 'Official legal documentation and policies for ForVoyez image metadata services.',
 		title: 'ForVoyez Legal Documentation',
 		card: 'summary_large_image',
 		images: '/og/legals.png',

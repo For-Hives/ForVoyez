@@ -34,8 +34,7 @@ export function createWebhookDatabase() {
 			locks.clear()
 		},
 		credits(clerkId) {
-			return database.tables.user.find(user => user.clerkId === clerkId)
-				?.credits
+			return database.tables.user.find(user => user.clerkId === clerkId)?.credits
 		},
 		// The next call to `name` (e.g. 'usage.create') throws `error`
 		failOnce(name, error) {
@@ -60,8 +59,9 @@ export function createWebhookDatabase() {
 	}
 
 	async function acquire(key, held) {
-		while (locks.has(key)) {
+		if (locks.has(key)) {
 			await locks.get(key)
+			return acquire(key, held)
 		}
 		let release
 		locks.set(key, new Promise(resolve => (release = resolve)))
@@ -87,12 +87,12 @@ export function createWebhookDatabase() {
 			const previous = { ...row }
 			for (const [field, value] of Object.entries(data)) {
 				row[field] =
-					value !== null && typeof value === 'object' && 'increment' in value
-						? row[field] + value.increment
-						: value
+					value !== null && typeof value === 'object' && 'increment' in value ? row[field] + value.increment : value
 			}
 			remember(() => {
-				Object.keys(row).forEach(field => delete row[field])
+				for (const field of Object.keys(row)) {
+					delete row[field]
+				}
 				Object.assign(row, previous)
 			})
 			return row
@@ -119,9 +119,7 @@ export function createWebhookDatabase() {
 			}
 
 		const findSubscription = ({ where }) =>
-			table('subscription').find(row =>
-				matchesWhere(row, { lemonSqueezyId: where.lemonSqueezyId })
-			)
+			table('subscription').find(row => matchesWhere(row, { lemonSqueezyId: where.lemonSqueezyId }))
 
 		return {
 			webhookEvent: model('webhookEvent', {
@@ -202,18 +200,20 @@ export function createWebhookDatabase() {
 				try {
 					return await callback(createClient(inner))
 				} catch (error) {
-					inner.undo.reverse().forEach(undo => undo())
+					for (const undo of inner.undo.reverse()) {
+						undo()
+					}
 					throw error
 				} finally {
-					inner.held.forEach(release => release())
+					for (const release of inner.held) {
+						release()
+					}
 				}
 			},
 			plan: model('plan', {
 				findUnique: ({ where }) =>
 					table('plan').find(plan =>
-						where.id === undefined
-							? plan.variantId === where.variantId
-							: plan.id === where.id
+						where.id === undefined ? plan.variantId === where.variantId : plan.id === where.id
 					) ?? null,
 			}),
 			usage: model('usage', {
@@ -243,8 +243,7 @@ function matchesWhere(row, where = {}) {
 		if (condition !== null && typeof condition === 'object') {
 			if ('in' in condition) return condition.in.includes(value)
 			if ('not' in condition) return value !== condition.not
-			if ('startsWith' in condition)
-				return String(value ?? '').startsWith(condition.startsWith)
+			if ('startsWith' in condition) return String(value ?? '').startsWith(condition.startsWith)
 		}
 		return value === condition
 	})

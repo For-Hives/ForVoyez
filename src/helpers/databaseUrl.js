@@ -1,6 +1,6 @@
+import { readFileSync } from 'node:fs'
 import { isAbsolute, resolve } from 'node:path'
 import { callbackify } from 'node:util'
-import { readFileSync } from 'node:fs'
 import pg from 'pg'
 
 // Prisma 7 reaches PostgreSQL through node-postgres (`@prisma/adapter-pg`),
@@ -28,16 +28,7 @@ const PRISMA6_POOL_TIMEOUT_SECONDS = 10
 // Removed from the URL given to node-postgres: it turns `ssl`, `sslmode`,
 // `sslcert`, `sslkey` and `sslrootcert` into its own `ssl` option, which would
 // override the one built here. The others are Prisma 6 only.
-const TLS_PARAMS = [
-	'ssl',
-	'sslmode',
-	'sslcert',
-	'sslkey',
-	'sslrootcert',
-	'sslaccept',
-	'sslidentity',
-	'sslpassword',
-]
+const TLS_PARAMS = ['ssl', 'sslmode', 'sslcert', 'sslkey', 'sslrootcert', 'sslaccept', 'sslidentity', 'sslpassword']
 
 // node-postgres error when the server answers "no" to the TLS request
 const NO_TLS_ERROR = 'The server does not support SSL connections'
@@ -95,7 +86,9 @@ export function preferTlsClient(BaseClient = pg.Client) {
 		} catch (error) {
 			return error?.message === NO_TLS_ERROR ? false : undefined
 		} finally {
-			client.end().catch(() => {})
+			client.end().catch(() => {
+				// Closing a failed TLS probe must not replace its connection result.
+			})
 		}
 	}
 
@@ -174,10 +167,7 @@ function readPrismaFile(path) {
 	try {
 		return readFileSync(file)
 	} catch (error) {
-		console.error(
-			`DATABASE_URL: cannot read the TLS file ${file}:`,
-			error.code ?? error.message
-		)
+		console.error(`DATABASE_URL: cannot read the TLS file ${file}:`, error.code ?? error.message)
 		return undefined
 	}
 }

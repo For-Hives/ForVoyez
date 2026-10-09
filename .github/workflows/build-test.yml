@@ -25,13 +25,27 @@ jobs:
               args: [--frozen-lockfile]
       - name: 'Generate prisma client'
         run: pnpm prisma:generate
+      - name: 'Install sample runtimes'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli php-curl python3-requests curl
       - name: 'Run Unit Tests'
         run: pnpm test:ci
+      - name: 'Run PostgreSQL Integration Tests'
+        run: pnpm test:integration
       - name: 'Report Coverage'
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+      - name: 'Type Check'
+        run: pnpm tsc
       - name: 'Lint Code'
         run: pnpm lint
+      - name: 'Production Build'
+        run: pnpm build
+      - name: 'Install Smoke Browser'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: 'Smoke Production Routes'
+        run: pnpm test:smoke
 
   nixpacks-install:
     # Production (Coolify, Nixpacks 1.41.0, NIXPACKS_NODE_VERSION=22) gets the

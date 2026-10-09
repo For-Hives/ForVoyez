@@ -1,16 +1,9 @@
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	within,
-} from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { createElement } from 'react'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
 import { listPlans } from '@/app/actions/app/plans'
+import { PricingComponent } from '@/components/Landing/Pricing/Pricing.component'
 
 vi.mock('@/app/actions/app/plans', () => ({
 	listPlans: vi.fn(),
@@ -19,7 +12,7 @@ vi.mock('@/app/actions/app/plans', () => ({
 const COMMON_FEATURES = [
 	'Title, alternative text and caption for each image',
 	'JPEG, PNG, WebP and non-animated GIF, up to 10 MB',
-	'API, WordPress plugin and playground',
+	'Generate directly from your WordPress media library',
 	'Email support',
 ]
 
@@ -118,17 +111,9 @@ describe('Landing page pricing promises', () => {
 		render(createElement(PricingComponent))
 		const [starter, growth] = await screen.findAllByTestId('plan-month')
 
-		expect(featuresOf(starter)).toEqual([
-			'250 credits*/month',
-			...COMMON_FEATURES,
-		])
-		expect(featuresOf(growth)).toEqual([
-			'All Starter plan features',
-			'2,500 credits*/month',
-		])
-		expect(text(screen.getByTestId('annual-saving-badge'))).toBe(
-			'Up to 16.6% cheaper'
-		)
+		expect(featuresOf(starter)).toEqual(['250 credits*/month', ...COMMON_FEATURES])
+		expect(featuresOf(growth)).toEqual(['All Starter plan features', '2,500 credits*/month'])
+		expect(text(screen.getByTestId('annual-saving-badge'))).toBe('Up to 16.6% cheaper')
 		expect(screen.getAllByTestId('get-more-tokens').map(text)).toEqual([
 			'Pay annually: 14.7% cheaper',
 			'Pay annually: 16.6% cheaper',
@@ -141,17 +126,9 @@ describe('Landing page pricing promises', () => {
 		fireEvent.click((await screen.findAllByTestId('get-more-tokens'))[0])
 
 		const [starter, growth] = await screen.findAllByTestId('plan-year')
-		expect(featuresOf(starter)).toEqual([
-			'3,000 credits*/year',
-			...COMMON_FEATURES,
-		])
-		expect(featuresOf(growth)).toEqual([
-			'All Starter plan features',
-			'30,000 credits*/year',
-		])
-		expect(within(starter).getByText(/cheaper/).parentElement.textContent).toBe(
-			'14.7% cheaper than monthly'
-		)
+		expect(featuresOf(starter)).toEqual(['3,000 credits*/year', ...COMMON_FEATURES])
+		expect(featuresOf(growth)).toEqual(['All Starter plan features', '30,000 credits*/year'])
+		expect(within(starter).getByText(/cheaper/).parentElement.textContent).toBe('14.7% cheaper than monthly')
 		expect(document.body.textContent).not.toMatch(FALSE_PROMISES)
 	})
 

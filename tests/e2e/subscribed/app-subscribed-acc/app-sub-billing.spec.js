@@ -7,9 +7,7 @@ test.describe('Client Logic Billing Functionality', () => {
 		await expect(page).toHaveURL('/app/billing')
 	})
 
-	test('User is handled appropriately when accessing billing page', async ({
-		page,
-	}) => {
+	test('User is handled appropriately when accessing billing page', async ({ page }) => {
 		// Wait for either navigation to LemonSqueezy (if user has valid subscription)
 		// or redirect to /app/plans (if user doesn't have valid customer portal access)
 
@@ -32,18 +30,14 @@ test.describe('Client Logic Billing Functionality', () => {
 
 			// Check for the expected toast message (by role and text: v11 of
 			// react-toastify dropped the `.Toastify__toast-body` wrapper)
-			const toastMessage = page
-				.getByRole('alert')
-				.filter({ hasText: 'You must have been subscribed at least once' })
+			const toastMessage = page.getByRole('alert').filter({ hasText: 'You must have been subscribed at least once' })
 
 			// Wait a bit for toast to appear if it hasn't already
 			try {
 				await toastMessage.waitFor({ state: 'visible', timeout: 5000 })
 				log('Toast message displayed correctly')
-				await expect(toastMessage).toContainText(
-					'You must have been subscribed at least once to access this page.'
-				)
-			} catch (error) {
+				await expect(toastMessage).toContainText('You must have been subscribed at least once to access this page.')
+			} catch (_error) {
 				log('Toast message may have already disappeared or not appeared')
 			}
 		} else {

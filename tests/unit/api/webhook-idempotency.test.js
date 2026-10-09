@@ -1,7 +1,9 @@
+import { logger } from '@/services/logger.service'
 // @vitest-environment node
+
+import { createHmac } from 'node:crypto'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/webhook/route'
-import { createHmac } from 'crypto'
 
 import { database } from '/tests/unit/mocks/webhook-idempotency.db'
 
@@ -9,9 +11,7 @@ import { database } from '/tests/unit/mocks/webhook-idempotency.db'
 // database whose transactions roll back and whose advisory lock blocks.
 vi.mock('@/services/lemonsqueezy.service')
 vi.mock('@/services/prisma.service', async () => {
-	const { database } = await vi.importActual(
-		'/tests/unit/mocks/webhook-idempotency.db'
-	)
+	const { database } = await vi.importActual('/tests/unit/mocks/webhook-idempotency.db')
 	return { prisma: database.client }
 })
 
@@ -63,7 +63,7 @@ describe('POST /api/webhook: retries and duplicates', () => {
 			credits: 0,
 		})
 		vi.stubEnv('LEMON_SQUEEZY_WEBHOOK_SECRET', SECRET)
-		consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => {})
+		consoleInfo = vi.spyOn(logger, 'info').mockImplementation(() => {})
 		consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 	})
 
@@ -85,9 +85,7 @@ describe('POST /api/webhook: retries and duplicates', () => {
 
 		expect(failed.status).toBe(500)
 		expect(lastEvent()).toMatchObject({
-			processingError: expect.stringContaining(
-				'Plan not found for variant v-pack'
-			),
+			processingError: expect.stringContaining('Plan not found for variant v-pack'),
 			processed: false,
 		})
 		expect(consoleError).toHaveBeenCalledWith(
@@ -128,10 +126,7 @@ describe('POST /api/webhook: retries and duplicates', () => {
 	)
 
 	it('answers 200 to two deliveries arriving at the same time, and credits once', async () => {
-		const responses = await Promise.all([
-			POST(delivery(orderCreated())),
-			POST(delivery(orderCreated())),
-		])
+		const responses = await Promise.all([POST(delivery(orderCreated())), POST(delivery(orderCreated()))])
 
 		expect(responses.map(response => response.status)).toEqual([200, 200])
 		expect(database.credits('user123')).toBe(PACK.packageSize)
@@ -167,16 +162,13 @@ describe('POST /api/webhook: retries and duplicates', () => {
 			['without custom_data.user_id', JSON.stringify(withoutUser)],
 			['without event_name', JSON.stringify(withoutName)],
 			['without data', JSON.stringify(withoutData)],
-		])(
-			'answers 400 to a payload %s and stores nothing',
-			async (_case, body) => {
-				const response = await POST(delivery(body))
+		])('answers 400 to a payload %s and stores nothing', async (_case, body) => {
+			const response = await POST(delivery(body))
 
-				expect(response.status).toBe(400)
-				expect(database.events()).toHaveLength(0)
-				expect(database.tables.user).toHaveLength(1)
-			}
-		)
+			expect(response.status).toBe(400)
+			expect(database.events()).toHaveLength(0)
+			expect(database.tables.user).toHaveLength(1)
+		})
 	})
 
 	it('still answers 401 to an unsigned delivery, and stores nothing', async () => {

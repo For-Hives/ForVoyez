@@ -1,21 +1,11 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { createElement } from 'react'
-
-import PrivacyPolicyPage from '@/app/(dashboard)/app/legals/privacy-policy/page'
-import LegalNoticePage from '@/app/(dashboard)/app/legals/legal-notice/page'
 import { afterEach, describe, expect, it } from 'vitest'
+import LegalNoticePage from '@/app/(dashboard)/app/legals/legal-notice/page'
+import PrivacyPolicyPage from '@/app/(dashboard)/app/legals/privacy-policy/page'
 
 // Every provider that receives personal data has to be named in the policy
-const SERVICE_PROVIDERS = [
-	'netcup GmbH',
-	'Contabo GmbH',
-	'OpenAI',
-	'Clerk',
-	'Lemon Squeezy',
-	'Mailgun',
-	'OVH',
-	'Umami',
-]
+const SERVICE_PROVIDERS = ['netcup GmbH', 'Contabo GmbH', 'OpenAI', 'Clerk', 'Lemon Squeezy', 'Mailgun', 'OVH', 'Umami']
 
 describe('Legal notice', () => {
 	afterEach(cleanup)
@@ -41,9 +31,7 @@ describe('Legal notice', () => {
 		render(createElement(LegalNoticePage))
 
 		const link = screen.getByRole('link', { name: 'Privacy Policy' })
-		expect(link.getAttribute('href')).toBe(
-			'/app/legals/privacy-policy#service-providers'
-		)
+		expect(link.getAttribute('href')).toBe('/app/legals/privacy-policy#service-providers')
 	})
 })
 
@@ -55,9 +43,7 @@ describe('Privacy policy', () => {
 
 		const section = container.querySelector('#service-providers')
 		expect(section).not.toBeNull()
-		const names = [...section.querySelectorAll('li > strong')].map(
-			strong => strong.textContent
-		)
+		const names = [...section.querySelectorAll('li > strong')].map(strong => strong.textContent)
 		expect(names).toEqual(SERVICE_PROVIDERS)
 	})
 

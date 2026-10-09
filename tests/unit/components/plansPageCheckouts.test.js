@@ -1,22 +1,11 @@
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-} from '@testing-library/react'
-import { toast, ToastContainer } from 'react-toastify'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { createElement, Fragment } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import PlansPage from '@/app/(dashboard)/app/plans/page'
 
-import {
-	createCheckoutUrl,
-	getCustomerPortalUrl,
-	getMySubscription,
-	listPlans,
-} from '@/app/actions/app/plans'
+import { createCheckoutUrl, getCustomerPortalUrl, getMySubscription, listPlans } from '@/app/actions/app/plans'
 
 const CHECKOUT_URL = 'https://forvoyez.lemonsqueezy.com/checkout/custom/abc'
 const PORTAL_URL = 'https://forvoyez.lemonsqueezy.com/billing?expires=1'
@@ -112,9 +101,7 @@ describe('Plans page checkouts', () => {
 		it('shows the plans without creating any checkout', async () => {
 			renderPlansPage()
 
-			expect(
-				await screen.findAllByRole('button', { name: 'Subscribe' })
-			).toHaveLength(2)
+			expect(await screen.findAllByRole('button', { name: 'Subscribe' })).toHaveLength(2)
 			expect(createCheckoutUrl).not.toHaveBeenCalled()
 			expect(getCustomerPortalUrl).not.toHaveBeenCalled()
 			expect(screen.queryByText('Refill Plans')).toBeNull()
@@ -137,9 +124,7 @@ describe('Plans page checkouts', () => {
 			expect(createCheckoutUrl).toHaveBeenCalledWith('365931')
 
 			checkout.resolve(CHECKOUT_URL)
-			await waitFor(() =>
-				expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL)
-			)
+			await waitFor(() => expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL))
 		})
 
 		it('releases the button when the browser restores the page from its cache', async () => {
@@ -148,9 +133,7 @@ describe('Plans page checkouts', () => {
 
 			const button = await screen.findByTestId('subscribe-365926')
 			fireEvent.click(button)
-			await waitFor(() =>
-				expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL)
-			)
+			await waitFor(() => expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL))
 			expect(button.disabled).toBe(true)
 
 			const pageShow = new Event('pageshow')
@@ -162,9 +145,7 @@ describe('Plans page checkouts', () => {
 		})
 
 		it('shows a toast and frees the button when the checkout fails', async () => {
-			const consoleErrorSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {})
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 			createCheckoutUrl.mockRejectedValue(new Error('Lemon Squeezy is down'))
 			renderPlansPage()
 
@@ -200,9 +181,7 @@ describe('Plans page checkouts', () => {
 				name: 'Manage my Subscription',
 			})
 			expect(manage.getAttribute('href')).toBe(PORTAL_URL)
-			expect(
-				screen.getByRole('link', { name: 'Change Plan' }).getAttribute('href')
-			).toBe(PORTAL_URL)
+			expect(screen.getByRole('link', { name: 'Change Plan' }).getAttribute('href')).toBe(PORTAL_URL)
 			expect(screen.queryByRole('button', { name: 'Subscribe' })).toBeNull()
 		})
 
@@ -221,9 +200,7 @@ describe('Plans page checkouts', () => {
 
 			fireEvent.click(refills[0])
 
-			await waitFor(() =>
-				expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL)
-			)
+			await waitFor(() => expect(router.push).toHaveBeenCalledWith(CHECKOUT_URL))
 			expect(createCheckoutUrl).toHaveBeenCalledTimes(1)
 			expect(createCheckoutUrl).toHaveBeenCalledWith('379040')
 		})

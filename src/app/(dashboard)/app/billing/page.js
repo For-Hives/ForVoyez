@@ -1,11 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-
-import { useRouter } from 'next/navigation'
-
 import { getCustomerPortalUrl } from '@/app/actions/app/plans'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export default function BillingPage() {
 	const router = useRouter()
@@ -13,10 +12,7 @@ export default function BillingPage() {
 
 	function redirectToPlans(toastId) {
 		if (!toast.isActive(toastId)) {
-			toast.info(
-				'You must have been subscribed at least once to access this page.',
-				{ toastId }
-			)
+			toast.info('You must have been subscribed at least once to access this page.', { toastId })
 		}
 		router.push('/app/plans')
 	}
@@ -49,10 +45,12 @@ export default function BillingPage() {
 
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto">
-			<h1 className="text-xl font-bold text-slate-800">
-				Billing & Invoice Management
-			</h1>
-			<p className="mt-1 text-sm text-slate-600">{loadingMessage}</p>
+			<Transition name="resource-billing-title">
+				<h1 className="text-xl font-bold text-slate-800">Billing & Invoice Management</h1>
+			</Transition>
+			<Transition name="resource-billing-description">
+				<p className="mt-1 text-sm text-slate-600">{loadingMessage}</p>
+			</Transition>
 			<div className={'h-[50vh] w-full'} />
 		</div>
 	)

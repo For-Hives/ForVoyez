@@ -4,8 +4,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { toast } from 'react-toastify'
 
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
-import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
 import TokenModal from '@/components/Tokens/TokenModal'
+import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
 
 export default function TokenList() {
 	const [tokens, setTokens] = useState([])
@@ -17,6 +17,7 @@ export default function TokenList() {
 
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 	const [tokenToDelete, setTokenToDelete] = useState(null)
+	const [isDeleting, setIsDeleting] = useState(false)
 
 	const openDeleteModal = token => {
 		setTokenToDelete(token)
@@ -28,46 +29,44 @@ export default function TokenList() {
 		setDeleteModalOpen(false)
 	}
 
-	const handleDelete = useCallback(() => {
-		deleteToken(tokenToDelete.id)
-			.then(() => {
-				setTokens(tokens.filter(token => token.id !== tokenToDelete.id))
-				toast.success('Token deleted successfully')
-				closeDeleteModal()
-			})
-			.catch(error => {
-				toast.error('Error deleting token: ' + error.message)
-				closeDeleteModal()
-			})
-	}, [tokenToDelete, tokens, closeDeleteModal])
+	async function handleDelete() {
+		if (!tokenToDelete || isDeleting) return
+		const id = tokenToDelete.id
+		setIsDeleting(true)
+		try {
+			await deleteToken(id)
+			setTokens(current => current.filter(token => token.id !== id))
+			toast.success('Token deleted successfully')
+		} catch (error) {
+			toast.error(`Error deleting token: ${error.message}`)
+		} finally {
+			closeDeleteModal()
+			setIsDeleting(false)
+		}
+	}
 
 	useEffect(() => {
 		getAllToken()
 			.then(setTokens)
 			.catch(error => {
-				toast.error('Error fetching tokens: ' + error.message)
+				toast.error(`Error fetching tokens: ${error.message}`)
 			})
 	}, [])
 
 	return (
 		<div className="w-full">
-			<TokenModal
-				closeModal={closeModal}
-				isOpen={isModalOpen}
-				setTokens={setTokens}
-				tokens={tokens}
-			/>
+			<TokenModal closeModal={closeModal} isOpen={isModalOpen} setTokens={setTokens} tokens={tokens} />
 			<TokenModalDelete
 				closeModal={closeDeleteModal}
 				isOpen={deleteModalOpen}
 				onConfirm={handleDelete}
+				isDeleting={isDeleting}
 				token={tokenToDelete}
 			/>
 			<div className="sm:flex sm:items-center">
 				<div className="sm:flex-auto">
 					<p className="mt-2 text-sm text-slate-700">
-						A list of all the tokens you have created. You can create a new
-						token, and delete existing ones.
+						A list of all the tokens you have created. You can create a new token, and delete existing ones.
 					</p>
 				</div>
 				<div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -100,22 +99,13 @@ export default function TokenList() {
 										>
 											Token value
 										</th>
-										<th
-											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
-											scope="col"
-										>
+										<th className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900" scope="col">
 											Created at
 										</th>
-										<th
-											className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900"
-											scope="col"
-										>
+										<th className="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-slate-900" scope="col">
 											Expired at
 										</th>
-										<th
-											className="relative w-2/12 py-3.5 pr-4 pl-3 sm:pr-6"
-											scope="col"
-										>
+										<th className="relative w-2/12 py-3.5 pr-4 pl-3 sm:pr-6" scope="col">
 											<span className="sr-only">Actions</span>
 										</th>
 									</tr>
@@ -125,7 +115,7 @@ export default function TokenList() {
 										// map over tokens and display them in a table
 										tokens && tokens.length > 0 ? (
 											tokens.map((token, index) => (
-												<tr data-testid={`token-row-${index}`} key={index}>
+												<tr data-testid={`token-row-${index}`} key={token.id}>
 													<td className="overflow-x-visible py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-slate-900 sm:pl-6">
 														{
 															// display token name, and truncate if too long
@@ -138,39 +128,34 @@ export default function TokenList() {
 													<td className="py-4 text-sm font-medium whitespace-nowrap text-slate-900">
 														{
 															// display token creation date, and time, format it too
-															new Date(token.createdAt).toLocaleString(
-																'en-US',
-																{
-																	minute: 'numeric',
-																	second: 'numeric',
-																	year: 'numeric',
-																	hour: 'numeric',
-																	month: 'short',
-																	day: 'numeric',
-																	hour12: true,
-																}
-															)
+															new Date(token.createdAt).toLocaleString('en-US', {
+																minute: 'numeric',
+																second: 'numeric',
+																year: 'numeric',
+																hour: 'numeric',
+																month: 'short',
+																day: 'numeric',
+																hour12: true,
+															})
 														}
 													</td>
 													<td className="py-4 text-sm font-medium whitespace-nowrap text-slate-900">
 														{
 															// display token expiration date, and format it
-															new Date(token.expiredAt).toLocaleString(
-																'en-US',
-																{
-																	minute: 'numeric',
-																	second: 'numeric',
-																	year: 'numeric',
-																	hour: 'numeric',
-																	month: 'short',
-																	day: 'numeric',
-																	hour12: true,
-																}
-															)
+															new Date(token.expiredAt).toLocaleString('en-US', {
+																minute: 'numeric',
+																second: 'numeric',
+																year: 'numeric',
+																hour: 'numeric',
+																month: 'short',
+																day: 'numeric',
+																hour12: true,
+															})
 														}
 													</td>
 													<td className="relative flex justify-end py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap">
 														<button
+															type="submit"
 															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
 															data-testid={`delete-token-button-${index}`}
 															onClick={() => openDeleteModal(token)}

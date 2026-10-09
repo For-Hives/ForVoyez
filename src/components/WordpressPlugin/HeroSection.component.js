@@ -1,8 +1,8 @@
 'use client'
 import { motion } from 'motion/react'
-
 import Image from 'next/image'
 import Link from 'next/link'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export function HeroSectionComponent() {
 	return (
@@ -29,63 +29,47 @@ export function HeroSectionComponent() {
 						strokeWidth={0}
 					/>
 				</svg>
-				<rect
-					fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
-					height="100%"
-					strokeWidth={0}
-					width="100%"
-				/>
+				<rect fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" height="100%" strokeWidth={0} width="100%" />
 			</svg>
 			<div className="overflow-hidden">
 				<div className="mx-auto max-w-7xl px-6 pt-36 pb-32 sm:pt-60 lg:px-8 lg:pt-32">
 					<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
-						<motion.div
-							animate={{ opacity: 1, y: 0 }}
-							className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl"
-							initial={{ opacity: 0, y: 20 }}
-							transition={{ duration: 0.5 }}
-						>
-							<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-								Automate Alt Text for WordPress Images
-							</h1>
-							<p className="mt-6 text-lg leading-8 text-slate-600 sm:max-w-md lg:max-w-none">
-								Boost your SEO and accessibility with AI-powered image
-								descriptions. Our WordPress plugin generates high-quality alt
-								text, titles, and captions automatically.
-							</p>
+						<motion.div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl" initial={false}>
+							<Transition name="wordpress-plugin-title">
+								<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+									Image descriptions, handled right inside WordPress.
+								</h1>
+							</Transition>
+							<Transition name="wordpress-plugin-description">
+								<p className="mt-6 text-lg leading-8 text-slate-600 sm:max-w-md lg:max-w-none">
+									Generate alt text, titles, and captions from your media library. Connect your ForVoyez account once,
+									then describe existing images in bulk or enable generation for new uploads.
+								</p>
+							</Transition>
 							<div className="mt-10 flex items-center gap-x-6">
-								<motion.div
-									whileHover={{ scale: 1.05 }}
-									whileTap={{ scale: 0.95 }}
-								>
+								<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
 									<Link
 										className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-600 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 										href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 									>
-										Download Now
+										Install the WordPress plugin
 									</Link>
 								</motion.div>
-								<Link
-									className="text-sm leading-6 font-semibold text-slate-900"
-									href="#how-it-works"
-								>
-									Learn more <span aria-hidden="true">→</span>
+								<Link className="text-sm leading-6 font-semibold text-slate-900" href="#how-it-works">
+									See the setup steps <span aria-hidden="true">→</span>
 								</Link>
 							</div>
 						</motion.div>
-						<motion.div
-							animate={{ opacity: 1, scale: 1 }}
-							className="relative mt-20 flex w-full max-w-xl shrink-0 md:mt-0 xl:max-w-2xl"
-							initial={{ opacity: 0, scale: 0.8 }}
-							transition={{ duration: 0.5, delay: 0.2 }}
-						>
-							<Image
-								alt="ForVoyez WordPress plugin interface screenshot showing the image optimization dashboard"
-								className="rounded-xl object-cover"
-								height={500}
-								src={'/images/wordpress-plugin/forvoyez_wordpress.png'}
-								width={500}
-							/>
+						<motion.div className="relative mt-20 flex w-full max-w-xl shrink-0 md:mt-0 xl:max-w-2xl" initial={false}>
+							<Transition name="wordpress-plugin-image">
+								<Image
+									alt="ForVoyez WordPress plugin interface screenshot showing the image optimization dashboard"
+									className="rounded-xl object-cover"
+									height={500}
+									src={'/images/wordpress-plugin/forvoyez_wordpress.png'}
+									width={500}
+								/>
+							</Transition>
 						</motion.div>
 					</div>
 				</div>

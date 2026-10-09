@@ -1,3 +1,5 @@
+const JS_IDENTIFIER = /^[A-Za-z_$][\w$]*$/
+
 import { normalizeDescribeSchema } from '@/helpers/describeInput'
 
 // The playground "Request Preview": the same describe request, made with one
@@ -47,22 +49,14 @@ function curlSample({ imagePath, imageType, fields, schema }) {
 		`curl -X POST ${shellQuote(API_URL)}`,
 		`  -H ${shellQuote(`Authorization: ${AUTHORIZATION}`)}`,
 		`  -F ${shellQuote(imagePart)}`,
-		...fields.map(
-			([name, value]) => `  --form-string ${shellQuote(`${name}=${value}`)}`
-		),
+		...fields.map(([name, value]) => `  --form-string ${shellQuote(`${name}=${value}`)}`),
 		`  --form-string ${shellQuote(`schema=${JSON.stringify(schema)}`)}`,
 	].join(' \\\n')
 }
 
 // The text fields the playground sends (empty ones are left out: the API
 // then uses its defaults) and the schema the API will answer with
-function describeRequest({
-	languageToTranslate,
-	jsonSchema,
-	keywords,
-	context,
-	image,
-} = {}) {
+function describeRequest({ languageToTranslate, jsonSchema, keywords, context, image } = {}) {
 	return {
 		fields: [
 			['context', context],
@@ -82,24 +76,14 @@ function describeSchema(jsonSchema) {
 	try {
 		return normalizeDescribeSchema(jsonSchema)
 	} catch {
-		return Object.fromEntries(
-			Object.entries(JSON.parse(jsonSchema)).map(([key, value]) => [
-				key,
-				String(value ?? ''),
-			])
-		)
+		return Object.fromEntries(Object.entries(JSON.parse(jsonSchema)).map(([key, value]) => [key, String(value ?? '')]))
 	}
 }
 
 function httpSample({ imagePath, imageType, fields, schema }) {
 	// a file name escaped as browsers send it
 	const fileName = basename(imagePath).replace(/["\r\n]/g, encodeURIComponent)
-	const part = (name, value) => [
-		`--${BOUNDARY}`,
-		`Content-Disposition: form-data; name="${name}"`,
-		'',
-		value,
-	]
+	const part = (name, value) => [`--${BOUNDARY}`, `Content-Disposition: form-data; name="${name}"`, '', value]
 	return [
 		'POST /api/describe HTTP/1.1',
 		'Host: forvoyez.com',
@@ -129,15 +113,11 @@ function javascriptSample({ imagePath, imageType, fields, schema }) {
 		`  new Blob([await readFile(${quote(imagePath)})], { type: ${quote(imageType)} }),`,
 		`  ${quote(basename(imagePath))}`,
 		')',
-		...fields.map(
-			([name, value]) => `form.append(${quote(name)}, ${quote(value)})`
-		),
+		...fields.map(([name, value]) => `form.append(${quote(name)}, ${quote(value)})`),
 		'form.append(',
 		"  'schema',",
 		'  JSON.stringify({',
-		...Object.entries(schema).map(
-			([key, value]) => `    ${jsKey(key)}: ${quote(value)},`
-		),
+		...Object.entries(schema).map(([key, value]) => `    ${jsKey(key)}: ${quote(value)},`),
 		'  })',
 		')',
 		'',
@@ -156,7 +136,7 @@ function jsKey(key) {
 	if (key === '__proto__') {
 		return `[${quote(key)}]`
 	}
-	return /^[A-Za-z_$][\w$]*$/.test(key) ? key : quote(key)
+	return JS_IDENTIFIER.test(key) ? key : quote(key)
 }
 
 // PHP single quotes only know the \\ and \' escapes
@@ -177,13 +157,9 @@ function phpSample({ imagePath, imageType, fields, schema }) {
 		`    CURLOPT_HTTPHEADER => [${phpQuote(`Authorization: ${AUTHORIZATION}`)}],`,
 		'    CURLOPT_POSTFIELDS => [',
 		`        'image' => new CURLFile(${phpQuote(imagePath)}, ${phpQuote(imageType)}),`,
-		...fields.map(
-			([name, value]) => `        ${phpQuote(name)} => ${phpQuote(value)},`
-		),
+		...fields.map(([name, value]) => `        ${phpQuote(name)} => ${phpQuote(value)},`),
 		"        'schema' => json_encode([",
-		...Object.entries(schema).map(
-			([key, value]) => `            ${phpQuote(key)} => ${phpQuote(value)},`
-		),
+		...Object.entries(schema).map(([key, value]) => `            ${phpQuote(key)} => ${phpQuote(value)},`),
 		'        ], JSON_FORCE_OBJECT),',
 		'    ],',
 		']);',
@@ -204,9 +180,7 @@ function pythonSample({ imagePath, imageType, fields, schema }) {
 		'data = {',
 		...fields.map(([name, value]) => `    ${quote(name)}: ${quote(value)},`),
 		"    'schema': json.dumps({",
-		...Object.entries(schema).map(
-			([key, value]) => `        ${quote(key)}: ${quote(value)},`
-		),
+		...Object.entries(schema).map(([key, value]) => `        ${quote(key)}: ${quote(value)},`),
 		'    }),',
 		'}',
 		'',
@@ -221,10 +195,7 @@ function pythonSample({ imagePath, imageType, fields, schema }) {
 // A single-quoted JavaScript or Python string: JSON escapes mean the same in
 // both languages.
 function quote(text) {
-	const escaped = JSON.stringify(text)
-		.slice(1, -1)
-		.replace(/\\"/g, '"')
-		.replace(/'/g, "\\'")
+	const escaped = JSON.stringify(text).slice(1, -1).replace(/\\"/g, '"').replace(/'/g, "\\'")
 	return `'${escaped}'`
 }
 

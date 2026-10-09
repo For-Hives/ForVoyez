@@ -1,16 +1,15 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { toast } from 'react-toastify'
 
 import Link from 'next/link'
-
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
+import { describePlaygroundAction } from '@/app/actions/app/playground'
+import { getMyCredits } from '@/app/actions/app/usage'
+import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
 import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode.component'
 import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.component'
-import PlaygroundForm from '@/components/Playground/PlaygroundForm.component'
-import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { SkeletonText } from '@/components/Skeletons/SkeletonText'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
-import { getMyCredits } from '@/app/actions/app/usage'
 
 const MAX_IMAGE_SIZE_BYTES = 10485760
 
@@ -66,15 +65,11 @@ export function Playground() {
 			if (response.status === 200) {
 				setResponse(response.data)
 			} else {
-				setResponse(
-					response.error || 'Error processing the request. Please try again.'
-				)
+				setResponse(response.error || 'Error processing the request. Please try again.')
 			}
 		} catch (error) {
 			console.error('Error:', error)
-			setResponse(
-				'An error occurred. Please check the console for more details.'
-			)
+			setResponse('An error occurred. Please check the console for more details.')
 		} finally {
 			setIsProcessingResultApi(false)
 		}
@@ -100,15 +95,10 @@ export function Playground() {
 						<p className="text-sm leading-6 text-white">
 							<Link data-testid="tooltip-link" href="/app/plans">
 								<strong className="font-semibold">Playground usage</strong>
-								<svg
-									aria-hidden="true"
-									className="mx-2 inline h-0.5 w-0.5 fill-current"
-									viewBox="0 0 2 2"
-								>
+								<svg aria-hidden="true" className="mx-2 inline h-0.5 w-0.5 fill-current" viewBox="0 0 2 2">
 									<circle cx="1" cy="1" r="1" />
 								</svg>
-								You need to have at least 1 credit to use the playground, get a
-								plan before&nbsp;
+								You need to have at least 1 credit to use the playground, get a plan before&nbsp;
 								<span aria-hidden="true">&rarr;</span>
 							</Link>
 						</p>
@@ -133,20 +123,14 @@ export function Playground() {
 						<p className="mt-1 text-sm text-slate-500 italic">
 							{`This section displays the response received from the API after submitting the request. It will show the generated title, alternative text, and caption for the analyzed image based on the provided image, context, and JSON schema.`}
 						</p>
-						<PlaygroundResponse
-							processingResultApi={isProcessingResultApi}
-							response={response}
-						/>
+						<PlaygroundResponse processingResultApi={isProcessingResultApi} response={response} />
 
 						<p className={'text-md my-4 hidden text-slate-500 sm:block'}>
 							remaining credits: &nbsp;
 							{userCredits === null ? (
 								<SkeletonText dataTestId="user-credits-loading" />
 							) : (
-								<span
-									className={'font-semibold text-slate-900'}
-									data-testid="user-credits"
-								>
+								<span className={'font-semibold text-slate-900'} data-testid="user-credits">
 									{userCredits}
 								</span>
 							)}

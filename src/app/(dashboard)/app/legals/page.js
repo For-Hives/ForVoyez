@@ -1,11 +1,7 @@
 'use client'
-import {
-	DocumentTextIcon,
-	ScaleIcon,
-	ShieldCheckIcon,
-} from '@heroicons/react/24/outline'
-
+import { DocumentTextIcon, ScaleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 import { ResourceCardAppComponent } from '@/components/App/ResourceCardApp.component'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 const legalResources = [
 	{
@@ -55,11 +51,11 @@ const legalResources = [
 export default function LegalsPage() {
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
-			<h1 className="mb-8 text-3xl font-bold">Legal Information</h1>
+			<Transition name="resource-legals-title">
+				<h1 className="mb-8 text-3xl font-bold">Legal Information</h1>
+			</Transition>
 			<div className="mt-12">
-				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">
-					Important Legal Documents
-				</h2>
+				<h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">Important Legal Documents</h2>
 				<div className="mt-6 grid grid-cols-1 gap-8 border-t border-slate-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-3">
 					{legalResources.map(resource => (
 						<ResourceCardAppComponent key={resource.href} resource={resource} />

@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	cacheComponents: true,
+	partialPrefetching: true,
+	reactCompiler: true,
+	poweredByHeader: false,
+	// biome-ignore lint/suspicious/useAwait: Keep the existing async contract and promise rejection behavior.
 	async headers() {
 		return [
 			{

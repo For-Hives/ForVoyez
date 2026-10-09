@@ -1,3 +1,4 @@
+import { Transition } from '@/components/Transitions/Transition.component'
 export const metadata = {
 	description:
 		"Read ForVoyez's Terms of Service agreement. Learn about the rules, guidelines, and policies for using our image metadata generation services.",
@@ -9,9 +10,9 @@ export const metadata = {
 export default function TermsOfServicePage() {
 	return (
 		<div className="prose mx-auto max-w-5xl flex-auto px-6">
-			<h1 className="mb-8 text-3xl font-bold text-slate-800">
-				Terms of Service
-			</h1>
+			<Transition name="resource-legals-terms-title">
+				<h1 className="mb-8 text-3xl font-bold text-slate-800">Terms of Service</h1>
+			</Transition>
 
 			<p className="mt-1 text-sm text-slate-600">
 				{`Thank you for using ForVoyez! We're happy you're here. Please read our
@@ -23,14 +24,12 @@ export default function TermsOfServicePage() {
 			</p>
 
 			<p className="mt-4 text-sm font-bold text-slate-800">
-				YOU AGREE THAT BY REGISTERING FOR, ACCESSING, OR USING THE SERVICES, YOU
-				ARE ENTERING INTO A LEGALLY BINDING AGREEMENT WITH FORVOYEZ. IF YOU DO
-				NOT AGREE WITH THESE TERMS, YOU MUST NOT ACCESS OR USE THE SERVICES.
+				YOU AGREE THAT BY REGISTERING FOR, ACCESSING, OR USING THE SERVICES, YOU ARE ENTERING INTO A LEGALLY BINDING
+				AGREEMENT WITH FORVOYEZ. IF YOU DO NOT AGREE WITH THESE TERMS, YOU MUST NOT ACCESS OR USE THE SERVICES.
 			</p>
 
 			<p className="mt-8 text-sm text-slate-600">
-				Please click the link below to view the full Terms of Service in PDF
-				format:
+				Please click the link below to view the full Terms of Service in PDF format:
 			</p>
 
 			<a

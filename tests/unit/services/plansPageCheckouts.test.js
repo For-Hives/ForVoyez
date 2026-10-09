@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
 import * as clerk from '@clerk/nextjs/server'
+import * as lemonsqueezy from '@lemonsqueezy/lemonsqueezy.js'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createCheckoutLink } from '@/services/lemonsqueezy.service'
 
@@ -30,56 +30,42 @@ describe('createCheckoutLink', () => {
 			data: { data: { attributes: { url: CHECKOUT_URL } } },
 		})
 
-		await expect(createCheckoutLink('365926', 'user_123')).resolves.toBe(
-			CHECKOUT_URL
-		)
+		await expect(createCheckoutLink('365926', 'user_123')).resolves.toBe(CHECKOUT_URL)
 
 		expect(lemonsqueezy.lemonSqueezySetup).toHaveBeenCalledWith({
 			onError: expect.any(Function),
 			apiKey: 'test-api-key',
 		})
 		expect(lemonsqueezy.createCheckout).toHaveBeenCalledTimes(1)
-		expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(
-			STORE_ID,
-			'365926',
-			{
-				productOptions: {
-					redirectUrl: `https://forvoyez.com/app/billing/`,
-					receiptButtonText: 'Go to Dashboard',
-					enabledVariants: ['365926'],
+		expect(lemonsqueezy.createCheckout).toHaveBeenCalledWith(STORE_ID, '365926', {
+			productOptions: {
+				redirectUrl: `https://forvoyez.com/app/billing/`,
+				receiptButtonText: 'Go to Dashboard',
+				enabledVariants: ['365926'],
+			},
+			checkoutData: {
+				custom: {
+					user_id: 'user_123',
 				},
-				checkoutData: {
-					custom: {
-						user_id: 'user_123',
-					},
-				},
-				// still expires 2 hours after its creation
-				expiresAt: new Date('2026-10-08T12:00:00.000Z'),
-			}
-		)
+			},
+			// still expires 2 hours after its creation
+			expiresAt: new Date('2026-10-08T12:00:00.000Z'),
+		})
 		// the action passes the user id: no extra call to the Clerk API
 		expect(clerk.currentUser).not.toHaveBeenCalled()
 	})
 
 	it('refuses to create a checkout without a user', async () => {
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {})
+		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-		await expect(createCheckoutLink('365926', undefined)).rejects.toThrow(
-			'User is not authenticated.'
-		)
+		await expect(createCheckoutLink('365926', undefined)).rejects.toThrow('User is not authenticated.')
 		expect(lemonsqueezy.createCheckout).not.toHaveBeenCalled()
 		consoleErrorSpy.mockRestore()
 	})
 
 	it('lets a Lemon Squeezy failure reach the caller', async () => {
-		lemonsqueezy.createCheckout.mockRejectedValue(
-			new Error('Lemon Squeezy Error')
-		)
+		lemonsqueezy.createCheckout.mockRejectedValue(new Error('Lemon Squeezy Error'))
 
-		await expect(createCheckoutLink('365926', 'user_123')).rejects.toThrow(
-			'Lemon Squeezy Error'
-		)
+		await expect(createCheckoutLink('365926', 'user_123')).rejects.toThrow('Lemon Squeezy Error')
 	})
 })

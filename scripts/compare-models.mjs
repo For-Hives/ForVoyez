@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // Runs the previous 3-call image description pipeline
 // (scripts/legacy-image-description.mjs) and the current single-call one
 // (src/services/imageDescription.service.js) on every image of a folder, then
@@ -11,11 +12,13 @@
 // the same preprocessing as the app (blobToBase64: WebP, at most 1000px).
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { register } from 'node:module'
-import { parseArgs } from 'node:util'
 import path from 'node:path'
+import { parseArgs } from 'node:util'
 
 // `@/…` imports of the app code (static imports would load before this)
 register('./lib/src-alias-hooks.mjs', import.meta.url)
+
+const { forEachInSequence } = await import('../src/helpers/forEachInSequence.js')
 
 const USAGE = `Usage: node --env-file=.env scripts/compare-models.mjs <images-folder> [options]
 
@@ -73,10 +76,10 @@ async function main() {
 	if (values.model) process.env.FORVOYEZ_AI_MODEL = values.model
 	if (values.detail) process.env.FORVOYEZ_AI_IMAGE_DETAIL = values.detail
 
-	const { blobToBase64, DEFAULT_AI_MODEL, generateImageMetadata } =
-		await import('../src/services/imageDescription.service.js')
-	const { LEGACY_AI_MODEL, legacyGenerateImageMetadata } =
-		await import('./legacy-image-description.mjs')
+	const { blobToBase64, DEFAULT_AI_MODEL, generateImageMetadata } = await import(
+		'../src/services/imageDescription.service.js'
+	)
+	const { LEGACY_AI_MODEL, legacyGenerateImageMetadata } = await import('./legacy-image-description.mjs')
 
 	const folder = path.resolve(positionals[0])
 	const files = (await readdir(folder))
@@ -105,7 +108,7 @@ async function main() {
 	}
 
 	const images = []
-	for (const [index, file] of files.entries()) {
+	await forEachInSequence(files.entries(), async ([index, file]) => {
 		console.info(`[${index + 1}/${files.length}] ${file}`)
 		const entry = { file }
 		try {
@@ -123,7 +126,7 @@ async function main() {
 			entry.error = describeError(error)
 		}
 		images.push(entry)
-	}
+	})
 
 	const report = {
 		summary: {
@@ -138,10 +141,7 @@ async function main() {
 
 	const out = path.resolve(values.out)
 	await mkdir(out, { recursive: true })
-	await writeFile(
-		path.join(out, 'report.json'),
-		`${JSON.stringify(report, null, 2)}\n`
-	)
+	await writeFile(path.join(out, 'report.json'), `${JSON.stringify(report, null, 2)}\n`)
 	await writeFile(path.join(out, 'report.md'), toMarkdown(report))
 	console.info(`Report written to ${out}/report.md and ${out}/report.json`)
 	return 0
@@ -165,15 +165,11 @@ function describeError(error) {
 function summarize(images, pipeline) {
 	const runs = images.map(image => image[pipeline]).filter(Boolean)
 	const succeeded = runs.filter(run => !run.error)
-	const total = key =>
-		succeeded.reduce((sum, run) => sum + (run.usage?.[key] ?? 0), 0)
-	const average = value =>
-		succeeded.length ? Math.round(value / succeeded.length) : null
+	const total = key => succeeded.reduce((sum, run) => sum + (run.usage?.[key] ?? 0), 0)
+	const average = value => (succeeded.length ? Math.round(value / succeeded.length) : null)
 
 	return {
-		averageLatencyMs: average(
-			succeeded.reduce((sum, run) => sum + run.latencyMs, 0)
-		),
+		averageLatencyMs: average(succeeded.reduce((sum, run) => sum + run.latencyMs, 0)),
 		averageOutputTokens: average(total('outputTokens')),
 		averageInputTokens: average(total('inputTokens')),
 		totalOutputTokens: total('outputTokens'),
@@ -216,10 +212,7 @@ function toMarkdown(report) {
 			continue
 		}
 		const fields = [
-			...new Set([
-				...Object.keys(image.legacy?.metadata ?? {}),
-				...Object.keys(image.new?.metadata ?? {}),
-			]),
+			...new Set([...Object.keys(image.legacy?.metadata ?? {}), ...Object.keys(image.new?.metadata ?? {})]),
 		]
 		lines.push(
 			'| | Previous | New |',

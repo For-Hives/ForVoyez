@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../../../../src/helpers/forEachInSequence.js')
 const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 
@@ -14,49 +15,47 @@ test('FeatureComponent elements are present and correct', async ({ page }) => {
 	// Define the expected features
 	const expectedFeatures = [
 		{
+			name: 'Write image descriptions for you',
 			description:
-				'Automatically generate SEO-optimized alt texts, titles, and captions with our AI-powered tool. Save time and focus on what matters most.',
-			name: 'Automate Metadata Input',
+				'Generate alt text, titles, and captions for your WordPress images, instead of filling in every field by hand.',
 		},
 		{
+			name: 'Work inside WordPress',
 			description:
-				'Our well-documented RESTful API allows for seamless integration with your existing applications and workflows. Start generating optimized image metadata in no time.',
-			name: 'Seamless Integration in Minutes',
+				'Install the plugin, connect your ForVoyez account, and manage image descriptions from your familiar WordPress dashboard.',
 		},
 		{
+			name: 'Give search engines useful context',
 			description:
-				'Gain a competitive edge with our SEO-optimized image metadata. Improve your rankings, drive more organic traffic, and increase user engagement.',
-			name: 'Boost Your Search Engine Visibility',
+				'Add descriptive text that helps search engines understand what your images show, alongside the rest of your SEO work.',
 		},
 		{
+			name: 'Catch up on your media library',
 			description:
-				'Whether you have dozens, hundreds, or thousands of images, our tool can handle the job. Take advantage of our powerful batch processing to generate metadata for entire image libraries in a flash.',
-			name: 'Large-Scale Metadata in a Snap',
+				'Select existing images and generate their descriptions in bulk. Tackle the images you have been putting off, without opening each one.',
 		},
 		{
+			name: 'Help visitors understand your images',
 			description:
-				'By generating accurate alt texts and captions for your images, our tool helps make your content accessible to a wider audience. Improve the experience for all users and show your commitment to digital inclusivity.',
-			name: 'Create Accessible Images for Everyone',
+				'Alt text describes images for people using screen readers. Review the generated text so it fits the image and its purpose on your page.',
 		},
 		{
+			name: 'Spend more time on your content',
 			description:
-				'By automating image metadata creation, our tool allows you to save valuable time and free up resources. Focus on creating quality content, innovating, and growing your business.',
-			name: 'Free Up Your Time for What Really Counts',
+				'Enable automatic generation for new uploads, so image descriptions become part of your publishing routine.',
 		},
 	]
 
-	for (const feature of expectedFeatures) {
+	await forEachInSequence(expectedFeatures, async feature => {
 		log(`Testing feature: ${feature.name}`)
 		const featureElement = page.locator(`text=${feature.name}`)
 		await expect(featureElement).toBeVisible()
 		await expect(featureElement).toHaveText(feature.name)
 
-		const descriptionElement = featureElement
-			.locator('..')
-			.locator(`text=${feature.description}`)
+		const descriptionElement = featuresSection.getByText(feature.description, { exact: true })
 		await expect(descriptionElement).toBeVisible()
 		await expect(descriptionElement).toHaveText(feature.description)
-	}
+	})
 
 	log('Test for presence and correctness of features completed')
 })

@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -75,33 +76,26 @@ const navigation = {
 		{ name: 'Home', href: '/' },
 		{ href: '/#features', name: 'Features' },
 		{ href: '/#pricing', name: 'Pricing' },
-		{ href: 'https://doc.forvoyez.com/', name: 'Documentation' },
+		{ href: '/wordpress-plugin', name: 'WordPress plugin' },
+		{ href: 'https://doc.forvoyez.com/', name: 'API documentation' },
 		{ href: '/app/legals', name: 'Legals' },
 		{ name: 'Help, FAQ & Contact', href: '/contact' },
 	],
 }
 
-export function FooterComponent() {
+// biome-ignore lint/suspicious/useAwait: Next.js cached components must be async even when their content is synchronous.
+export async function FooterComponent() {
+	'use cache'
+	cacheLife('days')
 	return (
 		<footer className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:pt-32 sm:pb-20 lg:px-8">
 			<div className="mb-10 flex justify-center">
-				<Image
-					alt="ForVoyez company logo"
-					height={50}
-					src="/logo/logo.webp"
-					width={50}
-				/>
+				<Image alt="ForVoyez company logo" height={50} src="/logo/logo.webp" width={50} />
 			</div>
-			<nav
-				aria-label="Footer"
-				className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12"
-			>
+			<nav aria-label="Footer" className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12">
 				{navigation.main.map(item => (
 					<div className="pb-6" key={item.name}>
-						<Link
-							className="hover:text-forvoyez_orange-500 text-sm leading-6 text-slate-600"
-							href={item.href}
-						>
+						<Link className="hover:text-forvoyez_orange-500 text-sm leading-6 text-slate-600" href={item.href}>
 							{item.name}
 						</Link>
 					</div>
@@ -109,11 +103,7 @@ export function FooterComponent() {
 			</nav>
 			<div className="mt-10 flex justify-center space-x-10">
 				{navigation.social.map(item => (
-					<Link
-						className="hover:text-forvoyez_orange-500 text-slate-400"
-						href={item.href}
-						key={item.name}
-					>
+					<Link className="hover:text-forvoyez_orange-500 text-slate-400" href={item.href} key={item.name}>
 						<span className="sr-only">{item.name}</span>
 						<item.icon aria-hidden="true" className="h-6 w-6" />
 					</Link>

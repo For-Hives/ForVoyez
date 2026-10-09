@@ -1,4 +1,5 @@
 import TokenList from '@/components/Tokens/TokenList'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export const metadata = {
 	description:
@@ -9,7 +10,9 @@ export const metadata = {
 export default function TokenPage() {
 	return (
 		<div className={'prose mx-auto max-w-5xl flex-auto'}>
-			<h1 className="text-xl font-bold text-slate-800">Manage Tokens</h1>
+			<Transition name="resource-tokens-title">
+				<h1 className="text-xl font-bold text-slate-800">Manage Tokens</h1>
+			</Transition>
 			<div className="mb-8 w-full">
 				<TokenList />
 			</div>

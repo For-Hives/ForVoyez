@@ -1,19 +1,11 @@
+import { InvalidDescribeInputError, normalizeDescribeSchema, withLegacyAltText } from '@/helpers/describeInput'
+import { chargeOneCredit, findActiveApiToken, NoCreditsLeftError } from '@/services/database.service'
 import {
 	blobToBase64,
 	getImageDescription,
 	ImageTooLargeError,
 	UnsupportedImageError,
 } from '@/services/imageDescription.service'
-import {
-	InvalidDescribeInputError,
-	normalizeDescribeSchema,
-	withLegacyAltText,
-} from '@/helpers/describeInput'
-import {
-	chargeOneCredit,
-	findActiveApiToken,
-	NoCreditsLeftError,
-} from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
@@ -26,16 +18,13 @@ const MAX_BODY_BYTES = 11 * 1024 * 1024
 
 class PayloadTooLargeError extends Error {}
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 export async function POST(request) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	try {
 		// get the authorisation header (never log it: it carries the API key)
 		const authorization = request.headers.get('Authorization')
-		if (
-			!authorization ||
-			!authorization.startsWith('Bearer ') ||
-			authorization.length < 10
-		) {
+		if (!authorization?.startsWith('Bearer ') || authorization.length < 10) {
 			console.error('Unauthorized, missing Authorization header')
 			return jsonError('Unauthorized, missing Authorization header', 401)
 		}
@@ -54,10 +43,7 @@ export async function POST(request) {
 		// belongs to the token's user and has not expired
 		const apiToken = await findActiveApiToken(jwt, payload.userId)
 		if (!apiToken) {
-			console.error(
-				'Unauthorized, revoked or expired token, user:',
-				payload.userId
-			)
+			console.error('Unauthorized, revoked or expired token, user:', payload.userId)
 			return jsonError('Unauthorized, invalid token', 401)
 		}
 
@@ -84,11 +70,7 @@ export async function POST(request) {
 				return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
 			}
 			console.error('Unreadable multipart body:', error.name)
-			return jsonError(
-				'Bad Request, the body must be multipart/form-data',
-				400,
-				'Bad Request'
-			)
+			return jsonError('Bad Request, the body must be multipart/form-data', 400, 'Bad Request')
 		}
 
 		const file = formData.get('image')
@@ -154,12 +136,9 @@ export async function POST(request) {
 		)
 
 		// no `schema` field: WordPress plugin <= 1.1.40 reads `alt_text`
-		return Response.json(
-			sentSchema === null
-				? withLegacyAltText(descriptionResult)
-				: descriptionResult,
-			{ status: 200 }
-		)
+		return Response.json(sentSchema === null ? withLegacyAltText(descriptionResult) : descriptionResult, {
+			status: 200,
+		})
 	} catch (error) {
 		if (error instanceof NoCreditsLeftError) {
 			return jsonError('Unauthorized, no credit left', 401)

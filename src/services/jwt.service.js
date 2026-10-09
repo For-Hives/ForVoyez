@@ -1,5 +1,5 @@
+import { createSecretKey } from 'node:crypto'
 import { jwtVerify, SignJWT } from 'jose'
-import { createSecretKey } from 'crypto'
 
 export async function generateJwt(payload) {
 	const secretKey = generateSecretKey()
@@ -21,17 +21,16 @@ export async function generateJwt(payload) {
 
 export async function verifyJwt(jwt) {
 	const secretKey = generateSecretKey()
-	// extract token from request
-	const token = jwt.replace('Bearer ', '')
 	try {
-		// verify token
+		if (typeof jwt !== 'string' || jwt.length === 0) throw new Error('Invalid token')
+		const token = jwt.startsWith('Bearer ') ? jwt.slice(7) : jwt
 		const { payload } = await jwtVerify(token, secretKey, {
-			audience: 'ForVoyez', // audience
-			issuer: 'ForVoyez', // issuer
+			algorithms: ['HS256'],
+			audience: 'ForVoyez',
+			issuer: 'ForVoyez',
 		})
-
 		return payload
-	} catch (e) {
+	} catch {
 		throw new Error('Token is not signed by the server')
 	}
 }

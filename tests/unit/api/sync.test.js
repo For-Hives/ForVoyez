@@ -1,8 +1,9 @@
 // @vitest-environment node
+import { revalidateTag } from 'next/cache'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GET } from '@/app/api/sync/route'
-
 import { syncPlans } from '@/services/database.service'
+import { logger } from '@/services/logger.service'
 
 vi.mock('@/services/database.service')
 
@@ -15,7 +16,7 @@ function syncRequest(headers = {}, query = '') {
 describe('GET /api/sync', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
-		vi.spyOn(console, 'info').mockImplementation(() => {})
+		vi.spyOn(logger, 'info').mockImplementation(() => {})
 		vi.spyOn(console, 'error').mockImplementation(() => {})
 		syncPlans.mockResolvedValue([])
 	})
@@ -47,9 +48,7 @@ describe('GET /api/sync', () => {
 		vi.stubEnv('SYNC_SECRET', SECRET)
 
 		const wrongLength = await GET(syncRequest({ 'x-sync-secret': 'nope' }))
-		const sameLength = await GET(
-			syncRequest({ 'x-sync-secret': SECRET.replace('f', 'g') })
-		)
+		const sameLength = await GET(syncRequest({ 'x-sync-secret': SECRET.replace('f', 'g') }))
 
 		expect(wrongLength.status).toBe(404)
 		expect(sameLength.status).toBe(404)
@@ -63,6 +62,7 @@ describe('GET /api/sync', () => {
 
 		expect(response.status).toBe(200)
 		expect(syncPlans).toHaveBeenCalledTimes(1)
+		expect(revalidateTag).toHaveBeenCalledWith('plans', { expire: 0 })
 	})
 
 	it('should answer 500 when the sync fails', async () => {
@@ -72,5 +72,6 @@ describe('GET /api/sync', () => {
 		const response = await GET(syncRequest({ 'x-sync-secret': SECRET }))
 
 		expect(response.status).toBe(500)
+		expect(revalidateTag).not.toHaveBeenCalled()
 	})
 })

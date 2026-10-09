@@ -2,8 +2,8 @@
 // per page. They are saved to e2e-screenshots/<account>/<page>.png (CI uploads
 // the folder as the `e2e-screenshots` artifact) and attached to the report.
 // The account comes from the Playwright project (see auth/fixtures.js).
-const path = require('path')
-const fs = require('fs')
+const path = require('node:path')
+const fs = require('node:fs')
 
 const { expect, test } = require('./auth/fixtures')
 
@@ -15,7 +15,7 @@ const PAGES = [
 	{
 		ready: page =>
 			page.getByRole('heading', {
-				name: 'Welcome to the ForVoyez Developer Platform',
+				name: 'Your ForVoyez account',
 				level: 1,
 			}),
 		name: 'dashboard',
@@ -32,11 +32,7 @@ const PAGES = [
 		name: 'playground',
 	},
 	{
-		ready: page =>
-			page
-				.getByTestId('usage-chart-container')
-				.or(page.getByTestId('no-usage-data'))
-				.first(),
+		ready: page => page.getByTestId('usage-chart-container').or(page.getByTestId('no-usage-data')).first(),
 		path: '/app/usage',
 		name: 'usage',
 	},
@@ -85,16 +81,12 @@ function describeDashboardScreenshots(account) {
 				})
 				.toBe(true)
 			if (page.url().includes('/app/plans')) {
-				await expect(
-					page.locator('[data-testid^="plan-"]').first()
-				).toBeVisible({ timeout: 45_000 })
+				await expect(page.locator('[data-testid^="plan-"]').first()).toBeVisible({ timeout: 45_000 })
 			}
 			await page.waitForTimeout(1500)
 
 			testInfo.annotations.push({
-				description: portalHost
-					? `redirect to ${portalHost} (blocked)`
-					: page.url(),
+				description: portalHost ? `redirect to ${portalHost} (blocked)` : page.url(),
 				type: 'billing',
 			})
 			await saveScreenshot(page, testInfo, account, 'billing')

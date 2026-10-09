@@ -1,18 +1,17 @@
 'use client'
 
-import { ToastContainer } from 'react-toastify'
-import { useEffect, useMemo } from 'react'
-import { motion } from 'motion/react'
-
 import { UserButton, useUser } from '@clerk/nextjs'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp.component'
+import { useEffect, useMemo, ViewTransition } from 'react'
+import { ToastContainer } from 'react-toastify'
+import { createUser } from '@/app/actions/app/createUser'
+import { HeaderDashboard } from '@/components/App/HeaderApp.component'
 import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.component'
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
-import { HeaderDashboard } from '@/components/App/HeaderApp.component'
-import { createUser } from '@/app/actions/app/createUser'
+import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp.component'
+import { Transition } from '@/components/Transitions/Transition.component'
 import version from '@/helpers/version'
 
 export function LayoutAppComponent({ children }) {
@@ -22,21 +21,11 @@ export function LayoutAppComponent({ children }) {
 	// layout and are public: a signed-out visitor has no user to create)
 	useEffect(() => {
 		if (!isSignedIn) return
-		createUser().catch(error =>
-			console.error('Error creating the user:', error.message)
-		)
+		createUser().catch(error => console.error('Error creating the user:', error.message))
 	}, [isSignedIn])
 
 	const memoizedImage = useMemo(
-		() => (
-			<Image
-				alt="logo ForVoyez"
-				className="h-8 w-auto"
-				height={80}
-				src="/logo/logo.webp"
-				width={80}
-			/>
-		),
+		() => <Image alt="logo ForVoyez" className="h-8 w-auto" height={80} src="/logo/logo.webp" width={80} />,
 		[]
 	)
 
@@ -57,7 +46,7 @@ export function LayoutAppComponent({ children }) {
 								<div className="hidden lg:flex">
 									<Link aria-label="Home" href="/app">
 										<span className="sr-only">ForVoyez</span>
-										{memoizedImage}
+										<Transition name="brand-logo">{memoizedImage}</Transition>
 									</Link>
 								</div>
 								<HeaderDashboard />
@@ -66,11 +55,7 @@ export function LayoutAppComponent({ children }) {
 							<div>
 								{user && (
 									<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
-										<UserButton
-											appearance="ghost"
-											userProfileMode="navigation"
-											userProfileUrl="/profile"
-										/>
+										<UserButton appearance="ghost" userProfileMode="navigation" userProfileUrl="/profile" />
 										<Link className={'h-full w-full'} href="/profile">
 											<span className="text-sm font-medium text-slate-900">
 												{user.firstName} {user.lastName}
@@ -78,9 +63,7 @@ export function LayoutAppComponent({ children }) {
 										</Link>
 									</div>
 								)}
-								<p className="pt-8 text-left text-xs text-slate-500">
-									{version}
-								</p>
+								<p className="pt-8 text-left text-xs text-slate-500">{version}</p>
 							</div>
 						</div>
 					</motion.header>
@@ -88,7 +71,11 @@ export function LayoutAppComponent({ children }) {
 						<main className="flex-auto">
 							{memoizedHeroPattern}
 							<div className="flex h-full flex-col pt-8 pb-10 xl:pt-16">
-								<div className={'z-20'}>{children}</div>
+								<div className={'z-20'}>
+									<ViewTransition default="none" update="fv-page">
+										{children}
+									</ViewTransition>
+								</div>
 							</div>
 						</main>
 					</div>

@@ -8,9 +8,7 @@ test.describe('Playground Functionality for Subscribed User', () => {
 		await expect(page).toHaveURL('/app/playground')
 	})
 
-	test('Playground should not display usage tooltip for subscribed user', async ({
-		page,
-	}) => {
+	test('Playground should not display usage tooltip for subscribed user', async ({ page }) => {
 		log('Page loaded')
 
 		// the tooltip depends on the credits, shown once the server action

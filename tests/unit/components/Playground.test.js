@@ -1,12 +1,11 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { toast } from 'react-toastify'
 import { createElement } from 'react'
+import { toast } from 'react-toastify'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { Playground } from '@/components/Playground/Playground.component'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { getMyCredits } from '@/app/actions/app/usage'
+import { Playground } from '@/components/Playground/Playground.component'
 
 vi.mock('react-toastify', () => ({ toast: { error: vi.fn(), info: vi.fn() } }))
 vi.mock('@/app/actions/app/playground', () => ({
@@ -18,11 +17,7 @@ vi.mock('@/components/Playground/PlaygroundPreviewCode.component', () => ({
 }))
 vi.mock('@/components/Playground/PlaygroundResponse.component', () => ({
 	default: props =>
-		createElement(
-			'pre',
-			{ 'data-testid': 'response' },
-			props.response == null ? '' : JSON.stringify(props.response)
-		),
+		createElement('pre', { 'data-testid': 'response' }, props.response == null ? '' : JSON.stringify(props.response)),
 }))
 
 // Stand-in form: lets the test pick a file and submit, whatever its size.
@@ -35,12 +30,12 @@ vi.mock('@/components/Playground/PlaygroundForm.component', () => ({
 			createElement(
 				'button',
 				{
-					onClick: () =>
-						props.setFormData({ ...props.formData, image: pickedFile }),
+					type: 'submit',
+					onClick: () => props.setFormData({ ...props.formData, image: pickedFile }),
 				},
 				'pick'
 			),
-			createElement('button', { onClick: props.handleSubmit }, 'analyze')
+			createElement('button', { type: 'submit', onClick: props.handleSubmit }, 'analyze')
 		),
 }))
 
@@ -70,9 +65,7 @@ describe('Playground', () => {
 		fireEvent.click(screen.getByText('pick'))
 		fireEvent.click(screen.getByText('analyze'))
 
-		expect(toast.error).toHaveBeenCalledWith(
-			'Image size should not exceed 10MB'
-		)
+		expect(toast.error).toHaveBeenCalledWith('Image size should not exceed 10MB')
 		expect(describePlaygroundAction).not.toHaveBeenCalled()
 	})
 
@@ -96,9 +89,7 @@ describe('Playground', () => {
 		fireEvent.click(screen.getByText('pick'))
 		fireEvent.click(screen.getByText('analyze'))
 
-		expect(
-			await screen.findByText('"Invalid schema: at most 20 fields are allowed"')
-		).toBeTruthy()
+		expect(await screen.findByText('"Invalid schema: at most 20 fields are allowed"')).toBeTruthy()
 	})
 
 	it('sends a 10 MB image to the action', async () => {

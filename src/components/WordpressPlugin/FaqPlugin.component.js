@@ -4,44 +4,44 @@ import { motion } from 'motion/react'
 
 const faqs = [
 	{
+		question: 'Do I need to know how to code?',
 		answer:
-			'Our plugin uses advanced AI technology to analyze your images and generate accurate, SEO-friendly alt text. It considers the content, context, and relevant keywords to create descriptions that enhance both accessibility and search engine optimization.',
-		question: "How does ForVoyez's WordPress plugin generate alt text?",
+			'No. Install the plugin in WordPress, create a ForVoyez account, and copy your API key into the plugin settings. After this one-time connection, generate descriptions from your WordPress media library.',
 	},
 	{
+		question: 'Is the plugin free?',
 		answer:
-			"Yes, our plugin is designed to be compatible with all standard WordPress themes. It works seamlessly in the background without interfering with your site's design or functionality.",
-		question: 'Is the ForVoyez WordPress plugin compatible with my theme?',
+			'The WordPress plugin is free to install. Generating descriptions uses credits from your ForVoyez account. One successfully processed image uses one credit and produces its alt text, title, and caption. Check the pricing section for current plans.',
 	},
 	{
+		question: 'Can I describe images already in my media library?',
 		answer:
-			'Absolutely! While our AI generates high-quality alt text automatically, you always have the option to review and edit the text before applying it to your images.',
-		question: 'Can I customize the generated alt text?',
+			'Yes. Select multiple existing images in your WordPress media library and use the bulk generation action. You can also generate a description for an individual image.',
 	},
 	{
+		question: 'What happens when I upload new images?',
 		answer:
-			"No, our plugin is optimized for performance. The alt text generation happens in the background and doesn't affect your site's loading speed or user experience.",
-		question: 'Will using this plugin slow down my website?',
+			'You can enable automatic generation for new uploads in the plugin settings. If you prefer to decide which images to process, leave it disabled and generate descriptions yourself.',
 	},
 	{
+		question: 'Can I edit the generated descriptions?',
 		answer:
-			'Our plugin supports multiple languages. You can set your preferred language in the plugin settings, and the AI will generate alt text in that language.',
-		question: 'How does the plugin handle images in different languages?',
+			'Yes. Review the generated alt text, titles, and captions in WordPress and edit them to fit your content. AI-generated descriptions can need corrections, especially when the purpose of an image depends on the page around it.',
 	},
 	{
+		question: 'Can I choose the language?',
 		answer:
-			'Yes, we take data privacy very seriously. Our plugin processes your images securely, and we do not store or share your image data. All processing is done in compliance with data protection regulations.',
-		question: 'Is my image data safe when using this plugin?',
+			'Yes. Choose your preferred language in the plugin settings. You can also add context to guide the generated descriptions.',
 	},
 	{
+		question: 'Does this replace all my SEO or accessibility work?',
 		answer:
-			'We recommend keeping the plugin updated to the latest version to ensure you have access to the newest features and security updates. You can enable auto-updates or manually update whenever a new version is available.',
-		question: 'How often should I update the plugin?',
+			'The plugin helps with image descriptions. Search rankings depend on many factors, and accessible pages need more than alt text. Review descriptions in the context of your content, including whether an image is decorative.',
 	},
 	{
+		question: 'Where are my images processed?',
 		answer:
-			'Yes, you can use our free plugin on as many WordPress websites as you like. There are no restrictions on the number of sites or images you can optimize.',
-		question: 'Can I use this plugin on multiple websites?',
+			'Images submitted for generation are sent to ForVoyez and its AI processing provider, OpenAI. See our privacy policy for details about processing and service providers.',
 	},
 ]
 
@@ -50,19 +50,15 @@ export function FaqPluginComponent() {
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
 				<div className="mx-auto max-w-7xl divide-y divide-gray-900/10">
-					<h2 className="text-2xl leading-10 font-bold tracking-tight text-gray-900">
-						Frequently asked questions
-					</h2>
+					<h2 className="text-2xl leading-10 font-bold tracking-tight text-gray-900">Frequently asked questions</h2>
 					<dl className="mt-10 space-y-6 divide-y divide-gray-900/10">
-						{faqs.map((faq, index) => (
+						{faqs.map(faq => (
 							<Disclosure as="div" className="pt-6" key={faq.question}>
 								{({ open }) => (
 									<>
 										<dt>
 											<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
-												<span className="text-base leading-7 font-semibold">
-													{faq.question}
-												</span>
+												<span className="text-base leading-7 font-semibold">{faq.question}</span>
 												<span className="ml-6 flex h-7 items-center">
 													<motion.svg
 														animate={{ rotate: open ? 180 : 0 }}
@@ -72,11 +68,7 @@ export function FaqPluginComponent() {
 														strokeWidth="1.5"
 														viewBox="0 0 24 24"
 													>
-														<path
-															d="M19 9l-7 7-7-7"
-															strokeLinecap="round"
-															strokeLinejoin="round"
-														/>
+														<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
 													</motion.svg>
 												</span>
 											</Disclosure.Button>

@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"checkJs": false,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"jsx": "react-jsx",
+		"paths": {
+			"@/*": ["./src/*"],
+			"package.json": ["./package.json"]
+		},
+		"strict": false,
+		"incremental": true,
+		"isolatedModules": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
+	},
+	"include": ["next-env.d.ts", "src/**/*.js", "prisma.config.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+	"exclude": ["node_modules", "src/generated"]
+}

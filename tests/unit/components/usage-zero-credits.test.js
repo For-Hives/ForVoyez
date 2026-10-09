@@ -3,13 +3,9 @@ import { createElement } from 'react'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-	getMyCredits,
-	getMyUsage,
-	getMyUsageByToken,
-} from '@/app/actions/app/usage'
-import { UsageChartComponent } from '@/components/usage/usageChart.component'
+import { getMyCredits, getMyUsage, getMyUsageByToken } from '@/app/actions/app/usage'
 import { Playground } from '@/components/Playground/Playground.component'
+import { UsageChartComponent } from '@/components/usage/usageChart.component'
 
 vi.mock('@clerk/nextjs', () => ({ useAuth: () => ({ userId: 'user123' }) }))
 vi.mock('@/app/actions/app/usage', () => ({
@@ -28,8 +24,7 @@ vi.mock('@/components/Playground/PlaygroundResponse.component', () => ({
 }))
 // jsdom has no layout: render the chart containers only
 vi.mock('recharts', () => {
-	const Container = props =>
-		createElement('div', { 'data-testid': props['data-testid'] })
+	const Container = props => createElement('div', { 'data-testid': props['data-testid'] })
 	const Empty = () => null
 	return {
 		ResponsiveContainer: Container,
@@ -94,9 +89,7 @@ describe('UsageChartComponent', () => {
 		await act(async () => credits.resolve(0))
 
 		expect(screen.queryByTestId('user-credits-loading')).toBeNull()
-		expect(screen.getByText(/You have/).textContent).toBe(
-			'You have 0 credits left'
-		)
+		expect(screen.getByText(/You have/).textContent).toBe('You have 0 credits left')
 	})
 
 	it('should show the history of a user at 0 credits', async () => {
@@ -111,10 +104,7 @@ describe('UsageChartComponent', () => {
 		expect(screen.queryByTestId('no-usage-data')).toBeNull()
 		expect(screen.queryByTestId('no-usage-summary')).toBeNull()
 		expect(screen.queryByTestId('usage-tooltip')).toBeNull()
-		expect(
-			screen.getByText('Follow your remaining credits over time:').nextSibling
-				.textContent
-		).toBe('0 credits left')
+		expect(screen.getByText('Follow your remaining credits over time:').nextSibling.textContent).toBe('0 credits left')
 	})
 
 	it('should show the real balance next to the chart, not its last point', async () => {
@@ -127,10 +117,7 @@ describe('UsageChartComponent', () => {
 		render(createElement(UsageChartComponent))
 
 		expect(await screen.findByTestId('usage-chart')).toBeTruthy()
-		expect(
-			screen.getByText('Follow your remaining credits over time:').nextSibling
-				.textContent
-		).toBe('0 credits left')
+		expect(screen.getByText('Follow your remaining credits over time:').nextSibling.textContent).toBe('0 credits left')
 	})
 
 	it('should show the "never used" banner only once both charts answered empty', async () => {
@@ -147,14 +134,10 @@ describe('UsageChartComponent', () => {
 		await act(async () => usage.resolve([]))
 
 		expect(screen.getByTestId('usage-tooltip')).toBeTruthy()
-		expect(screen.getByTestId('no-usage-summary').textContent).toBe(
-			'No usage yet'
-		)
+		expect(screen.getByTestId('no-usage-summary').textContent).toBe('No usage yet')
 		// one element only: the e2e specs wait for it in Playwright strict mode
 		expect(screen.getAllByTestId('no-usage-data')).toHaveLength(1)
-		expect(screen.getByTestId('no-usage-data').textContent).toBe(
-			'No usage data available.'
-		)
+		expect(screen.getByTestId('no-usage-data').textContent).toBe('No usage data available.')
 	})
 
 	it('should call each server action once', async () => {

@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../../../../src/helpers/forEachInSequence.js')
 const { expect, test } = require('@playwright/test')
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 
@@ -13,10 +14,7 @@ test('Navbar elements are present and correct', async ({ page }) => {
 
 	log('Checking logo src attribute')
 	// Test if the logo image source is correct
-	await expect(logo).toHaveAttribute(
-		'src',
-		/\/_next\/image\?url=%2Flogo%2Flogo\.webp&.*/
-	)
+	await expect(logo).toHaveAttribute('src', /\/_next\/image\?url=%2Flogo%2Flogo\.webp&.*/)
 
 	log('Checking logo link visibility')
 	// Test if the logo link redirects to the home page
@@ -30,14 +28,14 @@ test('Navbar elements are present and correct', async ({ page }) => {
 		{ testId: 'nav-features', href: '/#features', name: 'Features' },
 		{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
 		{
-			href: 'https://doc.forvoyez.com/',
-			testId: 'nav-documentation',
-			name: 'Documentation',
+			href: '/wordpress-plugin',
+			testId: 'nav-wordpress-plugin',
+			name: 'WordPress plugin',
 		},
 		{ testId: 'nav-contact', href: '/contact', name: 'Contact' },
 	]
 
-	for (const item of expectedNavItems) {
+	await forEachInSequence(expectedNavItems, async item => {
 		log(`Testing navigation item: ${item.name}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		log(`Waiting for navItem with testId: ${item.testId} to be visible`)
@@ -48,7 +46,7 @@ test('Navbar elements are present and correct', async ({ page }) => {
 
 		log(`Checking href of navItem with testId: ${item.testId}`)
 		await expect(navItem).toHaveAttribute('href', item.href)
-	}
+	})
 
 	log('Test for presence of elements completed')
 })
@@ -65,7 +63,7 @@ test('Navbar internal links redirect correctly', async ({ page }) => {
 		{ testId: 'nav-contact', href: '/contact' },
 	]
 
-	for (const item of internalNavItems) {
+	await forEachInSequence(internalNavItems, async item => {
 		log(`Testing navigation item: ${item.testId}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		log(`Waiting for navItem with testId: ${item.testId} to be visible`)
@@ -78,7 +76,7 @@ test('Navbar internal links redirect correctly', async ({ page }) => {
 
 		// Go back to the home page for the next iteration
 		await page.goto('/')
-	}
+	})
 
 	log('Test for internal link redirections completed')
 })
@@ -90,12 +88,12 @@ test('Navbar external links have correct href', async ({ page }) => {
 
 	const externalNavItems = [
 		{
-			href: 'https://doc.forvoyez.com/',
-			testId: 'nav-documentation',
+			href: '/wordpress-plugin',
+			testId: 'nav-wordpress-plugin',
 		},
 	]
 
-	for (const item of externalNavItems) {
+	await forEachInSequence(externalNavItems, async item => {
 		log(`Testing navigation item: ${item.testId}`)
 		const navItem = page.locator(`[data-testid="${item.testId}"]`)
 		log(`Waiting for navItem with testId: ${item.testId} to be visible`)
@@ -103,7 +101,7 @@ test('Navbar external links have correct href', async ({ page }) => {
 
 		log(`Checking href of navItem with testId: ${item.testId}`)
 		await expect(navItem).toHaveAttribute('href', item.href)
-	}
+	})
 
 	log('Test for external link href completed')
 })

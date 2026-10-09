@@ -1,11 +1,9 @@
+import { useUser } from '@clerk/nextjs'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import { createElement } from 'react'
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { useUser } from '@clerk/nextjs'
-
-import { LayoutAppComponent } from '@/components/App/LayoutApp.component'
 import { createUser } from '@/app/actions/app/createUser'
+import { LayoutAppComponent } from '@/components/App/LayoutApp.component'
 
 vi.mock('@clerk/nextjs', () => ({ UserButton: () => null, useUser: vi.fn() }))
 vi.mock('@/app/actions/app/createUser', () => ({ createUser: vi.fn() }))
@@ -27,11 +25,7 @@ vi.mock('@/components/App/SectionProviderApp.component', () => ({
 
 // test files are not JSX-transformed (only src/ is)
 function layout() {
-	return createElement(
-		LayoutAppComponent,
-		null,
-		createElement('p', null, 'page content')
-	)
+	return createElement(LayoutAppComponent, null, createElement('p', null, 'page content'))
 }
 
 function renderLayout() {
@@ -93,12 +87,7 @@ describe('LayoutAppComponent', () => {
 
 		renderLayout()
 
-		await waitFor(() =>
-			expect(consoleError).toHaveBeenCalledWith(
-				'Error creating the user:',
-				'database down'
-			)
-		)
+		await waitFor(() => expect(consoleError).toHaveBeenCalledWith('Error creating the user:', 'database down'))
 		consoleError.mockRestore()
 	})
 })

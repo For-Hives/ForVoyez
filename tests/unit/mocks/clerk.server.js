@@ -9,11 +9,7 @@ export async function auth() {
 
 export function clerkMiddleware() {
 	// a no-op middleware placeholder
-	return (req, res, next) => next()
-}
-
-export function createRouteMatcher() {
-	return () => true
+	return (_req, _res, next) => next()
 }
 
 export async function currentUser() {
@@ -21,7 +17,6 @@ export async function currentUser() {
 }
 
 export default {
-	createRouteMatcher,
 	clerkMiddleware,
 	currentUser,
 	auth,

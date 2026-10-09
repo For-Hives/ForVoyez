@@ -2,20 +2,21 @@
 import { motion, useMotionTemplate, useMotionValue } from 'motion/react'
 
 import Link from 'next/link'
-
 import { GridPatternAppComponent } from '@/components/App/GridPatternApp.component'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export function ResourceCardAppComponent({ resource }) {
-	let mouseX = useMotionValue(0)
-	let mouseY = useMotionValue(0)
+	const mouseX = useMotionValue(0)
+	const mouseY = useMotionValue(0)
 
 	function onMouseMove({ currentTarget, clientX, clientY }) {
-		let { left, top } = currentTarget.getBoundingClientRect()
+		const { left, top } = currentTarget.getBoundingClientRect()
 		mouseX.set(clientX - left)
 		mouseY.set(clientY - top)
 	}
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: Mouse movement only updates decoration; the link handles navigation.
 		<div
 			className="group relative flex rounded-2xl bg-slate-50 transition-shadow hover:shadow-md hover:shadow-slate-900/5"
 			data-testid={resource.testId}
@@ -26,22 +27,38 @@ export function ResourceCardAppComponent({ resource }) {
 			<div className="group-hover:ring-forvoyez_orange-500/10 absolute inset-0 rounded-2xl ring-1 ring-slate-900/7.5 ring-inset" />
 			<div className="relative rounded-2xl px-4 pt-16 pb-4">
 				<ResourceIcon icon={resource.icon} />
-				<h3 className="mt-4 text-sm leading-7 font-semibold text-slate-900">
-					<Link href={resource.href}>
-						{' '}
-						<span className="absolute inset-0 rounded-2xl" />
-						{resource.name}
-					</Link>
-				</h3>
-				<p className="mt-1 text-sm text-slate-600">{resource.description}</p>
+				<Transition
+					name={
+						resource.href.startsWith('/app/')
+							? `resource-${resource.href.slice(5).replaceAll('/', '-')}-title`
+							: undefined
+					}
+				>
+					<h3 className="mt-4 text-sm leading-7 font-semibold text-slate-900">
+						<Link href={resource.href}>
+							{' '}
+							<span className="absolute inset-0 rounded-2xl" />
+							{resource.name}
+						</Link>
+					</h3>
+				</Transition>
+				<Transition
+					name={
+						resource.href.startsWith('/app/')
+							? `resource-${resource.href.slice(5).replaceAll('/', '-')}-description`
+							: undefined
+					}
+				>
+					<p className="mt-1 text-sm text-slate-600">{resource.description}</p>
+				</Transition>
 			</div>
 		</div>
 	)
 }
 
 export function ResourcePattern({ mouseX, mouseY, ...gridProps }) {
-	let maskImage = useMotionTemplate`radial-gradient(180px at ${mouseX}px ${mouseY}px, white, transparent)`
-	let style = { WebkitMaskImage: maskImage, maskImage }
+	const maskImage = useMotionTemplate`radial-gradient(180px at ${mouseX}px ${mouseY}px, white, transparent)`
+	const style = { WebkitMaskImage: maskImage, maskImage }
 
 	return (
 		<div className="pointer-events-none">

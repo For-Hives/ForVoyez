@@ -1,8 +1,8 @@
 // @vitest-environment node
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { createRequire } from 'module'
-import path from 'path'
 
 const root = path.resolve(__dirname, '../../..')
 const read = file => readFileSync(path.join(root, file), 'utf8')
@@ -14,32 +14,22 @@ function listFiles(directory) {
 	})
 }
 
-const SERVER_ONLY_SERVICES = [
-	'src/services/database.service.js',
-	'src/services/lemonsqueezy.service.js',
-]
+const SERVER_ONLY_SERVICES = ['src/services/database.service.js', 'src/services/lemonsqueezy.service.js']
 
 describe('server-only data services', () => {
-	it.each(SERVER_ONLY_SERVICES)(
-		'%s is server-only, not a server action module',
-		file => {
-			const source = read(file)
-			// a file-wide 'use server' turns every export (updateCredits,
-			// syncPlans...) into an action callable from any browser
-			expect(source).not.toMatch(/^\s*['"]use server['"]/m)
-			expect(source).toMatch(/^import 'server-only'$/m)
-		}
-	)
+	it.each(SERVER_ONLY_SERVICES)('%s is server-only, not a server action module', file => {
+		const source = read(file)
+		// a file-wide 'use server' turns every export (updateCredits,
+		// syncPlans...) into an action callable from any browser
+		expect(source).not.toMatch(/^\s*['"]use server['"]/m)
+		expect(source).toMatch(/^import 'server-only'$/m)
+	})
 
 	it('no client component imports them directly', () => {
 		const offenders = listFiles(path.join(root, 'src'))
 			.filter(file => file.endsWith('.js'))
 			.filter(file => /^\s*['"]use client['"]/.test(readFileSync(file, 'utf8')))
-			.filter(file =>
-				/@\/services\/(database|lemonsqueezy)\.service/.test(
-					readFileSync(file, 'utf8')
-				)
-			)
+			.filter(file => /@\/services\/(database|lemonsqueezy)\.service/.test(readFileSync(file, 'utf8')))
 			.map(file => path.relative(root, file))
 
 		expect(offenders).toEqual([])
@@ -53,9 +43,7 @@ describe('leftovers and secrets', () => {
 
 	it('no Bruno request embeds a literal JWT (use {{token}})', () => {
 		const jwtLiteral = /eyJ[\w-]+\.[\w-]+\.[\w-]+/
-		const bruFiles = listFiles(path.join(root, 'bruno')).filter(file =>
-			file.endsWith('.bru')
-		)
+		const bruFiles = listFiles(path.join(root, 'bruno')).filter(file => file.endsWith('.bru'))
 
 		expect(bruFiles.length).toBeGreaterThan(0)
 		for (const file of bruFiles) {
@@ -77,14 +65,10 @@ describe('next.config.js upload limits', () => {
 	const tenMegabyteImageRequest = 10 * 1024 * 1024 + 64 * 1024
 
 	it('lets a 10 MB playground image through the server action body limit', () => {
-		expect(
-			toBytes(nextConfig.experimental.serverActions.bodySizeLimit)
-		).toBeGreaterThanOrEqual(tenMegabyteImageRequest)
+		expect(toBytes(nextConfig.experimental.serverActions.bodySizeLimit)).toBeGreaterThanOrEqual(tenMegabyteImageRequest)
 	})
 
 	it('lets the proxy buffer the whole request (it truncates beyond its limit)', () => {
-		expect(
-			toBytes(nextConfig.experimental.proxyClientMaxBodySize)
-		).toBeGreaterThanOrEqual(tenMegabyteImageRequest)
+		expect(toBytes(nextConfig.experimental.proxyClientMaxBodySize)).toBeGreaterThanOrEqual(tenMegabyteImageRequest)
 	})
 })

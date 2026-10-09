@@ -1,13 +1,13 @@
 'use client'
-import { TypeAnimation } from 'react-type-animation'
 import { useEffect, useState } from 'react'
+import { TypeAnimation } from 'react-type-animation'
 
 export function GlassmorphismComponent({ caption, title, alt }) {
 	const [initialized, setInitialized] = useState(false)
 
 	function truncateText(text, maxLength) {
 		if (text.length > maxLength) {
-			return text.substring(0, maxLength - 3) + '...'
+			return `${text.substring(0, maxLength - 3)}...`
 		}
 		return text
 	}
@@ -27,11 +27,7 @@ export function GlassmorphismComponent({ caption, title, alt }) {
 					'z-50 border border-white/75'
 				}
 			>
-				<div
-					className={
-						'flex h-full w-full scale-[90%] flex-col items-start text-xs leading-4'
-					}
-				>
+				<div className={'flex h-full w-full scale-[90%] flex-col items-start text-xs leading-4'}>
 					<p>{`{`}</p>
 					<div className={'flex grow items-start'}>
 						<TypeAnimation

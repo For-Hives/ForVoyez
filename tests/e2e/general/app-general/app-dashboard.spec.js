@@ -1,3 +1,4 @@
+const { forEachInSequence } = require('../../../../src/helpers/forEachInSequence.js')
 const { expect, test } = require('../../auth/fixtures')
 const { log } = require('../../tests-helpers')
 
@@ -12,9 +13,9 @@ test.describe('Dashboard Quick Links Functionality', () => {
 
 		const quickLinks = [
 			{
-				href: 'https://doc.forvoyez.com/',
-				testId: 'link-documentation',
-				name: 'Documentation',
+				href: '/wordpress-plugin',
+				testId: 'link-wordpress-plugin',
+				name: 'WordPress plugin',
 			},
 			{
 				testId: 'link-playground',
@@ -27,15 +28,13 @@ test.describe('Dashboard Quick Links Functionality', () => {
 			{ name: 'Help, FAQ & Contact', testId: 'link-help', href: '/contact' },
 		]
 
-		for (const link of quickLinks) {
+		await forEachInSequence(quickLinks, async link => {
 			log(`Checking quick link: ${link.name}`)
 			const linkLocator = page.locator(`[data-testid="${link.testId}"] a`) // Targeting the <a> element
 			await expect(linkLocator).toBeVisible()
 			await expect(linkLocator).toHaveAttribute('href', link.href)
-		}
+		})
 
-		log(
-			'Dashboard quick links presence and attributes test completed successfully'
-		)
+		log('Dashboard quick links presence and attributes test completed successfully')
 	})
 })

@@ -3,8 +3,8 @@
 // in one file on purpose: the tests of a file run one after the other in one
 // worker, so the credit counts they check cannot be changed by the other one.
 // Each one makes ONE real OpenAI call (CI passes OPENAI_API_KEY to the app).
-const path = require('path')
-const fs = require('fs')
+const path = require('node:path')
+const fs = require('node:fs')
 
 const { getNextPublicUrl, log } = require('../../tests-helpers')
 const { expect, test } = require('../../auth/fixtures')
@@ -26,15 +26,24 @@ async function revokeToken(page, name) {
 	const dialog = page.getByRole('dialog')
 	await expect(dialog.getByText('Revoke secret key')).toBeVisible()
 	await dialog.getByRole('button', { name: 'Revoke Key' }).click()
-	await expect(
-		page.getByRole('alert').filter({ hasText: 'Token deleted successfully' })
-	).toBeVisible({ timeout: 20_000 })
+	await expect(page.getByRole('alert').filter({ hasText: 'Token deleted successfully' })).toBeVisible({
+		timeout: 20_000,
+	})
 	await expect(tokenRows(page, name)).toHaveCount(0, { timeout: 20_000 })
 }
 
 // The rows of the API key list whose name contains `name`
 function tokenRows(page, name) {
 	return page.getByRole('row').filter({ hasText: name })
+}
+
+// Re-read the live list after each revocation, as the original cleanup did.
+async function revokeRemainingTokens(page) {
+	if ((await tokenRows(page, TOKEN_PREFIX).count()) === 0) return
+	const name = await tokenRows(page, TOKEN_PREFIX).first().getByRole('cell').first().innerText()
+	log(`Cleaning up the API key ${name}`)
+	await revokeToken(page, name.trim())
+	await revokeRemainingTokens(page)
 }
 
 test.describe('Credits of the subscribed account', () => {
@@ -54,20 +63,10 @@ test.describe('Credits of the subscribed account', () => {
 			// clean up a key left by a failed run (best effort)
 			try {
 				await page.goto('/app/tokens')
-				await expect(
-					page.getByRole('button', { name: 'Add token' })
-				).toBeVisible({ timeout: 30_000 })
+				await expect(page.getByRole('button', { name: 'Add token' })).toBeVisible({ timeout: 30_000 })
 				// the list is loaded by a server action after the page
 				await page.waitForTimeout(3000)
-				while ((await tokenRows(page, TOKEN_PREFIX).count()) > 0) {
-					const name = await tokenRows(page, TOKEN_PREFIX)
-						.first()
-						.getByRole('cell')
-						.first()
-						.innerText()
-					log(`Cleaning up the API key ${name}`)
-					await revokeToken(page, name.trim())
-				}
+				await revokeRemainingTokens(page)
 			} catch (error) {
 				log(`API key cleanup failed: ${error.message}`)
 			}
@@ -98,9 +97,7 @@ test.describe('Credits of the subscribed account', () => {
 			return account
 		}
 
-		test('a key created in the dashboard works on the API until it is revoked', async ({
-			page,
-		}) => {
+		test('a key created in the dashboard works on the API until it is revoked', async ({ page }) => {
 			test.setTimeout(180_000)
 			const name = `${TOKEN_PREFIX}${Date.now()}`
 
@@ -154,9 +151,7 @@ test.describe('Credits of the subscribed account', () => {
 	})
 
 	test.describe('Playground', () => {
-		test('one analysis shows the three fields and costs one credit', async ({
-			page,
-		}) => {
+		test('one analysis shows the three fields and costs one credit', async ({ page }) => {
 			test.setTimeout(180_000)
 
 			await page.goto('/app/playground')

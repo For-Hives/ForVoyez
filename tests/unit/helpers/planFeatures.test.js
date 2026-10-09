@@ -29,7 +29,7 @@ const LEGACY_GROWTH_FEATURES = [
 const COMMON_FEATURES = [
 	'Title, alternative text and caption for each image',
 	'JPEG, PNG, WebP and non-animated GIF, up to 10 MB',
-	'API, WordPress plugin and playground',
+	'Generate directly from your WordPress media library',
 	'Email support',
 ]
 
@@ -46,10 +46,7 @@ function productionPlans() {
 			id: 1,
 		},
 		{
-			features: JSON.stringify([
-				'3,000 image descriptions*/month',
-				...LEGACY_STARTER_FEATURES.slice(1),
-			]),
+			features: JSON.stringify(['3,000 image descriptions*/month', ...LEGACY_STARTER_FEATURES.slice(1)]),
 			billingCycle: 'year',
 			variantId: '422065',
 			packageSize: 3000,
@@ -67,11 +64,7 @@ function productionPlans() {
 			id: 3,
 		},
 		{
-			features: JSON.stringify(
-				LEGACY_GROWTH_FEATURES.map(feature =>
-					feature.replace('2,500', '30,000')
-				)
-			),
+			features: JSON.stringify(LEGACY_GROWTH_FEATURES.map(feature => feature.replace('2,500', '30,000'))),
 			billingCycle: 'year',
 			variantId: '422068',
 			packageSize: 30000,
@@ -92,26 +85,18 @@ function productionPlans() {
 }
 
 function tier(plans, name, billingCycle) {
-	return plans.find(
-		plan => plan.name === name && plan.billingCycle === billingCycle
-	)
+	return plans.find(plan => plan.name === name && plan.billingCycle === billingCycle)
 }
 
 describe('getPlanFeatures', () => {
 	const plans = productionPlans()
 
 	it('lists the credits and what every plan gets on Starter monthly', () => {
-		expect(getPlanFeatures(tier(plans, 'Starter', 'month'), plans)).toEqual([
-			'250 credits*/month',
-			...COMMON_FEATURES,
-		])
+		expect(getPlanFeatures(tier(plans, 'Starter', 'month'), plans)).toEqual(['250 credits*/month', ...COMMON_FEATURES])
 	})
 
 	it('gives the yearly credits per year on Starter annually', () => {
-		expect(getPlanFeatures(tier(plans, 'Starter', 'year'), plans)).toEqual([
-			'3,000 credits*/year',
-			...COMMON_FEATURES,
-		])
+		expect(getPlanFeatures(tier(plans, 'Starter', 'year'), plans)).toEqual(['3,000 credits*/year', ...COMMON_FEATURES])
 	})
 
 	it('includes Starter on Growth monthly', () => {
@@ -146,37 +131,24 @@ describe('getPlanFeatures', () => {
 			},
 		]
 
-		expect(getPlanFeatures(renamed[0], renamed)).toEqual([
-			'All Basic plan features',
-			'1,200 credits*/month',
-		])
-		expect(getPlanFeatures(renamed[1], renamed)).toEqual([
-			'500 credits*/month',
-			...COMMON_FEATURES,
-		])
+		expect(getPlanFeatures(renamed[0], renamed)).toEqual(['All Basic plan features', '1,200 credits*/month'])
+		expect(getPlanFeatures(renamed[1], renamed)).toEqual(['500 credits*/month', ...COMMON_FEATURES])
 	})
 
 	it('never returns the legacy features column', () => {
 		const features = plans.flatMap(plan => getPlanFeatures(plan, plans))
 
-		expect(features.join('\n')).not.toMatch(
-			/image descriptions|1080p|4K|Basic|Advanced|Priority|Community/
-		)
+		expect(features.join('\n')).not.toMatch(/image descriptions|1080p|4K|Basic|Advanced|Priority|Community/)
 	})
 
 	it('promises no credits when the plan has none synced', () => {
 		const withoutCredits = { billingCycle: 'month', name: 'Starter', price: 1 }
 
-		expect(getPlanFeatures(withoutCredits, [withoutCredits])).toEqual(
-			COMMON_FEATURES
-		)
+		expect(getPlanFeatures(withoutCredits, [withoutCredits])).toEqual(COMMON_FEATURES)
 	})
 
 	it('lists the common features on a plan when no plan is loaded', () => {
-		expect(getPlanFeatures(tier(plans, 'Growth', 'month'), [])).toEqual([
-			'2,500 credits*/month',
-			...COMMON_FEATURES,
-		])
+		expect(getPlanFeatures(tier(plans, 'Growth', 'month'), [])).toEqual(['2,500 credits*/month', ...COMMON_FEATURES])
 	})
 
 	it('has no features for a refill', () => {
@@ -222,34 +194,22 @@ describe('getAnnualSaving', () => {
 		const morePlans = productionPlans()
 		tier(morePlans, 'Starter', 'year').packageSize = 3600
 
-		expect(
-			getAnnualSaving(tier(morePlans, 'Starter', 'year'), morePlans)
-		).toBeNull()
-		expect(
-			getAnnualSaving(tier(morePlans, 'Starter', 'month'), morePlans)
-		).toBeNull()
-		expect(getAnnualSaving(tier(morePlans, 'Growth', 'year'), morePlans)).toBe(
-			16.6
-		)
+		expect(getAnnualSaving(tier(morePlans, 'Starter', 'year'), morePlans)).toBeNull()
+		expect(getAnnualSaving(tier(morePlans, 'Starter', 'month'), morePlans)).toBeNull()
+		expect(getAnnualSaving(tier(morePlans, 'Growth', 'year'), morePlans)).toBe(16.6)
 	})
 
 	it('is null when the yearly plan is not cheaper', () => {
 		const pricier = productionPlans()
 		tier(pricier, 'Starter', 'year').price = 12 * 195
 
-		expect(
-			getAnnualSaving(tier(pricier, 'Starter', 'year'), pricier)
-		).toBeNull()
+		expect(getAnnualSaving(tier(pricier, 'Starter', 'year'), pricier)).toBeNull()
 	})
 
 	it('is null without the plan of the other billing cycle', () => {
-		const monthlyOnly = productionPlans().filter(
-			plan => plan.billingCycle !== 'year'
-		)
+		const monthlyOnly = productionPlans().filter(plan => plan.billingCycle !== 'year')
 
-		expect(
-			getAnnualSaving(tier(monthlyOnly, 'Starter', 'month'), monthlyOnly)
-		).toBeNull()
+		expect(getAnnualSaving(tier(monthlyOnly, 'Starter', 'month'), monthlyOnly)).toBeNull()
 		expect(getAnnualSaving(tier(plans, 'Starter', 'year'), [])).toBeNull()
 	})
 
@@ -293,14 +253,8 @@ describe('getEnterpriseFeatures', () => {
 	it('names no plan when no plan is loaded', () => {
 		const refillsOnly = productionPlans().filter(plan => !plan.billingCycle)
 
-		expect(getEnterpriseFeatures([])).toEqual([
-			'Custom credit volume',
-			'Volume discounts',
-		])
-		expect(getEnterpriseFeatures(refillsOnly)).toEqual([
-			'Custom credit volume',
-			'Volume discounts',
-		])
+		expect(getEnterpriseFeatures([])).toEqual(['Custom credit volume', 'Volume discounts'])
+		expect(getEnterpriseFeatures(refillsOnly)).toEqual(['Custom credit volume', 'Volume discounts'])
 	})
 })
 

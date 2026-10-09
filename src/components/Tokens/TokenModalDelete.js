@@ -1,12 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 
-export default function TokenModalDelete({
-	closeModal,
-	onConfirm,
-	isOpen,
-	token,
-}) {
+export default function TokenModalDelete({ closeModal, onConfirm, isOpen, token, isDeleting = false }) {
 	return (
 		<Transition appear as={Fragment} show={isOpen}>
 			<Dialog as="div" className="relative z-50" onClose={closeModal}>
@@ -34,21 +29,15 @@ export default function TokenModalDelete({
 							leaveTo="opacity-0 scale-95"
 						>
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-								<Dialog.Title
-									as="h3"
-									className="text-lg leading-6 font-medium text-slate-900"
-								>
+								<Dialog.Title as="h3" className="text-lg leading-6 font-medium text-slate-900">
 									Revoke secret key
 								</Dialog.Title>
 								<div className="mt-2">
 									<p className="text-sm text-slate-500">
-										Revoking this API key will immediately disable it,
-										preventing any further API requests from being made with it.
-										Any systems or applications currently using this key may
-										stop functioning correctly. Please ensure you have updated
-										your integration to use a new key before proceeding. Once
-										revoked, this key will no longer be accessible or
-										manageable.
+										Revoking this API key will immediately disable it, preventing any further API requests from being
+										made with it. Any systems or applications currently using this key may stop functioning correctly.
+										Please ensure you have updated your integration to use a new key before proceeding. Once revoked,
+										this key will no longer be accessible or manageable.
 									</p>
 								</div>
 
@@ -68,6 +57,7 @@ export default function TokenModalDelete({
 									<button
 										className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
 										data-testid="revoke-key-button"
+										disabled={isDeleting}
 										onClick={onConfirm}
 										type="button"
 									>

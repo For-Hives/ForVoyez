@@ -10,7 +10,7 @@ const BILLING_CYCLES = ['month', 'year']
 export const COMMON_PLAN_FEATURES = [
 	'Title, alternative text and caption for each image',
 	'JPEG, PNG, WebP and non-animated GIF, up to 10 MB',
-	'API, WordPress plugin and playground',
+	'Generate directly from your WordPress media library',
 	'Email support',
 ]
 
@@ -29,34 +29,26 @@ export function formatSaving(percent) {
 export function getAnnualSaving(tier, plans) {
 	if (!isSubscriptionTier(tier)) return null
 
-	const yearly =
-		tier.billingCycle === 'year' ? tier : namesake(tier, plans, 'year')
-	const monthly =
-		tier.billingCycle === 'month' ? tier : namesake(tier, plans, 'month')
-	if (!yearly || !monthly) return null
+	const yearly = tier.billingCycle === 'year' ? tier : namesake(tier, plans, 'year')
+	const monthly = tier.billingCycle === 'month' ? tier : namesake(tier, plans, 'month')
+	if (!(yearly && monthly)) return null
 
 	if (!isPositiveInteger(monthly.packageSize)) return null
 	if (yearly.packageSize !== 12 * monthly.packageSize) return null
-	if (!(monthly.price > 0) || !Number.isFinite(yearly.price)) return null
+	if (!(monthly.price > 0 && Number.isFinite(yearly.price))) return null
 
 	const monthlyPricePerYear = 12 * monthly.price
 	// in tenths of a percent; Math.round rounds half away from zero for the
 	// positive savings, the only ones shown
-	const tenths = Math.round(
-		(1000 * (monthlyPricePerYear - yearly.price)) / monthlyPricePerYear
-	)
+	const tenths = Math.round((1000 * (monthlyPricePerYear - yearly.price)) / monthlyPricePerYear)
 	return tenths > 0 ? tenths / 10 : null
 }
 
 // Enterprise includes the most expensive monthly plan (Growth)
 export function getEnterpriseFeatures(plans) {
 	const monthlyTiers = subscriptionTiers(plans, 'month')
-	const tiers =
-		monthlyTiers.length > 0 ? monthlyTiers : subscriptionTiers(plans)
-	const topTier = tiers.reduce(
-		(top, tier) => (!top || tier.price > top.price ? tier : top),
-		null
-	)
+	const tiers = monthlyTiers.length > 0 ? monthlyTiers : subscriptionTiers(plans)
+	const topTier = tiers.reduce((top, tier) => (!top || tier.price > top.price ? tier : top), null)
 
 	if (!topTier) return [...ENTERPRISE_FEATURES]
 	return [`All ${topTier.name} plan features`, ...ENTERPRISE_FEATURES]
@@ -87,8 +79,7 @@ export function getPlanFeatures(tier, plans) {
 
 function cheapestTier(plans, billingCycle) {
 	return subscriptionTiers(plans, billingCycle).reduce(
-		(cheapest, tier) =>
-			!cheapest || tier.price < cheapest.price ? tier : cheapest,
+		(cheapest, tier) => (!cheapest || tier.price < cheapest.price ? tier : cheapest),
 		null
 	)
 }
@@ -116,17 +107,13 @@ function isSubscriptionTier(plan) {
 // the only plan of that billing cycle with the same name, null if none or
 // several (the saving would be ambiguous)
 function namesake(tier, plans, billingCycle) {
-	const matches = subscriptionTiers(plans, billingCycle).filter(
-		plan => plan.name === tier.name
-	)
+	const matches = subscriptionTiers(plans, billingCycle).filter(plan => plan.name === tier.name)
 	return matches.length === 1 ? matches[0] : null
 }
 
 // refills have no billing cycle (null, or '' in older rows)
 function subscriptionTiers(plans, billingCycle = null) {
 	return (plans ?? []).filter(
-		plan =>
-			isSubscriptionTier(plan) &&
-			(billingCycle === null || plan.billingCycle === billingCycle)
+		plan => isSubscriptionTier(plan) && (billingCycle === null || plan.billingCycle === billingCycle)
 	)
 }

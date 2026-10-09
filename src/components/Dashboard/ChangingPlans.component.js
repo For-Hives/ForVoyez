@@ -1,11 +1,13 @@
 'use client'
-import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
-import { RadioGroup } from '@headlessui/react'
-import { useEffect, useState } from 'react'
 
 import { useAuth } from '@clerk/nextjs'
+import { RadioGroup } from '@headlessui/react'
+import { ArrowUpRightIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-
+import { useEffect, useState } from 'react'
+import { getCustomerPortalUrl, getMySubscription, listPlans } from '@/app/actions/app/plans'
+import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
+import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import {
 	formatSaving,
 	getAnnualSaving,
@@ -13,13 +15,6 @@ import {
 	getMaxAnnualSaving,
 	getPlanFeatures,
 } from '@/helpers/planFeatures'
-import {
-	getCustomerPortalUrl,
-	getMySubscription,
-	listPlans,
-} from '@/app/actions/app/plans'
-import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
-import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
 import { sortPlans } from '@/helpers/sortPlans'
 
 const frequencies = [
@@ -93,29 +88,19 @@ export function ChangingPlansComponent() {
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="flex justify-center pb-20">
 						<div
-							className={
-								'relative grid h-8 w-32 grid-cols-2 gap-x-1 rounded-full p-1 ring-1 ring-slate-200 ring-inset'
-							}
+							className={'relative grid h-8 w-32 grid-cols-2 gap-x-1 rounded-full p-1 ring-1 ring-slate-200 ring-inset'}
 						>
+							<div className={'animate-pulse rounded-full bg-slate-200 px-2.5 py-1'} />
+							<div className={'animate-pulse rounded-full bg-slate-50 px-2.5 py-1'} />
 							<div
-								className={
-									'animate-pulse rounded-full bg-slate-200 px-2.5 py-1'
-								}
-							/>
-							<div
-								className={'animate-pulse rounded-full bg-slate-50 px-2.5 py-1'}
-							/>
-							<div
-								className={
-									'absolute -top-4 -right-8 h-6 w-16 animate-pulse rounded-full bg-slate-100 px-2.5 py-1'
-								}
+								className={'absolute -top-4 -right-8 h-6 w-16 animate-pulse rounded-full bg-slate-100 px-2.5 py-1'}
 							/>
 						</div>
 					</div>
 				</div>
 				<div className={'flex w-full flex-col gap-8 md:grid md:grid-cols-2'}>
-					{[...Array(2)].map((_, i) => (
-						<SkeletonLoaderPricing key={i} />
+					{['first-plan', 'second-plan'].map(placeholderId => (
+						<SkeletonLoaderPricing key={placeholderId} />
 					))}
 					<div className="col-span-2">
 						<SkeletonLoaderPricing />
@@ -137,16 +122,12 @@ export function ChangingPlansComponent() {
 						onChange={setFrequency}
 						value={frequency}
 					>
-						<RadioGroup.Label className="sr-only">
-							Payment frequency
-						</RadioGroup.Label>
+						<RadioGroup.Label className="sr-only">Payment frequency</RadioGroup.Label>
 						{frequencies.map(option => (
 							<RadioGroup.Option
 								className={({ checked }) =>
 									classNames(
-										checked
-											? 'bg-forvoyez_orange-500 text-white'
-											: 'text-slate-500',
+										checked ? 'bg-forvoyez_orange-500 text-white' : 'text-slate-500',
 										'relative cursor-pointer rounded-full px-2.5 py-1 transition-none'
 									)
 								}
@@ -173,6 +154,7 @@ export function ChangingPlansComponent() {
 					</RadioGroup>
 				</div>
 				<div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+					{/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing conditional behavior during the tooling migration. */}
 					{plans.map(tier => {
 						if (!isAnnually && tier.billingCycle === 'year') return null
 						if (isAnnually && tier.billingCycle === 'month') return null
@@ -194,9 +176,7 @@ export function ChangingPlansComponent() {
 								<div className="flex items-center justify-between gap-x-4">
 									<h3
 										className={classNames(
-											tier.mostPopular && !currentSubscription
-												? 'text-forvoyez_orange-500'
-												: 'text-slate-900',
+											tier.mostPopular && !currentSubscription ? 'text-forvoyez_orange-500' : 'text-slate-900',
 											'text-lg leading-8 font-semibold'
 										)}
 										id={tier.id}
@@ -219,21 +199,16 @@ export function ChangingPlansComponent() {
 									<span className="text-4xl font-bold tracking-tight text-slate-900">
 										{(tier.price / 100).toFixed(2).replace('.', ',')}€
 									</span>
-									<span className="text-sm leading-6 font-semibold text-slate-600">
-										{frequency.priceSuffix}
-									</span>
+									<span className="text-sm leading-6 font-semibold text-slate-600">{frequency.priceSuffix}</span>
 								</p>
-								<p className={''}>
-									Billed {isAnnually ? 'annually' : 'monthly'}
-								</p>
+								<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 
 								{currentSubscription && customerPortalUrl ? (
 									<div>
 										<Link
 											aria-describedby={tier.id}
 											className={classNames(
-												(tier.mostPopular && !currentSubscription) ||
-													currentSubscription.planId === tier.id
+												(tier.mostPopular && !currentSubscription) || currentSubscription.planId === tier.id
 													? 'bg-forvoyez_orange-500 text-white shadow-xs hover:bg-[#e05d45]'
 													: 'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
 												'focus-visible:outline-forvoyez_orange-500 mt-6 block w-full rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
@@ -241,9 +216,7 @@ export function ChangingPlansComponent() {
 											data-testid={`manage-subscription-${tier.id}`}
 											href={customerPortalUrl ?? ''}
 										>
-											{currentSubscription.planId === tier.id
-												? 'Manage my Subscription'
-												: 'Change Plan'}
+											{currentSubscription.planId === tier.id ? 'Manage my Subscription' : 'Change Plan'}
 										</Link>
 									</div>
 								) : (
@@ -262,29 +235,23 @@ export function ChangingPlansComponent() {
 									</CheckoutButtonComponent>
 								)}
 								<div className={'mt-2 flex items-center'}>
+									{/* biome-ignore lint/style/noNestedTernary: Preserve the existing conditional behavior during the tooling migration. */}
 									{annualSaving === null ? null : isAnnually ? (
 										<span className="text-xs text-slate-500">
-											<span className={'font-bold'}>
-												{formatSaving(annualSaving)} cheaper
-											</span>{' '}
-											than monthly
+											<span className={'font-bold'}>{formatSaving(annualSaving)} cheaper</span> than monthly
 										</span>
 									) : (
 										<button
+											type="submit"
 											className={'group m-0 flex gap-1 p-0'}
 											data-testid="get-more-tokens-button"
 											onClick={() => setFrequency(frequencies[1])}
 										>
 											<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
-												Pay annually:{' '}
-												<span className={'font-bold'}>
-													{formatSaving(annualSaving)} cheaper
-												</span>
+												Pay annually: <span className={'font-bold'}>{formatSaving(annualSaving)} cheaper</span>
 											</span>
 											<div className={'flex h-full items-center'}>
-												<ArrowUpRightIcon
-													className={'h-3 w-3 text-slate-600'}
-												/>
+												<ArrowUpRightIcon className={'h-3 w-3 text-slate-600'} />
 											</div>
 										</button>
 									)}
@@ -304,19 +271,9 @@ export function ChangingPlansComponent() {
 							</div>
 						)
 					})}
-					<div
-						className={'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2'}
-						data-testid="plan-custom"
-						key="custom"
-					>
+					<div className={'rounded-3xl p-8 ring-1 ring-slate-200 lg:col-span-2'} data-testid="plan-custom" key="custom">
 						<div className="flex items-center justify-between gap-x-4">
-							<h3
-								className={classNames(
-									'text-slate-900',
-									'text-lg leading-8 font-semibold'
-								)}
-								id="custom"
-							>
+							<h3 className={classNames('text-slate-900', 'text-lg leading-8 font-semibold')} id="custom">
 								Entreprise
 							</h3>
 						</div>
@@ -324,12 +281,8 @@ export function ChangingPlansComponent() {
 							Tailored for large-scale deployments and complex requirements.
 						</p>
 						<p className="mt-6 flex items-baseline gap-x-1">
-							<span className="text-4xl font-bold tracking-tight text-slate-900">
-								Custom
-							</span>
-							<span className="text-sm leading-6 font-semibold text-slate-600">
-								{frequency.priceSuffix}
-							</span>
+							<span className="text-4xl font-bold tracking-tight text-slate-900">Custom</span>
+							<span className="text-sm leading-6 font-semibold text-slate-600">{frequency.priceSuffix}</span>
 						</p>
 						<p className={''}>Billed {isAnnually ? 'annually' : 'monthly'}</p>
 						<Link

@@ -119,26 +119,20 @@ describe('GET /api/tokens', () => {
 	it.each([
 		['was deleted from the dashboard', null],
 		['belongs to another user', { ...tokenRow, userId: 'user_b' }],
-		[
-			'is expired in the database',
-			{ ...tokenRow, expiredAt: new Date(Date.now() - 1000) },
-		],
-	])(
-		'answers the same 401 JSON as /api/describe when the API key %s',
-		async (_case, row) => {
-			prisma.token.findUnique.mockResolvedValue(row)
+		['is expired in the database', { ...tokenRow, expiredAt: new Date(Date.now() - 1000) }],
+	])('answers the same 401 JSON as /api/describe when the API key %s', async (_case, row) => {
+		prisma.token.findUnique.mockResolvedValue(row)
 
-			const response = await GET(request())
+		const response = await GET(request())
 
-			expect(response.status).toBe(401)
-			expect(response.headers.get('Content-Type')).toContain('application/json')
-			expect(await response.json()).toEqual({
-				error: 'Unauthorized, invalid token',
-			})
-			// nothing about the JWT's user (or the row's) is returned
-			expect(prisma.user.findFirst).not.toHaveBeenCalled()
-		}
-	)
+		expect(response.status).toBe(401)
+		expect(response.headers.get('Content-Type')).toContain('application/json')
+		expect(await response.json()).toEqual({
+			error: 'Unauthorized, invalid token',
+		})
+		// nothing about the JWT's user (or the row's) is returned
+		expect(prisma.user.findFirst).not.toHaveBeenCalled()
+	})
 
 	it('answers 401 JSON when the signature is invalid', async () => {
 		verifyJwt.mockRejectedValue(new Error('Token is not signed by the server'))
@@ -160,4 +154,23 @@ describe('GET /api/tokens', () => {
 			error: 'Missing or invalid authentication token',
 		})
 	})
+	it.each([null, undefined, '', 0, false, {}, []])(
+		'rejects malformed user claims %j before querying storage',
+		async userId => {
+			verifyJwt.mockResolvedValue({ userId })
+			const response = await GET(request())
+			expect(response.status).toBe(400)
+			expect(response.headers.get('Cache-Control')).toBe('private, no-store')
+			expect(prisma.token.findUnique).not.toHaveBeenCalled()
+			expect(prisma.user.findFirst).not.toHaveBeenCalled()
+		}
+	)
+
+	it.each([null, 'Basic credentials', `Bearer ${JWT}`])(
+		'keeps account responses private for authorization %j',
+		async authorization => {
+			const response = await GET(request(authorization))
+			expect(response.headers.get('Cache-Control')).toBe('private, no-store')
+		}
+	)
 })

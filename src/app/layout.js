@@ -1,8 +1,9 @@
 import 'react-toastify/dist/ReactToastify.css'
 
-import { Jost, Source_Sans_3 } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
+import { Jost, Source_Sans_3 } from 'next/font/google'
 import Script from 'next/script'
+import { ViewTransition } from 'react'
 
 import '@/styles/globals.css'
 
@@ -33,7 +34,7 @@ export const viewport = {
 export const metadata = {
 	openGraph: {
 		description:
-			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+			'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 		images: [
 			{
 				url: 'https://forvoyez.com/logo/forvoyez_og.png',
@@ -41,7 +42,7 @@ export const metadata = {
 				height: 959,
 			},
 		],
-		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		title: 'ForVoyez - AI Alt Text for WordPress Images',
 		url: 'https://forvoyez.com/',
 		siteName: 'ForVoyez',
 		locale: 'en-US',
@@ -49,7 +50,7 @@ export const metadata = {
 	},
 	twitter: {
 		description:
-			'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+			'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 		images: [
 			{
 				url: 'https://forvoyez.com/logo/forvoyez_og.png',
@@ -57,7 +58,7 @@ export const metadata = {
 				height: 959,
 			},
 		],
-		title: 'ForVoyez - AI-Powered Image Metadata Generation',
+		title: 'ForVoyez - AI Alt Text for WordPress Images',
 		card: 'summary_large_image',
 		creator: '@ForVoyez',
 	},
@@ -90,7 +91,7 @@ export const metadata = {
 	},
 
 	description:
-		'ForVoyez is a powerful SaaS platform that automatically generates SEO-optimized alternative text, titles, and captions for your images using advanced AI technology.',
+		'Generate alt text, titles, and captions directly in your WordPress media library with ForVoyez. Save time on image descriptions with our AI-powered plugin.',
 	alternates: {
 		languages: {
 			'en-US': 'https://forvoyez.com/',
@@ -98,7 +99,7 @@ export const metadata = {
 		canonical: 'https://forvoyez.com/',
 	},
 	title: {
-		default: 'ForVoyez - AI-Powered Image Metadata Generation',
+		default: 'ForVoyez - AI Alt Text for WordPress Images',
 		template: '%s | ForVoyez',
 	},
 	appleWebApp: {
@@ -106,7 +107,7 @@ export const metadata = {
 		title: 'ForVoyez',
 		capable: true,
 	},
-	keywords: 'ForVoyez, image metadata, alt text, SEO, AI, SaaS, API',
+	keywords: 'ForVoyez, WordPress plugin, image alt text, media library, image accessibility, image SEO',
 	authors: [{ url: 'https://forvoyez.com', name: 'ForVoyez Team' }],
 	metadataBase: new URL('https://forvoyez.com/'),
 	manifest: '/site.webmanifest',
@@ -121,11 +122,7 @@ export default function RootLayout({ children }) {
 			// Clerk Core 3 hides optional sign-up fields by default; keep showing them
 			appearance={{ options: { showOptionalFields: true } }}
 		>
-			<html
-				className={`${sourcesans.variable} ${jost.variable}`}
-				data-scroll-behavior="smooth"
-				lang={'en'}
-			>
+			<html className={`${sourcesans.variable} ${jost.variable}`} data-scroll-behavior="smooth" lang={'en'}>
 				<Script
 					async
 					data-domains={'forvoyez.com,doc.forvoyez.com'}
@@ -134,7 +131,9 @@ export default function RootLayout({ children }) {
 					strategy="afterInteractive"
 				></Script>
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
-					{children}
+					<ViewTransition default="none" update="fv-page">
+						{children}
+					</ViewTransition>
 				</body>
 			</html>
 		</ClerkProvider>

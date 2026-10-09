@@ -1,7 +1,11 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware } from '@clerk/nextjs/server'
 
-const isProtectedRoute = createRouteMatcher(['/app(.*)'])
-const isLegals = createRouteMatcher(['/app/legals(.*)'])
+// Preserve the case-insensitive prefix matching of the former Clerk route matcher.
+const PROTECTED_ROUTE = /^\/app/i
+const LEGAL_ROUTE = /^\/app\/legals/i
+
+const isProtectedRoute = req => PROTECTED_ROUTE.test(req.nextUrl.pathname)
+const isLegals = req => LEGAL_ROUTE.test(req.nextUrl.pathname)
 
 export default clerkMiddleware(async (auth, req) => {
 	if (isLegals(req)) return

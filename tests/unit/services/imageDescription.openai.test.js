@@ -2,8 +2,8 @@
 // provider runs, `fetch` is stubbed (no network, fake key).
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { getImageDescription } from '@/services/imageDescription.service'
+import { logger } from '@/services/logger.service'
 
 const IMAGE = 'aW1hZ2UtYnl0ZXM='
 
@@ -47,7 +47,7 @@ describe('OpenAI request built by the image description service', () => {
 	beforeEach(() => {
 		requests = []
 		vi.stubEnv('OPENAI_API_KEY', 'sk-test-not-a-real-key')
-		vi.spyOn(console, 'info').mockImplementation(() => {})
+		vi.spyOn(logger, 'info').mockImplementation(() => {})
 		consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 		vi.stubGlobal(
 			'fetch',
@@ -55,10 +55,7 @@ describe('OpenAI request built by the image description service', () => {
 				const body = JSON.parse(init.body)
 				requests.push({ url: String(url), body })
 				return Response.json(
-					responsesApiAnswer(
-						{ alternativeText: 'Alt', caption: 'Caption', title: 'Title' },
-						body.model
-					)
+					responsesApiAnswer({ alternativeText: 'Alt', caption: 'Caption', title: 'Title' }, body.model)
 				)
 			})
 		)
@@ -104,11 +101,7 @@ describe('OpenAI request built by the image description service', () => {
 		// with reasoning disabled, gpt-6-luna takes a sampling temperature: the
 		// AI SDK sends it since @ai-sdk/openai 4.0.90 (it used to drop it)
 		expect(body.temperature).toBe(0.3)
-		expect(body.text.format.schema.required.sort()).toEqual([
-			'alternativeText',
-			'caption',
-			'title',
-		])
+		expect(body.text.format.schema.required.sort()).toEqual(['alternativeText', 'caption', 'title'])
 
 		const [instructions, user] = body.input
 		expect(instructions.role).toBe('developer')

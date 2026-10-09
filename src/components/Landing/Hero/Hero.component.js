@@ -1,7 +1,7 @@
 import Link from 'next/link'
-
-import { AnimateSideHeroMobileComponent } from '@/components/Landing/Hero/AnimateSideHeroMobile.component'
 import { AnimateSideHeroComponent } from '@/components/Landing/Hero/AnimateSideHero.component'
+import { AnimateSideHeroMobileComponent } from '@/components/Landing/Hero/AnimateSideHeroMobile.component'
+import { Transition } from '@/components/Transitions/Transition.component'
 
 export function HeroComponent() {
 	return (
@@ -28,12 +28,7 @@ export function HeroComponent() {
 						strokeWidth={0}
 					/>
 				</svg>
-				<rect
-					fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
-					height="100%"
-					strokeWidth={0}
-					width="100%"
-				/>
+				<rect fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" height="100%" strokeWidth={0} width="100%" />
 			</svg>
 			<div
 				aria-hidden="true"
@@ -51,35 +46,30 @@ export function HeroComponent() {
 				<div className="mx-auto max-w-7xl px-6 pt-36 pb-32 sm:pt-60 lg:px-8 lg:pt-32">
 					<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 						<div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-							<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-								Generate Image Alt Text and Meta Descriptions in Seconds.
-							</h1>
-							<p className="mt-6 text-lg leading-8 text-slate-600 sm:max-w-md lg:max-w-none">
-								Our AI-powered API makes it easy for developers to optimize
-								images for SEO. Save time, boost SEO, and streamline your
-								workflow with our powerful API.
-							</p>
+							<Transition name="marketing-title">
+								<h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+									Your WordPress images deserve better than empty alt text.
+								</h1>
+							</Transition>
+							<Transition name="marketing-description">
+								<p className="mt-6 text-lg leading-8 text-slate-600 sm:max-w-md lg:max-w-none">
+									Let ForVoyez write alt text, titles, and captions for your images right inside WordPress. Spend less
+									time on repetitive descriptions and give visitors and search engines more useful context.
+								</p>
+							</Transition>
 							<div className="mt-10 flex items-center gap-x-6">
 								<Link
 									className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-600 z-40 rounded-md px-3.5 py-2.5 text-sm text-white shadow-xs transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-									href="/app"
+									href="/wordpress-plugin"
 								>
-									Get started
+									Get the WordPress plugin
 								</Link>
 							</div>
 						</div>
-						<div
-							className={
-								'relative hidden w-full max-w-xl md:flex lg:shrink-0 xl:max-w-2xl'
-							}
-						>
+						<div className={'relative hidden w-full max-w-xl md:flex lg:shrink-0 xl:max-w-2xl'}>
 							<AnimateSideHeroComponent />
 						</div>
-						<div
-							className={
-								'relative flex w-full max-w-xl sm:hidden lg:shrink-0 xl:max-w-2xl'
-							}
-						>
+						<div className={'relative flex w-full max-w-xl sm:hidden lg:shrink-0 xl:max-w-2xl'}>
 							<AnimateSideHeroMobileComponent />
 						</div>
 					</div>
