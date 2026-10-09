@@ -60,6 +60,12 @@ test('native transition completes and browser history preserves navigation', asy
 
 test('plugin shared content transitions without duplicate names', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 1600 })
+	const pluginPrefetches = []
+	page.on('response', response => {
+		if (response.request().headers().rsc === '1' && new URL(response.url()).pathname.startsWith('/wordpress-plugin')) {
+			pluginPrefetches.push(response.finished().then(error => !error && response.ok()))
+		}
+	})
 	await observeTransitions(page)
 	await page.goto('/')
 	await expect(page.getByRole('link', { name: 'Get the WordPress plugin', exact: true })).toHaveAttribute(
@@ -67,14 +73,24 @@ test('plugin shared content transitions without duplicate names', async ({ page 
 		'/wordpress-plugin'
 	)
 	await page.screenshot({ path: '/tmp/forvoyez-marketing-home.png' })
-	await page.getByRole('link', { name: 'Explore the WordPress plugin' }).click()
+	const pluginLink = page.getByRole('link', { name: 'Explore the WordPress plugin' })
+	const sharedTitle = page.getByText('A simpler routine for your WordPress images', { exact: true })
+	await sharedTitle.evaluate(element => element.scrollIntoView({ block: 'start', behavior: 'instant' }))
+	await expect(sharedTitle).toBeInViewport({ ratio: 1 })
+	await expect(pluginLink).toBeInViewport({ ratio: 1 })
+	await pluginLink.hover()
+	// Shared pairs require a visible source and a destination ready in the same commit.
+	await expect.poll(async () => (await Promise.all(pluginPrefetches)).some(Boolean), { timeout: 15000 }).toBe(true)
+	await pluginLink.click()
 	await expect(page).toHaveURL('/wordpress-plugin')
 	await expect(page.getByRole('heading', { name: 'Image descriptions, handled right inside WordPress.' })).toBeVisible()
 	await expect
 		.poll(() => page.evaluate(() => window.observedTransitions.filter(item => item.ready).length))
 		.toBeGreaterThan(0)
 	expect(await page.evaluate(() => window.observedTransitions.filter(item => item.error))).toEqual([])
-	expect(await page.evaluate(() => window.observedTransitions.some(item => item.pluginDuration === '0.28s'))).toBe(true)
+	expect(await page.evaluate(() => window.observedTransitions)).toEqual(
+		expect.arrayContaining([expect.objectContaining({ pluginDuration: '0.28s' })])
+	)
 	await expect(page.getByRole('link', { name: 'Install the WordPress plugin', exact: true }).first()).toHaveAttribute(
 		'href',
 		'https://wordpress.org/plugins/auto-alt-text-for-images/'
