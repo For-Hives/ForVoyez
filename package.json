@@ -83,7 +83,7 @@
 		"@vitejs/plugin-react": "6.1.2",
 		"@vitest/coverage-v8": "5.0.3",
 		"@vitest/ui": "5.0.3",
-		"dotenv": "18.0.6",
+		"dotenv": "18.0.7",
 		"eslint": "10.12.0",
 		"eslint-config-next": "16.4.0",
 		"eslint-config-prettier": "10.1.8",
