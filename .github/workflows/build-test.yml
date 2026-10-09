@@ -43,7 +43,8 @@ jobs:
       - name: 'Production Build'
         run: pnpm build
       - name: 'Install Smoke Browser'
-        run: pnpm exec playwright install --with-deps chromium
+        timeout-minutes: 5
+        run: pnpm exec playwright install --with-deps --only-shell chromium
       - name: 'Smoke Production Routes'
         run: pnpm test:smoke
 
@@ -91,7 +92,8 @@ jobs:
       - name: 'Generate prisma client'
         run: pnpm prisma:generate
       - name: 'Install Playwright Browsers'
-        run: pnpm exec playwright install
+        timeout-minutes: 5
+        run: pnpm exec playwright install --with-deps --only-shell chromium
       - name: 'Create Docker network'
         run: docker network create test-network
       - name: 'Set up test database'
