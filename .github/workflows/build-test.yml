@@ -98,16 +98,12 @@ jobs:
         run: |
           docker run --name test-db -e POSTGRES_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} -e POSTGRES_DB=forvoyez -p 5432:5432 --network test-network -d postgres
           docker run --link test-db:postgres --network test-network --rm postgres sh -c 'until pg_isready -h postgres -U postgres; do sleep 1; done;'
-      - name: 'Run prisma db migrate'
+      - name: 'Apply migrations and seed test database'
         run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0 node:22 sh -c "corepack enable && pnpm run prisma:migrate && pnpm run prisma:seed"
-      - name: Setup Docker Cache
-        uses: docker/setup-buildx-action@v4
-        with:
-          driver: docker
-          config-inline: |
-            [cache.from]
-            type=gha
+          pnpm exec prisma migrate deploy
+          pnpm prisma:seed
+        env:
+          DATABASE_URL: postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@127.0.0.1:5432/forvoyez
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Just Build
@@ -122,6 +118,7 @@ jobs:
           build-args: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
       - name: 'Start Docker Container'
+        id: application-start
         run: |
           docker run -d --name forvoyez-container -p 3000:3000 \
             -e NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }} \
@@ -143,6 +140,7 @@ jobs:
             --network test-network \
             forvoyez:test
       - name: 'Wait for the application to be ready'
+        id: application-ready
         run: |
           echo "Waiting for the application to be ready..."
           end=$((SECONDS+30))
@@ -158,8 +156,9 @@ jobs:
           docker logs forvoyez-container
           exit 1
       - name: 'Check Database Connection'
-        run: |
-          docker run --rm --network test-network -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@test-db:5432/forvoyez node:22 node check-db-connection.js
+        run: node check-db-connection.js
+        env:
+          DATABASE_URL: postgresql://postgres:${{ secrets.TEST_DB_PASSWORD }}@127.0.0.1:5432/forvoyez
 
       # basic account (tests/e2e/general), then subscribed account
       # (tests/e2e/subscribed), each with its own output folder. The second
@@ -177,7 +176,7 @@ jobs:
           CLERK_FRONTEND_API: ${{ secrets.CLERK_FRONTEND_API }}
       # API key flow and one playground analysis: 2 real OpenAI calls per run
       - name: 'Run E2E Tests (subscribed account)'
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.application-ready.outcome == 'success' }}
         run: pnpm test:e2e:sub
         env:
           NEXT_PUBLIC_URL: http://localhost:3000
@@ -195,7 +194,7 @@ jobs:
           path: e2e-screenshots/
           if-no-files-found: warn
       - name: 'Capture Docker Logs'
-        if: always()
+        if: ${{ always() && steps.application-start.outcome == 'success' }}
         run: |
           docker logs forvoyez-container > docker-logs.txt 2>&1
       - name: 'Upload Test Artifacts'
@@ -207,8 +206,13 @@ jobs:
             test-results
             docker-logs.txt
       - name: 'Stop and remove Docker Containers'
+        if: always()
         run: |
-          docker stop forvoyez-container
-          docker rm forvoyez-container
-          docker stop test-db
-          docker rm test-db
+          for container in forvoyez-container test-db; do
+            if docker container inspect "$container" > /dev/null 2>&1; then
+              docker rm --force "$container"
+            fi
+          done
+          if docker network inspect test-network > /dev/null 2>&1; then
+            docker network rm test-network
+          fi
