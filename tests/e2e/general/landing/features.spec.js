@@ -65,7 +65,8 @@ test('FeatureComponent Rive animation is present', async ({ page }) => {
 
 	log('Page loaded')
 
-	// Check the visibility of the Rive animation
+	// The animation loads when its section approaches the viewport.
+	await page.locator('#features').scrollIntoViewIfNeeded()
 	const riveComponent = page.locator('[data-testid="rive-component"]')
 	log('Checking visibility of Rive animation')
 	await expect(riveComponent).toBeVisible()

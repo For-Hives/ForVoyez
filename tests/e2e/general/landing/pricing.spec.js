@@ -22,8 +22,9 @@ test.describe('Pricing Component', () => {
 		log('Checking pricing section subtitle')
 		await expect(pricingSubtitle).toBeVisible()
 
-		const pricingDescription = await page.locator(
-			'p:has-text("Choose the plan that fits your needs and scale as your usage grows. Upgrade, downgrade, or cancel anytime.")'
+		const pricingDescription = page.getByText(
+			'The plugin is free to install. Choose a ForVoyez plan for image generation: one credit covers the alt text, title, and caption for one successfully processed image.',
+			{ exact: true }
 		)
 		log('Checking pricing section description')
 		await expect(pricingDescription).toBeVisible()
