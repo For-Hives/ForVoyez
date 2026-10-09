@@ -56,6 +56,10 @@ try {
 		process.stderr.write(output.stderr)
 	}
 	await run(['exec', 'prisma', 'migrate', 'deploy'])
+	if (!process.argv.includes('--smoke')) {
+		await run(['prisma:seed'])
+		await run(['exec', 'node', 'check-db-connection.js'])
+	}
 	await run(
 		process.argv.includes('--smoke')
 			? ['exec', 'playwright', 'test', '--config', 'playwright.smoke.config.js']
