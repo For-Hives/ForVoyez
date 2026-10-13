@@ -20,9 +20,9 @@ export default function LegalNoticePage() {
 			<p className="mt-1 text-sm text-slate-600">ForVoyez, a SaaS operated by the auto-entreprise Cinquin Andy</p>
 
 			<p className="mt-4 text-sm text-slate-600">
-				<strong>SIRET</strong>: 880 505 276 00019
+				<strong>SIRET</strong>: 880 505 276 00035
 				<br />
-				<strong>Registered office</strong>: 4 Impasse de la marchaisière, 44115, France
+				<strong>Registered office</strong>: 1250 Chemin de la Renouillère, 74140 Sciez, France
 				<br />
 				<strong>VAT number</strong>: FR 35 880505276
 				<br />
@@ -36,9 +36,9 @@ export default function LegalNoticePage() {
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Address</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					72 Avenue Camus
+					1250 Chemin de la Renouillère
 					<br />
-					44000, Nantes
+					74140, Sciez
 					<br />
 					France
 				</p>
@@ -143,9 +143,10 @@ export default function LegalNoticePage() {
 					Copyright Agent/ForVoyez
 					<br />
 					ForVoyez Legal Department
-					<br />4 Impasse de la marchaisière
 					<br />
-					44115, France
+					1250 Chemin de la Renouillère
+					<br />
+					74140 Sciez
 					<br />
 					France
 				</p>
@@ -156,7 +157,7 @@ export default function LegalNoticePage() {
 				<p className="mt-1 text-sm text-slate-600">
 					Should we update, amend, or make any changes to this document, those changes will be prominently posted here.
 				</p>
-				<p className="mt-4 text-sm text-slate-600">Last updated: October 8, 2026</p>
+				<p className="mt-4 text-sm text-slate-600">Last updated: October 13, 2026</p>
 			</section>
 		</div>
 	)
