@@ -42,7 +42,7 @@ test.describe('Developers Component', () => {
 		const expectedLinks = [
 			{ testId: 'developers-plugin-link', name: 'See the WordPress plugin', href: '/wordpress-plugin' },
 			{ testId: 'developers-docs-link', name: 'Read the API docs', href: 'https://doc.forvoyez.com/' },
-			{ testId: 'developers-playground-link', name: 'Try the playground', href: '/app/playground' },
+			{ testId: 'developers-api-key-link', name: 'Get your API key', href: '/app/tokens' },
 		]
 
 		await forEachInSequence(expectedLinks, async item => {

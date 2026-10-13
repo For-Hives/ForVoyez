@@ -24,7 +24,7 @@ test('prerenders the developers section between the plugin section and the prici
 	expect(html).toContain('Authorization: Bearer YOUR_API_KEY')
 })
 
-test('links the developers section to the plugin page, the API docs and the playground', async ({ page }) => {
+test('links the developers section to the plugin page, the API docs and the API keys', async ({ page }) => {
 	await page.goto('/')
 	const section = page.getByTestId('developers-section')
 
@@ -36,9 +36,9 @@ test('links the developers section to the plugin page, the API docs and the play
 		'href',
 		'https://doc.forvoyez.com/'
 	)
-	await expect(section.getByRole('link', { name: 'Try the playground', exact: true })).toHaveAttribute(
+	await expect(section.getByRole('link', { name: 'Get your API key', exact: true })).toHaveAttribute(
 		'href',
-		'/app/playground'
+		'/app/tokens'
 	)
 	// our own tracking attribute: Umami's would cancel the client navigation
 	await expect(section.locator('[data-fv-event="developers-cta-click"]')).toHaveCount(3)
