@@ -5,7 +5,7 @@ import LegalNoticePage from '@/app/(dashboard)/app/legals/legal-notice/page'
 import PrivacyPolicyPage from '@/app/(dashboard)/app/legals/privacy-policy/page'
 
 // Every provider that receives personal data has to be named in the policy
-const SERVICE_PROVIDERS = ['netcup GmbH', 'OpenAI', 'Clerk', 'Lemon Squeezy', 'Mailgun', 'OVH', 'Umami']
+const SERVICE_PROVIDERS = ['netcup GmbH', 'Contabo GmbH', 'OpenAI', 'Clerk', 'Lemon Squeezy', 'Mailgun', 'OVH', 'Umami']
 
 describe('Legal notice', () => {
 	afterEach(cleanup)
