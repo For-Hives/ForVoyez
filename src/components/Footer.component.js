@@ -2,6 +2,7 @@ import { cacheLife } from 'next/cache'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { linkTarget } from '@/helpers/analytics'
 import version from '@/helpers/version'
 
 const navigation = {
@@ -95,7 +96,13 @@ export async function FooterComponent() {
 			<nav aria-label="Footer" className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12">
 				{navigation.main.map(item => (
 					<div className="pb-6" key={item.name}>
-						<Link className="hover:text-forvoyez_orange-500 text-sm leading-6 text-slate-600" href={item.href}>
+						<Link
+							className="hover:text-forvoyez_orange-500 text-sm leading-6 text-slate-600"
+							data-fv-event="footer-link-click"
+							data-fv-event-kind="nav"
+							data-fv-event-target={linkTarget(item.href)}
+							href={item.href}
+						>
 							{item.name}
 						</Link>
 					</div>
@@ -103,7 +110,14 @@ export async function FooterComponent() {
 			</nav>
 			<div className="mt-10 flex justify-center space-x-10">
 				{navigation.social.map(item => (
-					<Link className="hover:text-forvoyez_orange-500 text-slate-400" href={item.href} key={item.name}>
+					<Link
+						className="hover:text-forvoyez_orange-500 text-slate-400"
+						data-fv-event="footer-link-click"
+						data-fv-event-kind="social"
+						data-fv-event-target={item.name.toLowerCase()}
+						href={item.href}
+						key={item.name}
+					>
 						<span className="sr-only">{item.name}</span>
 						<item.icon aria-hidden="true" className="h-6 w-6" />
 					</Link>

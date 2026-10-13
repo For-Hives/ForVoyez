@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { deleteToken, getAllToken } from '@/app/actions/tokens/TokensCRUD'
 import TokenModal from '@/components/Tokens/TokenModal'
 import TokenModalDelete from '@/components/Tokens/TokenModalDelete'
+import { track } from '@/helpers/analytics'
 
 export default function TokenList() {
 	const [tokens, setTokens] = useState([])
@@ -37,7 +38,10 @@ export default function TokenList() {
 			await deleteToken(id)
 			setTokens(current => current.filter(token => token.id !== id))
 			toast.success('Token deleted successfully')
+			// the outcome only, never which key
+			track('tokens-delete-result', { outcome: 'ok' })
 		} catch (error) {
+			track('tokens-delete-result', { outcome: 'error' })
 			toast.error(`Error deleting token: ${error.message}`)
 		} finally {
 			closeDeleteModal()
@@ -72,6 +76,7 @@ export default function TokenList() {
 				<div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
 					<button
 						className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600 block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+						data-fv-event="tokens-create-click"
 						data-testid="add-token-button"
 						onClick={openModal}
 						type="button"
@@ -157,6 +162,7 @@ export default function TokenList() {
 														<button
 															type="submit"
 															className="text-forvoyez_orange-600 hover:text-forvoyez_orange-900"
+															data-fv-event="tokens-delete-click"
 															data-testid={`delete-token-button-${index}`}
 															onClick={() => openDeleteModal(token)}
 														>

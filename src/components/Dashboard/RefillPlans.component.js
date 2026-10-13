@@ -4,6 +4,7 @@ import { useAuth } from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
 import { getMySubscription, listPlans } from '@/app/actions/app/plans'
 import { CheckoutButtonComponent } from '@/components/Dashboard/CheckoutButton.component'
+import { slug } from '@/helpers/analytics'
 import { sortPlans } from '@/helpers/sortPlans'
 
 export function RefillPlansComponent() {
@@ -132,6 +133,7 @@ export function RefillPlansComponent() {
 											{currentSubscription && (
 												<div>
 													<CheckoutButtonComponent
+														analytics={{ cycle: 'one-time', kind: 'refill', plan: slug(tier.name) }}
 														aria-describedby={tier.id}
 														className={classNames(
 															tier.mostPopular

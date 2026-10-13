@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import { getPreviewCode } from '@/components/Playground/GetPreviewCode'
 import { RequestCode } from '@/components/Playground/RequestCode.component'
+import { track } from '@/helpers/analytics'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
 import 'prismjs/themes/prism-tomorrow.min.css'
@@ -20,8 +21,14 @@ export default function PlaygroundPreviewCode(params) {
 	// rendered as `language-bash`, so looking up `language-curl` found nothing
 	const copySelectedEditorContent = async () => {
 		if (!(await copyToClipboard(getPreviewCode(selectedTab, params.formData)))) return
+		track('playground-code-copy', { language: selectedTab.toLowerCase(), target: 'request' })
 		setIsPreviewCopied(true)
 		setTimeout(() => setIsPreviewCopied(false), 2000)
+	}
+
+	const selectTab = index => {
+		setSelectedTab(previewLanguages[index])
+		track('playground-preview-tab-select', { language: previewLanguages[index].toLowerCase() })
 	}
 
 	return (
@@ -30,7 +37,13 @@ export default function PlaygroundPreviewCode(params) {
 				return (
 					<>
 						<dt>
-							<Disclosure.Button className="flex w-full items-baseline text-left text-gray-900">
+							<Disclosure.Button
+								className="flex w-full items-baseline text-left text-gray-900"
+								// `open` is the state before this click
+								onClick={() =>
+									track('playground-option-toggle', { action: open ? 'close' : 'open', option: 'request-preview' })
+								}
+							>
 								<h3>Request Preview</h3>
 								<span className="ml-6 flex h-7 items-center">
 									<motion.svg
@@ -59,7 +72,7 @@ export default function PlaygroundPreviewCode(params) {
 									</p>
 
 									<div className="">
-										<Tab.Group data-testid="language-tabs" onChange={index => setSelectedTab(previewLanguages[index])}>
+										<Tab.Group data-testid="language-tabs" onChange={selectTab}>
 											<Tab.List className="flex">
 												{previewLanguages.map(language => (
 													<Tab

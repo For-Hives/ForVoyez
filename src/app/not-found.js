@@ -22,7 +22,14 @@ export default function NotFound() {
 				<p className="text-sm font-semibold text-slate-900">404</p>
 				<h1 className="mt-2 text-2xl font-bold text-slate-900">Page not found</h1>
 				<p className="mt-2 text-base text-slate-600">Sorry, we couldn’t find the page you’re looking for.</p>
-				<Link arrow="right" className="mt-8 underline" href="/app">
+				<Link
+					arrow="right"
+					className="mt-8 underline"
+					data-fv-event="nav-link-click"
+					data-fv-event-location="not-found"
+					data-fv-event-target="app"
+					href="/app"
+				>
 					→ Back to docs
 				</Link>
 			</div>

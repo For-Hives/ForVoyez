@@ -10,8 +10,23 @@ import PlaygroundPreviewCode from '@/components/Playground/PlaygroundPreviewCode
 import PlaygroundResponse from '@/components/Playground/PlaygroundResponse.component'
 import { SkeletonText } from '@/components/Skeletons/SkeletonText'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
+import { durationBucket, imageType, sizeBucket, track } from '@/helpers/analytics'
 
 const MAX_IMAGE_SIZE_BYTES = 10485760
+const DEFAULT_SCHEMA_TEXT = JSON.stringify(defaultJsonTemplateSchema, null, 4)
+
+// What an analysis request carries, for the Umami events: which options are
+// filled and what kind of file, never the text typed or the file name.
+function describeAnalysis(formData) {
+	return {
+		custom_schema: Boolean(formData.jsonSchema) && formData.jsonSchema !== DEFAULT_SCHEMA_TEXT,
+		has_context: formData.context.trim() !== '',
+		has_keywords: formData.keywords.trim() !== '',
+		has_language: formData.languageToTranslate.trim() !== '',
+		size_bucket: sizeBucket(formData.image?.size),
+		type: imageType(formData.image),
+	}
+}
 
 export function Playground() {
 	// null until loaded: a placeholder, not a misleading 0
@@ -19,7 +34,7 @@ export function Playground() {
 	const [showTooltip, setShowTooltip] = useState(false)
 
 	const [formData, setFormData] = useState({
-		jsonSchema: JSON.stringify(defaultJsonTemplateSchema, null, 4),
+		jsonSchema: DEFAULT_SCHEMA_TEXT,
 		languageToTranslate: '',
 		keywords: '',
 		image: null,
@@ -30,12 +45,26 @@ export function Playground() {
 	const [response, setResponse] = useState(null)
 
 	const apiResponseRef = useRef(null)
+	const noCreditsReported = useRef(false)
 
 	async function handleSubmit(e) {
 		e.preventDefault()
 
+		// every click gets one result event: `status` is the answer of the action,
+		// or why the request never left the browser
+		const analysis = describeAnalysis(formData)
+		track('playground-analyze-click', analysis)
+		const trackResult = (status, startedAt) =>
+			track('playground-analyze-result', {
+				...analysis,
+				...(startedAt === undefined ? {} : { duration: durationBucket(Date.now() - startedAt) }),
+				outcome: status === '200' ? 'ok' : 'error',
+				status,
+			})
+
 		if (!formData.image) {
 			toast.error('Please select an image')
+			trackResult('no-image')
 			return
 		}
 
@@ -43,6 +72,7 @@ export function Playground() {
 		// room for this plus the multipart overhead
 		if (formData.image.size > MAX_IMAGE_SIZE_BYTES) {
 			toast.error('Image size should not exceed 10MB')
+			trackResult('too-large')
 			return
 		}
 
@@ -60,8 +90,10 @@ export function Playground() {
 		setIsProcessingResultApi(true)
 		apiResponseRef.current?.scrollIntoView({ behavior: 'smooth' })
 
+		const startedAt = Date.now()
 		try {
 			const response = await describePlaygroundAction(formDataObject)
+			trackResult(String(response.status), startedAt)
 			if (response.status === 200) {
 				setResponse(response.data)
 			} else {
@@ -69,6 +101,7 @@ export function Playground() {
 			}
 		} catch (error) {
 			console.error('Error:', error)
+			trackResult('exception', startedAt)
 			setResponse('An error occurred. Please check the console for more details.')
 		} finally {
 			setIsProcessingResultApi(false)
@@ -80,6 +113,11 @@ export function Playground() {
 			.then(credits => {
 				setUserCredits(credits)
 				setShowTooltip(credits === 0)
+				// once per visit: the banner below is shown and the button disabled
+				if (credits === 0 && !noCreditsReported.current) {
+					noCreditsReported.current = true
+					track('playground-no-credits-view')
+				}
 			})
 			.catch(error => console.error('Error fetching usage data:', error))
 	}, [response])
@@ -93,7 +131,7 @@ export function Playground() {
 				>
 					<div className="pointer-events-auto flex items-center justify-between gap-x-6 bg-gray-900 px-6 py-2.5 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4">
 						<p className="text-sm leading-6 text-white">
-							<Link data-testid="tooltip-link" href="/app/plans">
+							<Link data-fv-event="playground-no-credits-click" data-testid="tooltip-link" href="/app/plans">
 								<strong className="font-semibold">Playground usage</strong>
 								<svg aria-hidden="true" className="mx-2 inline h-0.5 w-0.5 fill-current" viewBox="0 0 2 2">
 									<circle cx="1" cy="1" r="1" />
