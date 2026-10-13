@@ -13,3 +13,17 @@ export async function ensureUser(create) {
 		return user
 	}
 }
+
+/**
+ * Same guarantee, and says whether this call inserted the row: `created` is
+ * true for one call per account, the one that inserted it.
+ *
+ * It is a single INSERT ... ON CONFLICT DO NOTHING: of several first requests
+ * arriving together PostgreSQL lets exactly one insert, the others wait for
+ * it, insert nothing and do not fail. A row inserted first by ensureUser (the
+ * webhook of a payment) already exists here: `created` is false.
+ */
+export async function createUserIfMissing(create) {
+	const { count } = await prisma.user.createMany({ data: [create], skipDuplicates: true })
+	return { created: count === 1 }
+}

@@ -45,7 +45,9 @@ describe('Privacy policy', () => {
 			'anonymous interaction events (clicks on buttons and links, form submission outcomes)'
 		)
 		expect(umamiLine.textContent).toContain('with no cookie and no user or account identifier')
-		expect(umamiLine.textContent).toContain('API calls are counted server-side without any such identifier')
+		expect(umamiLine.textContent).toContain(
+			'API calls, purchases and subscription changes are counted server-side without any such identifier'
+		)
 	})
 
 	it('keeps the publisher and ForVoyez contact details', () => {

@@ -14,6 +14,12 @@ vi.mock('@/services/prisma.service', async () => {
 
 vi.mock('@clerk/nextjs/server')
 
+// the insertion that skips an existing row: INSERT ... ON CONFLICT DO NOTHING
+const INSERT_IF_MISSING = {
+	data: [{ clerkId: 'user123', updatedAt: expect.any(String) }],
+	skipDuplicates: true,
+}
+
 describe('createUser', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
@@ -23,59 +29,47 @@ describe('createUser', () => {
 		auth.mockResolvedValue({ userId: null })
 
 		await expect(createUser()).rejects.toThrow('You must be logged to create a user')
+		expect(prisma.user.createMany).not.toHaveBeenCalled()
 	})
 
-	it('should return the existing user if a user with the same clerkId already exists', async () => {
-		const mockUser = { id: 'user123' }
-		const mockExistingUser = { clerkId: 'user123', id: 'dbUser123' }
-
-		auth.mockResolvedValue({ userId: mockUser.id })
-		prisma.user.upsert.mockResolvedValue(mockExistingUser)
-
-		const user = await createUser()
-
-		expect(user).toEqual(mockExistingUser)
-		expect(prisma.user.upsert).toHaveBeenCalledWith({
-			where: { clerkId: 'user123' },
-			update: {},
-			create: { clerkId: 'user123', updatedAt: expect.any(String) },
-		})
-	})
-
-	it('should create and return a new user if no user with the same clerkId exists', async () => {
-		const mockUser = { id: 'user123' }
-		const mockNewUser = { clerkId: 'user123', id: 'newUser123' }
-
-		auth.mockResolvedValue({ userId: mockUser.id })
-		prisma.user.upsert.mockResolvedValue(mockNewUser)
-
-		const user = await createUser()
-
-		expect(user).toEqual(mockNewUser)
-		expect(prisma.user.upsert).toHaveBeenCalledWith({
-			where: { clerkId: 'user123' },
-			update: {},
-			create: {
-				updatedAt: expect.any(String),
-				clerkId: 'user123',
-			},
-		})
-	})
-	it('returns the existing user when another request wins the insertion race', async () => {
+	it('should leave the existing user as it is if a user with the same clerkId already exists', async () => {
 		auth.mockResolvedValue({ userId: 'user123' })
-		prisma.user.upsert.mockRejectedValue(Object.assign(new Error('duplicate'), { code: 'P2002' }))
-		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123' })
-		await expect(createUser()).resolves.toEqual({ clerkId: 'user123' })
-		expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { clerkId: 'user123' } })
+		prisma.user.createMany.mockResolvedValue({ count: 0 })
+
+		const answer = await createUser()
+
+		expect(answer).toEqual({ created: false })
+		expect(prisma.user.createMany).toHaveBeenCalledWith(INSERT_IF_MISSING)
+		expect(prisma.user.upsert).not.toHaveBeenCalled()
+		expect(prisma.user.update).not.toHaveBeenCalled()
 	})
 
-	it('propagates failures other than a confirmed competing insertion', async () => {
+	it('should create a new user if no user with the same clerkId exists', async () => {
 		auth.mockResolvedValue({ userId: 'user123' })
-		prisma.user.upsert.mockRejectedValue(new Error('connection failed'))
-		await expect(createUser()).rejects.toThrow('connection failed')
+		prisma.user.createMany.mockResolvedValue({ count: 1 })
+
+		const answer = await createUser()
+
+		expect(answer).toEqual({ created: true })
+		expect(prisma.user.createMany).toHaveBeenCalledTimes(1)
+		expect(prisma.user.createMany).toHaveBeenCalledWith(INSERT_IF_MISSING)
+	})
+
+	// PostgreSQL makes the loser of the race wait, then skip its row: it gets
+	// no unique-key error to recover from
+	it('succeeds without creating when another request wins the insertion race', async () => {
+		auth.mockResolvedValue({ userId: 'user123' })
+		prisma.user.createMany.mockResolvedValue({ count: 0 })
+
+		await expect(createUser()).resolves.toEqual({ created: false })
 		expect(prisma.user.findUnique).not.toHaveBeenCalled()
-		prisma.user.upsert.mockRejectedValue(Object.assign(new Error('duplicate'), { code: 'P2002' }))
-		prisma.user.findUnique.mockResolvedValue(null)
+	})
+
+	it('propagates the failures of the database', async () => {
+		auth.mockResolvedValue({ userId: 'user123' })
+		prisma.user.createMany.mockRejectedValue(new Error('connection failed'))
+		await expect(createUser()).rejects.toThrow('connection failed')
+		prisma.user.createMany.mockRejectedValue(Object.assign(new Error('duplicate'), { code: 'P2002' }))
 		await expect(createUser()).rejects.toThrow('duplicate')
 	})
 })

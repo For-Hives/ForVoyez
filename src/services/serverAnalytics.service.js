@@ -1,11 +1,14 @@
 import { after } from 'next/server'
 
 import { UMAMI_WEBSITE_ID } from '@/constants/umami'
+import { slug } from '@/helpers/analytics'
 
 import 'server-only'
 
 // Server-side Umami events for the public API. Its callers are servers and
-// the WordPress plugin, which the browser tracker never sees.
+// the WordPress plugin, which the browser tracker never sees. Neither does it
+// see a purchase: the checkout is on Lemon Squeezy's domain, only its webhook
+// reaches this server.
 // Best effort only: an event leaves after the response is sent, has 2 s to
 // reach Umami, and is dropped without a log line when anything goes wrong.
 
@@ -20,6 +23,9 @@ const TRACKED_HOSTS = new Set(['forvoyez.com', 'www.forvoyez.com'])
 const EVENT_URLS = new Map([
 	['api-describe', '/api/describe'],
 	['api-tokens-check', '/api/tokens'],
+	// both are reported from the Lemon Squeezy webhook
+	['api-purchase', '/api/webhook'],
+	['api-subscription-change', '/api/webhook'],
 ])
 
 // Umami ignores a request without a User-Agent or with one that looks like a
@@ -41,33 +47,56 @@ const UNKNOWN_VERSION = 'unknown'
 
 const NOT_BLANK = /\S/
 
+// Outcome of a Lemon Squeezy event (webhook.service) -> its event
+const WEBHOOK_EVENTS = new Map([
+	['purchase', 'api-purchase'],
+	['subscription-change', 'api-subscription-change'],
+])
+
+// Everything a webhook event can say, besides the slug of a plan name and a
+// number of credits: any other value is reported as 'other'.
+const PURCHASE_KINDS = new Set(['subscription', 'refill'])
+const PURCHASE_REASONS = new Set(['first-order', 'renewal', 'plan-change'])
+const SUBSCRIPTION_CHANGES = new Set(['created', 'cancelled', 'resumed', 'plan-changed', 'updated'])
+// Lemon Squeezy's subscription statuses, as slugs ('past_due' -> 'past-due')
+const SUBSCRIPTION_STATUSES = new Set(['on-trial', 'active', 'paused', 'past-due', 'unpaid', 'cancelled', 'expired'])
+// Plan.billingCycle is Lemon Squeezy's renewal unit, reported with the words of
+// the browser events (pricing-cycle-toggle, plans-checkout-click) so the two
+// can be compared; a plan without one (a credit pack) is paid once.
+const BILLING_CYCLES = new Map([
+	['month', 'monthly'],
+	['year', 'annually'],
+])
+const ONE_TIME = 'one-time'
+const OTHER = 'other'
+
+const UNKNOWN_PLAN = { cycle: 'unknown', plan: 'unknown' }
+
+/**
+ * @typedef {Record<string, string|number|boolean>} EventData event properties, nothing personal
+ */
+
 /**
  * Sends one Umami event for an API call, after the response is sent. Never
  * throws and never delays the response.
  * @param {Request} request the API request (only its host is read here)
  * @param {string} name a key of EVENT_URLS
- * @param {Record<string, string|number|boolean>} data event properties, nothing personal
+ * @param {EventData | (() => Promise<EventData>)} data the event properties, or a
+ *   function that reads them: called once the response is sent, for
+ *   properties that take a query
  */
 export function trackServerEvent(request, name, data) {
 	try {
 		const url = EVENT_URLS.get(name)
 		if (!(url && isTrackedHost(request))) return
 
+		if (typeof data === 'function') {
+			after(() => sendLater(name, url, data))
+			return
+		}
+
 		// built now, so the task below keeps neither the request nor its body
-		const body = JSON.stringify({
-			payload: {
-				website: UMAMI_WEBSITE_ID,
-				hostname: 'forvoyez.com',
-				language: '',
-				referrer: '',
-				screen: '',
-				title: '',
-				name,
-				data,
-				url,
-			},
-			type: 'event',
-		})
+		const body = eventBody(name, url, data)
 		after(() => send(body))
 	} catch {
 		// statistics must never break an API call
@@ -110,6 +139,49 @@ export function trackTokensCheck(request, response) {
 	}
 }
 
+/**
+ * `api-purchase` (a payment granted credits) or `api-subscription-change`: one
+ * event per Lemon Squeezy event, once it is processed for the first time.
+ * @param {Request} request the webhook delivery (only its host is read)
+ * @param {object} outcome what the event did, as processWebhook reports it: which plan, never who
+ * @param {(variantId: string|number) => Promise<{name: string, billingCycle: string|null}|null>} [readPlan]
+ *   reads the plan of an outcome that only names its variant; called once the response is sent
+ */
+export function trackWebhookOutcome(request, outcome, readPlan) {
+	try {
+		const name = WEBHOOK_EVENTS.get(outcome.type)
+		if (!name) return
+
+		const { variantId, plan } = outcome
+		if (plan || variantId == null || typeof readPlan !== 'function') {
+			trackServerEvent(request, name, webhookEventData(outcome, plan))
+			return
+		}
+		// the plan was not read while the event was processed: no query for it
+		// before the response
+		trackServerEvent(request, name, async () => webhookEventData(outcome, await readInTime(readPlan, variantId)))
+	} catch {
+		// same rule as above
+	}
+}
+
+function eventBody(name, url, data) {
+	return JSON.stringify({
+		payload: {
+			website: UMAMI_WEBSITE_ID,
+			hostname: 'forvoyez.com',
+			language: '',
+			referrer: '',
+			screen: '',
+			title: '',
+			name,
+			data,
+			url,
+		},
+		type: 'event',
+	})
+}
+
 function isTrackedHost(request) {
 	// the reverse proxy passes the public host in X-Forwarded-Host
 	const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
@@ -148,6 +220,68 @@ function sentFields(formData) {
 
 function isFilled(value) {
 	return typeof value === 'string' && NOT_BLANK.test(value)
+}
+
+// The properties of a webhook event, picked one by one: whatever else an
+// outcome holds stays here. `plan` is the slug the browser events give the
+// same plan (pricing-plan-click, plans-checkout-click), to follow it from the
+// click to the purchase.
+function webhookEventData(outcome, plan) {
+	const about =
+		plan && typeof plan === 'object'
+			? { cycle: billingCycle(plan.billingCycle), plan: slug(plan.name) || UNKNOWN_PLAN.plan }
+			: UNKNOWN_PLAN
+
+	if (outcome.type === 'purchase') {
+		return {
+			credits: Number.isFinite(outcome.credits) ? outcome.credits : 0,
+			reason: oneOf(PURCHASE_REASONS, outcome.reason),
+			kind: oneOf(PURCHASE_KINDS, outcome.kind),
+			...about,
+		}
+	}
+
+	const event = oneOf(SUBSCRIPTION_CHANGES, outcome.change)
+	// only an `updated` says which status: the other changes are one each
+	return event === 'updated'
+		? { status: oneOf(SUBSCRIPTION_STATUSES, slug(outcome.status)), event, ...about }
+		: { event, ...about }
+}
+
+function billingCycle(value) {
+	return value == null ? ONE_TIME : (BILLING_CYCLES.get(value) ?? OTHER)
+}
+
+function oneOf(values, value) {
+	return values.has(value) ? value : OTHER
+}
+
+// A plan read after the response, for an outcome that only names its variant.
+// Null when the database fails or takes longer than a send to Umami may: the
+// event then leaves with an unknown plan.
+async function readInTime(readPlan, variantId) {
+	let timer
+	try {
+		return await Promise.race([
+			readPlan(variantId),
+			new Promise(resolve => {
+				timer = setTimeout(resolve, SEND_TIMEOUT_MS, null)
+			}),
+		])
+	} catch {
+		return null
+	} finally {
+		clearTimeout(timer)
+	}
+}
+
+// For properties that are read once the response is sent (see trackServerEvent)
+async function sendLater(name, url, readData) {
+	try {
+		await send(eventBody(name, url, await readData()))
+	} catch {
+		// a lost event is not worth a log line
+	}
 }
 
 async function send(body) {

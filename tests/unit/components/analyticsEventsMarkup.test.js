@@ -55,6 +55,7 @@ const AREAS = [
 
 // everything this file's components and the rest of the app must keep sending
 const EXPECTED_EVENTS = [
+	'auth-signup-complete',
 	'billing-portal-redirect',
 	'contact-faq-toggle',
 	'contact-form-invalid',
@@ -95,6 +96,7 @@ const EXPECTED_EVENTS = [
 	'usage-data-view',
 	'wp-cta-click',
 	'wp-faq-toggle',
+	'wp-video-play',
 ]
 
 // a property named like this would carry personal data or a secret

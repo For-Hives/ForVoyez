@@ -4,7 +4,7 @@ import { UserButton, useUser } from '@clerk/nextjs'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useMemo, ViewTransition } from 'react'
+import { useEffect, useMemo, useRef, ViewTransition } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { createUser } from '@/app/actions/app/createUser'
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'
@@ -12,16 +12,50 @@ import { HeroPatternAppComponent } from '@/components/App/HeroPatternApp.compone
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
 import { SectionProviderAppComponent } from '@/components/App/SectionProviderApp.component'
 import { Transition } from '@/components/Transitions/Transition.component'
+import { slug, track } from '@/helpers/analytics'
 import version from '@/helpers/version'
+
+const TRACKER_WAIT_MS = 250
+const TRACKER_WAIT_ATTEMPTS = 20
+
+// How the account was opened, from the user Clerk already loaded in the
+// browser: the provider of a social sign-up ('google'), 'email' otherwise.
+function signupMethod(user) {
+	return slug(user?.externalAccounts?.[0]?.provider, 30) || 'email'
+}
+
+// The server says "created" once per account and never again: on a page loaded
+// straight into the dashboard the tracker may still be loading, so give it up
+// to 5 s rather than lose the sign-up.
+function whenTrackerLoaded(send, attemptsLeft = TRACKER_WAIT_ATTEMPTS) {
+	if (window.umami || attemptsLeft <= 0) {
+		send()
+		return
+	}
+	setTimeout(() => whenTrackerLoaded(send, attemptsLeft - 1), TRACKER_WAIT_MS)
+}
 
 export function LayoutAppComponent({ children }) {
 	const { isSignedIn, user } = useUser()
+	// the Clerk id never leaves the browser: it only tells two accounts apart
+	const signupReportedFor = useRef(null)
 
 	// the database user of the signed-in visitor (the legal pages share this
 	// layout and are public: a signed-out visitor has no user to create)
 	useEffect(() => {
 		if (!isSignedIn) return
-		createUser().catch(error => console.error('Error creating the user:', error.message))
+		createUser()
+			.then(answer => {
+				// `created` is true for the one call that inserted the row of the
+				// account: its first arrival in the dashboard after signing up. The
+				// ref keeps it to one event whatever a second call answers (Strict
+				// Mode runs this effect twice in development).
+				if (answer?.created !== true || signupReportedFor.current === user?.id) return
+				signupReportedFor.current = user?.id
+				const method = signupMethod(user)
+				whenTrackerLoaded(() => track('auth-signup-complete', { method }))
+			})
+			.catch(error => console.error('Error creating the user:', error.message))
 	}, [isSignedIn])
 
 	const memoizedImage = useMemo(
