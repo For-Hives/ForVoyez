@@ -95,6 +95,7 @@ const EXPECTED_EVENTS = [
 	'usage-data-view',
 	'wp-cta-click',
 	'wp-faq-toggle',
+	'wp-video-play',
 ]
 
 // a property named like this would carry personal data or a secret

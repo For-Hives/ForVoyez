@@ -176,9 +176,10 @@ export default function PrivacyPolicyPage() {
 			<section>
 				<h2 className="mt-8 mb-4 text-2xl font-bold text-slate-800">Third-Party Content</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					The WordPress plugin page embeds a YouTube video, and you can choose to sign in with Google or GitHub. These
-					services may set their own cookies and process your data under their own privacy policies, which this Privacy
-					Policy does not cover.
+					The WordPress plugin page offers a video hosted by YouTube: the YouTube player and its cookies are loaded only
+					when you choose to play the video. You can also choose to sign in with Google or GitHub. These services may
+					set their own cookies and process your data under their own privacy policies, which this Privacy Policy does
+					not cover.
 				</p>
 			</section>
 

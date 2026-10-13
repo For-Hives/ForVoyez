@@ -2,6 +2,7 @@
 import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/24/outline'
 import { motion } from 'motion/react'
 import Link from 'next/link'
+import { PluginVideoComponent } from '@/components/WordpressPlugin/PluginVideo.component'
 
 const features = [
 	{
@@ -79,17 +80,7 @@ export function HowItWorksComponent() {
 								className="bg-forvoyez_orange-100 absolute -inset-y-px -left-3 -z-10 h-full w-full origin-bottom-left skew-x-[-30deg] opacity-20 ring-1 ring-white ring-inset"
 							/>
 							<div className="mx-auto flex h-full max-w-2xl items-center sm:mx-0 sm:max-w-none">
-								<div className="aspect-video w-full">
-									<iframe
-										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-										allowFullScreen
-										className="rounded-xl"
-										height="100%"
-										src="https://www.youtube.com/embed/tY-C1fPhCtE"
-										title="ForVoyez WordPress Plugin Demo"
-										width="100%"
-									></iframe>
-								</div>
+								<PluginVideoComponent location="how-it-works" />
 							</div>
 							<div
 								aria-hidden="true"
