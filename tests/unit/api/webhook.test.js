@@ -78,7 +78,8 @@ describe('POST /api/webhook', () => {
 
 		expect(response.status).toBe(200)
 		expect(saveWebhooks).toHaveBeenCalledWith(JSON.parse(BODY))
-		expect(processWebhook).toHaveBeenCalledWith(12)
+		// the event id, and the listener told what it did (analyticsPurchaseEvents*.test.js)
+		expect(processWebhook).toHaveBeenCalledWith(12, expect.any(Function))
 		expect(processed).toBe(true)
 	})
 
