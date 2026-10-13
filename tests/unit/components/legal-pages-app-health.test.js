@@ -51,7 +51,7 @@ describe('Privacy policy', () => {
 	it('keeps the publisher and ForVoyez contact details', () => {
 		const { container } = render(createElement(PrivacyPolicyPage))
 
-		expect(container.textContent).toContain('SIRET : 880 505 276 00019')
+		expect(container.textContent).toContain('SIRET : 880 505 276 00035')
 		expect(screen.getByRole('link', { name: 'https://forvoyez.com/contact' }).getAttribute('href')).toBe(
 			'https://forvoyez.com/contact'
 		)
