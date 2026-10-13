@@ -10,6 +10,7 @@ import { memo, useRef } from 'react'
 import { useIsInsideMobileNavigation } from '@/components/App/MobileNavigationApp.component'
 import { remToPx } from '@/components/App/RemToPxApp.component'
 import { useSectionStore } from '@/components/App/SectionProviderApp.component'
+import { linkTarget } from '@/helpers/analytics'
 
 function ActivePageMarker({ pathname, group }) {
 	const itemHeight = remToPx(2)
@@ -63,6 +64,8 @@ function NavigationGroup({ className, group }) {
 }
 
 function NavLink({ isAnchorLink = false, active = false, children, testId, href }) {
+	const isInsideMobileNavigation = useIsInsideMobileNavigation()
+
 	return (
 		<Link
 			aria-current={active ? 'page' : undefined}
@@ -71,6 +74,9 @@ function NavLink({ isAnchorLink = false, active = false, children, testId, href 
 				isAnchorLink ? 'pl-7' : 'pl-4',
 				active ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'
 			)}
+			data-fv-event="dash-nav-click"
+			data-fv-event-location={isInsideMobileNavigation ? 'mobile-menu' : 'sidebar'}
+			data-fv-event-target={linkTarget(href)}
 			data-testid={testId}
 			href={href}
 		>
@@ -171,7 +177,13 @@ export const NavigationAppComponent = memo(function NavigationAppComponent(props
 					<div className={'mt-6'}>
 						<div className={'flex items-center gap-2 lg:hidden'}>
 							<UserButton appearance="ghost" userProfileMode="navigation" userProfileUrl="/profile" />
-							<Link className={'h-full w-full'} href="/profile">
+							<Link
+								className={'h-full w-full'}
+								data-fv-event="dash-nav-click"
+								data-fv-event-location="mobile-menu"
+								data-fv-event-target="profile"
+								href="/profile"
+							>
 								<span className="text-sm font-medium text-slate-900">
 									{user.firstName} {user.lastName}
 								</span>

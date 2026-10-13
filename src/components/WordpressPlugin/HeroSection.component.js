@@ -50,12 +50,21 @@ export function HeroSectionComponent() {
 								<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
 									<Link
 										className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-600 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+										data-fv-event="wp-cta-click"
+										data-fv-event-location="hero"
+										data-fv-event-target="wordpress-org"
 										href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 									>
 										Install the WordPress plugin
 									</Link>
 								</motion.div>
-								<Link className="text-sm leading-6 font-semibold text-slate-900" href="#how-it-works">
+								<Link
+									className="text-sm leading-6 font-semibold text-slate-900"
+									data-fv-event="wp-cta-click"
+									data-fv-event-location="hero"
+									data-fv-event-target="how-it-works"
+									href="#how-it-works"
+								>
 									See the setup steps <span aria-hidden="true">→</span>
 								</Link>
 							</div>

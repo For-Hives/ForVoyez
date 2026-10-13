@@ -19,6 +19,7 @@ import {
 import { getMyCredits, getMyUsage, getMyUsageByToken } from '@/app/actions/app/usage'
 import { SkeletonLoader } from '@/components/Skeletons/SkeletonChart'
 import { SkeletonText } from '@/components/Skeletons/SkeletonText'
+import { track } from '@/helpers/analytics'
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 export function UsageChartComponent() {
@@ -64,6 +65,13 @@ export function UsageChartComponent() {
 			fetchUsageByToken()
 		}
 	}, [userId])
+
+	// the page has no control to click: one event once both answered, to tell
+	// the accounts that already processed images from the ones that never did
+	useEffect(() => {
+		if (isLoadingUsage || isLoadingUsageByToken) return
+		track('usage-data-view', { has_usage: usage.length > 0 || usageByToken.length > 0 })
+	}, [isLoadingUsage, isLoadingUsageByToken])
 
 	// only once both answered, not while they are still loading
 	const showTooltip = !(isLoadingUsage || isLoadingUsageByToken) && usage.length === 0 && usageByToken.length === 0

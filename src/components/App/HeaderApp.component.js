@@ -41,7 +41,13 @@ export const HeaderDashboard = memo(
 				/>
 				<div className="flex items-center gap-5 lg:hidden">
 					<MobileNavigationAppComponent />
-					<Link aria-label="Home" href="/app">
+					<Link
+						aria-label="Home"
+						data-fv-event="dash-nav-click"
+						data-fv-event-location="mobile-header"
+						data-fv-event-target="logo"
+						href="/app"
+					>
 						<span className="sr-only">ForVoyez</span>
 						<Image alt="logo ForVoyez" className="h-8 w-auto" height={80} src="/logo/logo.webp" width={80} />
 					</Link>

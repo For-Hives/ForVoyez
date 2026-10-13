@@ -8,6 +8,7 @@ import {
 } from '@/services/imageDescription.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
+import { trackDescribeCall } from '@/services/serverAnalytics.service'
 
 const INVALID_IMAGE = 'Bad Request, Invalid image file'
 const IMAGE_TOO_LARGE = 'Image too large: the maximum is 10 MB'
@@ -18,8 +19,17 @@ const MAX_BODY_BYTES = 11 * 1024 * 1024
 
 class PayloadTooLargeError extends Error {}
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 export async function POST(request) {
+	// receives the parsed body, to count which optional fields were sent
+	const seen = {}
+	const response = await describeImage(request, seen)
+	// anonymous usage event, sent after the response
+	trackDescribeCall(request, response, seen.formData)
+	return response
+}
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
+async function describeImage(request, seen) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	try {
 		// get the authorisation header (never log it: it carries the API key)
@@ -72,6 +82,7 @@ export async function POST(request) {
 			console.error('Unreadable multipart body:', error.name)
 			return jsonError('Bad Request, the body must be multipart/form-data', 400, 'Bad Request')
 		}
+		seen.formData = formData
 
 		const file = formData.get('image')
 		if (!file) {

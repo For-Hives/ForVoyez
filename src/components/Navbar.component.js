@@ -8,11 +8,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Transition } from '@/components/Transitions/Transition.component'
+import { linkTarget, trackClick } from '@/helpers/analytics'
 
 const navigation = [
 	{ testId: 'nav-home', name: 'Home', href: '/' },
 	{ testId: 'nav-features', href: '/#features', name: 'Features' },
 	{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
+	{ testId: 'nav-developers', href: '/#developers', name: 'API' },
 	{
 		testId: 'nav-wordpress-plugin',
 		href: '/wordpress-plugin',
@@ -28,7 +30,14 @@ export function NavbarComponent() {
 		<header className="absolute inset-x-0 top-0 z-50">
 			<nav aria-label="Global" className="navbar mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
 				<div className="flex lg:flex-1">
-					<Link className="-m-1.5 p-1.5" data-testid="logo-link" href="/">
+					<Link
+						className="-m-1.5 p-1.5"
+						data-fv-event="nav-link-click"
+						data-fv-event-location="header"
+						data-fv-event-target="logo"
+						data-testid="logo-link"
+						href="/"
+					>
 						<span className="sr-only">ForVoyez</span>
 						<Transition name="brand-logo">
 							<Image
@@ -48,6 +57,8 @@ export function NavbarComponent() {
 							'-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 ' +
 							`text-slate-700 ${mobileMenuOpen ? 'hidden' : 'block'}`
 						}
+						data-fv-event="nav-menu-toggle"
+						data-fv-event-action="open"
 						data-testid="menu-open-button"
 						onClick={() => setMobileMenuOpen(true)}
 						type="button"
@@ -60,6 +71,9 @@ export function NavbarComponent() {
 					{navigation.map(item => (
 						<Link
 							className="text-sm leading-6 font-semibold text-slate-900"
+							data-fv-event="nav-link-click"
+							data-fv-event-location="header"
+							data-fv-event-target={linkTarget(item.href)}
 							data-testid={item.testId}
 							href={item.href}
 							key={item.name}
@@ -78,6 +92,9 @@ export function NavbarComponent() {
 						/>
 						<Link
 							className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
+							data-fv-event="nav-link-click"
+							data-fv-event-location="header"
+							data-fv-event-target="app"
 							data-testid="dashboard-link"
 							href="/app"
 						>
@@ -89,6 +106,8 @@ export function NavbarComponent() {
 							{/* Clerk's default button is bare text: no pointer, no hover */}
 							<button
 								className="hover:bg-forvoyez_orange-500 hover:ring-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-500 cursor-pointer rounded-md px-3.5 py-2 text-sm leading-6 font-semibold text-slate-900 ring-1 ring-slate-300 transition-colors ring-inset hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#e05d45]"
+								data-fv-event="nav-sign-in-click"
+								data-fv-event-location="header"
 								data-testid="sign-in-button"
 								type="button"
 							>
@@ -103,9 +122,17 @@ export function NavbarComponent() {
 				<Dialog.Panel
 					className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
 					data-testid="mobile-menu-dialog"
+					// the panel stops its clicks before they reach the document listener
+					onClick={trackClick}
 				>
 					<div className="flex items-center justify-between">
-						<Link className="-m-1.5 p-1.5" href="/">
+						<Link
+							className="-m-1.5 p-1.5"
+							data-fv-event="nav-link-click"
+							data-fv-event-location="mobile-menu"
+							data-fv-event-target="logo"
+							href="/"
+						>
 							<span className="sr-only">ForVoyez</span>
 							<Image
 								alt="Logo ForVoyez"
@@ -118,6 +145,8 @@ export function NavbarComponent() {
 						</Link>
 						<button
 							className={`-m-2.5 rounded-md p-2.5 text-slate-700 ${mobileMenuOpen ? 'block' : 'hidden'}`}
+							data-fv-event="nav-menu-toggle"
+							data-fv-event-action="close"
 							data-testid="menu-close-button"
 							onClick={() => setMobileMenuOpen(false)}
 							type="button"
@@ -132,6 +161,9 @@ export function NavbarComponent() {
 								{navigation.map(item => (
 									<Link
 										className="-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
+										data-fv-event="nav-link-click"
+										data-fv-event-location="mobile-menu"
+										data-fv-event-target={linkTarget(item.href)}
 										data-testid={item.testId}
 										href={item.href}
 										key={item.name}
@@ -145,6 +177,9 @@ export function NavbarComponent() {
 									<div className={'flex flex-col gap-4'}>
 										<Link
 											className="z-40 flex rounded-md text-sm text-slate-950 underline transition-all"
+											data-fv-event="nav-link-click"
+											data-fv-event-location="mobile-menu"
+											data-fv-event-target="app"
 											data-testid="dashboard-link"
 											href="/app"
 										>
@@ -162,6 +197,8 @@ export function NavbarComponent() {
 									<SignInButton>
 										<button
 											className="focus-visible:outline-forvoyez_orange-500 -mx-3 block w-[calc(100%+1.5rem)] cursor-pointer rounded-lg px-3 py-2.5 text-left text-base leading-7 font-semibold text-slate-900 transition-colors hover:bg-slate-50 focus-visible:outline-2 active:bg-slate-100"
+											data-fv-event="nav-sign-in-click"
+											data-fv-event-location="mobile-menu"
 											data-testid="sign-in-button"
 											type="button"
 										>

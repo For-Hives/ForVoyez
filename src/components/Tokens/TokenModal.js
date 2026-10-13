@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
+import { track, trackClick } from '@/helpers/analytics'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
 const schema = yup.object().shape({
@@ -37,6 +38,8 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 
 	const copyToken = async token => {
 		if (!(await copyToClipboard(token))) return
+		// that a key was copied, never the key
+		track('tokens-key-copy')
 		setIsCopied(true)
 		setTimeout(() => setIsCopied(false), 1500)
 	}
@@ -53,7 +56,10 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 			setTokenToDisplayInClipBoardField(result.jwt)
 			setTokens([...tokens, { ...newToken, jwt: result.jwt_shortened, id: result.id }])
 			reset()
+			// the outcome only, never the key or the name given to it
+			track('tokens-create-result', { outcome: 'ok' })
 		} catch (_error) {
+			track('tokens-create-result', { outcome: 'error' })
 			toast.error('Failed to create token')
 		}
 	}
@@ -84,7 +90,11 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+							<Dialog.Panel
+								className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+								// the panel stops its clicks before they reach the document listener
+								onClick={trackClick}
+							>
 								<Dialog.Title as="h3" className="text-lg leading-6 font-medium text-slate-900">
 									{!tokenToDisplayInClipBoardField ? <>Create new secret key</> : <>Your secret key</>}
 								</Dialog.Title>
@@ -181,6 +191,9 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 											<>
 												<button
 													className="inline-flex justify-center rounded-md border border-transparent bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+													data-fv-event="tokens-modal-close"
+													data-fv-event-modal="create"
+													data-fv-event-via="cancel"
 													onClick={closeModal}
 													type="button"
 												>
@@ -198,6 +211,9 @@ export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {
 										{tokenToDisplayInClipBoardField && tokenToDisplayInClipBoardField.length > 15 && (
 											<button
 												className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-600 block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+												data-fv-event="tokens-modal-close"
+												data-fv-event-modal="create"
+												data-fv-event-via="copied"
 												onClick={() => {
 													setTokenToDisplayInClipBoardField('')
 													closeModal()

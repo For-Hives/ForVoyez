@@ -8,11 +8,17 @@ test.beforeEach(async ({ context }) => {
 async function observeTransitions(page) {
 	await page.addInitScript(() => {
 		window.observedTransitions = []
+		window.runningTransition = null
 		const nativeStart = document.startViewTransition.bind(document)
 		document.startViewTransition = (...args) => {
 			const result = nativeStart(...args)
 			const observation = { ready: false, error: null }
 			window.observedTransitions.push(observation)
+			window.runningTransition = result
+			const release = () => {
+				if (window.runningTransition === result) window.runningTransition = null
+			}
+			result.finished.then(release, release)
 			result.ready.then(
 				() => {
 					observation.ready = true
@@ -39,6 +45,22 @@ async function observeTransitions(page) {
 			)
 			return result
 		}
+	})
+}
+
+// The home page runs view transitions of its own after load (the lazy feature
+// animation mounting, for one). React ignores events between startViewTransition()
+// and its update callback, so a click there becomes a full page load, and
+// Playwright re-scrolls a target it cannot hit under the transition overlay, which
+// moves the shared title out of the viewport. Click from the page, between two
+// transitions, in the same synchronous step as the check.
+async function clickBetweenTransitions(link) {
+	await link.evaluate(element => {
+		const clickWhenIdle = () => {
+			if (!window.runningTransition) return element.click()
+			return window.runningTransition.finished.then(clickWhenIdle, clickWhenIdle)
+		}
+		return clickWhenIdle()
 	})
 }
 
@@ -78,15 +100,16 @@ test('plugin shared content transitions without duplicate names', async ({ page 
 	await sharedTitle.evaluate(element => element.scrollIntoView({ block: 'start', behavior: 'instant' }))
 	await expect(sharedTitle).toBeInViewport({ ratio: 1 })
 	await expect(pluginLink).toBeInViewport({ ratio: 1 })
-	await pluginLink.hover()
 	// Shared pairs require a visible source and a destination ready in the same commit.
+	// Links in the viewport are prefetched once hydrated, no pointer needed.
 	await expect.poll(async () => (await Promise.all(pluginPrefetches)).some(Boolean), { timeout: 15000 }).toBe(true)
-	await pluginLink.click()
+	await clickBetweenTransitions(pluginLink)
 	await expect(page).toHaveURL('/wordpress-plugin')
 	await expect(page.getByRole('heading', { name: 'Image descriptions, handled right inside WordPress.' })).toBeVisible()
+	// Earlier home transitions are ready long before the navigation one: wait for all of them.
 	await expect
-		.poll(() => page.evaluate(() => window.observedTransitions.filter(item => item.ready).length))
-		.toBeGreaterThan(0)
+		.poll(() => page.evaluate(() => window.observedTransitions.every(item => item.ready || item.error)))
+		.toBe(true)
 	expect(await page.evaluate(() => window.observedTransitions.filter(item => item.error))).toEqual([])
 	expect(await page.evaluate(() => window.observedTransitions)).toEqual(
 		expect.arrayContaining([expect.objectContaining({ pluginDuration: '0.28s' })])

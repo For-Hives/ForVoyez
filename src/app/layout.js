@@ -4,6 +4,9 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { Jost, Source_Sans_3 } from 'next/font/google'
 import Script from 'next/script'
 import { ViewTransition } from 'react'
+import { AnalyticsEventsComponent } from '@/components/Analytics/AnalyticsEvents.component'
+
+import { UMAMI_WEBSITE_ID } from '@/constants/umami'
 
 import '@/styles/globals.css'
 
@@ -123,14 +126,16 @@ export default function RootLayout({ children }) {
 			appearance={{ options: { showOptionalFields: true } }}
 		>
 			<html className={`${sourcesans.variable} ${jost.variable}`} data-scroll-behavior="smooth" lang={'en'}>
+				{/* the tracker ignores every host missing from data-domains (the docs load the same tag) */}
 				<Script
 					async
-					data-domains={'forvoyez.com,doc.forvoyez.com'}
-					data-website-id="705a7c53-7dc4-4cf7-b625-f2f87a428bfb"
+					data-domains={'forvoyez.com,doc.forvoyez.com,docs.forvoyez.com'}
+					data-website-id={UMAMI_WEBSITE_ID}
 					src="https://umami.wadefade.fr/script.js"
 					strategy="afterInteractive"
 				></Script>
 				<body className={'flex min-h-screen w-full flex-col text-slate-950'}>
+					<AnalyticsEventsComponent />
 					<ViewTransition default="none" update="fv-page">
 						{children}
 					</ViewTransition>

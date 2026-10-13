@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getCustomerPortalUrl } from '@/app/actions/app/plans'
 import { Transition } from '@/components/Transitions/Transition.component'
+import { track } from '@/helpers/analytics'
 
 export default function BillingPage() {
 	const router = useRouter()
@@ -26,13 +27,17 @@ export default function BillingPage() {
 
 			if (!url) {
 				redirectToPlans('subscription-toast')
+				// expected for an account that never bought anything: no portal to open
+				track('billing-portal-redirect', { outcome: 'error', status: 'no-customer' })
 				return
 			}
 
 			setLoadingMessage('Fetching your billing portal...')
 			router.replace(url)
+			track('billing-portal-redirect', { outcome: 'ok', status: 'portal' })
 			setLoadingMessage('Redirecting to your billing home...')
 		} catch (error) {
+			track('billing-portal-redirect', { outcome: 'error', status: 'exception' })
 			console.error('Error during user redirect:', error) // Log the error for debugging
 			redirectToPlans('data-load-error')
 			setLoadingMessage('Failed to load data. Please try again later.')
