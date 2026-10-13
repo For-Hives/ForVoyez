@@ -49,6 +49,16 @@ const nextConfig = {
 				],
 				source: '/api/:path*',
 			},
+			{
+				// the font files carry their version in their name (src/styles/fonts.css)
+				headers: [
+					{
+						value: 'public, max-age=31536000, immutable',
+						key: 'Cache-Control',
+					},
+				],
+				source: '/fonts/:file*.woff2',
+			},
 		]
 	},
 

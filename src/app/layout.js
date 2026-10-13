@@ -1,28 +1,23 @@
 import 'react-toastify/dist/ReactToastify.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
-import { Jost, Source_Sans_3 } from 'next/font/google'
 import Script from 'next/script'
 import { ViewTransition } from 'react'
+import { preload } from 'react-dom'
 import { AnalyticsEventsComponent } from '@/components/Analytics/AnalyticsEvents.component'
 
 import { UMAMI_WEBSITE_ID } from '@/constants/umami'
 
+import '@/styles/fonts.css'
 import '@/styles/globals.css'
 
-const sourcesans = Source_Sans_3({
-	weight: ['300', '400', '700', '900'],
-	variable: '--font-sourcesans',
-	style: ['normal', 'italic'],
-	subsets: ['latin'],
-})
-
-const jost = Jost({
-	weight: ['200', '300', '400', '500', '600', '700', '800'],
-	variable: '--font-jost',
-	subsets: ['latin'],
-	style: ['normal'],
-})
+// The latin files of the two fonts (src/styles/fonts.css), which every page
+// uses: preloaded like next/font did, the other subsets load on demand.
+const PRELOADED_FONTS = [
+	'/fonts/source-sans-3-v20-latin-normal.woff2',
+	'/fonts/source-sans-3-v20-latin-italic.woff2',
+	'/fonts/jost-v20-latin-normal.woff2',
+]
 
 export const viewport = {
 	themeColor: [
@@ -119,13 +114,17 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+	for (const href of PRELOADED_FONTS) {
+		preload(href, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' })
+	}
+
 	return (
 		<ClerkProvider
 			afterSignOutUrl="/"
 			// Clerk Core 3 hides optional sign-up fields by default; keep showing them
 			appearance={{ options: { showOptionalFields: true } }}
 		>
-			<html className={`${sourcesans.variable} ${jost.variable}`} data-scroll-behavior="smooth" lang={'en'}>
+			<html data-scroll-behavior="smooth" lang={'en'}>
 				{/* the tracker ignores every host missing from data-domains (the docs load the same tag) */}
 				<Script
 					async
