@@ -1,6 +1,7 @@
 import { findActiveApiToken } from '@/services/database.service'
 import { verifyJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
+import { trackTokensCheck } from '@/services/serverAnalytics.service'
 
 /**
  * GET route to retrieve user information and remaining tokens.
@@ -8,6 +9,13 @@ import { prisma } from '@/services/prisma.service'
  * to get account information and available credits.
  */
 export async function GET(request) {
+	const response = await getAccount(request)
+	// anonymous usage event, sent after the response
+	trackTokensCheck(request, response)
+	return response
+}
+
+async function getAccount(request) {
 	// Read request data outside application error handling: Next.js can suspend prerendering.
 	const authHeader = request.headers.get('Authorization')
 	try {

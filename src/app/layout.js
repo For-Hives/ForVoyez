@@ -5,6 +5,8 @@ import { Jost, Source_Sans_3 } from 'next/font/google'
 import Script from 'next/script'
 import { ViewTransition } from 'react'
 
+import { UMAMI_WEBSITE_ID } from '@/constants/umami'
+
 import '@/styles/globals.css'
 
 const sourcesans = Source_Sans_3({
@@ -126,7 +128,7 @@ export default function RootLayout({ children }) {
 				<Script
 					async
 					data-domains={'forvoyez.com,doc.forvoyez.com'}
-					data-website-id="705a7c53-7dc4-4cf7-b625-f2f87a428bfb"
+					data-website-id={UMAMI_WEBSITE_ID}
 					src="https://umami.wadefade.fr/script.js"
 					strategy="afterInteractive"
 				></Script>
