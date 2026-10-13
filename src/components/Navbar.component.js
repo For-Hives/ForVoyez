@@ -85,12 +85,16 @@ export function NavbarComponent() {
 						</Link>
 					</Show>
 					<Show when="signed-out">
-						<SignInButton
-							className="decoration-none"
-							data-testid="sign-in-button"
-							fallbackRedirectUrl={'/app'}
-							signUpFallbackRedirectUrl={'/app'}
-						/>
+						<SignInButton fallbackRedirectUrl={'/app'} signUpFallbackRedirectUrl={'/app'}>
+							{/* Clerk's default button is bare text: no pointer, no hover */}
+							<button
+								className="hover:bg-forvoyez_orange-500 hover:ring-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-500 cursor-pointer rounded-md px-3.5 py-2 text-sm leading-6 font-semibold text-slate-900 ring-1 ring-slate-300 transition-colors ring-inset hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#e05d45]"
+								data-testid="sign-in-button"
+								type="button"
+							>
+								Sign in
+							</button>
+						</SignInButton>
 					</Show>
 				</div>
 			</nav>
@@ -155,10 +159,15 @@ export function NavbarComponent() {
 									</div>
 								</Show>
 								<Show when="signed-out">
-									<SignInButton
-										className="decoration-none -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-slate-900 hover:bg-slate-50"
-										data-testid="sign-in-button"
-									/>
+									<SignInButton>
+										<button
+											className="focus-visible:outline-forvoyez_orange-500 -mx-3 block w-[calc(100%+1.5rem)] cursor-pointer rounded-lg px-3 py-2.5 text-left text-base leading-7 font-semibold text-slate-900 transition-colors hover:bg-slate-50 focus-visible:outline-2 active:bg-slate-100"
+											data-testid="sign-in-button"
+											type="button"
+										>
+											Sign in
+										</button>
+									</SignInButton>
 								</Show>
 							</div>
 						</div>
