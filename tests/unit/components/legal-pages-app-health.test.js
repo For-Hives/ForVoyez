@@ -34,6 +34,20 @@ describe('Legal pages markup', () => {
 describe('Privacy policy', () => {
 	afterEach(cleanup)
 
+	it('says which interactions Umami measures, and that they carry no identifier', () => {
+		const { container } = render(createElement(PrivacyPolicyPage))
+
+		const umamiLine = [...container.querySelectorAll('#service-providers li')].find(
+			item => item.querySelector('strong')?.textContent === 'Umami'
+		)
+		expect(umamiLine.textContent).toContain('cookieless audience measurement, self-hosted')
+		expect(umamiLine.textContent).toContain(
+			'anonymous interaction events (clicks on buttons and links, form submission outcomes)'
+		)
+		expect(umamiLine.textContent).toContain('with no cookie and no user or account identifier')
+		expect(umamiLine.textContent).toContain('API calls are counted server-side without any such identifier')
+	})
+
 	it('keeps the publisher and ForVoyez contact details', () => {
 		const { container } = render(createElement(PrivacyPolicyPage))
 
