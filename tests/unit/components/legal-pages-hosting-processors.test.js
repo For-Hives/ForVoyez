@@ -23,7 +23,7 @@ describe('Legal notice', () => {
 	it('keeps the publisher details unchanged', () => {
 		const { container } = render(createElement(LegalNoticePage))
 
-		expect(container.textContent).toContain('SIRET: 880 505 276 00019')
+		expect(container.textContent).toContain('SIRET: 880 505 276 00035')
 		expect(container.textContent).toContain('VAT number: FR 35 880505276')
 	})
 

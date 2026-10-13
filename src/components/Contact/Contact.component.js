@@ -107,9 +107,9 @@ export function ContactComponent() {
 									<BuildingOffice2Icon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
-									4 Impasse de la marchaisière
+									1250 Chemin de la Renouillère
 									<br />
-									44115 Nantes
+									74140 Sciez
 								</dd>
 							</div>
 							<div className="flex gap-x-4">
