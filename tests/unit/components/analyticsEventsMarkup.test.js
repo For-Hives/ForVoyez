@@ -282,6 +282,7 @@ describe('navbar', () => {
 				{ location: 'header', target: 'home' },
 				{ location: 'header', target: 'features' },
 				{ location: 'header', target: 'pricing' },
+				{ location: 'header', target: 'developers' },
 				{ location: 'header', target: 'wordpress-plugin' },
 				{ location: 'header', target: 'contact' },
 				{ location: 'header', target: 'app' },

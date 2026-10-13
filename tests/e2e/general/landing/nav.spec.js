@@ -27,6 +27,7 @@ test('Navbar elements are present and correct', async ({ page }) => {
 		{ testId: 'nav-home', name: 'Home', href: '/' },
 		{ testId: 'nav-features', href: '/#features', name: 'Features' },
 		{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
+		{ testId: 'nav-developers', href: '/#developers', name: 'API' },
 		{
 			href: '/wordpress-plugin',
 			testId: 'nav-wordpress-plugin',
@@ -60,6 +61,7 @@ test('Navbar internal links redirect correctly', async ({ page }) => {
 		{ testId: 'nav-home', href: '/' },
 		{ testId: 'nav-features', href: '/#features' },
 		{ testId: 'nav-pricing', href: '/#pricing' },
+		{ testId: 'nav-developers', href: '/#developers' },
 		{ testId: 'nav-contact', href: '/contact' },
 	]
 

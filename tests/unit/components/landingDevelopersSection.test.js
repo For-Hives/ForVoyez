@@ -49,7 +49,7 @@ const FORBIDDEN_CLAIMS = [
 const CTAS = [
 	{ testId: 'developers-plugin-link', name: 'See the WordPress plugin', href: '/wordpress-plugin', target: 'plugin' },
 	{ testId: 'developers-docs-link', name: 'Read the API docs', href: 'https://doc.forvoyez.com/', target: 'docs' },
-	{ testId: 'developers-playground-link', name: 'Try the playground', href: '/app/playground', target: 'playground' },
+	{ testId: 'developers-api-key-link', name: 'Get your API key', href: '/app/tokens', target: 'api-key' },
 ]
 
 function renderSection() {
@@ -94,7 +94,7 @@ describe('Landing developers section', () => {
 		expect(pointNames(api)).toEqual(['One endpoint', 'The language you ask for', 'Your own JSON fields'])
 	})
 
-	it('links to the plugin page, the API docs and the playground', () => {
+	it('links to the plugin page, the API docs and the API keys', () => {
 		renderSection()
 
 		const section = screen.getByTestId('developers-section')

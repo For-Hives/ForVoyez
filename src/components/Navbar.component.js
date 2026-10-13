@@ -14,6 +14,7 @@ const navigation = [
 	{ testId: 'nav-home', name: 'Home', href: '/' },
 	{ testId: 'nav-features', href: '/#features', name: 'Features' },
 	{ testId: 'nav-pricing', href: '/#pricing', name: 'Pricing' },
+	{ testId: 'nav-developers', href: '/#developers', name: 'API' },
 	{
 		testId: 'nav-wordpress-plugin',
 		href: '/wordpress-plugin',

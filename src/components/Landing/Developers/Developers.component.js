@@ -146,11 +146,11 @@ export function DevelopersComponent() {
 								<Link
 									className="text-sm leading-6 font-semibold text-slate-900"
 									data-fv-event="developers-cta-click"
-									data-fv-event-target="playground"
-									data-testid="developers-playground-link"
-									href="/app/playground"
+									data-fv-event-target="api-key"
+									data-testid="developers-api-key-link"
+									href="/app/tokens"
 								>
-									Try the playground <span aria-hidden="true">→</span>
+									Get your API key <span aria-hidden="true">→</span>
 								</Link>
 							</div>
 						</div>
