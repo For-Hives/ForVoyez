@@ -1,7 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { logger } from '@/services/logger.service'
+import { trackWebhookOutcome } from '@/services/serverAnalytics.service'
 
-import { processWebhook, saveWebhooks } from '@/services/webhook.service'
+import { getPlanLabel, processWebhook, saveWebhooks } from '@/services/webhook.service'
 
 const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
@@ -57,8 +58,12 @@ export async function POST(request) {
 	// skipped) and all-or-nothing: on failure, answer an error so Lemon
 	// Squeezy retries the delivery.
 	let processed = false
+	// what the event did, when this delivery is the one that processed it
+	let outcome = null
 	try {
-		processed = await processWebhook(webhookId)
+		processed = await processWebhook(webhookId, done => {
+			outcome = done
+		})
 	} catch (error) {
 		// processWebhook records processing errors itself: this one could not
 		// even be recorded (database unreachable...)
@@ -72,6 +77,13 @@ export async function POST(request) {
 		return new Response('Webhook processing failed', {
 			status: 500,
 		})
+	}
+
+	// A purchase happens on Lemon Squeezy's checkout, which the browser tracker
+	// never sees: count it from here (anonymous, sent after the response).
+	// Never for a duplicate delivery, which would count it twice.
+	if (outcome) {
+		trackWebhookOutcome(request, outcome, getPlanLabel)
 	}
 
 	return new Response('Success!', {
