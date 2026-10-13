@@ -9,6 +9,8 @@ const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 export async function POST(request) {
 	let webhookId
 	let eventName
+	// a Lemon Squeezy test-mode event: processed like any other, never counted
+	let testMode = false
 	try {
 		logger.info('webhook request received')
 		const secret = WEBHOOK_SECRET()
@@ -42,6 +44,7 @@ export async function POST(request) {
 			})
 		}
 		eventName = payload.meta.event_name
+		testMode = payload.meta.test_mode === true
 
 		// Store the event (each delivery is kept, processed or not)
 		webhookId = await saveWebhooks(payload)
@@ -81,8 +84,9 @@ export async function POST(request) {
 
 	// A purchase happens on Lemon Squeezy's checkout, which the browser tracker
 	// never sees: count it from here (anonymous, sent after the response).
-	// Never for a duplicate delivery, which would count it twice.
-	if (outcome) {
+	// Never for a duplicate delivery, which would count it twice, nor for a
+	// test-mode purchase, which is not a sale.
+	if (outcome && !testMode) {
 		trackWebhookOutcome(request, outcome, getPlanLabel)
 	}
 

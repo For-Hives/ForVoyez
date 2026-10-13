@@ -75,6 +75,32 @@ describe('POST /api/webhook statistics', () => {
 		expect(getPlanLabel).not.toHaveBeenCalled()
 	})
 
+	it('reports nothing for a Lemon Squeezy test-mode event, which is processed all the same', async () => {
+		processingReports(OUTCOME)
+		const body = JSON.stringify({
+			data: { attributes: { user_email: 'jane.doe@example.com', customer_id: 1 } },
+			meta: { custom_data: { user_id: 'user123' }, event_name: 'order_created', test_mode: true },
+		})
+
+		const response = await POST(delivery(body))
+
+		expect(response.status).toBe(200)
+		expect(processWebhook).toHaveBeenCalledTimes(1)
+		expect(trackWebhookOutcome).not.toHaveBeenCalled()
+	})
+
+	it('still reports a live event that says test_mode: false', async () => {
+		processingReports(OUTCOME)
+		const body = JSON.stringify({
+			data: { attributes: { user_email: 'jane.doe@example.com', customer_id: 1 } },
+			meta: { custom_data: { user_id: 'user123' }, event_name: 'order_created', test_mode: false },
+		})
+
+		await POST(delivery(body))
+
+		expect(trackWebhookOutcome).toHaveBeenCalledTimes(1)
+	})
+
 	it('reports nothing when processing reports nothing: a duplicate delivery, or an event that changed nothing', async () => {
 		const response = await POST(delivery())
 

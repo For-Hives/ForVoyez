@@ -40,8 +40,8 @@ vi.mock('@/services/prisma.service', async () => {
 const SECRET = 'fake-webhook-secret'
 const PRODUCTION = { host: 'forvoyez.com' }
 
-const STARTER_MONTHLY = { cycle: 'month', plan: 'starter' }
-const GROWTH_MONTHLY = { cycle: 'month', plan: 'growth' }
+const STARTER_MONTHLY = { cycle: 'monthly', plan: 'starter' }
+const GROWTH_MONTHLY = { cycle: 'monthly', plan: 'growth' }
 
 let fetchMock
 let ranTasks
@@ -149,7 +149,7 @@ describe('POST /api/webhook: api-purchase', () => {
 
 	it.each([
 		['a monthly plan', STARTER, { ...STARTER_MONTHLY, credits: 100 }],
-		['a yearly plan', GROWTH_YEARLY, { plan: 'growth', cycle: 'year', credits: 6000 }],
+		['a yearly plan', GROWTH_YEARLY, { plan: 'growth', cycle: 'annually', credits: 6000 }],
 	])('reports the renewal of %s with the credits of its plan', async (_case, plan, properties) => {
 		givenSubscription(plan)
 
@@ -224,7 +224,7 @@ describe('POST /api/webhook: api-subscription-change', () => {
 		expect(await deliver(subscriptionEvent(second, GROWTH_YEARLY))).toBe(200)
 
 		expect(await sentEvents()).toEqual([
-			['api-subscription-change', { event: 'plan-changed', plan: 'growth', cycle: 'year' }],
+			['api-subscription-change', { event: 'plan-changed', plan: 'growth', cycle: 'annually' }],
 		])
 	})
 

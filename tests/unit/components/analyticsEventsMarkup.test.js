@@ -55,6 +55,7 @@ const AREAS = [
 
 // everything this file's components and the rest of the app must keep sending
 const EXPECTED_EVENTS = [
+	'auth-signup-complete',
 	'billing-portal-redirect',
 	'contact-faq-toggle',
 	'contact-form-invalid',

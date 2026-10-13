@@ -82,49 +82,49 @@ describe('trackWebhookOutcome: the event of each outcome', () => {
 			'the first order of a subscription',
 			purchase({ reason: 'first-order' }),
 			'api-purchase',
-			{ reason: 'first-order', kind: 'subscription', plan: 'starter', cycle: 'month', credits: 100 },
+			{ reason: 'first-order', kind: 'subscription', plan: 'starter', cycle: 'monthly', credits: 100 },
 		],
 		[
 			'a renewal',
 			purchase({ plan: { billingCycle: 'year', name: 'Growth' }, credits: 6000 }),
 			'api-purchase',
-			{ kind: 'subscription', reason: 'renewal', plan: 'growth', cycle: 'year', credits: 6000 },
+			{ kind: 'subscription', reason: 'renewal', plan: 'growth', cycle: 'annually', credits: 6000 },
 		],
 		[
 			'the invoice of an upgrade',
 			purchase({ reason: 'plan-change', credits: 400 }),
 			'api-purchase',
-			{ reason: 'plan-change', kind: 'subscription', plan: 'starter', cycle: 'month', credits: 400 },
+			{ reason: 'plan-change', kind: 'subscription', plan: 'starter', cycle: 'monthly', credits: 400 },
 		],
 		[
 			'a created subscription',
 			change(),
 			'api-subscription-change',
-			{ event: 'created', plan: 'starter', cycle: 'month' },
+			{ event: 'created', plan: 'starter', cycle: 'monthly' },
 		],
 		[
 			'a cancelled subscription',
 			change({ change: 'cancelled' }),
 			'api-subscription-change',
-			{ event: 'cancelled', plan: 'starter', cycle: 'month' },
+			{ event: 'cancelled', plan: 'starter', cycle: 'monthly' },
 		],
 		[
 			'a resumed subscription',
 			change({ change: 'resumed' }),
 			'api-subscription-change',
-			{ event: 'resumed', plan: 'starter', cycle: 'month' },
+			{ event: 'resumed', plan: 'starter', cycle: 'monthly' },
 		],
 		[
 			'a plan change',
 			change({ change: 'plan-changed' }),
 			'api-subscription-change',
-			{ event: 'plan-changed', plan: 'starter', cycle: 'month' },
+			{ event: 'plan-changed', plan: 'starter', cycle: 'monthly' },
 		],
 		[
 			'an update to a status without an event of its own',
 			change({ change: 'updated', status: 'past_due' }),
 			'api-subscription-change',
-			{ status: 'past-due', event: 'updated', plan: 'starter', cycle: 'month' },
+			{ status: 'past-due', event: 'updated', plan: 'starter', cycle: 'monthly' },
 		],
 	])('reports %s', async (_case, outcome, name, data) => {
 		trackWebhookOutcome(request(), outcome)
@@ -185,14 +185,17 @@ describe('trackWebhookOutcome: what can leave', () => {
 		[undefined, 'unknown'],
 		[null, 'unknown'],
 	])('reports the plan named %j as %s, like the browser events do', async (name, plan) => {
-		expect(await sentData(purchase({ plan: { billingCycle: 'month', name } }))).toMatchObject({ cycle: 'month', plan })
+		expect(await sentData(purchase({ plan: { billingCycle: 'month', name } }))).toMatchObject({
+			cycle: 'monthly',
+			plan,
+		})
 		// the `plan` of pricing-plan-click and plans-checkout-click
 		expect(slug(name) || 'unknown').toBe(plan)
 	})
 
 	it.each([
-		['month', 'month'],
-		['year', 'year'],
+		['month', 'monthly'],
+		['year', 'annually'],
 		[null, 'one-time'],
 		[undefined, 'one-time'],
 		['week', 'other'],
@@ -238,7 +241,7 @@ describe('trackWebhookOutcome: what can leave', () => {
 		async changed => {
 			const data = await sentData(change({ change: changed, status: 'active' }))
 
-			expect(data).toEqual({ event: changed, plan: 'starter', cycle: 'month' })
+			expect(data).toEqual({ event: changed, plan: 'starter', cycle: 'monthly' })
 		}
 	)
 
@@ -276,8 +279,8 @@ describe('trackWebhookOutcome: what can leave', () => {
 		await runScheduled()
 
 		expect(sentEvents()).toEqual([
-			['api-purchase', { kind: 'subscription', reason: 'renewal', plan: 'starter', cycle: 'month', credits: 100 }],
-			['api-subscription-change', { event: 'updated', status: 'unpaid', plan: 'starter', cycle: 'month' }],
+			['api-purchase', { kind: 'subscription', reason: 'renewal', plan: 'starter', cycle: 'monthly', credits: 100 }],
+			['api-subscription-change', { event: 'updated', status: 'unpaid', plan: 'starter', cycle: 'monthly' }],
 		])
 		const sent = JSON.stringify(fetchMock.mock.calls)
 		for (const value of ['jane', 'Jane', 'user_2zQ', '9100042', '9200043', '9300044', '9500047', '91919', 'Monthly']) {
@@ -305,7 +308,9 @@ describe('trackWebhookOutcome: a plan named by its variant', () => {
 
 		expect(readPlan).toHaveBeenCalledTimes(1)
 		expect(readPlan).toHaveBeenCalledWith(9500047)
-		expect(sentEvents()).toEqual([['api-subscription-change', { event: 'cancelled', plan: 'starter', cycle: 'month' }]])
+		expect(sentEvents()).toEqual([
+			['api-subscription-change', { event: 'cancelled', plan: 'starter', cycle: 'monthly' }],
+		])
 		expect(JSON.stringify(fetchMock.mock.calls)).not.toContain('9500047')
 	})
 
@@ -315,7 +320,7 @@ describe('trackWebhookOutcome: a plan named by its variant', () => {
 		expect(await sentData(change({ variantId: 9500047 }), readPlan)).toEqual({
 			event: 'created',
 			plan: 'starter',
-			cycle: 'month',
+			cycle: 'monthly',
 		})
 		expect(readPlan).not.toHaveBeenCalled()
 	})
@@ -474,7 +479,7 @@ describe('trackWebhookOutcome: never break or slow the webhook', () => {
 // what trackWebhookOutcome relies on for a plan read after the response
 describe('trackServerEvent with properties read later', () => {
 	it('calls the reader in the task given to after(), then sends what it read', async () => {
-		const readData = vi.fn(async () => ({ event: 'cancelled', plan: 'starter', cycle: 'month' }))
+		const readData = vi.fn(async () => ({ event: 'cancelled', plan: 'starter', cycle: 'monthly' }))
 
 		trackServerEvent(request(), 'api-subscription-change', readData)
 
@@ -483,7 +488,9 @@ describe('trackServerEvent with properties read later', () => {
 		await runScheduled()
 
 		expect(readData).toHaveBeenCalledTimes(1)
-		expect(sentEvents()).toEqual([['api-subscription-change', { event: 'cancelled', plan: 'starter', cycle: 'month' }]])
+		expect(sentEvents()).toEqual([
+			['api-subscription-change', { event: 'cancelled', plan: 'starter', cycle: 'monthly' }],
+		])
 	})
 
 	it.each([

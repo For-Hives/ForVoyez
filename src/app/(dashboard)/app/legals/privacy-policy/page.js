@@ -141,7 +141,8 @@ export default function PrivacyPolicyPage() {
 					<li>
 						<strong>Umami</strong> (European Union): cookieless audience measurement, self-hosted. Besides page views,
 						it counts anonymous interaction events (clicks on buttons and links, form submission outcomes), with no
-						cookie and no user or account identifier, and API calls are counted server-side without any such identifier.
+						cookie and no user or account identifier, and API calls, purchases and subscription changes are counted
+						server-side without any such identifier.
 					</li>
 				</ul>
 			</section>

@@ -60,9 +60,13 @@ const PURCHASE_REASONS = new Set(['first-order', 'renewal', 'plan-change'])
 const SUBSCRIPTION_CHANGES = new Set(['created', 'cancelled', 'resumed', 'plan-changed', 'updated'])
 // Lemon Squeezy's subscription statuses, as slugs ('past_due' -> 'past-due')
 const SUBSCRIPTION_STATUSES = new Set(['on-trial', 'active', 'paused', 'past-due', 'unpaid', 'cancelled', 'expired'])
-// Plan.billingCycle is Lemon Squeezy's renewal unit; a plan without one (a
-// credit pack) is paid once.
-const BILLING_CYCLES = new Set(['month', 'year'])
+// Plan.billingCycle is Lemon Squeezy's renewal unit, reported with the words of
+// the browser events (pricing-cycle-toggle, plans-checkout-click) so the two
+// can be compared; a plan without one (a credit pack) is paid once.
+const BILLING_CYCLES = new Map([
+	['month', 'monthly'],
+	['year', 'annually'],
+])
 const ONE_TIME = 'one-time'
 const OTHER = 'other'
 
@@ -245,7 +249,7 @@ function webhookEventData(outcome, plan) {
 }
 
 function billingCycle(value) {
-	return value == null ? ONE_TIME : oneOf(BILLING_CYCLES, value)
+	return value == null ? ONE_TIME : (BILLING_CYCLES.get(value) ?? OTHER)
 }
 
 function oneOf(values, value) {
