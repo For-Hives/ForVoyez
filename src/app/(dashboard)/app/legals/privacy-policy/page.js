@@ -139,7 +139,9 @@ export default function PrivacyPolicyPage() {
 						<strong>OVH</strong> (France): domain name and the mailboxes that receive our emails.
 					</li>
 					<li>
-						<strong>Umami</strong> (European Union): cookieless audience measurement, self-hosted.
+						<strong>Umami</strong> (European Union): cookieless audience measurement, self-hosted. Besides page views,
+						it counts anonymous interaction events (clicks on buttons and links, form submission outcomes), with no
+						cookie and no user or account identifier, and API calls are counted server-side without any such identifier.
 					</li>
 				</ul>
 			</section>
@@ -190,7 +192,7 @@ export default function PrivacyPolicyPage() {
 						any change in this Privacy Policy will constitute your acceptance of
 						such change.`}
 				</p>
-				<p className="mt-4 text-sm text-slate-600">Last updated: October 8, 2026</p>
+				<p className="mt-4 text-sm text-slate-600">Last updated: October 13, 2026</p>
 			</section>
 
 			<section>
@@ -209,14 +211,12 @@ export default function PrivacyPolicyPage() {
 						https://andy-cinquin.com
 					</a>
 				</p>
-				<p className={`mt-1 text-sm text-slate-600`}>
-					<p className="mt-1 text-sm text-slate-600">
-						<strong>ForVoyez</strong>
-						<br />
-						<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="https://forvoyez.com/contact">
-							https://forvoyez.com/contact
-						</a>
-					</p>
+				<p className="mt-1 text-sm text-slate-600">
+					<strong>ForVoyez</strong>
+					<br />
+					<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="https://forvoyez.com/contact">
+						https://forvoyez.com/contact
+					</a>
 				</p>
 			</section>
 

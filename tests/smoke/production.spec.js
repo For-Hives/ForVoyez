@@ -1,3 +1,5 @@
+const { readFileSync } = require('node:fs')
+const path = require('node:path')
 const { expect, test } = require('@playwright/test')
 
 test('serves the public landing and its security headers from the production build', async ({ request }) => {
@@ -18,6 +20,29 @@ test('does not cache unauthenticated account data', async ({ request }) => {
 
 test('keeps the synchronization endpoint unavailable without a secret', async ({ request }) => {
 	expect((await request.get('/api/sync?true=true')).status()).toBe(404)
+})
+
+// A GET handler that answers without reading the request is prerendered: built
+// without SYNC_SECRET, the route used to serve a frozen 404 to every caller.
+test('runs the synchronization endpoint at request time, with the runtime secret', async ({ request }) => {
+	const manifest = JSON.parse(readFileSync(path.join(__dirname, '../../.next/prerender-manifest.json'), 'utf8'))
+	expect(Object.keys(manifest.routes)).toContain('/')
+	expect(Object.keys(manifest.routes)).not.toContain('/api/sync')
+
+	const refusals = await Promise.all([
+		request.get('/api/sync'),
+		request.get('/api/sync', { headers: { 'x-sync-secret': 'not-the-smoke-secret' } }),
+	])
+	for (const refusal of refusals) {
+		expect(refusal.status()).toBe(404)
+		expect(refusal.headers()['x-nextjs-cache']).toBeUndefined()
+		expect(refusal.headers()['cache-control'] ?? '').not.toContain('s-maxage')
+	}
+
+	// The secret is accepted; the sync itself then fails for lack of a Lemon Squeezy key.
+	const accepted = await request.get('/api/sync', { headers: { 'x-sync-secret': 'smoke-sync-secret-fixture' } })
+	expect(accepted.status()).toBe(500)
+	expect(await accepted.text()).toBe('Failed to sync plans')
 })
 
 test('protects the dashboard but leaves the legal documents public', async ({ request }) => {

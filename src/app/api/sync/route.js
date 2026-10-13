@@ -3,8 +3,6 @@ import { revalidateTag } from 'next/cache'
 import { syncPlans } from '@/services/database.service'
 import { logger } from '@/services/logger.service'
 
-// never prerendered nor cached: every call is an authenticated trigger
-
 /**
  * Syncs the Lemon Squeezy products/variants into the Plan table.
  * Requires the `x-sync-secret` header to equal the `SYNC_SECRET` env var.
@@ -12,12 +10,17 @@ import { logger } from '@/services/logger.service'
  * the route is invisible to anyone without the secret.
  */
 export async function GET(request) {
+	// Never prerendered nor cached: every call is an authenticated trigger. With
+	// cacheComponents, a GET handler that answers before reading the request is
+	// prerendered: a build without SYNC_SECRET froze the 404 below, whatever the
+	// runtime environment said. Reading the header first keeps the route dynamic.
+	const providedSecret = request.headers.get('x-sync-secret')
+
 	const expectedSecret = process.env.SYNC_SECRET
 	if (!expectedSecret) {
 		return notFound()
 	}
 
-	const providedSecret = request.headers.get('x-sync-secret')
 	if (!isSameSecret(providedSecret, expectedSecret)) {
 		console.error('Plan sync refused: missing or invalid x-sync-secret')
 		return notFound()
