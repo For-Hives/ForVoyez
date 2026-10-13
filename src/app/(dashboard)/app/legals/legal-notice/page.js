@@ -29,8 +29,6 @@ export default function LegalNoticePage() {
 				<strong>Director of publication</strong>: Andy Cinquin
 				<br />
 				<strong>Hosted by</strong>: netcup GmbH, Emmy-Noether-Straße 10, 76131 Karlsruhe, Germany, +49 721 7540755-0
-				<br />
-				<strong>Database hosted by</strong>: Contabo GmbH, Welfenstrasse 22, 81541 Munich, Germany
 			</p>
 
 			<section>

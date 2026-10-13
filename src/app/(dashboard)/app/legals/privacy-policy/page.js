@@ -116,11 +116,8 @@ export default function PrivacyPolicyPage() {
 				</p>
 				<ul className="mt-4 list-disc space-y-2 pl-6 text-sm text-slate-600">
 					<li>
-						<strong>netcup GmbH</strong> (Germany): hosting of forvoyez.com, its API and doc.forvoyez.com.
-					</li>
-					<li>
-						<strong>Contabo GmbH</strong> (Germany): hosting of the database (account, credits, API keys, usage history
-						and order details).
+						<strong>netcup GmbH</strong> (Germany): hosting of forvoyez.com, its API, doc.forvoyez.com and the database
+						(account, credits, API keys, usage history and order details).
 					</li>
 					<li>
 						<strong>OpenAI</strong> (United States): generation of the alt texts, titles and captions from the images
@@ -224,8 +221,8 @@ export default function PrivacyPolicyPage() {
 			<section>
 				<h2 className="mt-12 mb-4 text-2xl font-bold text-slate-800">Hosting</h2>
 				<p className="mt-1 text-sm text-slate-600">
-					The website, the application and its API (forvoyez.com) and the documentation (doc.forvoyez.com) are hosted
-					by:
+					The website, the application and its API (forvoyez.com), the documentation (doc.forvoyez.com) and the
+					production database are hosted by:
 				</p>
 				<p className="mt-4 text-sm text-slate-600">
 					<strong>Company details</strong>
@@ -247,26 +244,6 @@ export default function PrivacyPolicyPage() {
 					<strong>Register number:</strong> HRB 705547
 					<br />
 					<strong>VAT-ID:</strong> DE262851304
-				</p>
-				<p className="mt-4 text-sm text-slate-600">The production database is hosted on a server provided by:</p>
-				<p className="mt-4 text-sm text-slate-600">
-					<strong>Company details</strong>
-					<br />
-					<br />
-					Contabo GmbH
-					<br />
-					Welfenstrasse 22
-					<br />
-					81541 Munich
-					<br />
-					Germany
-					<br />
-					<br />
-					<strong>Register court:</strong> AG München
-					<br />
-					<strong>Register number:</strong> HRB 180722
-					<br />
-					<strong>VAT-ID:</strong> DE267602842
 				</p>
 			</section>
 		</div>
