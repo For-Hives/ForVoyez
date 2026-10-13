@@ -35,7 +35,7 @@ function renderLayout() {
 describe('LayoutAppComponent', () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
-		createUser.mockResolvedValue({ clerkId: 'user_1' })
+		createUser.mockResolvedValue({ created: false })
 	})
 
 	afterEach(() => {
