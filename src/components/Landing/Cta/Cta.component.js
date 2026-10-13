@@ -16,6 +16,9 @@ export function CtaComponent() {
 				<div className="mt-10 flex items-center justify-center gap-x-6">
 					<Link
 						className="bg-forvoyez_orange-500 focus-visible:outline-forvoyez_orange-500 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#e05d45] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+						data-fv-event="landing-cta-click"
+						data-fv-event-location="final-cta"
+						data-fv-event-target="wordpress-org"
 						data-testid="cta-generate-link"
 						href="https://wordpress.org/plugins/auto-alt-text-for-images/"
 					>
@@ -23,6 +26,9 @@ export function CtaComponent() {
 					</Link>
 					<Link
 						className="text-sm leading-6 font-semibold text-slate-900"
+						data-fv-event="landing-cta-click"
+						data-fv-event-location="final-cta"
+						data-fv-event-target="how-it-works"
 						data-testid="cta-learn-more-link"
 						href="/wordpress-plugin#how-it-works"
 					>

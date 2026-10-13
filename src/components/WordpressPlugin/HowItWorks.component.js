@@ -41,7 +41,13 @@ export function HowItWorksComponent() {
 								The plugin is free to install. A ForVoyez account with available credits is required to generate
 								descriptions.
 							</p>
-							<Link className="mt-4 inline-block font-semibold text-forvoyez_orange-500 underline" href="/app/tokens">
+							<Link
+								className="mt-4 inline-block font-semibold text-forvoyez_orange-500 underline"
+								data-fv-event="wp-cta-click"
+								data-fv-event-location="how-it-works"
+								data-fv-event-target="app-tokens"
+								href="/app/tokens"
+							>
 								Get your connection key →
 							</Link>
 							<dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">

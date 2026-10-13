@@ -78,6 +78,9 @@ export function PluginComponent() {
 				<div className="mt-16 flex justify-center pt-8">
 					<Link
 						className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-500 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+						data-fv-event="landing-cta-click"
+						data-fv-event-location="plugin-section"
+						data-fv-event-target="wordpress-plugin"
 						href="/wordpress-plugin"
 					>
 						Explore the WordPress plugin

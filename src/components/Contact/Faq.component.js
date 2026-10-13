@@ -1,5 +1,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { slug, track } from '@/helpers/analytics'
 
 const faqs = [
 	{
@@ -49,7 +50,13 @@ export function FaqComponent() {
 							{({ open }) => (
 								<>
 									<dt>
-										<DisclosureButton className="flex w-full items-start justify-between text-left text-slate-900">
+										<DisclosureButton
+											className="flex w-full items-start justify-between text-left text-slate-900"
+											// `open` is the state before this click
+											onClick={() =>
+												track('contact-faq-toggle', { action: open ? 'close' : 'open', question: slug(faq.question) })
+											}
+										>
 											<span className="text-base leading-7 font-semibold">{faq.question}</span>
 											<span className="ml-6 flex h-7 items-center">
 												<ChevronDownIcon

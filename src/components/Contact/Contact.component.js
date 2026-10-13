@@ -8,6 +8,7 @@ import * as yup from 'yup'
 import { sendEmail } from '@/app/actions/contact/sendEmail'
 import { FaqComponent } from '@/components/Contact/Faq.component'
 import { Transition } from '@/components/Transitions/Transition.component'
+import { track } from '@/helpers/analytics'
 
 const schema = yup.object().shape({
 	email: yup.string().email('Invalid email').required('Email is required'),
@@ -35,6 +36,9 @@ export function ContactComponent() {
 			details: 'Please try again later.',
 		}))
 
+		// the outcome only: nothing the visitor typed leaves the form this way
+		track('contact-form-submit', { outcome: response.success ? 'ok' : 'error' })
+
 		if (response.success) {
 			toast('Message sent successfully!', {
 				toastId: 'toast-success',
@@ -49,6 +53,11 @@ export function ContactComponent() {
 				icon: '⛔',
 			})
 		}
+	}
+
+	// refused by the browser-side validation: which fields, not their content
+	function onInvalid(fieldErrors) {
+		track('contact-form-invalid', { fields: Object.keys(fieldErrors).sort().join(',') })
 	}
 
 	return (
@@ -109,7 +118,12 @@ export function ContactComponent() {
 									<PhoneIcon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
-									<Link className="hover:text-[#e05d45] hover:underline" href="tel:+33621582684">
+									<Link
+										className="hover:text-[#e05d45] hover:underline"
+										data-fv-event="contact-link-click"
+										data-fv-event-target="phone"
+										href="tel:+33621582684"
+									>
 										+33 6 21 58 26 84
 									</Link>
 								</dd>
@@ -120,7 +134,12 @@ export function ContactComponent() {
 									<EnvelopeIcon aria-hidden="true" className="text-forvoyez_orange-500 h-7 w-6" />
 								</dt>
 								<dd className={'font-bold'}>
-									<Link className="hover:text-[#e05d45] hover:underline" href="mailto:contact@forvoyez.com">
+									<Link
+										className="hover:text-[#e05d45] hover:underline"
+										data-fv-event="contact-link-click"
+										data-fv-event-target="email"
+										href="mailto:contact@forvoyez.com"
+									>
 										contact@forvoyez.com
 									</Link>
 								</dd>
@@ -128,7 +147,11 @@ export function ContactComponent() {
 						</dl>
 					</div>
 				</div>
-				<form className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48" method="POST" onSubmit={handleSubmit(onSubmit)}>
+				<form
+					className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48"
+					method="POST"
+					onSubmit={handleSubmit(onSubmit, onInvalid)}
+				>
 					<div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
 						<div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
 							<div>

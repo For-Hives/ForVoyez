@@ -60,6 +60,8 @@ export function HeroComponent() {
 							<div className="mt-10 flex items-center gap-x-6">
 								<Link
 									className="bg-forvoyez_orange-500 hover:bg-forvoyez_orange-600 focus-visible:outline-forvoyez_orange-600 z-40 rounded-md px-3.5 py-2.5 text-sm text-white shadow-xs transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+									data-fv-event="hero-cta-click"
+									data-fv-event-target="wordpress-plugin"
 									href="/wordpress-plugin"
 								>
 									Get the WordPress plugin

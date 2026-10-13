@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { listPlans } from '@/app/actions/app/plans'
 import { SkeletonLoaderPricing } from '@/components/Skeletons/SkeletonLoaderPricing'
+import { slug, track } from '@/helpers/analytics'
 import {
 	formatSaving,
 	getAnnualSaving,
@@ -44,8 +45,18 @@ export function PricingComponent() {
 				const sortedPlans = sortPlans(plans)
 				setPlans(sortedPlans)
 			})
-			.catch(error => console.error('Error fetching usage data:', error))
+			.catch(error => {
+				console.error('Error fetching usage data:', error)
+				// the visitor is left with the placeholders
+				track('pricing-plans-error', { location: 'landing' })
+			})
 	}, [])
+
+	// one event per actual change, whether it came from a click or the keyboard
+	function changeFrequency(option, via) {
+		setFrequency(option)
+		track('pricing-cycle-toggle', { cycle: option.value, location: 'landing', via })
+	}
 
 	// derived from the plans' credits and prices, see planFeatures
 	const maxAnnualSaving = getMaxAnnualSaving(plans)
@@ -66,7 +77,7 @@ export function PricingComponent() {
 				<div className="mt-16 flex justify-center">
 					<RadioGroup
 						className="grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-xs leading-5 font-semibold ring-1 ring-slate-200 ring-inset"
-						onChange={setFrequency}
+						onChange={option => changeFrequency(option, 'toggle')}
 						value={frequency}
 					>
 						<RadioGroup.Label className="sr-only">Payment frequency</RadioGroup.Label>
@@ -155,6 +166,10 @@ export function PricingComponent() {
 													: 'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
 												'focus-visible:outline-forvoyez_orange-500 mt-6 block rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 											)}
+											data-fv-event="pricing-plan-click"
+											data-fv-event-cycle={frequency.value}
+											data-fv-event-location="landing"
+											data-fv-event-plan={slug(tier.name)}
 											data-testid={`plan-button-${tier.id}`}
 											href="/app/plans"
 										>
@@ -171,7 +186,7 @@ export function PricingComponent() {
 													type="submit"
 													className={'group m-0 flex gap-1 p-0'}
 													data-testid="get-more-tokens"
-													onClick={() => setFrequency(frequencies[1])}
+													onClick={() => changeFrequency(frequencies[1], 'pay-annually')}
 												>
 													<span className="text-xs text-slate-500 underline group-hover:text-slate-700">
 														Pay annually: <span className={'font-bold'}>{formatSaving(annualSaving)} cheaper</span>
@@ -217,6 +232,8 @@ export function PricingComponent() {
 								'text-forvoyez_orange-500 ring-forvoyez_orange-500/20 ring-1 ring-inset hover:ring-[#e05d45]/30',
 								'focus-visible:outline-forvoyez_orange-500 mt-6 block rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
 							)}
+							data-fv-event="pricing-contact-click"
+							data-fv-event-location="landing"
 							data-testid="contact-us"
 							href="/contact"
 						>

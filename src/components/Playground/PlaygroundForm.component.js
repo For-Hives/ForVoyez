@@ -2,6 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { imageType, sizeBucket, track } from '@/helpers/analytics'
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Keep the existing component or test scenario together during the tooling migration.
 export default function PlaygroundForm(props) {
@@ -28,10 +29,26 @@ export default function PlaygroundForm(props) {
 		}
 	}
 
+	// how the image came in and what kind of file it is, never its name
+	const trackImageSelect = (file, via) => {
+		if (!file) return
+		track('playground-image-select', {
+			outcome: isValidFileType(file) ? 'ok' : 'error',
+			size_bucket: sizeBucket(file.size),
+			type: imageType(file),
+			via,
+		})
+	}
+
+	// `open` is the state before the click on the panel header
+	const trackOptionToggle = (option, open) =>
+		track('playground-option-toggle', { action: open ? 'close' : 'open', option })
+
 	const handleImageDrop = e => {
 		e.preventDefault()
 		setIsDraggingOver(false)
 		const file = e.dataTransfer.files[0]
+		trackImageSelect(file, 'drop')
 		if (file && isValidFileType(file)) {
 			props.setFormData({ ...props.formData, image: file })
 			setImagePreview(URL.createObjectURL(file))
@@ -73,6 +90,7 @@ export default function PlaygroundForm(props) {
 
 	const handleImageChange = e => {
 		const file = e.target.files[0]
+		trackImageSelect(file, 'click')
 		if (file && isValidFileType(file)) {
 			props.setFormData({ ...props.formData, image: file })
 			setImagePreview(URL.createObjectURL(file))
@@ -126,6 +144,7 @@ export default function PlaygroundForm(props) {
 							<button
 								type="submit"
 								className="bg-forvoyez_orange-600 hover:bg-forvoyez_orange-500 focus:ring-forvoyez_orange-500 absolute top-[1.25rem] -right-4 rounded-full p-1 text-white shadow-md focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+								data-fv-event="playground-image-remove"
 								data-testid="reset-image"
 								onClick={handleResetImage}
 							>
@@ -189,7 +208,10 @@ export default function PlaygroundForm(props) {
 				{({ open }) => (
 					<>
 						<dt>
-							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+							<Disclosure.Button
+								className="flex w-full items-start justify-between text-left text-gray-900"
+								onClick={() => trackOptionToggle('context', open)}
+							>
 								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="comment">
 									Add Your Context (Optional)
 								</label>
@@ -255,7 +277,10 @@ export default function PlaygroundForm(props) {
 				{({ open }) => (
 					<>
 						<dt>
-							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+							<Disclosure.Button
+								className="flex w-full items-start justify-between text-left text-gray-900"
+								onClick={() => trackOptionToggle('keywords', open)}
+							>
 								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="comment">
 									Keywords (Optional)
 								</label>
@@ -322,7 +347,10 @@ export default function PlaygroundForm(props) {
 				{({ open }) => (
 					<>
 						<dt>
-							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+							<Disclosure.Button
+								className="flex w-full items-start justify-between text-left text-gray-900"
+								onClick={() => trackOptionToggle('language', open)}
+							>
 								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="languageToTranslate">
 									Language (Optional)
 								</label>
@@ -380,7 +408,10 @@ export default function PlaygroundForm(props) {
 				{({ open }) => (
 					<>
 						<dt>
-							<Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+							<Disclosure.Button
+								className="flex w-full items-start justify-between text-left text-gray-900"
+								onClick={() => trackOptionToggle('schema', open)}
+							>
 								<label className="block text-sm leading-6 font-medium text-slate-900" htmlFor="jsonSchema">
 									JSON Schema (Optional)
 								</label>

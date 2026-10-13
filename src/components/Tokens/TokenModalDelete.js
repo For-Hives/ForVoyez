@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
+import { trackClick } from '@/helpers/analytics'
 
 export default function TokenModalDelete({ closeModal, onConfirm, isOpen, token, isDeleting = false }) {
 	return (
@@ -28,7 +29,11 @@ export default function TokenModalDelete({ closeModal, onConfirm, isOpen, token,
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+							<Dialog.Panel
+								className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+								// the panel stops its clicks before they reach the document listener
+								onClick={trackClick}
+							>
 								<Dialog.Title as="h3" className="text-lg leading-6 font-medium text-slate-900">
 									Revoke secret key
 								</Dialog.Title>
@@ -49,6 +54,9 @@ export default function TokenModalDelete({ closeModal, onConfirm, isOpen, token,
 								<div className="mt-4 flex justify-end space-x-2">
 									<button
 										className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+										data-fv-event="tokens-modal-close"
+										data-fv-event-modal="delete"
+										data-fv-event-via="cancel"
 										onClick={closeModal}
 										type="button"
 									>

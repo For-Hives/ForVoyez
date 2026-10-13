@@ -7,6 +7,7 @@ import { createContext, Fragment, memo, Suspense, useContext, useEffect, useRef 
 import { create } from 'zustand'
 import { HeaderDashboard } from '@/components/App/HeaderApp.component'
 import { NavigationAppComponent } from '@/components/App/NavigationApp.component'
+import { track, trackClick } from '@/helpers/analytics'
 
 function MenuIcon(props) {
 	return (
@@ -72,7 +73,8 @@ function MobileNavigationDialog({ isOpen, close }) {
 					<div className="fixed inset-0 top-14 bg-slate-400/20 backdrop-blur-xs" />
 				</Transition.Child>
 
-				<Dialog.Panel>
+				{/* the panel stops its clicks before they reach the document listener */}
+				<Dialog.Panel onClick={trackClick}>
 					<Transition.Child
 						as={Fragment}
 						enter="duration-300 ease-out"
@@ -125,7 +127,11 @@ export const MobileNavigationAppComponent = memo(function MobileNavigationAppCom
 			<button
 				aria-label="Toggle navigation"
 				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-slate-900/5"
-				onClick={toggle}
+				onClick={() => {
+					// read before the toggle: the attribute would already show the new state
+					track('dash-menu-toggle', { action: isOpen ? 'close' : 'open' })
+					toggle()
+				}}
 				type="button"
 			>
 				<ToggleIcon className="w-2.5 stroke-slate-900" />

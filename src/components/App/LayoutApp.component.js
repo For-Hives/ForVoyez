@@ -44,7 +44,13 @@ export function LayoutAppComponent({ children }) {
 						<div className="contents h-full lg:pointer-events-auto lg:flex lg:w-72 lg:flex-col lg:justify-between lg:overflow-y-auto lg:border-r lg:border-slate-900/10 lg:px-6 lg:pt-4 lg:pb-8 xl:w-80">
 							<div className={'flex flex-col'}>
 								<div className="hidden lg:flex">
-									<Link aria-label="Home" href="/app">
+									<Link
+										aria-label="Home"
+										data-fv-event="dash-nav-click"
+										data-fv-event-location="sidebar"
+										data-fv-event-target="logo"
+										href="/app"
+									>
 										<span className="sr-only">ForVoyez</span>
 										<Transition name="brand-logo">{memoizedImage}</Transition>
 									</Link>
@@ -56,7 +62,13 @@ export function LayoutAppComponent({ children }) {
 								{user && (
 									<div className={'hidden lg:flex lg:items-center lg:gap-2'}>
 										<UserButton appearance="ghost" userProfileMode="navigation" userProfileUrl="/profile" />
-										<Link className={'h-full w-full'} href="/profile">
+										<Link
+											className={'h-full w-full'}
+											data-fv-event="dash-nav-click"
+											data-fv-event-location="sidebar"
+											data-fv-event-target="profile"
+											href="/profile"
+										>
 											<span className="text-sm font-medium text-slate-900">
 												{user.firstName} {user.lastName}
 											</span>

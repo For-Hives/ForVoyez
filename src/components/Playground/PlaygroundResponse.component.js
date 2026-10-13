@@ -2,6 +2,7 @@ import { CheckIcon, ClipboardIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
 
 import { LoadAnimation } from '@/components/Playground/LoadAnimation'
+import { track } from '@/helpers/analytics'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
 export default function PlaygroundResponse(props) {
@@ -26,6 +27,7 @@ export default function PlaygroundResponse(props) {
 						aria-label={isResponseCopied ? 'Copied response' : 'Copy response'}
 						onClick={async () => {
 							if (!(await copyToClipboard(JSON.stringify(props.response, null, 4)))) return
+							track('playground-code-copy', { language: 'json', target: 'response' })
 							setIsResponseCopied(true)
 							setTimeout(() => setIsResponseCopied(false), 2000)
 						}}

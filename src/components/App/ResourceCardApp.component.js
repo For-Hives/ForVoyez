@@ -4,6 +4,7 @@ import { motion, useMotionTemplate, useMotionValue } from 'motion/react'
 import Link from 'next/link'
 import { GridPatternAppComponent } from '@/components/App/GridPatternApp.component'
 import { Transition } from '@/components/Transitions/Transition.component'
+import { linkTarget } from '@/helpers/analytics'
 
 export function ResourceCardAppComponent({ resource }) {
 	const mouseX = useMotionValue(0)
@@ -14,6 +15,9 @@ export function ResourceCardAppComponent({ resource }) {
 		mouseX.set(clientX - left)
 		mouseY.set(clientY - top)
 	}
+
+	// the same card lists the dashboard pages and the legal documents
+	const isLegalDocument = resource.href.startsWith('/app/legals')
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: Mouse movement only updates decoration; the link handles navigation.
@@ -35,7 +39,11 @@ export function ResourceCardAppComponent({ resource }) {
 					}
 				>
 					<h3 className="mt-4 text-sm leading-7 font-semibold text-slate-900">
-						<Link href={resource.href}>
+						<Link
+							data-fv-event={isLegalDocument ? 'legal-card-click' : 'dash-card-click'}
+							data-fv-event-target={linkTarget(resource.href)}
+							href={resource.href}
+						>
 							{' '}
 							<span className="absolute inset-0 rounded-2xl" />
 							{resource.name}
