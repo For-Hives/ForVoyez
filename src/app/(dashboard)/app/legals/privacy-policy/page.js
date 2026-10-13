@@ -209,14 +209,12 @@ export default function PrivacyPolicyPage() {
 						https://andy-cinquin.com
 					</a>
 				</p>
-				<p className={`mt-1 text-sm text-slate-600`}>
-					<p className="mt-1 text-sm text-slate-600">
-						<strong>ForVoyez</strong>
-						<br />
-						<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="https://forvoyez.com/contact">
-							https://forvoyez.com/contact
-						</a>
-					</p>
+				<p className="mt-1 text-sm text-slate-600">
+					<strong>ForVoyez</strong>
+					<br />
+					<a className="text-forvoyez_orange-600 hover:text-forvoyez_orange-500" href="https://forvoyez.com/contact">
+						https://forvoyez.com/contact
+					</a>
 				</p>
 			</section>
 
