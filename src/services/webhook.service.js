@@ -22,6 +22,11 @@ const PLAN_CHANGE_NOTE = 'Plan change applied'
 // whose marker no invoice used (see hasProcessedPlanChange).
 const PLAN_CHANGE_INVOICE_WINDOW_MS = 60 * 60 * 1000
 
+// Subscription statuses that a handled status event reports (created and
+// resumed: active). Lemon Squeezy sends a subscription_updated with each of
+// them, which then says nothing more (see statusChange).
+const STATUS_EVENT_STATUSES = new Set(['active', 'cancelled'])
+
 // One event is processed in one transaction, under a lock (see processWebhook).
 // READ COMMITTED (the PostgreSQL default, made explicit): each query sees what
 // was committed before it ran, so a delivery that waited for the lock sees the
@@ -31,6 +36,18 @@ const TRANSACTION_OPTIONS = {
 	isolationLevel: 'ReadCommitted',
 	timeout: 15_000,
 	maxWait: 5_000,
+}
+
+// The name and billing cycle of the plan sold as the Lemon Squeezy variant
+// `variantId`, or null. For the outcome of an event whose handler does not
+// read its plan (subscription_cancelled, subscription_resumed): read by the
+// listener, after the response and outside the transaction of the event.
+export async function getPlanLabel(variantId) {
+	const plan = await prisma.plan.findUnique({
+		select: { billingCycle: true, name: true },
+		where: { variantId: String(variantId) },
+	})
+	return planLabel(plan)
 }
 
 // methode to process the webhooks #id
@@ -43,7 +60,11 @@ const TRANSACTION_OPTIONS = {
 // times, after about 5 s, 25 s and 125 s); after that, resend it from the
 // Lemon Squeezy dashboard once its cause is fixed. Each delivery is stored as
 // its own WebhookEvent row.
-export async function processWebhook(id) {
+// `onProcessed`, when given, receives what the event did (its outcome, see
+// purchase and subscriptionChange) once it is committed: at most once, and
+// never for a duplicate, a failure or an event that changed nothing. The
+// route counts purchases with it; what it throws is ignored.
+export async function processWebhook(id, onProcessed) {
 	// get the webhook by id
 	const webhook = await prisma.webhookEvent.findUnique({
 		where: { id: id },
@@ -56,9 +77,9 @@ export async function processWebhook(id) {
 	// never log the payload: it contains the customer's name and email
 	logger.info(`processing webhook ${id}: ${webhook.eventName}`)
 
-	let duplicateOf
+	let result
 	try {
-		duplicateOf = await prisma.$transaction(tx => processInTransaction(tx, webhook), TRANSACTION_OPTIONS)
+		result = await prisma.$transaction(tx => processInTransaction(tx, webhook), TRANSACTION_OPTIONS)
 	} catch (error) {
 		// Prisma errors can echo the query arguments (customer name/email): log
 		// only the error kind, the full message goes to the WebhookEvent row.
@@ -67,8 +88,16 @@ export async function processWebhook(id) {
 		return false
 	}
 
-	if (duplicateOf) {
-		logger.info(`webhook ${id} (${webhook.eventName}): duplicate of processed webhook ${duplicateOf.id}, skipped`)
+	if (result.duplicateOf) {
+		logger.info(
+			`webhook ${id} (${webhook.eventName}): duplicate of processed webhook ${result.duplicateOf.id}, skipped`
+		)
+	} else if (result.outcome && onProcessed) {
+		try {
+			onProcessed(result.outcome)
+		} catch {
+			// the event is processed, whatever its listener does with it
+		}
 	}
 	return true
 }
@@ -239,8 +268,14 @@ function planChangeSubscriptionId(eventName, payload) {
 	return id == null ? undefined : String(id)
 }
 
-// Processes the event with the transaction client `tx`; returns the processed
-// event it duplicates (then skipped), or null.
+// The two columns of a plan the statistics read (not its price)
+function planLabel(plan) {
+	return plan ? { billingCycle: plan.billingCycle ?? null, name: plan.name } : null
+}
+
+// Processes the event with the transaction client `tx`. Returns the processed
+// event it duplicates (`duplicateOf`, then skipped), else what the event did
+// (`outcome`, null when it changed nothing worth counting).
 async function processInTransaction(tx, webhook) {
 	const id = webhook.id
 	// process the webhook
@@ -263,33 +298,37 @@ async function processInTransaction(tx, webhook) {
 			},
 			where: { id: id },
 		})
-		return duplicateOf
+		return { duplicateOf }
 	}
 
 	let note = null
+	let outcome = null
 	// switch
 	switch (webhook.eventName) {
 		case 'order_created':
-			await processOrderCreated(tx, parsed_webhook)
+			outcome = await processOrderCreated(tx, parsed_webhook)
 			break
 		case 'subscription_cancelled':
-			await processSubscriptionCancelled(tx, parsed_webhook)
+			outcome = await processSubscriptionCancelled(tx, parsed_webhook)
 			break
 		case 'subscription_created':
-			await processSubscriptionCreated(tx, parsed_webhook)
+			outcome = await processSubscriptionCreated(tx, parsed_webhook)
 			break
 		case 'subscription_payment_success':
-			await processSubscriptionPaymentSuccess(tx, parsed_webhook)
+			outcome = await processSubscriptionPaymentSuccess(tx, parsed_webhook)
 			break
 		case 'subscription_plan_changed':
-			await processSubscriptionPlanChanged(tx, parsed_webhook)
+			outcome = await processSubscriptionPlanChanged(tx, parsed_webhook)
 			break
 		case 'subscription_resumed':
-			await processSubscriptionResumed(tx, parsed_webhook)
+			outcome = await processSubscriptionResumed(tx, parsed_webhook)
 			break
-		case 'subscription_updated':
-			note = await processSubscriptionUpdated(tx, parsed_webhook, webhook)
+		case 'subscription_updated': {
+			const updated = await processSubscriptionUpdated(tx, parsed_webhook, webhook)
+			note = updated.note ?? null
+			outcome = updated.outcome ?? null
 			break
+		}
 	}
 
 	// the webhook is processed, update the webhook (a plan change applied by
@@ -298,7 +337,7 @@ async function processInTransaction(tx, webhook) {
 		data: note ? { processingError: note, processed: true } : { processed: true },
 		where: { id: id },
 	})
-	return null
+	return { duplicateOf: null, outcome }
 }
 
 // private function to process the webhook "order_created": credits a paid
@@ -306,7 +345,8 @@ async function processInTransaction(tx, webhook) {
 // subscription (Lemon Squeezy always sends order_created with
 // subscription_created). The first subscription payment also triggers
 // subscription_payment_success (billing_reason "initial"), which is skipped
-// there so it is credited only once, here.
+// there so it is credited only once, here. Returns the purchase it credited,
+// null for an order that is not paid.
 async function processOrderCreated(tx, parsed_webhook) {
 	const userId = parsed_webhook.meta.custom_data.user_id // Clerk user ID
 	const customerId = toIntOrNull(parsed_webhook.data.attributes.customer_id) // Lemon Squeezy customer ID
@@ -351,8 +391,13 @@ async function processOrderCreated(tx, parsed_webhook) {
 		}
 
 		// add the credits to the user
-		await updateCredits(user.clerkId, plan.packageSize ?? 0, null, 'Order created', tx)
+		const credits = plan.packageSize ?? 0
+		await updateCredits(user.clerkId, credits, null, 'Order created', tx)
+
+		// only a subscription plan has a billing cycle
+		return purchase(plan.billingCycle ? 'subscription' : 'refill', 'first-order', credits, plan)
 	}
+	return null
 }
 
 // private function to process the webhook "subscription_cancelled", to update the status of the subscription
@@ -367,6 +412,8 @@ async function processSubscriptionCancelled(tx, webhook) {
 			lemonSqueezyId: webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
+	// the plan is not read here: its variant names it (see getPlanLabel)
+	return subscriptionChange('cancelled', { variantId: webhook.data.attributes.variant_id })
 }
 
 async function processSubscriptionCreated(tx, webhook) {
@@ -377,7 +424,7 @@ async function processSubscriptionCreated(tx, webhook) {
 	})
 	if (existing) {
 		logger.info(`subscription ${webhook.data.id}: already created, skipped`)
-		return
+		return null
 	}
 
 	// Get the user based on the Clerk user ID
@@ -433,6 +480,7 @@ async function processSubscriptionCreated(tx, webhook) {
 			planId: plan.id,
 		},
 	})
+	return subscriptionChange('created', { plan: planLabel(plan) })
 }
 
 // private function to process the webhook "subscription_payment_success": adds
@@ -447,6 +495,7 @@ async function processSubscriptionCreated(tx, webhook) {
 // - "renewal" (and any other reason): a new period, the full current plan
 // The plan change marker (`oldPlanId`, set by a plan change) is cleared once
 // an invoice is credited, so it is used at most once.
+// Returns the purchase it credited, null when the invoice adds no credits.
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 async function processSubscriptionPaymentSuccess(tx, webhook) {
 	// Extract the Clerk user ID and Lemon Squeezy subscription ID from the webhook data
@@ -459,7 +508,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 	// subscription_created having been processed first).
 	if (billingReason === 'initial') {
 		logger.info(`subscription ${subscriptionId}: initial payment already credited by order_created`)
-		return
+		return null
 	}
 
 	// Find the user in the database based on the Clerk user ID
@@ -495,6 +544,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 	}
 
 	const packageSize = subscription.plan?.packageSize ?? 0
+	let credited = null
 
 	if (billingReason === 'updated') {
 		// Lemon Squeezy does not order its webhooks: without the plan change
@@ -518,11 +568,13 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 
 		if (extraCredits > 0) {
 			await updateCredits(user.clerkId, extraCredits, null, 'Subscription payment success (plan change)', tx)
+			credited = purchase('subscription', 'plan-change', extraCredits, subscription.plan)
 		} else {
 			logger.info(`subscription ${subscriptionId}: plan change invoice, no extra credits`)
 		}
 	} else {
 		await updateCredits(user.clerkId, packageSize, null, 'Subscription payment success', tx)
+		credited = purchase('subscription', 'renewal', packageSize, subscription.plan)
 	}
 
 	if (subscription.oldPlanId) {
@@ -533,6 +585,7 @@ async function processSubscriptionPaymentSuccess(tx, webhook) {
 			data: { oldPlanId: null },
 		})
 	}
+	return credited
 }
 
 // private function to process the webhook "subscription_plan_changed", to update the plan of the subscription
@@ -542,7 +595,7 @@ async function processSubscriptionPlanChanged(tx, webhook) {
 
 	if (!subscriptionId) {
 		console.error('Subscription ID not found in the webhook data')
-		return
+		return null
 	}
 
 	// Get the user's current subscription
@@ -575,7 +628,7 @@ async function processSubscriptionPlanChanged(tx, webhook) {
 	// plan with the current one would lose the extra credits of the upgrade.
 	if (subscription.planId === newPlan.id) {
 		logger.info(`subscription ${subscriptionId}: already on plan ${newPlan.id}, plan change skipped`)
-		return
+		return null
 	}
 
 	// Update the subscription with the new plan and the old plan
@@ -590,6 +643,7 @@ async function processSubscriptionPlanChanged(tx, webhook) {
 			lemonSqueezyId: subscriptionId.toString(),
 		},
 	})
+	return subscriptionChange('plan-changed', { plan: planLabel(newPlan) })
 }
 
 // private function to process the webhook "subscription_resumed", to update the status of the subscription
@@ -605,6 +659,8 @@ async function processSubscriptionResumed(tx, webhook) {
 			lemonSqueezyId: webhook.data.attributes.first_subscription_item.subscription_id.toString(),
 		},
 	})
+	// the plan is not read here: its variant names it (see getPlanLabel)
+	return subscriptionChange('resumed', { variantId: webhook.data.attributes.variant_id })
 }
 
 // private function to process the webhook "subscription_updated", sent for
@@ -615,13 +671,14 @@ async function processSubscriptionResumed(tx, webhook) {
 // previous plan for the `updated` invoice, which then credits max(0, new -
 // old)). The status is left to the status events. Both events can arrive for
 // one change: the second one finds the subscription already on the new plan
-// and changes nothing. Returns the note stored on the event when the plan
-// changed, null otherwise.
+// and changes nothing. Returns `note`, stored on the event when the plan
+// changed, and the `outcome` of the event (see statusChange for a routine
+// update); both are missing when it changed nothing.
 async function processSubscriptionUpdated(tx, webhook, event) {
 	const variantId = webhook.data?.attributes?.variant_id
 	const subscriptionId = planChangeSubscriptionId('subscription_updated', webhook)
 	if (variantId == null || subscriptionId == null) {
-		return null
+		return {}
 	}
 
 	const subscription = await tx.subscription.findUnique({
@@ -635,7 +692,7 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 
 	// same plan: a routine update (renewal, status, payment method...)
 	if (subscription.plan?.variantId === String(variantId)) {
-		return null
+		return { outcome: statusChange(webhook, subscription) }
 	}
 
 	const newPlan = await tx.plan.findUnique({
@@ -650,7 +707,7 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 		logger.info(
 			`subscription ${subscriptionId}: older than a processed update, plan change to variant ${variantId} skipped`
 		)
-		return null
+		return {}
 	}
 
 	await tx.subscription.update({
@@ -659,7 +716,19 @@ async function processSubscriptionUpdated(tx, webhook, event) {
 	})
 
 	logger.info(`subscription ${subscriptionId}: plan ${subscription.planId} -> ${newPlan.id}`)
-	return `${PLAN_CHANGE_NOTE}: plan ${subscription.planId} -> plan ${newPlan.id}`
+	return {
+		note: `${PLAN_CHANGE_NOTE}: plan ${subscription.planId} -> plan ${newPlan.id}`,
+		outcome: subscriptionChange('plan-changed', { plan: planLabel(newPlan) }),
+	}
+}
+
+// The outcome of a processed event that granted credits, i.e. of a payment:
+// the first one of a subscription or a credit pack ('first-order'), a renewal,
+// or the extra credits of an upgrade ('plan-change'). Like every outcome it
+// says which plan, never who: no user, customer, order, invoice or
+// subscription id, no email, no name, no price.
+function purchase(kind, reason, credits, plan) {
+	return { plan: planLabel(plan), type: 'purchase', credits, reason, kind }
 }
 
 async function recordProcessingError(id, error) {
@@ -671,6 +740,25 @@ async function recordProcessingError(id, error) {
 	} catch (updateError) {
 		console.error(`webhook ${id}: processing error not recorded:`, updateError.code ?? updateError.name)
 	}
+}
+
+// The outcome of a routine subscription_updated, or null. It is worth counting
+// only for a status that no handled event reports (past_due, unpaid, expired,
+// paused...: this is their only trace) and that is not the stored one. The
+// stored status itself is left to the status events.
+function statusChange(webhook, subscription) {
+	const status = webhook.data.attributes.status
+	if (typeof status !== 'string' || status === subscription.status || STATUS_EVENT_STATUSES.has(status)) {
+		return null
+	}
+	return subscriptionChange('updated', { plan: planLabel(subscription.plan), status })
+}
+
+// The outcome of a processed event that changed a subscription: `change` is
+// 'created', 'cancelled', 'resumed', 'plan-changed' or 'updated'. `details`
+// names its plan (`plan`, or `variantId` when the handler did not read it).
+function subscriptionChange(change, details) {
+	return { type: 'subscription-change', change, ...details }
 }
 
 // Lemon Squeezy ids are integers; Int columns must not receive strings.
