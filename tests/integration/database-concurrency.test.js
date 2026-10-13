@@ -37,8 +37,37 @@ describe('real PostgreSQL concurrency and authorization', () => {
 	})
 
 	it('creates one user under concurrent first visits without unique-key failures', async () => {
-		const users = await Promise.all(Array.from({ length: 12 }, () => createUser()))
-		expect(users.every(user => user.clerkId === 'owner')).toBe(true)
+		const answers = await Promise.all(Array.from({ length: 12 }, () => createUser()))
+		// one account, one sign-up: only the request that inserted the row says so
+		expect(answers.filter(answer => answer.created)).toEqual([{ created: true }])
+		expect(answers.filter(answer => !answer.created)).toEqual(Array(11).fill({ created: false }))
+		expect(await prisma.user.count()).toBe(1)
+		expect(await createUser()).toEqual({ created: false })
+	})
+
+	it('keeps a user created by a webhook as it is, and does not report it as a sign-up', async () => {
+		await saveWebhooks({
+			meta: { event_name: 'order_created', custom_data: { user_id: 'owner' } },
+			data: { id: 'order-1', type: 'orders', attributes: { customer_id: 42 } },
+		})
+		await prisma.user.update({ where: { clerkId: 'owner' }, data: { credits: 50 } })
+		const before = await prisma.user.findUnique({ where: { clerkId: 'owner' } })
+
+		expect(await createUser()).toEqual({ created: false })
+		expect(await prisma.user.findUnique({ where: { clerkId: 'owner' } })).toEqual(before)
+		expect(before).toMatchObject({ customerId: 42, credits: 50 })
+	})
+
+	it('keeps a user created by the dashboard as it is when a webhook arrives', async () => {
+		expect(await createUser()).toEqual({ created: true })
+		await prisma.user.update({ where: { clerkId: 'owner' }, data: { credits: 7 } })
+		const before = await prisma.user.findUnique({ where: { clerkId: 'owner' } })
+
+		await saveWebhooks({
+			meta: { event_name: 'order_created', custom_data: { user_id: 'owner' } },
+			data: { id: 'order-1', type: 'orders', attributes: { customer_id: 42 } },
+		})
+		expect(await prisma.user.findUnique({ where: { clerkId: 'owner' } })).toEqual(before)
 		expect(await prisma.user.count()).toBe(1)
 	})
 
