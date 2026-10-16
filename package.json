@@ -35,7 +35,7 @@
 		"*.{js,jsx,mjs,cjs,ts,tsx,json,jsonc,css}": "biome check --write --error-on-warnings --no-errors-on-unmatched"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "4.0.94",
+		"@ai-sdk/openai": "4.0.95",
 		"@clerk/nextjs": "7.9.15",
 		"@headlessui/react": "2.2.10",
 		"@heroicons/react": "2.2.0",
