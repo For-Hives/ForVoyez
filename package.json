@@ -36,7 +36,7 @@
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.96",
-		"@clerk/nextjs": "7.9.16",
+		"@clerk/nextjs": "7.9.17",
 		"@headlessui/react": "2.2.10",
 		"@heroicons/react": "2.2.0",
 		"@hookform/resolvers": "5.9.1",
