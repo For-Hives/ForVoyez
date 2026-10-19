@@ -43,7 +43,7 @@
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
 		"@prisma/adapter-pg": "7.10.1",
 		"@prisma/client": "7.10.1",
-		"@rive-app/react-canvas": "4.36.0",
+		"@rive-app/react-canvas": "4.37.0",
 		"@tailwindcss/forms": "0.5.11",
 		"ai": "7.0.143",
 		"clsx": "2.1.1",
