@@ -39,7 +39,7 @@
 		"@clerk/nextjs": "7.9.23",
 		"@headlessui/react": "2.2.10",
 		"@heroicons/react": "2.2.0",
-		"@hookform/resolvers": "5.9.2",
+		"@hookform/resolvers": "7.0.0",
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
 		"@prisma/adapter-pg": "7.10.1",
 		"@prisma/client": "7.10.1",
