@@ -16,7 +16,7 @@ jobs:
       - name: 'Install Node'
         uses: actions/setup-node@v7
         with:
-          node-version: '24.x'
+          node-version: '26.x'
       # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v6
         with:
@@ -83,7 +83,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7
         with:
-          node-version: '24.x'
+          node-version: '26.x'
       # pnpm version comes from the "packageManager" field of package.json
       - uses: pnpm/action-setup@v6
       - name: 'Install Dependencies'
