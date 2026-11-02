@@ -1,3 +1,7 @@
+# Do not install a version published less than 3 days ago (in minutes). Covers
+# what Renovate cannot check: its lock file maintenance lets pnpm do the resolving.
+minimumReleaseAge: 4320
+
 onlyBuiltDependencies:
   - "@clerk/shared"
   - "@prisma/client"
