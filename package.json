@@ -39,7 +39,7 @@
 		"@clerk/nextjs": "7.9.23",
 		"@headlessui/react": "2.2.10",
 		"@heroicons/react": "2.2.0",
-		"@hookform/resolvers": "5.9.2",
+		"@hookform/resolvers": "7.0.1",
 		"@lemonsqueezy/lemonsqueezy.js": "4.0.0",
 		"@prisma/adapter-pg": "7.10.1",
 		"@prisma/client": "7.10.1",
@@ -68,7 +68,7 @@
 		"zustand": "5.0.16"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.15",
+		"@biomejs/biome": "2.6.4",
 		"@playwright/test": "1.64.1",
 		"@tailwindcss/postcss": "4.3.3",
 		"@tailwindcss/typography": "0.5.20",
