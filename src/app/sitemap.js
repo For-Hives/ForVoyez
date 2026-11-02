@@ -6,6 +6,7 @@ const PUBLIC_PAGES = [
 	{ changeFrequency: 'monthly', priority: 1, path: '/' },
 	{ changeFrequency: 'monthly', path: '/wordpress-plugin', priority: 0.9 },
 	{ changeFrequency: 'yearly', path: '/contact', priority: 0.5 },
+	{ changeFrequency: 'yearly', path: '/app/legals', priority: 0.2 },
 	{ path: '/app/legals/terms', changeFrequency: 'yearly', priority: 0.2 },
 	{ path: '/app/legals/privacy-policy', changeFrequency: 'yearly', priority: 0.2 },
 	{ path: '/app/legals/legal-notice', changeFrequency: 'yearly', priority: 0.2 },

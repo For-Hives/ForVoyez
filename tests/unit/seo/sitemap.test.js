@@ -18,6 +18,7 @@ describe('sitemap.xml', () => {
 	it('lists the public pages', () => {
 		expect(urls.map(url => url.pathname).sort()).toEqual([
 			'/',
+			'/app/legals',
 			'/app/legals/legal-notice',
 			'/app/legals/privacy-policy',
 			'/app/legals/terms',
@@ -41,9 +42,28 @@ describe('robots.txt', () => {
 		expect(location).toBe('https://forvoyez.com/sitemap.xml')
 	})
 
-	it('keeps the account pages and the API out, but not the legal pages', () => {
+	// How crawlers read the rules: the longest matching path wins, Allow on a tie.
+	function isAllowed(pathname) {
+		const longest = paths => Math.max(-1, ...paths.filter(path => pathname.startsWith(path)).map(path => path.length))
+		return longest(rules.allow) >= longest(rules.disallow)
+	}
+
+	it('applies to every crawler', () => {
 		expect(rules.userAgent).toBe('*')
-		expect(rules.disallow).toEqual(expect.arrayContaining(['/app', '/api/', '/profile']))
-		expect(rules.allow).toEqual(expect.arrayContaining(['/', '/app/legals/']))
+	})
+
+	it.each(['/app/tokens', '/app/usage', '/api/describe', '/profile'])('keeps %s out', pathname => {
+		expect(isAllowed(pathname)).toBe(false)
+	})
+
+	// '/app' without its slash would also match /apple-icon.png
+	it.each(['/apple-icon.png', '/apple-touch-icon.png', '/app/legals', '/contact'])('lets %s in', pathname => {
+		expect(isAllowed(pathname)).toBe(true)
+	})
+
+	it('lets every page of the sitemap in', () => {
+		for (const { url } of sitemap()) {
+			expect(isAllowed(new URL(url).pathname), url).toBe(true)
+		}
 	})
 })
