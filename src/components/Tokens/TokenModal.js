@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { createToken } from '@/app/actions/tokens/TokensCRUD'
+import { MAX_TOKEN_NAME_LENGTH } from '@/constants/tokens'
 import { track, trackClick } from '@/helpers/analytics'
 import copyToClipboard from '@/helpers/copyToClipboard'
 
@@ -14,7 +15,7 @@ const schema = yup.object().shape({
 		.date()
 		.test('future', 'Expiration date must be in the future', value => value && value.getTime() > Date.now())
 		.required('Expiration date is required'),
-	name: yup.string().required('Name is required'),
+	name: yup.string().max(MAX_TOKEN_NAME_LENGTH, 'Name is too long').required('Name is required'),
 })
 
 export default function TokenModal({ closeModal, setTokens, isOpen, tokens }) {

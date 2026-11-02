@@ -1,0 +1,1 @@
+export const MAX_TOKEN_NAME_LENGTH = 200

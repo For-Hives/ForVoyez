@@ -35,6 +35,23 @@ describe('TokensCRUD', () => {
 			).rejects.toThrow('You must be logged in to create a token')
 		})
 
+		it('should refuse a key over the limit of one account, without signing it', async () => {
+			auth.mockResolvedValue({ userId: mockUser.id })
+			prisma.token.count.mockResolvedValue(100)
+
+			await expect(
+				createToken({
+					createdAt: new Date(),
+					expiredAt: new Date(Date.now() + 86400000),
+					name: 'test',
+				})
+			).rejects.toThrow('You can have at most 100 API keys, delete one first')
+
+			expect(prisma.token.count).toHaveBeenCalledWith({ where: { userId: mockUser.id } })
+			expect(generateJwt).not.toHaveBeenCalled()
+			expect(prisma.token.create).not.toHaveBeenCalled()
+		})
+
 		it('should create a new token and return it with a shortened JWT', async () => {
 			const mockToken = {
 				createdAt: new Date(),
