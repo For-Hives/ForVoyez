@@ -257,6 +257,7 @@ describe('the samples are valid code', () => {
 
 // Each sample, run with its real tool against a local server that reads the
 // body the way the describe route does (request.formData())
+// biome-ignore lint/correctness/usePlaywrightValidDescribeCallback: Vitest's describe(name, options, fn), read by this rule as Playwright's describe.
 describe('the samples send what /api/describe reads', { timeout: 30000 }, () => {
 	let server
 	let localUrl

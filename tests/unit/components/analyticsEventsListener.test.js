@@ -8,6 +8,17 @@ import { setSignedIn } from '@/helpers/analytics'
 
 vi.mock('@clerk/nextjs', () => ({ useAuth: vi.fn() }))
 
+function Toggle() {
+	const [open, setOpen] = useState(false)
+	return createElement(
+		'button',
+		{ type: 'button', onClick: () => flushSync(() => setOpen(!open)), 'data-fv-event': 'dash-menu-toggle' },
+		open
+			? createElement('svg', { key: 'close', 'data-testid': 'close-icon' })
+			: createElement('svg', { key: 'menu', 'data-testid': 'menu-icon' })
+	)
+}
+
 // the listener next to a page, like in the root layout
 function renderWithListener(...children) {
 	return render(createElement('div', null, createElement(AnalyticsEventsComponent), ...children))
@@ -166,16 +177,6 @@ describe('analytics click listener', () => {
 	// in a browser React commits before the document listener runs: flushSync
 	// reproduces it, the clicked icon is already detached from its button
 	it('keeps the event of a button whose icon is replaced by its own click', () => {
-		function Toggle() {
-			const [open, setOpen] = useState(false)
-			return createElement(
-				'button',
-				{ type: 'button', onClick: () => flushSync(() => setOpen(!open)), 'data-fv-event': 'dash-menu-toggle' },
-				open
-					? createElement('svg', { key: 'close', 'data-testid': 'close-icon' })
-					: createElement('svg', { key: 'menu', 'data-testid': 'menu-icon' })
-			)
-		}
 		renderWithListener(createElement(Toggle))
 
 		fireEvent.click(screen.getByTestId('menu-icon'))
