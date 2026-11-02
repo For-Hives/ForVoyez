@@ -123,8 +123,12 @@ describe('POST /api/describe uploads', () => {
 		async (_, encode) => {
 			const response = await POST(describeRequest(await hugeImage(encode), ''))
 
-			expect(response.status).toBe(400)
-			expect(await response.json()).toEqual({ error: 'Bad Request, Invalid image file' })
+			// a valid file: the answer says what to do, not that the file is invalid
+			expect(response.status).toBe(413)
+			expect(await response.json()).toEqual({
+				error:
+					'Image too large: progressive JPEG, interlaced PNG and GIF images are limited to 50 megapixels, resize the image and try again',
+			})
 			expectNoCharge()
 		},
 		60_000

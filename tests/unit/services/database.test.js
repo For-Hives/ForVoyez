@@ -1,6 +1,6 @@
 import * as clerk from '@clerk/nextjs/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-
+import { DescriptionTooLongError } from '@/helpers/describeInput'
 import {
 	chargeOneCredit,
 	findActiveApiToken,
@@ -13,6 +13,7 @@ import {
 	getUsageForUser,
 	NoCreditsLeftError,
 	syncPlans,
+	TooManyTooLongDescriptionsError,
 	updateCredits,
 } from '@/services/database.service'
 import * as ls from '@/services/lemonsqueezy.service'
@@ -394,6 +395,52 @@ describe('Database Service', () => {
 				where: { clerkId: 'user123' },
 			})
 			expect(prisma.usage.create).not.toHaveBeenCalled()
+		})
+
+		describe('too long answers', () => {
+			const tooLong = () => Promise.reject(new DescriptionTooLongError())
+
+			async function failWithTooLong(userId, times) {
+				for (let attempt = 0; attempt < times; attempt += 1) {
+					// biome-ignore lint/performance/noAwaitInLoops: one after the other, like a client in a loop
+					await expect(chargeOneCredit(userId, usage, tooLong)).rejects.toBeInstanceOf(DescriptionTooLongError)
+				}
+			}
+
+			beforeEach(() => {
+				prisma.user.updateMany.mockResolvedValue({ count: 1 })
+				prisma.user.findUnique.mockResolvedValue({ credits: 4 })
+			})
+
+			it('refunds each one, then stops calling the model for this user, without charging', async () => {
+				await failWithTooLong('user-too-long', 20)
+				expect(prisma.user.update).toHaveBeenCalledTimes(20)
+				prisma.user.updateMany.mockClear()
+				const work = vi.fn()
+
+				await expect(chargeOneCredit('user-too-long', usage, work)).rejects.toBeInstanceOf(
+					TooManyTooLongDescriptionsError
+				)
+
+				expect(work).not.toHaveBeenCalled()
+				expect(prisma.user.updateMany).not.toHaveBeenCalled()
+			})
+
+			it('does not limit another user', async () => {
+				await failWithTooLong('user-too-long-2', 20)
+
+				await expect(chargeOneCredit('user-other', usage, () => Promise.resolve('result'))).resolves.toBe('result')
+			})
+
+			it('does not count the other failures, such as an OpenAI outage', async () => {
+				const outage = new Error('generation failed')
+				for (let attempt = 0; attempt < 21; attempt += 1) {
+					// biome-ignore lint/performance/noAwaitInLoops: one after the other, like a client in a loop
+					await expect(chargeOneCredit('user-outage', usage, () => Promise.reject(outage))).rejects.toBe(outage)
+				}
+
+				await expect(chargeOneCredit('user-outage', usage, () => Promise.resolve('result'))).resolves.toBe('result')
+			})
 		})
 
 		it('should still return the result if the usage row cannot be written', async () => {

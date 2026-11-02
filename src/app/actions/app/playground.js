@@ -3,8 +3,15 @@
 import { auth } from '@clerk/nextjs/server'
 
 import { InvalidDescribeInputError, normalizeDescribeSchema } from '@/helpers/describeInput'
-import { chargeOneCredit } from '@/services/database.service'
-import { blobToBase64, getImageDescription } from '@/services/imageDescription.service'
+import { chargeOneCredit, TooManyTooLongDescriptionsError } from '@/services/database.service'
+import { acquireDescribeSlot, TOO_MANY_AT_ONCE } from '@/services/describeLimits.service'
+import {
+	blobToBase64,
+	getImageDescription,
+	ImageDimensionsTooLargeError,
+	ImageTooLargeError,
+	UnsupportedImageError,
+} from '@/services/imageDescription.service'
 import { prisma } from '@/services/prisma.service'
 
 export async function describePlaygroundAction(formData) {
@@ -52,11 +59,35 @@ export async function describePlaygroundAction(formData) {
 		throw error
 	}
 
+	const release = acquireDescribeSlot(userId)
+	if (!release) {
+		return { error: TOO_MANY_AT_ONCE, status: 429 }
+	}
+	try {
+		return await describeForUser(userId, file, data, schema)
+	} finally {
+		release()
+	}
+}
+
+async function describeForUser(userId, file, data, schema) {
 	const context = data.context || ''
 	const keywords = data.keywords || ''
 	const language = data.language || 'en'
 
-	const base64Image = await blobToBase64(file)
+	let base64Image
+	try {
+		base64Image = await blobToBase64(file)
+	} catch (error) {
+		// the reason is shown in the playground, same statuses as the API
+		if (error instanceof ImageTooLargeError || error instanceof ImageDimensionsTooLargeError) {
+			return { error: error.message, status: 413 }
+		}
+		if (error instanceof UnsupportedImageError) {
+			return { error: error.message, status: 400 }
+		}
+		throw error
+	}
 
 	// Get image description using base64 encoded image. One credit is reserved
 	// atomically before the generation and refunded if it fails.
@@ -75,6 +106,9 @@ export async function describePlaygroundAction(formData) {
 		// credit was refunded)
 		if (error instanceof InvalidDescribeInputError) {
 			return { error: error.message, status: 400 }
+		}
+		if (error instanceof TooManyTooLongDescriptionsError) {
+			return { error: error.message, status: 429 }
 		}
 		throw error
 	}
