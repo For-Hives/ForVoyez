@@ -10,6 +10,7 @@ import {
 	normalizeDescribeText,
 	normalizeLanguage,
 } from '@/helpers/describeInput'
+import { withHeavyDecodeSlot } from '@/services/describeLimits.service'
 import { logger } from '@/services/logger.service'
 
 // OpenAI model used for the generation. Override it with the FORVOYEZ_AI_MODEL
@@ -48,6 +49,15 @@ const KEYWORDS_TAG = 'customer_keywords'
 export const SUPPORTED_IMAGE_FORMATS = ['jpeg', 'png', 'webp', 'gif']
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
+// An interlaced PNG, a progressive JPEG or a GIF is decoded whole in memory: a
+// 1 MB file of 16,000 x 16,000 pixels took 1.1 GB, 2.2 GB in 16 bits, before any
+// credit is charged. 50 MP is at most about 500 MB. Baseline JPEG, plain PNG and
+// WebP are read line by line and keep sharp's own limit (268 MP).
+export const MAX_FULL_DECODE_PIXELS = 50_000_000
+// That limit holds per request: from this size on, these images are decoded one
+// at a time. Smaller ones, the usual web images, do not wait.
+const ONE_AT_A_TIME_DECODE_PIXELS = 10_000_000
+
 // The generation failed (model error, timeout, invalid output). The message
 // never carries the prompt, the image or the customer text.
 export class ImageDescriptionError extends Error {
@@ -74,9 +84,25 @@ export class UnsupportedImageError extends Error {
 	}
 }
 
+// A valid image too expensive to decode (see MAX_FULL_DECODE_PIXELS). The API
+// answers 413: a smaller version of the same file will work.
+export class ImageDimensionsTooLargeError extends Error {
+	constructor() {
+		super(
+			'Image too large: progressive JPEG, interlaced PNG and GIF images are limited to 50 megapixels, resize the image and try again'
+		)
+		this.name = 'ImageDimensionsTooLargeError'
+	}
+}
+
+function isDecodedWhole(metadata) {
+	return metadata.format === 'gif' || metadata.isProgressive === true
+}
+
 // Convert blob to Base64 string with image optimizations.
 // @throws {ImageTooLargeError} when the image is over 10 MB
 // @throws {UnsupportedImageError} when the bytes are not a supported image
+// @throws {ImageDimensionsTooLargeError} when the image is too expensive to decode
 export async function blobToBase64(blob) {
 	if (blob.size > MAX_IMAGE_BYTES) {
 		throw new ImageTooLargeError()
@@ -98,6 +124,10 @@ export async function blobToBase64(blob) {
 	if (!SUPPORTED_IMAGE_FORMATS.includes(metadata.format)) {
 		throw new UnsupportedImageError()
 	}
+	const decodedWholePixels = isDecodedWhole(metadata) ? metadata.width * metadata.height : 0
+	if (decodedWholePixels > MAX_FULL_DECODE_PIXELS) {
+		throw new ImageDimensionsTooLargeError()
+	}
 
 	try {
 		// Check image dimensions
@@ -112,7 +142,10 @@ export async function blobToBase64(blob) {
 		}
 
 		// Optimize image
-		const optimizedImage = await image.webp({ quality: 50 }).toBuffer()
+		const encode = () => image.webp({ quality: 50 }).toBuffer()
+		const optimizedImage = await (decodedWholePixels >= ONE_AT_A_TIME_DECODE_PIXELS
+			? withHeavyDecodeSlot(encode)
+			: encode())
 
 		return Buffer.from(new Uint8Array(optimizedImage)).toString('base64')
 	} catch (error) {

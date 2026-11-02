@@ -53,6 +53,56 @@ describe('POST /api/webhook', () => {
 		expect(saveWebhooks).not.toHaveBeenCalled()
 	})
 
+	// Anyone can POST here: without a cap, the body is held in memory before the
+	// signature is even looked at.
+	it('should answer 413 and stop reading a body over the limit, with or without a signature', async () => {
+		const megabyte = new Uint8Array(1024 * 1024)
+		let sent = 0
+		const body = new ReadableStream({
+			pull(controller) {
+				if (sent === 64) {
+					controller.close()
+					return
+				}
+				sent += 1
+				controller.enqueue(megabyte)
+			},
+		})
+
+		const response = await POST(
+			new Request('http://localhost/api/webhook', {
+				headers: { 'X-Signature': 'irrelevant' },
+				method: 'POST',
+				duplex: 'half',
+				body,
+			})
+		)
+
+		expect(response.status).toBe(413)
+		expect(sent).toBeLessThan(8)
+		expect(saveWebhooks).not.toHaveBeenCalled()
+	})
+
+	it('should answer 413 before reading a body whose declared length is over the limit', async () => {
+		const request = webhookRequest(BODY, signed(BODY))
+		request.headers.set('content-length', String(64 * 1024 * 1024))
+
+		const response = await POST(request)
+
+		expect(response.status).toBe(413)
+		expect(request.bodyUsed).toBe(false)
+		expect(saveWebhooks).not.toHaveBeenCalled()
+	})
+
+	it('should still verify the signature on the exact bytes of an accented body', async () => {
+		const accented = BODY.replace('jane.doe', 'jané.doé')
+
+		const response = await POST(webhookRequest(accented, signed(accented)))
+
+		expect(response.status).toBe(200)
+		expect(saveWebhooks).toHaveBeenCalledTimes(1)
+	})
+
 	it('should answer 401 for a signature of the wrong length (not a 400 crash)', async () => {
 		const response = await POST(webhookRequest(BODY, 'short'))
 

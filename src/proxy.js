@@ -10,6 +10,15 @@ const LEGAL_ROUTE = /^\/app\/legals/i
 const CAMPAIGN_KEY = /^utm_[a-z_]{1,20}$/
 const CAMPAIGN_VALUE = /^[A-Za-z0-9._~-]{1,100}$/
 
+// serverActions.bodySizeLimit is 11 MB for the images of the playground, and it
+// applies to every page: Next reads and decodes a POST before knowing which action
+// it calls, with or without the Next-Action header (a multipart POST is enough).
+// Anywhere else, the 1 MB Next allows by default is enforced here, which covers
+// the anonymous contact form. A chunked body has no size to check: refused too,
+// browsers always send a Content-Length for these requests.
+const LARGE_POST_ROUTE = /^\/app\/playground\/?$/i
+const MAX_POST_BYTES = 1024 * 1024
+
 const isProtectedRoute = req => PROTECTED_ROUTE.test(req.nextUrl.pathname)
 const isLegals = req => LEGAL_ROUTE.test(req.nextUrl.pathname)
 
@@ -21,7 +30,14 @@ const clerkProxy = clerkMiddleware(async (auth, req) => {
 // What a browser asks for when it opens a page: not a fetch, not a server action.
 const isPageVisit = req => req.method === 'GET' && req.headers.get('accept')?.includes('text/html')
 
+function isOversizedPost(req) {
+	if (req.method !== 'POST' || LARGE_POST_ROUTE.test(req.nextUrl.pathname)) return false
+	return req.headers.has('transfer-encoding') || Number(req.headers.get('content-length')) > MAX_POST_BYTES
+}
+
 export default async function proxy(request, event) {
+	if (isOversizedPost(request)) return new Response(null, { status: 413 })
+
 	const response = await clerkProxy(request, event)
 	if (isPageVisit(request) && isProtectedRoute(request) && !isLegals(request)) showCampaignOnSignIn(response)
 	return response

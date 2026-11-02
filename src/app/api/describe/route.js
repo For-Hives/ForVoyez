@@ -1,8 +1,15 @@
 import { InvalidDescribeInputError, normalizeDescribeSchema, withLegacyAltText } from '@/helpers/describeInput'
-import { chargeOneCredit, findActiveApiToken, NoCreditsLeftError } from '@/services/database.service'
+import {
+	chargeOneCredit,
+	findActiveApiToken,
+	NoCreditsLeftError,
+	TooManyTooLongDescriptionsError,
+} from '@/services/database.service'
+import { acquireDescribeSlot, TOO_MANY_AT_ONCE } from '@/services/describeLimits.service'
 import {
 	blobToBase64,
 	getImageDescription,
+	ImageDimensionsTooLargeError,
 	ImageTooLargeError,
 	UnsupportedImageError,
 } from '@/services/imageDescription.service'
@@ -28,7 +35,6 @@ export async function POST(request) {
 	return response
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
 async function describeImage(request, seen) {
 	// Process multipart/form-data containing an image and a JSON schema.
 	try {
@@ -70,89 +76,23 @@ async function describeImage(request, seen) {
 			return jsonError('Unauthorized, no credit left', 401)
 		}
 
-		// 413 before reading a body that cannot hold a 10 MB image, 400 when
-		// it is not a multipart/form-data body; no credit is charged
-		let formData
+		// taken before reading the body: each upload waiting for its decode stays
+		// in memory, and nothing is charged yet
+		const release = acquireDescribeSlot(payload.userId)
+		if (!release) {
+			return jsonError(TOO_MANY_AT_ONCE, 429, 'Too Many Requests')
+		}
 		try {
-			formData = await readFormData(request)
-		} catch (error) {
-			if (error instanceof PayloadTooLargeError) {
-				return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
-			}
-			console.error('Unreadable multipart body:', error.name)
-			return jsonError('Bad Request, the body must be multipart/form-data', 400, 'Bad Request')
+			return await describeUpload(request, seen, payload.userId, apiToken.id)
+		} finally {
+			release()
 		}
-		seen.formData = formData
-
-		const file = formData.get('image')
-		if (!file) {
-			return jsonError('Bad Request, No file uploaded', 400)
-		}
-
-		// a text field, not a file (the image format itself is read from the
-		// bytes below, whatever MIME type the file was sent with)
-		if (typeof file === 'string') {
-			return jsonError(INVALID_IMAGE, 400)
-		}
-
-		const context = formData.get('context') || ''
-		const keywords = formData.get('keywords') || ''
-		const language = formData.get('language') || 'en' // Default language is English
-
-		// Flat map key -> description; empty or unparseable means the default
-		// fields, too many or too long fields are a 400 (no credit charged)
-		const sentSchema = formData.get('schema')
-		let schema
-		try {
-			schema = normalizeDescribeSchema(sentSchema)
-		} catch (error) {
-			if (error instanceof InvalidDescribeInputError) {
-				return jsonError(error.message, 400, 'Bad Request')
-			}
-			throw error
-		}
-
-		let base64Image
-		try {
-			base64Image = await blobToBase64(file)
-		} catch (error) {
-			// not a JPEG, PNG, WebP or GIF image: same answer as before for a
-			// file sent with another MIME type
-			if (error instanceof UnsupportedImageError) {
-				return jsonError(INVALID_IMAGE, 400)
-			}
-			if (error instanceof ImageTooLargeError) {
-				return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
-			}
-			// e.g. "Image processing failed: ...". Same status as before (500),
-			// but a readable message.
-			console.error('Error processing the image:', error.message)
-			return jsonError(error.message, 500, 'Internal Server Error')
-		}
-
-		// one credit is reserved atomically, refunded if the generation fails
-		const descriptionResult = await chargeOneCredit(
-			payload.userId,
-			{
-				reason: 'decrement token from Describe Action',
-				tokenId: apiToken.id,
-			},
-			() =>
-				getImageDescription(base64Image, {
-					language,
-					keywords,
-					context,
-					schema,
-				})
-		)
-
-		// no `schema` field: WordPress plugin <= 1.1.40 reads `alt_text`
-		return Response.json(sentSchema === null ? withLegacyAltText(descriptionResult) : descriptionResult, {
-			status: 200,
-		})
 	} catch (error) {
 		if (error instanceof NoCreditsLeftError) {
 			return jsonError('Unauthorized, no credit left', 401)
+		}
+		if (error instanceof TooManyTooLongDescriptionsError) {
+			return jsonError(error.message, 429, 'Too Many Requests')
 		}
 		// e.g. a schema that needs a longer answer than the output cap (the
 		// credit was refunded)
@@ -162,6 +102,93 @@ async function describeImage(request, seen) {
 		console.error('Error processing the request:', error)
 		return jsonError('Internal Server Error', 500)
 	}
+}
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Preserve the existing branch order and behavior during the tooling migration.
+async function describeUpload(request, seen, userId, tokenId) {
+	// 413 before reading a body that cannot hold a 10 MB image, 400 when
+	// it is not a multipart/form-data body; no credit is charged
+	let formData
+	try {
+		formData = await readFormData(request)
+	} catch (error) {
+		if (error instanceof PayloadTooLargeError) {
+			return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
+		}
+		console.error('Unreadable multipart body:', error.name)
+		return jsonError('Bad Request, the body must be multipart/form-data', 400, 'Bad Request')
+	}
+	seen.formData = formData
+
+	const file = formData.get('image')
+	if (!file) {
+		return jsonError('Bad Request, No file uploaded', 400)
+	}
+
+	// a text field, not a file (the image format itself is read from the
+	// bytes below, whatever MIME type the file was sent with)
+	if (typeof file === 'string') {
+		return jsonError(INVALID_IMAGE, 400)
+	}
+
+	const context = formData.get('context') || ''
+	const keywords = formData.get('keywords') || ''
+	const language = formData.get('language') || 'en' // Default language is English
+
+	// Flat map key -> description; empty or unparseable means the default
+	// fields, too many or too long fields are a 400 (no credit charged)
+	const sentSchema = formData.get('schema')
+	let schema
+	try {
+		schema = normalizeDescribeSchema(sentSchema)
+	} catch (error) {
+		if (error instanceof InvalidDescribeInputError) {
+			return jsonError(error.message, 400, 'Bad Request')
+		}
+		throw error
+	}
+
+	let base64Image
+	try {
+		base64Image = await blobToBase64(file)
+	} catch (error) {
+		// not a JPEG, PNG, WebP or GIF image: same answer as before for a
+		// file sent with another MIME type
+		if (error instanceof UnsupportedImageError) {
+			return jsonError(INVALID_IMAGE, 400)
+		}
+		if (error instanceof ImageTooLargeError) {
+			return jsonError(IMAGE_TOO_LARGE, 413, 'Payload Too Large')
+		}
+		if (error instanceof ImageDimensionsTooLargeError) {
+			return jsonError(error.message, 413, 'Payload Too Large')
+		}
+		// e.g. "Image processing failed: ...". Same status as before (500),
+		// but a readable message.
+		console.error('Error processing the image:', error.message)
+		return jsonError(error.message, 500, 'Internal Server Error')
+	}
+
+	// one credit is reserved atomically, refunded if the generation fails
+	const descriptionResult = await chargeOneCredit(
+		userId,
+		{
+			reason: 'decrement token from Describe Action',
+			tokenId,
+		},
+		() =>
+			getImageDescription(base64Image, {
+				language,
+				keywords,
+				context,
+				schema,
+			})
+	)
+
+	// no `schema` field: WordPress plugin <= 1.1.40 reads `alt_text`
+	return Response.json(sentSchema === null ? withLegacyAltText(descriptionResult) : descriptionResult, {
+		status: 200,
+	})
 }
 
 // Error responses are JSON `{ "error": "<human message>" }` (the WordPress

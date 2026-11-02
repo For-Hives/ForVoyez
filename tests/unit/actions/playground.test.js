@@ -3,11 +3,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { describePlaygroundAction } from '@/app/actions/app/playground'
 import { defaultJsonTemplateSchema } from '@/constants/playground'
 import { DescriptionTooLongError } from '@/helpers/describeInput'
-import { chargeOneCredit } from '@/services/database.service'
-import { blobToBase64, getImageDescription } from '@/services/imageDescription.service'
+import { chargeOneCredit, TooManyTooLongDescriptionsError } from '@/services/database.service'
+import {
+	blobToBase64,
+	getImageDescription,
+	ImageDimensionsTooLargeError,
+	UnsupportedImageError,
+} from '@/services/imageDescription.service'
 
 vi.mock('@clerk/nextjs/server')
-vi.mock('@/services/imageDescription.service')
+vi.mock('@/services/imageDescription.service', async importOriginal => ({
+	...(await importOriginal()),
+	getImageDescription: vi.fn(),
+	blobToBase64: vi.fn(),
+}))
 vi.mock('@/services/database.service')
 vi.mock('@/services/prisma.service')
 
@@ -48,6 +57,65 @@ describe('describePlaygroundAction', () => {
 
 		await expect(describePlaygroundAction(new FormData())).rejects.toThrow('No credits left')
 		expect(chargeOneCredit).not.toHaveBeenCalled()
+	})
+
+	it.each([
+		[
+			'too expensive to decode',
+			() => new ImageDimensionsTooLargeError(),
+			413,
+			'Image too large: progressive JPEG, interlaced PNG and GIF images are limited to 50 megapixels, resize the image and try again',
+		],
+		[
+			'of an unsupported format',
+			() => new UnsupportedImageError(),
+			400,
+			'Unsupported image format, send a JPEG, PNG, WebP or GIF image',
+		],
+	])('should say why, without charging, when the image is %s', async (_, makeError, status, error) => {
+		auth.mockResolvedValue({ userId: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 1 })
+		blobToBase64.mockRejectedValue(makeError())
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		await expect(describePlaygroundAction(formData)).resolves.toEqual({ error, status })
+		expect(chargeOneCredit).not.toHaveBeenCalled()
+	})
+
+	it('should answer 429 once the too long answers of the hour are used up', async () => {
+		auth.mockResolvedValue({ userId: 'user123' })
+		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user123', credits: 1 })
+		blobToBase64.mockResolvedValue('base64ImageString')
+		chargeOneCredit.mockRejectedValue(new TooManyTooLongDescriptionsError())
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		await expect(describePlaygroundAction(formData)).resolves.toMatchObject({ status: 429 })
+	})
+
+	it('should answer 429 over the requests of one account at the same time, then free the slots', async () => {
+		auth.mockResolvedValue({ userId: 'user-at-the-limit' })
+		prisma.user.findUnique.mockResolvedValue({ clerkId: 'user-at-the-limit', credits: 100 })
+		let finish
+		const finished = new Promise(resolve => {
+			finish = resolve
+		})
+		blobToBase64.mockReturnValue(finished)
+		getImageDescription.mockResolvedValue({ alternativeText: 'Alt' })
+		const formData = new FormData()
+		formData.append('image', new Blob(['image'], { type: 'image/png' }))
+
+		const running = Array.from({ length: 16 }, () => describePlaygroundAction(formData))
+		await new Promise(resolve => setImmediate(resolve))
+
+		await expect(describePlaygroundAction(formData)).resolves.toMatchObject({ status: 429 })
+
+		finish('base64ImageString')
+		for (const result of await Promise.all(running)) {
+			expect(result.status).toBe(200)
+		}
+		await expect(describePlaygroundAction(formData)).resolves.toMatchObject({ status: 200 })
 	})
 
 	it('should not return a description when the atomic charge finds no credit', async () => {

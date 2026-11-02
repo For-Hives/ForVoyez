@@ -2,7 +2,9 @@
 // 'use server'): client components go through the dedicated, auth-checked
 // actions in `src/app/actions/app/` instead of importing it.
 import { auth } from '@clerk/nextjs/server'
+import { DescriptionTooLongError } from '@/helpers/describeInput'
 import { forEachInSequence } from '@/helpers/forEachInSequence'
+import { createRateLimiter } from '@/helpers/rateLimit'
 import { getVariant, listPrice, listProducts } from '@/services/lemonsqueezy.service'
 import { logger } from '@/services/logger.service'
 import { prisma } from '@/services/prisma.service'
@@ -19,6 +21,19 @@ export class NoCreditsLeftError extends Error {
 	}
 }
 
+export class TooManyTooLongDescriptionsError extends Error {
+	constructor() {
+		super(
+			'Too many requests failed because the schema needs a longer answer than the API can return. Ask for fewer or shorter fields, and try again in an hour'
+		)
+		this.name = 'TooManyTooLongDescriptionsError'
+	}
+}
+
+// A too long answer is refunded, but the model has run to its output cap and
+// that call is paid. Without a limit, one credit pays for any number of them.
+const tooLongDescriptions = createRateLimiter({ windowMs: 60 * 60 * 1000, limit: 20 })
+
 /**
  * Charges one credit to `userId` for the result of `work`.
  *
@@ -33,9 +48,14 @@ export class NoCreditsLeftError extends Error {
  * @param {() => Promise<T>} work - the paid operation
  * @returns {Promise<T>} the result of `work`
  * @throws {NoCreditsLeftError} when the user has no credit left
+ * @throws {TooManyTooLongDescriptionsError} after 20 too long answers in an hour
  * @template T
  */
 export async function chargeOneCredit(userId, { tokenId = null, reason }, work) {
+	if (tooLongDescriptions.isOver(userId)) {
+		throw new TooManyTooLongDescriptionsError()
+	}
+
 	const [reservation, userAfterReservation] = await prisma.$transaction([
 		prisma.user.updateMany({
 			where: { credits: { gte: 1 }, clerkId: userId },
@@ -56,6 +76,7 @@ export async function chargeOneCredit(userId, { tokenId = null, reason }, work) 
 		result = await work()
 	} catch (error) {
 		await refundOneCredit(userId)
+		if (error instanceof DescriptionTooLongError) tooLongDescriptions(userId)
 		throw error
 	}
 
