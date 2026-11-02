@@ -70,6 +70,29 @@ describe('sendEmail rate limits', () => {
 		await expect(sendEmail(CONTACT)).resolves.toEqual({ success: true, status: 200 })
 	})
 
+	it('counts refused bodies for their address, without sending anything', async () => {
+		const tooLong = { ...CONTACT, message: 'x'.repeat(20_001) }
+		fromAddress('203.0.113.7')
+		await forEachInSequence(Array.from({ length: 5 }).keys(), async () => {
+			await expect(sendEmail(tooLong)).resolves.toMatchObject({ status: 400 })
+		})
+
+		await expect(sendEmail(tooLong)).resolves.toMatchObject({ status: 429 })
+		await expect(sendEmail(CONTACT)).resolves.toMatchObject({ status: 429 })
+		expect(create).not.toHaveBeenCalled()
+	})
+
+	it('does not let refused bodies use up the total', async () => {
+		const tooLong = { ...CONTACT, message: 'x'.repeat(20_001) }
+		await forEachInSequence(Array.from({ length: 70 }).keys(), async index => {
+			fromAddress(`203.0.${Math.floor(index / 4)}.${index % 4}`)
+			await expect(sendEmail(tooLong)).resolves.toMatchObject({ status: 400 })
+		})
+
+		fromAddress('198.51.100.1')
+		await expect(sendEmail(CONTACT)).resolves.toEqual({ success: true, status: 200 })
+	})
+
 	it('caps the total too, whatever the addresses say', async () => {
 		const results = await send(60, index => fromAddress(`203.0.${Math.floor(index / 4)}.${index % 4}`))
 		expect(results.every(result => result.success)).toBe(true)

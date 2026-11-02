@@ -14,8 +14,8 @@ const mg = mailgun.client({
 const REPLY_TO_PATTERN = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/
 const LINE_BREAKS = /[\r\n]+/g
 
-// This action can be called without the form, whose checks run in the browser,
-// and with bodies up to serverActions.bodySizeLimit (11 MB, for the playground).
+// This action can be called without the form, whose checks run in the browser.
+// src/proxy.js refuses bodies over 1 MB before they reach it.
 const MAX_LENGTHS = {
 	'phone-number': 50,
 	'first-name': 100,
@@ -51,11 +51,17 @@ export async function sendEmail(data) {
 		email,
 	} = data
 
+	// before the lengths, so that a refused request counts for its address; the
+	// total only counts what is really sent
+	if (!(await isAddressAllowed())) {
+		return TOO_MANY_MESSAGES
+	}
+
 	if (Object.entries(MAX_LENGTHS).some(([field, maxLength]) => String(data[field] ?? '').length > maxLength)) {
 		return { success: false, status: 400, details: 'One of the fields is too long.' }
 	}
 
-	if (!(await hasQuotaLeft())) {
+	if (!isAllowedInTotal('total')) {
 		return TOO_MANY_MESSAGES
 	}
 
@@ -92,12 +98,9 @@ export async function sendEmail(data) {
 	}
 }
 
-async function hasQuotaLeft() {
+async function isAddressAllowed() {
 	const address = await visitorAddress()
-	if (address && !isAllowedForAddress(address)) {
-		return false
-	}
-	return isAllowedInTotal('total')
+	return !address || isAllowedForAddress(address)
 }
 
 // The last address of X-Forwarded-For is the one the reverse proxy saw, the
