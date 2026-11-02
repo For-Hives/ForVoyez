@@ -6,6 +6,12 @@ import { getPlanLabel, processWebhook, saveWebhooks } from '@/services/webhook.s
 
 const WEBHOOK_SECRET = () => process.env.LEMON_SQUEEZY_WEBHOOK_SECRET
 
+// Lemon Squeezy events weigh a few KB. This route is public and the signature
+// is checked on the whole body, which has to fit in memory first.
+const MAX_BODY_BYTES = 1024 * 1024
+
+class PayloadTooLargeError extends Error {}
+
 export async function POST(request) {
 	let webhookId
 	let eventName
@@ -22,7 +28,7 @@ export async function POST(request) {
 		}
 
 		// check if the request come from lemonsqueezy servers #Security
-		const rawBody = await request.text()
+		const rawBody = await readBody(request)
 
 		const hmac = createHmac('sha256', secret)
 		const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
@@ -49,6 +55,12 @@ export async function POST(request) {
 		// Store the event (each delivery is kept, processed or not)
 		webhookId = await saveWebhooks(payload)
 	} catch (error) {
+		if (error instanceof PayloadTooLargeError) {
+			console.error('webhook rejected: body too large')
+			return new Response('Payload Too Large', {
+				status: 413,
+			})
+		}
 		// never log the body: it contains the customer's name and email (and
 		// Prisma/JSON errors can quote it), so only log the error kind
 		console.error('Webhook error:', error.code ?? error.name)
@@ -106,6 +118,29 @@ function isStorable(payload) {
 		typeof payload.data?.attributes === 'object' &&
 		payload.data.attributes !== null
 	)
+}
+
+// The body as text, at most MAX_BODY_BYTES: a declared length is checked before
+// reading anything, and a body sent without one (chunked) is counted while it is
+// read. Leaving the loop cancels the rest of the upload.
+async function readBody(request) {
+	if (Number(request.headers.get('content-length')) > MAX_BODY_BYTES) {
+		throw new PayloadTooLargeError()
+	}
+	if (!request.body) {
+		return ''
+	}
+
+	const chunks = []
+	let size = 0
+	for await (const chunk of request.body) {
+		size += chunk.byteLength
+		if (size > MAX_BODY_BYTES) {
+			throw new PayloadTooLargeError()
+		}
+		chunks.push(chunk)
+	}
+	return new Response(new Blob(chunks)).text()
 }
 
 function parseJson(rawBody) {

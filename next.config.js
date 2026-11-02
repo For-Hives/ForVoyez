@@ -29,6 +29,16 @@ const nextConfig = {
 						value: 'strict-origin-when-cross-origin',
 						key: 'Referrer-Policy',
 					},
+					{
+						// No script or style policy here: Clerk, Umami, Rive and the inline
+						// scripts of Next.js would have to be tested against it.
+						value: "frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
+						key: 'Content-Security-Policy',
+					},
+					{
+						value: 'camera=(), microphone=(), geolocation=()',
+						key: 'Permissions-Policy',
+					},
 				],
 				source: '/:path*',
 			},

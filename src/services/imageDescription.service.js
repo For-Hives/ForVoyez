@@ -48,6 +48,12 @@ const KEYWORDS_TAG = 'customer_keywords'
 export const SUPPORTED_IMAGE_FORMATS = ['jpeg', 'png', 'webp', 'gif']
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
+// An interlaced PNG, a progressive JPEG or a GIF is decoded whole in memory: a
+// 1 MB file of 16,000 x 16,000 pixels took 1.1 GB, 2.2 GB in 16 bits, before any
+// credit is charged. 50 MP is at most about 500 MB. Baseline JPEG, plain PNG and
+// WebP are read line by line and keep sharp's own limit (268 MP).
+export const MAX_FULL_DECODE_PIXELS = 50_000_000
+
 // The generation failed (model error, timeout, invalid output). The message
 // never carries the prompt, the image or the customer text.
 export class ImageDescriptionError extends Error {
@@ -66,12 +72,17 @@ export class ImageTooLargeError extends Error {
 }
 
 // The file is not a JPEG, PNG, WebP or GIF image, whatever its MIME type: an
-// SVG, AVIF or TIFF image, an empty file, or no image at all.
+// SVG, AVIF or TIFF image, an empty file, or no image at all. Also an image too
+// expensive to decode (see MAX_FULL_DECODE_PIXELS).
 export class UnsupportedImageError extends Error {
 	constructor() {
 		super('Unsupported image format, send a JPEG, PNG, WebP or GIF image')
 		this.name = 'UnsupportedImageError'
 	}
+}
+
+function isDecodedWhole(metadata) {
+	return metadata.format === 'gif' || metadata.isProgressive === true
 }
 
 // Convert blob to Base64 string with image optimizations.
@@ -96,6 +107,9 @@ export async function blobToBase64(blob) {
 		throw new UnsupportedImageError()
 	}
 	if (!SUPPORTED_IMAGE_FORMATS.includes(metadata.format)) {
+		throw new UnsupportedImageError()
+	}
+	if (isDecodedWhole(metadata) && metadata.width * metadata.height > MAX_FULL_DECODE_PIXELS) {
 		throw new UnsupportedImageError()
 	}
 

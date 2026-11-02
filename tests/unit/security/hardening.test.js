@@ -72,3 +72,31 @@ describe('next.config.js upload limits', () => {
 		expect(toBytes(nextConfig.experimental.proxyClientMaxBodySize)).toBeGreaterThanOrEqual(tenMegabyteImageRequest)
 	})
 })
+
+describe('security headers', () => {
+	const nextConfig = createRequire(import.meta.url)(path.join(root, 'next.config.js'))
+
+	async function pageHeaders() {
+		const rules = await nextConfig.headers()
+		const pages = rules.find(rule => rule.source === '/:path*')
+		return Object.fromEntries(pages.headers.map(({ value, key }) => [key, value]))
+	}
+
+	it('restricts framing, <base> and plugins, without a script policy that could break Clerk or Umami', async () => {
+		const csp = (await pageHeaders())['Content-Security-Policy']
+
+		expect(csp).toContain("frame-ancestors 'self'")
+		expect(csp).toContain("base-uri 'self'")
+		expect(csp).toContain("object-src 'none'")
+		expect(csp).not.toContain('script-src')
+		expect(csp).not.toContain('default-src')
+	})
+
+	it('turns off the browser features the site never uses', async () => {
+		const policy = (await pageHeaders())['Permissions-Policy']
+
+		for (const feature of ['camera', 'microphone', 'geolocation']) {
+			expect(policy).toContain(`${feature}=()`)
+		}
+	})
+})

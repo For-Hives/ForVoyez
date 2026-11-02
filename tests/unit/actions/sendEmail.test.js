@@ -147,6 +147,38 @@ describe('sendEmail (mailgun.js 14)', () => {
 		expect(requests).toHaveLength(1)
 		expect(result).toMatchObject({ success: false, status: 401 })
 		expect(result.details).toContain('An error occurred while sending the email')
+		// the provider's own message stays on the server
+		expect(result).not.toHaveProperty('error')
+		expect(JSON.stringify(result)).not.toContain('Forbidden')
+	})
+
+	it.each([
+		['message', 20_001],
+		['subject', 201],
+		['first-name', 101],
+		['last-name', 101],
+		['company', 201],
+		['phone-number', 51],
+		['email', 321],
+	])('refuses a %s of %i characters before sending mail', async (field, length) => {
+		const result = await sendEmail({ ...CONTACT, [field]: 'a'.repeat(length) })
+
+		expect(result).toMatchObject({ success: false, status: 400 })
+		expect(requests).toHaveLength(0)
+	})
+
+	it('accepts a message at the limit', async () => {
+		const result = await sendEmail({ ...CONTACT, message: 'a'.repeat(20_000) })
+
+		expect(result).toEqual({ success: true, status: 200 })
+		expect(requests).toHaveLength(1)
+	})
+
+	it('keeps the subject on one line', async () => {
+		await sendEmail({ ...CONTACT, subject: 'Hello\r\nBcc: x@evil.test' })
+
+		const fields = await formFields(requests[0])
+		expect(fields.subject).toBe('New contact message - Hello Bcc: x@evil.test')
 	})
 	it.each([undefined, null, false, 0, '', 'message', []])(
 		'rejects non-object contact data %j before sending mail',

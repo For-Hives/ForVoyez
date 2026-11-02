@@ -1,4 +1,7 @@
 'use server'
+import { headers } from 'next/headers'
+import { createRateLimiter } from '@/helpers/rateLimit'
+
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
 const mailgun = new Mailgun(formData)
@@ -9,6 +12,30 @@ const mg = mailgun.client({
 
 // one address, no whitespace (so no header folding) and no list separators
 const REPLY_TO_PATTERN = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/
+const LINE_BREAKS = /[\r\n]+/g
+
+// This action can be called without the form, whose checks run in the browser,
+// and with bodies up to serverActions.bodySizeLimit (11 MB, for the playground).
+const MAX_LENGTHS = {
+	'phone-number': 50,
+	'first-name': 100,
+	'last-name': 100,
+	message: 20_000,
+	company: 200,
+	subject: 200,
+	email: 320,
+}
+
+const TOO_MANY_MESSAGES = {
+	details: 'Too many messages were sent. Please try again later.',
+	success: false,
+	status: 429,
+}
+
+// Each message is a paid send to one inbox. The total holds even when the
+// address of the visitor cannot be trusted or is missing.
+const isAllowedForAddress = createRateLimiter({ windowMs: 10 * 60 * 1000, limit: 5 })
+const isAllowedInTotal = createRateLimiter({ windowMs: 60 * 60 * 1000, limit: 60 })
 
 export async function sendEmail(data) {
 	if (!data || typeof data !== 'object' || Array.isArray(data)) {
@@ -24,6 +51,14 @@ export async function sendEmail(data) {
 		email,
 	} = data
 
+	if (Object.entries(MAX_LENGTHS).some(([field, maxLength]) => String(data[field] ?? '').length > maxLength)) {
+		return { success: false, status: 400, details: 'One of the fields is too long.' }
+	}
+
+	if (!(await hasQuotaLeft())) {
+		return TOO_MANY_MESSAGES
+	}
+
 	// FIXME change the email address to the correct one
 	// paid option to get the real email address (to contact@forvoyez)
 	// ill redirect the mails if needed to the correct email address
@@ -38,7 +73,7 @@ export async function sendEmail(data) {
         
         Message:
         ${message}`,
-			subject: `New contact message - ${subject}`,
+			subject: `New contact message - ${String(subject ?? '').replace(LINE_BREAKS, ' ')}`,
 			from: 'ForVoyez <noreply@forvoyez.com>',
 			to: 'contact@andy-cinquin.fr',
 			// "Reply" answers the visitor instead of noreply@forvoyez.com
@@ -51,10 +86,28 @@ export async function sendEmail(data) {
 			details:
 				'An error occurred while sending the email. Please try again later. If the problem persists, please contact the website administrator. ' +
 				'(through contact@forvoyez.com)',
-			error: error.message,
 			status: error.status,
 			success: false,
 		}
+	}
+}
+
+async function hasQuotaLeft() {
+	const address = await visitorAddress()
+	if (address && !isAllowedForAddress(address)) {
+		return false
+	}
+	return isAllowedInTotal('total')
+}
+
+// The last address of X-Forwarded-For is the one the reverse proxy saw, the
+// others come from the client. Undefined outside a request.
+async function visitorAddress() {
+	try {
+		const forwardedFor = (await headers()).get('x-forwarded-for')
+		return forwardedFor?.split(',').at(-1).trim() || undefined
+	} catch {
+		return undefined
 	}
 }
 

@@ -27,6 +27,7 @@ vi.mock('@/services/prisma.service', async () => {
 })
 
 const JWT = 'header.payload.signature-of-the-api-key'
+const LARGE_SIDE = 7500
 const DESCRIPTION = { alternativeText: 'Alt', caption: 'Caption', title: 'T' }
 
 const svg = Buffer.from(
@@ -101,6 +102,52 @@ describe('POST /api/describe uploads', () => {
 		expect(response.status).toBe(200)
 		expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
 	})
+
+	// 56 MP. These formats cannot be decoded line by line: a 1 MB interlaced PNG of
+	// 16,000 x 16,000 pixels took 1.1 GB of memory, before any credit is charged.
+	function hugeImage(encode) {
+		return encode(
+			sharp({
+				create: { background: '#c0392b', height: LARGE_SIDE, width: LARGE_SIDE, channels: 3 },
+				limitInputPixels: false,
+			})
+		).toBuffer()
+	}
+
+	it.each([
+		['an interlaced PNG', image => image.png({ progressive: true })],
+		['a progressive JPEG', image => image.jpeg({ progressive: true })],
+		['a GIF', image => image.gif()],
+	])(
+		'refuses %s over the full-decode limit, without charging',
+		async (_, encode) => {
+			const response = await POST(describeRequest(await hugeImage(encode), ''))
+
+			expect(response.status).toBe(400)
+			expect(await response.json()).toEqual({ error: 'Bad Request, Invalid image file' })
+			expectNoCharge()
+		},
+		60_000
+	)
+
+	it('still describes a baseline JPEG of the same size, decoded line by line', async () => {
+		const response = await POST(describeRequest(await hugeImage(image => image.jpeg()), ''))
+
+		expect(response.status).toBe(200)
+		expect(prisma.user.updateMany).toHaveBeenCalledTimes(1)
+	}, 60_000)
+
+	it('still describes a progressive JPEG under the limit', async () => {
+		const small = await sharp({
+			create: { background: '#c0392b', height: 4000, width: 6000, channels: 3 },
+		})
+			.jpeg({ progressive: true })
+			.toBuffer()
+
+		const response = await POST(describeRequest(small, ''))
+
+		expect(response.status).toBe(200)
+	}, 60_000)
 
 	// same 400 JSON, and no credit, whether the MIME type is right or wrong
 	it.each([
