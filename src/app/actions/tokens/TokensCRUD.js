@@ -6,6 +6,10 @@ import { parseTokenInput, requireTokenId } from '@/helpers/tokenInput'
 import { generateJwt } from '@/services/jwt.service'
 import { prisma } from '@/services/prisma.service'
 
+// Far above what one account needs (one key per site), and each one is a row
+// that a free account could otherwise add without limit.
+const MAX_TOKENS_PER_USER = 100
+
 export async function createToken(input) {
 	const userId = (await auth()).userId
 
@@ -14,6 +18,10 @@ export async function createToken(input) {
 	}
 
 	const token = parseTokenInput(input)
+
+	if ((await prisma.token.count({ where: { userId } })) >= MAX_TOKENS_PER_USER) {
+		throw new Error(`You can have at most ${MAX_TOKENS_PER_USER} API keys, delete one first`)
+	}
 
 	const jwt = await generateJwt({
 		createdAt: token.createdAt,

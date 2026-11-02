@@ -45,6 +45,24 @@ describe('token input contracts', () => {
 		)
 	})
 
+	it('limits the length of the name', () => {
+		expect(parseTokenInput({ ...valid, name: 'x'.repeat(200) }).name).toHaveLength(200)
+		expect(() => parseTokenInput({ ...valid, name: 'x'.repeat(201) })).toThrow('Invalid token input')
+	})
+
+	it('accepts the 10 years the dashboard suggests, refuses more than 20 years', () => {
+		const inYears = years => new Date(now.getTime() + years * 365 * 24 * 60 * 60 * 1000)
+
+		expect(parseTokenInput({ ...valid, expiredAt: inYears(10) }).expiredAt).toEqual(inYears(10))
+		expect(parseTokenInput({ ...valid, expiredAt: inYears(20) }).expiredAt).toEqual(inYears(20))
+		expect(() => parseTokenInput({ ...valid, expiredAt: new Date(inYears(20).getTime() + 1) })).toThrow(
+			'Invalid token input'
+		)
+		expect(() => parseTokenInput({ ...valid, expiredAt: new Date('9999-12-31T00:00:00Z') })).toThrow(
+			'Invalid token input'
+		)
+	})
+
 	it.each([null, undefined, false, 0, {}, [], '', ' \n'])('rejects invalid deletion identifiers: %j', value => {
 		expect(() => requireTokenId(value)).toThrow('Invalid token id')
 	})
