@@ -12,6 +12,7 @@ import {
 } from '@/helpers/describeInput'
 import { withHeavyDecodeSlot } from '@/services/describeLimits.service'
 import { logger } from '@/services/logger.service'
+import { alertAiFailure, blockingAiFailure } from '@/services/opsAlert.service'
 
 // OpenAI model used for the generation. Override it with the FORVOYEZ_AI_MODEL
 // env var (same OPENAI_API_KEY), read at call time: `gpt-4o-mini` rolls back
@@ -233,6 +234,15 @@ export async function generateImageMetadata(base64Image, data = {}) {
 		)
 		if (finishReason === 'length') {
 			throw new DescriptionTooLongError()
+		}
+		// no credit left, key refused: tell the team now, not via a customer email
+		const blocking = blockingAiFailure({
+			statusCode: error?.statusCode ?? error?.lastError?.statusCode,
+			errorType: providerError(error)?.type,
+			errorCode: providerError(error)?.code,
+		})
+		if (blocking) {
+			void alertAiFailure(blocking, { model: modelId })
 		}
 		throw new ImageDescriptionError(`Image description failed (${error?.name ?? 'Error'})`)
 	}
